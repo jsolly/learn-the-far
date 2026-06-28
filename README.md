@@ -1,43 +1,36 @@
-# Astro Starter Kit: Minimal
+# Learn The FAR
 
-```sh
-npm create astro@latest -- --template minimal
-```
+A local-first flashcard app for studying the Federal Acquisition Regulation (FAR). It is built as a pure static SPA with Astro, Svelte, shadcn-svelte, and TypeScript.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+User progress is stored only in the browser with `localStorage`. There is no database, authentication, API, or AWS infrastructure.
 
-## 🚀 Project Structure
+## Tech Stack
 
-Inside of your Astro project, you'll see the following folders and files:
+- Astro static build
+- Svelte 5 for the interactive study experience
+- shadcn-svelte UI components
+- Tailwind CSS
+- TypeScript
+- Vercel hosting
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+## Commands
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+| Command | Action |
+| :-- | :-- |
+| `npm install` | Install dependencies |
+| `npm run dev` | Start the local dev server |
+| `npm run check` | Run Astro/Svelte type checks |
+| `npm run build` | Build the static app to `dist/` |
+| `npm run preview` | Preview the production build locally |
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Hosting
 
-Any static assets, like images, can be placed in the `public/` directory.
+Production: https://learnthefar.com (Vercel, Git-connected to this repo).
 
-## 🧞 Commands
+Vercel builds the app with `npm run build` and serves the generated `dist/` directory. The deployment settings are captured in `vercel.json`. Pushes to `main` trigger a production deploy automatically.
 
-All commands are run from the root of the project, from a terminal:
+Because this is a static SPA, no server adapter or cloud database is required.
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+## FAR Content
 
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+The current MVP includes a bundled sample deck with source links back to [acquisition.gov](https://www.acquisition.gov/browse/index/far). A fuller FAR import can replace or extend `src/lib/far/sample-deck.ts` later.
