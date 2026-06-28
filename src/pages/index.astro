@@ -1,5 +1,6 @@
 ---
-
+import FarStudyApp from "../components/app/FarStudyApp.svelte";
+import "../styles/global.css";
 ---
 
 <html lang="en">
@@ -9,9 +10,13 @@
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
+		<meta
+			name="description"
+			content="A local-first Astro and Svelte flashcard app for learning the Federal Acquisition Regulation."
+		/>
+		<title>Learn The FAR</title>
 	</head>
-	<body>
-		<h1>Astro</h1>
+	<body class="min-h-screen">
+		<FarStudyApp client:load />
 	</body>
 </html>
