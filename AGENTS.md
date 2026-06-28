@@ -2,9 +2,9 @@
 
 Ship profile: `vercel-static`
 
-Production URL: https://learnthefar.com
+Production URL: <https://learnthefar.com>
 
-Vercel Git integration deploys production on push to `main`. After push, verify https://learnthefar.com returns HTTP 200 — do not run a manual `vercel deploy` unless Git integration is broken.
+Vercel Git integration deploys production on push to `main`. After push, verify <https://learnthefar.com> returns HTTP 200 — do not run a manual `vercel deploy` unless Git integration is broken.
 
 Local gate before push: `npm run check && npm run build`.
 
