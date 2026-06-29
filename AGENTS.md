@@ -2,11 +2,13 @@
 
 Ship profile: `vercel-static`
 
+**Integration: branch → PR → CI-gated auto-merge (canonical).** Open a PR from your branch; `.github/workflows/auto-merge.yml` enables squash auto-merge once **`CI / ci`** is green. Direct push to `main` is break-glass only.
+
 Production URL: <https://learnthefar.com>
 
-Vercel Git integration deploys production on push to `main`. After push, verify <https://learnthefar.com> returns HTTP 200 — do not run a manual `vercel deploy` unless Git integration is broken.
+Vercel Git integration deploys production on merge to `main`. After merge, verify <https://learnthefar.com> returns HTTP 200 — do not run a manual `vercel deploy` unless Git integration is broken.
 
-Local gate before push: `npm run check && npm run build`.
+Local gate before push: `npm run check && npm run build` (full gate also runs in GitHub CI on the PR).
 
 ## Development
 
