@@ -1,50 +1,51 @@
-import type { Confidence } from "$lib/far/types";
+import { PROGRESS_KEY } from "$lib/far/constants";
+import type { QuizProgress } from "./types";
 
-const STORAGE_KEY = "learn-the-far:study-progress:v1";
-
-export type StudyProgressRecord = {
-	cardId: string;
-	reviewCount: number;
-	lastConfidence: Confidence;
-	lastReviewedAt: string;
-};
-
-export type StudyProgress = Record<string, StudyProgressRecord>;
+export function emptyProgress(): QuizProgress {
+	return {
+		questions: {},
+		streak: { current: 0, longest: 0, lastDay: "" },
+		dailyDone: [],
+		testedOut: false,
+		achievements: {},
+	};
+}
 
 function canUseStorage() {
 	return typeof window !== "undefined" && "localStorage" in window;
 }
 
-export function loadStudyProgress(): StudyProgress {
+export function loadProgress(): QuizProgress {
 	if (!canUseStorage()) {
-		return {};
+		return emptyProgress();
 	}
 
 	try {
-		const raw = window.localStorage.getItem(STORAGE_KEY);
+		const raw = window.localStorage.getItem(PROGRESS_KEY);
 		if (!raw) {
-			return {};
+			return emptyProgress();
 		}
 
-		const parsed = JSON.parse(raw) as StudyProgress;
-		return parsed && typeof parsed === "object" ? parsed : {};
+		const parsed = JSON.parse(raw) as Partial<QuizProgress>;
+		// Merge onto a fresh shape so older/partial records stay valid.
+		return { ...emptyProgress(), ...parsed };
 	} catch {
-		return {};
+		return emptyProgress();
 	}
 }
 
-export function saveStudyProgress(progress: StudyProgress) {
+export function saveProgress(progress: QuizProgress) {
 	if (!canUseStorage()) {
 		return;
 	}
 
-	window.localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+	window.localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
 }
 
-export function clearStudyProgress() {
+export function clearProgress() {
 	if (!canUseStorage()) {
 		return;
 	}
 
-	window.localStorage.removeItem(STORAGE_KEY);
+	window.localStorage.removeItem(PROGRESS_KEY);
 }
