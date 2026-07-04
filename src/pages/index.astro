@@ -1,5 +1,5 @@
 ---
-import FarStudyApp from "../components/app/FarStudyApp.svelte";
+import FarQuizApp from "../components/app/FarQuizApp.svelte";
 import "../styles/global.css";
 ---
 
@@ -8,15 +8,15 @@ import "../styles/global.css";
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="generator" content={Astro.generator} />
 		<meta
 			name="description"
-			content="A local-first Astro and Svelte flashcard app for learning the Federal Acquisition Regulation."
+			content="A local-first, mobile multiple-choice game for mastering U.S. federal contracting from the prime contractor's side."
 		/>
-		<title>Learn The FAR</title>
+		<title>Learn The FAR — federal contracting, one scenario at a time</title>
 	</head>
-	<body class="min-h-screen">
-		<FarStudyApp client:load />
+	<body class="min-h-[100dvh]">
+		<FarQuizApp client:load />
 	</body>
 </html>
