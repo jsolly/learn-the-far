@@ -98,10 +98,10 @@
 	<div class="grid grid-cols-4 gap-2 sm:grid-cols-6">
 		{#each ACHIEVEMENTS as a (a.id)}
 			<div
-				class={`flex flex-col items-center gap-1 rounded-xl border p-2 text-center ${earned.has(a.id) ? "bg-card" : "opacity-40"}`}
+				class={`flex flex-col items-center gap-1 rounded-xl border p-2 text-center ${earned.has(a.id) ? "bg-card" : ""}`}
 				title={`${a.label} — ${a.description}`}
 			>
-				<span class="text-xl grayscale-0" class:grayscale={!earned.has(a.id)}>{a.icon}</span>
+				<span class="text-xl grayscale-0" class:grayscale={!earned.has(a.id)} class:opacity-40={!earned.has(a.id)}>{a.icon}</span>
 				<span class="text-[0.6rem] leading-tight text-muted-foreground">{a.label}</span>
 			</div>
 		{/each}
