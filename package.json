@@ -15,6 +15,7 @@
     "prepare": "if [ -z \"$CI\" ] && git rev-parse --git-dir >/dev/null 2>&1; then git config core.hooksPath .git-hooks; fi"
   },
   "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
     "@astrojs/svelte": "^9.0.0",
     "@tailwindcss/vite": "^4.3.1",
     "astro": "^7.0.3",

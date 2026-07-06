@@ -1,5 +1,13 @@
 {
 	"$schema": "https://openapi.vercel.sh/vercel.json",
 	"buildCommand": "npm run build",
-	"outputDirectory": "dist"
+	"outputDirectory": "dist",
+	"redirects": [
+		{
+			"source": "/:path(.*)",
+			"has": [{ "type": "host", "value": "www.learnthefar.com" }],
+			"destination": "https://learnthefar.com/:path",
+			"permanent": true
+		}
+	]
 }
