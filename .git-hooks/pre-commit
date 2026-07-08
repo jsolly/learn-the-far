@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Pre-push GATE for learn-the-far (gate-only — this hook does NOT deploy).
+# Pre-commit GATE for learn-the-far (gate-only — this hook does NOT deploy).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"; cd "$ROOT"
@@ -9,13 +9,12 @@ source "${DOTAGENTS_GATE_LIB:-$HOME/code/dotagents/gate/gate-lib.sh}" || {
   exit 1
 }
 
-gate_begin "learn-the-far"
-gate_require_clean_tree
+gate_begin_commit "learn-the-far"
 gate_require_node
 gate_npm_ci --if-stale
 
-run_step "dep grounding" gate_check_dep_grounding .git-hooks/pre-push
+run_step "dep grounding" gate_check_dep_grounding .git-hooks/pre-commit
 run_step "astro check (types)" npm run check:ts
 run_step "build" npm run build
 
-echo "✓ pre-push gate passed — push will land; Vercel deploys via GitHub integration."
+echo "✓ pre-commit gate passed — commit will land; push to a PR, Vercel deploys via GitHub integration on merge."
