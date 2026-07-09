@@ -14,6 +14,7 @@ gate_require_node
 gate_npm_ci --if-stale
 
 run_step "dep grounding" gate_check_dep_grounding .git-hooks/pre-commit
+run_step "actionlint"             npm run check:actions
 run_step "astro check (types)" npm run check:ts
 run_step "build" npm run build
 
