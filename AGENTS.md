@@ -14,7 +14,7 @@ Local gate before push: `npm run check && npm run build` (full gate also runs in
 
 When starting the dev server, use background mode:
 
-```
+```bash
 astro dev --background
 ```
 
@@ -22,7 +22,7 @@ Manage the background server with `astro dev stop`, `astro dev status`, and `ast
 
 ## Documentation
 
-Full documentation: https://docs.astro.build
+Full documentation: <https://docs.astro.build>
 
 Consult these guides before working on related tasks:
 
@@ -32,3 +32,10 @@ Consult these guides before working on related tasks:
 - [Adding or managing content](https://docs.astro.build/en/guides/content-collections/)
 - [Adding styles or using Tailwind](https://docs.astro.build/en/guides/styling/)
 - [Supporting multiple languages](https://docs.astro.build/en/guides/internationalization/)
+
+## Local UI verification
+
+No auth — public UI only. Follow `rules/frontend-verification.md` (fleet smoke: desktop + mobile screenshots, console clean).
+
+- **Dev server:** `astro dev --background` (manage with `astro dev status` / `astro dev logs` / `astro dev stop`). Default local URL is the Astro dev host printed on start (typically <http://localhost:4321>).
+- **Auth:** none — public pages only. No `DEFAULT_USER` / `DEFAULT_PASSWORD`.
