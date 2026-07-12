@@ -6,6 +6,7 @@
 		"node": "24.x"
 	},
 	"scripts": {
+		"worktree:init": "npm ci",
 		"dev": "astro dev",
 		"build": "astro build",
 		"check:ts": "astro check --minimumSeverity warning --minimumFailingSeverity warning",

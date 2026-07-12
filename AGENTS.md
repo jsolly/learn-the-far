@@ -2,13 +2,11 @@
 
 Ship profile: `vercel-static`
 
-**Integration: branch → PR → CI-gated auto-merge (canonical).** Open a PR from your branch; `.github/workflows/auto-merge.yml` enables squash auto-merge once **`CI / ci`** is green. Direct push to `main` is break-glass only.
+Integration: `pr-auto-merge`
+
+CI owner: `local`
 
 Production URL: <https://learnthefar.com>
-
-Vercel Git integration deploys production on merge to `main`. After merge, verify <https://learnthefar.com> returns HTTP 200 — do not run a manual `vercel deploy` unless Git integration is broken.
-
-Local gate before push: `npm run check && npm run build` (full gate also runs in GitHub CI on the PR).
 
 ## Development
 
@@ -19,6 +17,10 @@ astro dev --background
 ```
 
 Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
+
+## Worktrees
+
+Fresh worktrees run `npm run worktree:init` through Cursor's setup command or the manual Git `post-checkout` hook. This is required because staged Markdown lint runs before the gate's lazy dependency check. The app has no required gitignored local configuration or state, so `.worktreeinclude` is intentionally absent.
 
 ## Documentation
 

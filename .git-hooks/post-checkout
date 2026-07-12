@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Auto-provision a freshly-created worktree on the manual `git worktree add` path.
+# Never fail checkout if the shared provisioner is unavailable or errors.
+prov="${DOTAGENTS_POSTCHECKOUT:-$HOME/code/dotagents/hooks/post-checkout-provision.sh}"
+[ -f "$prov" ] && bash "$prov" "$@"
+exit 0
