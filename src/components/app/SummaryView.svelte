@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { game } from "$lib/quiz-state.svelte.js";
-	import { ACHIEVEMENTS } from "$lib/far/constants";
+	import { ACHIEVEMENTS, TESTOUT_PASS } from "$lib/far/constants";
 	import { Button } from "$lib/components/ui/button";
 
 	let s = $derived(game.summary);
 	let earned = $derived(
 		s ? s.newAchievements.map((id) => ACHIEVEMENTS.find((a) => a.id === id)).filter(Boolean) : [],
 	);
-	let unitNotPrime = $derived(
-		s?.unit ? game.unitStats(s.unit.id).level !== "prime" : false,
-	);
+	let unitNotPrime = $derived(s?.unit ? game.unitStats(s.unit.id).level !== "prime" : false);
+	let passPct = $derived(Math.round(TESTOUT_PASS * 100));
+	let gated = $derived(game.needsFundamentalsPlacement);
 
 	function headline(pct: number): string {
 		if (pct >= 90) return "Clean audit.";
@@ -17,19 +17,36 @@
 		if (pct >= 50) return "Room to sharpen.";
 		return "Keep drilling.";
 	}
+
+	function studyHeadline(): string {
+		if (s?.studyKind === "fundamentals-gaps") return "Gaps reviewed.";
+		if (s?.studyKind === "misses") return "Misses reviewed.";
+		return "Study complete.";
+	}
 </script>
 
 {#if s}
-	<div class="mx-auto flex min-h-[100dvh] w-full max-w-md flex-col items-center justify-center gap-6 px-5 py-10 text-center">
-		{#if s.mode === "testout"}
-			<div class="text-5xl">{s.passedTestOut ? "⏭️" : "📚"}</div>
+	<div
+		class="mx-auto flex min-h-[100dvh] w-full max-w-md flex-col items-center justify-center gap-6 px-5 py-10 text-center"
+	>
+		{#if s.mode === "study"}
+			<div class="text-5xl">📖</div>
+			<h1 class="text-2xl font-bold">{studyHeadline()}</h1>
+			<p class="text-muted-foreground">
+				{s.answered} card{s.answered === 1 ? "" : "s"} reviewed.
+			</p>
+			{#if gated && s.studyKind === "fundamentals-gaps"}
+				<p class="text-sm text-muted-foreground">Ready to try the test again?</p>
+			{/if}
+		{:else if s.mode === "testout"}
+			<div class="text-5xl">{s.unlockedNow || s.passedTestOut ? "⏭️" : "📚"}</div>
 			<h1 class="text-2xl font-bold">
-				{s.passedTestOut ? "Tested out of fundamentals" : "Not quite — keep the basics"}
+				{s.unlockedNow || s.passedTestOut ? "You're in." : "Not quite yet."}
 			</h1>
 			<p class="text-muted-foreground">
-				{s.passedTestOut
-					? "Fundamentals are credited across every unit. You start at Core."
-					: `You scored ${s.scorePct}%. You need 80% to skip the fundamentals — dig into a unit and try again.`}
+				{s.unlockedNow || s.passedTestOut
+					? "The capture map is open — pick a deal stage and go."
+					: `You scored ${s.scorePct}% (need ${passPct}%). Review what you missed, then try again.`}
 			</p>
 		{:else}
 			<div class="text-sm font-medium uppercase tracking-wide text-muted-foreground">
@@ -69,12 +86,23 @@
 		{/if}
 
 		<div class="flex w-full flex-col gap-2">
-			{#if s.mode === "unit" && s.unit && unitNotPrime}
+			{#if s.mode === "study" && gated && s.studyKind === "fundamentals-gaps"}
+				<Button size="lg" onclick={() => game.startTestOut()}>Try the test again</Button>
+				<Button size="lg" variant="outline" onclick={() => game.goHome()}>Back</Button>
+			{:else if s.mode === "testout" && gated}
+				{#if game.fundamentalsGaps.length > 0}
+					<Button size="lg" onclick={() => game.startStudyFundamentalsGaps()}>Review what you missed</Button>
+				{/if}
+				<Button size="lg" variant="outline" onclick={() => game.startTestOut()}>Try again</Button>
+				<Button size="lg" variant="ghost" onclick={() => game.goHome()}>Back</Button>
+			{:else if s.mode === "unit" && s.unit && unitNotPrime}
 				<Button size="lg" onclick={() => s?.unit && game.startUnit(s.unit.id)}>Keep going</Button>
+				<Button size="lg" variant="outline" onclick={() => game.goHome()}>Back to the map</Button>
+			{:else}
+				<Button size="lg" onclick={() => game.goHome()}>
+					{s.mode === "study" ? "Done studying" : "Back to the map"}
+				</Button>
 			{/if}
-			<Button size="lg" variant={s.mode === "unit" && unitNotPrime ? "outline" : "default"} onclick={() => game.goHome()}>
-				Back to the map
-			</Button>
 		</div>
 	</div>
 {/if}

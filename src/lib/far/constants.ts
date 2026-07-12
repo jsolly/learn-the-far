@@ -81,7 +81,7 @@ export const STREAK_MILESTONES = [3, 7, 14, 30];
 // few ids are computed (per-unit "prime-<unitId>", "streak-<n>").
 export const ACHIEVEMENTS: Achievement[] = [
 	{ id: "first-clear", label: "First Blood", description: "Clear your first question.", icon: "🎯" },
-	{ id: "tested-out", label: "Skip the Basics", description: "Test out of the fundamentals.", icon: "⏭️" },
+	{ id: "tested-out", label: "Skip the Basics", description: "Place out of fundamentals and unlock the map.", icon: "⏭️" },
 	{ id: "flawless", label: "Clean Audit", description: "Finish a session with a perfect score.", icon: "✨" },
 	{ id: "daily-1", label: "Daily Briefing", description: "Complete a daily challenge.", icon: "📰" },
 	{ id: "daily-7", label: "Beltway Regular", description: "Complete 7 daily challenges.", icon: "🗞️" },

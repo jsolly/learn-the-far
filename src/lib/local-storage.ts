@@ -7,6 +7,7 @@ export function emptyProgress(): QuizProgress {
 		streak: { current: 0, longest: 0, lastDay: "" },
 		dailyDone: [],
 		testedOut: false,
+		fundamentalsUnlocked: false,
 		achievements: {},
 	};
 }

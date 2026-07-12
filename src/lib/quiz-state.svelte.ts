@@ -26,6 +26,7 @@ import type {
 	QuizProgress,
 	SessionMode,
 	SessionSummary,
+	StudyKind,
 	UnitStats,
 	View,
 } from "$lib/types";
@@ -92,6 +93,10 @@ function levelFor(ratio: number): LevelId {
 	return level;
 }
 
+function fundamentalsQuestions(): QuizQuestion[] {
+	return QUESTIONS.filter((q) => q.difficulty === "fundamentals");
+}
+
 export class QuizGame {
 	progress = $state<QuizProgress>(emptyProgress());
 	view = $state<View>("home");
@@ -99,9 +104,12 @@ export class QuizGame {
 	// active session
 	mode = $state<SessionMode>("unit");
 	activeUnit = $state<UnitId | null>(null);
+	studyKind = $state<StudyKind | null>(null);
 	queue = $state<string[]>([]);
 	outcomes = $state<AnswerOutcome[]>([]);
 	requeued = new Set<string>();
+	/** Cards already continued past in a study session (quiz outcomes stay empty). */
+	studyViewed = $state(0);
 
 	// current question interaction
 	answeredOptionId = $state<string | null>(null);
@@ -111,6 +119,24 @@ export class QuizGame {
 
 	constructor() {
 		this.progress = loadProgress();
+		this.ensureGateMigration();
+	}
+
+	/** Grandfather returning learners who already progressed past fundamentals. */
+	private ensureGateMigration() {
+		if (this.progress.fundamentalsUnlocked) return;
+		if (this.progress.testedOut || this.fundamentalsClearRatio >= TESTOUT_PASS) {
+			this.progress.fundamentalsUnlocked = true;
+			saveProgress(this.progress);
+			return;
+		}
+		const pastBasics = QUESTIONS.some(
+			(q) => q.difficulty !== "fundamentals" && this.isCleared(q.id),
+		);
+		if (pastBasics) {
+			this.progress.fundamentalsUnlocked = true;
+			saveProgress(this.progress);
+		}
 	}
 
 	private questionsIn(unitId: UnitId): QuizQuestion[] {
@@ -149,6 +175,37 @@ export class QuizGame {
 		return Math.round((cleared / total) * 100);
 	}
 
+	get fundamentalsClearRatio(): number {
+		const qs = fundamentalsQuestions();
+		if (qs.length === 0) return 1;
+		const cleared = qs.filter((q) => this.isCleared(q.id)).length;
+		return cleared / qs.length;
+	}
+
+	get fundamentalsPercent(): number {
+		return Math.round(this.fundamentalsClearRatio * 100);
+	}
+
+	get fundamentalsUnlocked(): boolean {
+		return this.progress.fundamentalsUnlocked;
+	}
+
+	/** Any fundamentals quiz attempt on record (enables gap study after first placement). */
+	get hasFundamentalsAttempt(): boolean {
+		return fundamentalsQuestions().some((q) => !!this.recordFor(q.id));
+	}
+
+	get fundamentalsGaps(): QuizQuestion[] {
+		return fundamentalsQuestions().filter((q) => !this.isCleared(q.id));
+	}
+
+	get shakyQuestions(): QuizQuestion[] {
+		return QUESTIONS.filter((q) => {
+			const r = this.recordFor(q.id);
+			return !!r && !r.cleared;
+		});
+	}
+
 	get streak() {
 		return this.progress.streak;
 	}
@@ -157,12 +214,9 @@ export class QuizGame {
 		return this.progress.dailyDone.includes(today());
 	}
 
-	get canTestOut(): boolean {
-		if (this.progress.testedOut) return false;
-		const fundamentals = QUESTIONS.filter((q) => q.difficulty === "fundamentals");
-		if (fundamentals.length === 0) return false;
-		// only offer while there's something to skip
-		return fundamentals.some((q) => !this.isCleared(q.id));
+	/** Placement / retest CTA while the hard gate is closed. */
+	get needsFundamentalsPlacement(): boolean {
+		return !this.fundamentalsUnlocked;
 	}
 
 	// Fundamentals and Core are open from the start (so no unit ever serves a
@@ -194,6 +248,7 @@ export class QuizGame {
 	// ---- session lifecycle ----
 
 	startUnit(unitId: UnitId) {
+		if (!this.fundamentalsUnlocked) return;
 		const unlocked = this.unlockedTiers(unitId);
 		const qs = this.questionsIn(unitId).filter((q) => unlocked.has(q.difficulty));
 		// uncleared first, ordered by difficulty ramp; fall back to a review shuffle
@@ -206,23 +261,57 @@ export class QuizGame {
 	}
 
 	startDaily() {
+		if (!this.fundamentalsUnlocked) return;
 		const rng = mulberry32(hashSeed(`daily-${today()}`));
 		const picks = shuffle(QUESTIONS, rng).slice(0, DAILY_LENGTH);
 		this.beginSession("daily", null, picks);
 	}
 
+	/** Fundamentals placement or retest — only quiz path while gated. */
 	startTestOut() {
-		const fundamentals = QUESTIONS.filter((q) => q.difficulty === "fundamentals");
-		const picks = shuffle(fundamentals).slice(0, TESTOUT_LENGTH);
+		const fundamentals = fundamentalsQuestions();
+		const weak = shuffle(fundamentals.filter((q) => !this.isCleared(q.id)));
+		const strong = shuffle(fundamentals.filter((q) => this.isCleared(q.id)));
+		const picks = [...weak, ...strong].slice(0, Math.min(TESTOUT_LENGTH, fundamentals.length));
 		this.beginSession("testout", null, picks);
 	}
 
-	private beginSession(mode: SessionMode, unitId: UnitId | null, questions: QuizQuestion[]) {
+	/** Reveal-first study of uncleared fundamentals (no progress writes). */
+	startStudyFundamentalsGaps() {
+		const gaps = this.fundamentalsGaps;
+		if (gaps.length === 0) return;
+		this.beginSession("study", null, gaps, "fundamentals-gaps");
+	}
+
+	/** Reveal-first walkthrough of a unit after the gate opens. */
+	startStudyUnit(unitId: UnitId) {
+		if (!this.fundamentalsUnlocked) return;
+		const qs = this.questionsIn(unitId);
+		if (qs.length === 0) return;
+		this.beginSession("study", unitId, qs, "unit");
+	}
+
+	/** Reveal-first study of quiz misses (attempted, not cleared). */
+	startStudyMisses() {
+		if (!this.fundamentalsUnlocked) return;
+		const misses = this.shakyQuestions;
+		if (misses.length === 0) return;
+		this.beginSession("study", null, shuffle(misses).slice(0, SESSION_LENGTH), "misses");
+	}
+
+	private beginSession(
+		mode: SessionMode,
+		unitId: UnitId | null,
+		questions: QuizQuestion[],
+		studyKind: StudyKind | null = null,
+	) {
 		this.mode = mode;
 		this.activeUnit = unitId;
+		this.studyKind = studyKind;
 		this.queue = questions.map((q) => q.id);
 		this.outcomes = [];
 		this.requeued = new Set();
+		this.studyViewed = 0;
 		this.answeredOptionId = null;
 		this.pendingStake = null;
 		this.summary = null;
@@ -239,6 +328,10 @@ export class QuizGame {
 	}
 
 	get progressCount(): { done: number; total: number } {
+		if (this.mode === "study") {
+			const remaining = this.queue.length;
+			return { done: this.studyViewed, total: this.studyViewed + remaining };
+		}
 		// The current question sits at queue[0] even after it's answered, so once
 		// answered it must not be double-counted as "remaining". A wrong answer
 		// that requeues legitimately grows the total by one (an extra rep).
@@ -250,10 +343,17 @@ export class QuizGame {
 	// it's the last queued item AND it won't be requeued for a miss. Drives the
 	// Continue/Finish label so "Finish" never lies on a wrong final answer.
 	get willFinishAfterNext(): boolean {
+		if (this.mode === "study") return this.queue.length <= 1;
 		if (this.queue.length > 1) return false;
 		const q = this.currentQuestion;
 		const last = this.outcomes[this.outcomes.length - 1];
-		const willRequeue = !!q && !!last && !last.cleared && !this.requeued.has(q.id);
+		// Placement has no jail — a miss on the last card still ends the session.
+		const willRequeue =
+			this.mode !== "testout" &&
+			!!q &&
+			!!last &&
+			!last.cleared &&
+			!this.requeued.has(q.id);
 		return !willRequeue;
 	}
 
@@ -266,12 +366,21 @@ export class QuizGame {
 		return option.correct ? 1 : 0;
 	}
 
+	/** Best option for study-mode teaching stack (tiered best, else correct). */
+	bestOption(q: QuizQuestion) {
+		if (q.scoring === "tiered" || q.scoring === "reveal-tradeoff") {
+			return q.options.find((o) => o.tier === "best") ?? q.options[0];
+		}
+		return q.options.find((o) => o.correct) ?? q.options[0];
+	}
+
 	setStake(stake: ConfidenceStake) {
-		if (this.isAnswered) return;
+		if (this.mode === "study" || this.isAnswered) return;
 		this.pendingStake = stake;
 	}
 
 	answer(optionId: string) {
+		if (this.mode === "study") return;
 		const q = this.currentQuestion;
 		if (!q || this.isAnswered) return;
 		if (q.scoring === "confidence-bet" && !this.pendingStake) return; // must stake first
@@ -297,17 +406,34 @@ export class QuizGame {
 			cleared: (prev?.cleared ?? false) || cleared,
 			lastAt: new Date().toISOString(),
 		};
+		this.maybeUnlockFundamentals();
 		saveProgress(this.progress);
 	}
 
 	next() {
 		const q = this.currentQuestion;
 		if (!q) return;
+
+		if (this.mode === "study") {
+			this.studyViewed += 1;
+			this.queue = this.queue.slice(1);
+			if (this.queue.length === 0) {
+				this.finishSession();
+			}
+			return;
+		}
+
 		const last = this.outcomes[this.outcomes.length - 1];
 		this.queue = this.queue.slice(1);
 
-		// wrong-answer jail: requeue a missed question once, near the end
-		if (last && !last.cleared && !this.requeued.has(q.id)) {
+		// wrong-answer jail: requeue a missed question once, near the end.
+		// Placement/retest is a one-pass exam — no second look mid-test.
+		if (
+			this.mode !== "testout" &&
+			last &&
+			!last.cleared &&
+			!this.requeued.has(q.id)
+		) {
 			this.requeued.add(q.id);
 			this.queue = [...this.queue, q.id];
 		}
@@ -320,6 +446,14 @@ export class QuizGame {
 		}
 	}
 
+	/** Unlock when quiz-cleared fundamentals already meet the pass bar (incl. early exit). */
+	private maybeUnlockFundamentals(): boolean {
+		if (this.progress.fundamentalsUnlocked) return false;
+		if (this.fundamentalsClearRatio < TESTOUT_PASS) return false;
+		this.progress.fundamentalsUnlocked = true;
+		return true;
+	}
+
 	private grant(id: string, into: string[]) {
 		if (!this.progress.achievements[id]) {
 			this.progress.achievements[id] = new Date().toISOString();
@@ -327,8 +461,36 @@ export class QuizGame {
 		}
 	}
 
+	private creditAllFundamentals() {
+		for (const q of fundamentalsQuestions()) {
+			const prev = this.progress.questions[q.id];
+			this.progress.questions[q.id] = {
+				attempts: (prev?.attempts ?? 0) + 1,
+				bestScore: Math.max(prev?.bestScore ?? 0, 1),
+				cleared: true,
+				lastAt: new Date().toISOString(),
+			};
+		}
+	}
+
 	private finishSession() {
 		const newAchievements: string[] = [];
+		const unit = this.activeUnit ? UNITS.find((u) => u.id === this.activeUnit) : undefined;
+
+		if (this.mode === "study") {
+			this.summary = {
+				mode: "study",
+				unit: unit ?? undefined,
+				answered: this.studyViewed,
+				scoreSum: 0,
+				scorePct: 0,
+				perfect: false,
+				studyKind: this.studyKind ?? undefined,
+				newAchievements: [],
+			};
+			this.view = "summary";
+			return;
+		}
 
 		// One outcome per question, keeping the BEST attempt — the jail gives a
 		// second chance, so a wrong→right question should count as the learner's
@@ -344,25 +506,22 @@ export class QuizGame {
 		const scorePct = answered === 0 ? 0 : Math.round((scoreSum / answered) * 100);
 		const perfect = answered > 0 && uniqueOutcomes.every((o) => o.score >= 0.999);
 
-		// streak: any completed session marks today active
+		// streak: any completed quiz session marks today active (study does not)
 		this.markActive();
 
 		let passedTestOut: boolean | undefined;
+		let unlockedNow = false;
 		if (this.mode === "testout") {
 			passedTestOut = answered > 0 && scoreSum / answered >= TESTOUT_PASS;
 			if (passedTestOut) {
 				this.progress.testedOut = true;
-				// credit every fundamentals question so you start at Core
-				for (const q of QUESTIONS.filter((x) => x.difficulty === "fundamentals")) {
-					const prev = this.progress.questions[q.id];
-					this.progress.questions[q.id] = {
-						attempts: (prev?.attempts ?? 0) + 1,
-						bestScore: Math.max(prev?.bestScore ?? 0, 1),
-						cleared: true,
-						lastAt: new Date().toISOString(),
-					};
-				}
+				this.creditAllFundamentals();
 			}
+			const wasLocked = !this.progress.fundamentalsUnlocked;
+			if (passedTestOut || this.maybeUnlockFundamentals()) {
+				this.progress.fundamentalsUnlocked = true;
+			}
+			unlockedNow = wasLocked && this.progress.fundamentalsUnlocked;
 		}
 
 		if (this.mode === "daily" && !this.progress.dailyDone.includes(today())) {
@@ -373,7 +532,6 @@ export class QuizGame {
 		this.deriveAchievements(newAchievements);
 		saveProgress(this.progress);
 
-		const unit = this.activeUnit ? UNITS.find((u) => u.id === this.activeUnit) : undefined;
 		this.summary = {
 			mode: this.mode,
 			unit: unit ?? undefined,
@@ -382,6 +540,7 @@ export class QuizGame {
 			scorePct,
 			perfect,
 			passedTestOut,
+			unlockedNow: unlockedNow || undefined,
 			newAchievements,
 		};
 		this.view = "summary";
@@ -401,7 +560,9 @@ export class QuizGame {
 	}
 
 	private deriveAchievements(into: string[]) {
-		const anyCleared = Object.values(this.progress.questions).some((r) => r.cleared);
+		const anyCleared = Object.values(this.progress.questions).some(
+			(r: QuestionRecord) => r.cleared,
+		);
 		if (anyCleared) this.grant("first-clear", into);
 		if (this.progress.testedOut) this.grant("tested-out", into);
 
@@ -425,6 +586,8 @@ export class QuizGame {
 	}
 
 	goHome() {
+		this.maybeUnlockFundamentals();
+		saveProgress(this.progress);
 		this.view = "home";
 		this.summary = null;
 	}

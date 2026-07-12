@@ -4,15 +4,21 @@
 
 	type Props = {
 		stats: UnitStats[];
-		masteryPercent: number;
+		/** Center hub percentage (mastery when unlocked, fundamentals when gated). */
+		hubPercent: number;
+		hubLabel: string;
+		/** When true, slices are dimmed and not selectable (fundamentals hard gate). */
+		locked?: boolean;
 		onpick: (unitId: UnitId) => void;
 	};
 
-	let { stats, masteryPercent, onpick }: Props = $props();
+	let { stats, hubPercent, hubLabel, locked = false, onpick }: Props = $props();
 
 	const CX = 120;
 	const CY = 120;
-	const R = 112;
+	const OUTER_R = 112;
+	/** Must match the visible hub circle — fill grows from this edge outward. */
+	const HUB_R = 46;
 	const PAD_DEG = 2; // gap between slices
 
 	function polar(radius: number, angleDeg: number): [number, number] {
@@ -20,13 +26,21 @@
 		return [CX + radius * Math.cos(a), CY + radius * Math.sin(a)];
 	}
 
-	// A pie sector from the center out to `radius`, spanning a0..a1 degrees.
-	function sector(radius: number, a0: number, a1: number): string {
-		if (radius <= 0) return "";
-		const [x0, y0] = polar(radius, a0);
-		const [x1, y1] = polar(radius, a1);
+	/** Donut wedge between innerR and outerR spanning a0..a1 degrees. */
+	function ringSector(innerR: number, outerR: number, a0: number, a1: number): string {
+		if (outerR <= innerR + 0.5) return "";
+		const [ox0, oy0] = polar(outerR, a0);
+		const [ox1, oy1] = polar(outerR, a1);
+		const [ix0, iy0] = polar(innerR, a0);
+		const [ix1, iy1] = polar(innerR, a1);
 		const large = a1 - a0 > 180 ? 1 : 0;
-		return `M ${CX} ${CY} L ${x0} ${y0} A ${radius} ${radius} 0 ${large} 1 ${x1} ${y1} Z`;
+		return [
+			`M ${ox0} ${oy0}`,
+			`A ${outerR} ${outerR} 0 ${large} 1 ${ox1} ${oy1}`,
+			`L ${ix1} ${iy1}`,
+			`A ${innerR} ${innerR} 0 ${large} 0 ${ix0} ${iy0}`,
+			"Z",
+		].join(" ");
 	}
 
 	let slices = $derived(
@@ -34,17 +48,17 @@
 			const step = 360 / stats.length;
 			const a0 = i * step + PAD_DEG / 2;
 			const a1 = (i + 1) * step - PAD_DEG / 2;
-			const fillR = Math.max(0, R * s.ratio);
+			const band = OUTER_R - HUB_R;
+			const fillOuter = locked ? HUB_R : HUB_R + band * s.ratio;
 			const mid = (a0 + a1) / 2;
-			const [lx, ly] = polar(R * 0.66, mid);
+			const [lx, ly] = polar(HUB_R + band * 0.72, mid);
 			return {
 				id: s.unit.id,
 				label: s.unit.label,
 				hue: s.unit.hue,
 				ratio: s.ratio,
-				level: s.level,
-				track: sector(R, a0, a1),
-				fill: sector(fillR, a0, a1),
+				track: ringSector(HUB_R, OUTER_R, a0, a1),
+				fill: ringSector(HUB_R, fillOuter, a0, a1),
 				lx,
 				ly,
 			};
@@ -52,30 +66,43 @@
 	);
 </script>
 
-<div class="relative mx-auto aspect-square w-full max-w-[20rem]">
-	<svg viewBox="0 0 240 240" class="h-full w-full -rotate-0" role="group" aria-label="Mastery wheel">
+<div class="relative mx-auto aspect-square w-full max-w-[20rem]" class:opacity-80={locked}>
+	<svg
+		viewBox="0 0 240 240"
+		class="h-full w-full -rotate-0"
+		role="group"
+		aria-label={locked ? "Fundamentals gate — lifecycle locked" : "Mastery wheel"}
+	>
 		{#each slices as slice (slice.id)}
 			<g
 				role="button"
-				tabindex="0"
-				aria-label={`${slice.label}: ${Math.round(slice.ratio * 100)}% mastered`}
-				class="cursor-pointer outline-none focus-visible:[&_path]:stroke-foreground"
-				onclick={() => onpick(slice.id)}
+				tabindex={locked ? -1 : 0}
+				aria-label={locked
+					? `${slice.label}: unlock fundamentals first`
+					: `${slice.label}: ${Math.round(slice.ratio * 100)}% mastered`}
+				aria-disabled={locked}
+				class="outline-none focus-visible:[&_path]:stroke-foreground"
+				class:cursor-pointer={!locked}
+				class:cursor-not-allowed={locked}
+				onclick={() => {
+					if (!locked) onpick(slice.id);
+				}}
 				onkeydown={(e) => {
+					if (locked) return;
 					if (e.key === "Enter" || e.key === " ") {
 						e.preventDefault();
 						onpick(slice.id);
 					}
 				}}
 			>
-				<!-- track -->
+				<!-- empty track -->
 				<path
 					d={slice.track}
-					fill={`hsl(${slice.hue} 45% 50% / 0.14)`}
+					fill={`hsl(${slice.hue} 45% 50% / ${locked ? 0.08 : 0.14})`}
 					stroke="var(--color-background)"
 					stroke-width="2"
 				/>
-				<!-- fill -->
+				<!-- mastery fill: hub edge → outer rim -->
 				{#if slice.fill}
 					<path
 						d={slice.fill}
@@ -91,17 +118,28 @@
 					text-anchor="middle"
 					dominant-baseline="middle"
 					class="pointer-events-none select-none text-[9px] font-semibold"
-					fill={slice.level === "new" ? `hsl(${slice.hue} 40% 45%)` : "white"}
+					fill={`hsl(${slice.hue} 50% 28%)`}
+					stroke="var(--color-card)"
+					stroke-width="3"
+					paint-order="stroke fill"
+					opacity={locked ? 0.55 : 1}
 				>
 					{slice.label}
 				</text>
 			</g>
 		{/each}
 		<!-- center hub -->
-		<circle cx={CX} cy={CY} r="46" fill="var(--color-card)" stroke="var(--color-border)" stroke-width="2" />
+		<circle
+			cx={CX}
+			cy={CY}
+			r={HUB_R}
+			fill="var(--color-card)"
+			stroke={locked ? "hsl(210 70% 52%)" : "var(--color-border)"}
+			stroke-width="2"
+		/>
 	</svg>
 	<div class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-		<span class="text-2xl font-bold tabular-nums">{masteryPercent}%</span>
-		<span class="text-[0.65rem] uppercase tracking-wide text-muted-foreground">captured</span>
+		<span class="text-2xl font-bold tabular-nums">{hubPercent}%</span>
+		<span class="text-[0.65rem] uppercase tracking-wide text-muted-foreground">{hubLabel}</span>
 	</div>
 </div>
