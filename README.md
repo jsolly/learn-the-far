@@ -25,7 +25,7 @@ User progress is stored only in the browser with `localStorage`. There is no dat
 
 ## Hosting
 
-Production: https://learnthefar.com (Vercel, Git-connected to this repo).
+Production: <https://learnthefar.com> (Vercel, Git-connected to this repo).
 
 Vercel builds the app with `npm run build` and serves the generated `dist/` directory. The deployment settings are captured in `vercel.json`. Pushes to `main` trigger a production deploy automatically.
 
