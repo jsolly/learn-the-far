@@ -509,7 +509,7 @@ export const QUESTIONS: QuizQuestion[] = [
 		"id": "bid-no-bid-rule-of-two-trigger",
 		"unitId": "bid-no-bid",
 		"format": "recall",
-		"difficulty": "fundamentals",
+		"difficulty": "core",
 		"scoring": "single-best",
 		"prompt": "Under the \"rule of two\" (FAR 19.502-2), when must a contracting officer set aside an acquisition above the simplified acquisition threshold for small business?",
 		"options": [
@@ -877,7 +877,7 @@ export const QUESTIONS: QuizQuestion[] = [
 		"id": "team-gsa-cta-vs-prime-sub-privity",
 		"unitId": "team",
 		"format": "recall",
-		"difficulty": "fundamentals",
+		"difficulty": "core",
 		"scoring": "single-best",
 		"prompt": "In a GSA Schedules Contractor Team Arrangement (CTA), how does each team member's relationship to the Government differ from a FAR 9.6 prime/subcontractor team?",
 		"options": [
@@ -916,7 +916,7 @@ export const QUESTIONS: QuizQuestion[] = [
 		"id": "team-far-9601-two-forms",
 		"unitId": "team",
 		"format": "recall",
-		"difficulty": "fundamentals",
+		"difficulty": "core",
 		"scoring": "single-best",
 		"prompt": "Under FAR 9.601, a 'contractor team arrangement' can take which two forms?",
 		"options": [
@@ -955,7 +955,7 @@ export const QUESTIONS: QuizQuestion[] = [
 		"id": "team-losc-services-50-percent",
 		"unitId": "team",
 		"format": "recall",
-		"difficulty": "fundamentals",
+		"difficulty": "core",
 		"scoring": "single-best",
 		"prompt": "Under the Limitations on Subcontracting clause (FAR 52.219-14) for a small-business set-aside for SERVICES (except construction), how much work must the prime keep?",
 		"options": [
@@ -994,7 +994,7 @@ export const QUESTIONS: QuizQuestion[] = [
 		"id": "team-small-jv-size-rule",
 		"unitId": "team",
 		"format": "recall",
-		"difficulty": "fundamentals",
+		"difficulty": "core",
 		"scoring": "single-best",
 		"prompt": "For a joint venture to qualify as small for a small-business set-aside, what is the size requirement for its members?",
 		"options": [
@@ -1359,7 +1359,7 @@ export const QUESTIONS: QuizQuestion[] = [
 		"id": "win-protest-debrief-request-window",
 		"unitId": "win-protest",
 		"format": "recall",
-		"difficulty": "fundamentals",
+		"difficulty": "core",
 		"scoring": "single-best",
 		"prompt": "After losing a competitive award, your team wants a required post-award debriefing so you can see how you were scored. By when must you request it to be entitled to one?",
 		"options": [
@@ -1397,7 +1397,7 @@ export const QUESTIONS: QuizQuestion[] = [
 		"id": "win-protest-preaward-solicitation-defect",
 		"unitId": "win-protest",
 		"format": "recall",
-		"difficulty": "fundamentals",
+		"difficulty": "core",
 		"scoring": "single-best",
 		"prompt": "The RFP contains an evaluation criterion you believe is unduly restrictive and improper on its face. To keep a GAO protest of that solicitation defect timely, when must you file?",
 		"options": [
