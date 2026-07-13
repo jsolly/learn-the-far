@@ -71,14 +71,14 @@
 				{s.passedTestOut
 					? "Placement passed — lifecycle unlocked."
 					: unlockedByMastery
-						? "Lifecycle unlocked through Fundamentals mastery."
-						: "More Fundamentals are needed."}
+						? "Lifecycle unlocked through Basics mastery."
+						: "More Basics are needed."}
 			</h1>
 			<p class="text-muted-foreground">
 				{#if s.passedTestOut}
 					You scored {s.scorePct}%. Every lifecycle slice is now unlocked.
 				{:else if unlockedByMastery}
-					You scored {s.scorePct}%. Your cumulative cleared Fundamentals reached {TESTOUT_PASS_PERCENT}%,
+					You scored {s.scorePct}%. Your cumulative cleared Basics reached {TESTOUT_PASS_PERCENT}%,
 					so every lifecycle slice is now unlocked.
 				{:else}
 					You scored {s.scorePct}%. Score {TESTOUT_PASS_PERCENT}% or better to unlock the deal lifecycle.
@@ -139,7 +139,7 @@
 			{:else if s.mode === "testout" && unlockedByMastery}
 				<Button size="lg" onclick={() => game.goHome()}>Back to the chart</Button>
 			{:else if s.mode === "testout" && !s.passedTestOut}
-				<Button size="lg" onclick={() => game.startStudyUnit("fundamentals")}>Study Fundamentals</Button>
+				<Button size="lg" onclick={() => game.startStudyUnit("fundamentals")}>Study Basics</Button>
 				<Button size="lg" variant="outline" onclick={() => game.startTestOut()}>Try the test again</Button>
 				<Button size="lg" variant="ghost" onclick={() => game.goHome()}>Back to the chart</Button>
 			{:else if s.mode === "testout"}

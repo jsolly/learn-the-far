@@ -5,7 +5,7 @@ import type { Achievement, ConfidenceStake, Difficulty, OptionTier, ScoringMode,
 export const DIFFICULTY_ORDER: Difficulty[] = ["fundamentals", "core", "advanced"];
 
 export const DIFFICULTY_LABEL: Record<Difficulty, string> = {
-	fundamentals: "Fundamentals",
+	fundamentals: "Basics",
 	core: "Core",
 	advanced: "Advanced",
 };
@@ -13,7 +13,7 @@ export const DIFFICULTY_LABEL: Record<Difficulty, string> = {
 // Fraction of a difficulty tier you must clear before the next tier unlocks.
 export const TIER_UNLOCK_RATIO = 0.6;
 
-// Short Fundamentals test: one pass through a fixed-size sample.
+// Short Basics test: one pass through a fixed-size sample.
 export const TESTOUT_LENGTH = 8;
 export const TESTOUT_PASS = 0.8;
 

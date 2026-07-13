@@ -215,7 +215,7 @@
 	let wheelDescription = $derived(
 		[
 			locked
-				? `Mastery wheel — ${hubPercent}% captured. Fundamentals is available; clear 80% or pass the test to unlock lifecycle slices.`
+				? `Mastery wheel — ${hubPercent}% captured. Basics is available; clear 80% or pass the test to unlock lifecycle slices.`
 				: `Mastery wheel — ${hubPercent}% captured.`,
 			...stats.map((stat) => sliceSummary(stat)),
 		].join(" "),
