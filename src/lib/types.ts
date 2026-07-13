@@ -7,6 +7,8 @@ export type QuestionRecord = {
 	attempts: number;
 	bestScore: number; // 0..1
 	cleared: boolean;
+	/** Times the learner cleared this question (score >= CLEAR_THRESHOLD). */
+	correctCount: number;
 	lastAt: string; // ISO timestamp
 };
 
@@ -37,7 +39,13 @@ export type UnitStats = {
 	unit: LifecycleUnit;
 	total: number;
 	cleared: number;
-	ratio: number; // 0..1 — the pie slice fill
+	/** Cleared at least twice — solid pie tone. */
+	mastered: number;
+	/** Cleared once — lighter pie tone (still learning). */
+	learning: number;
+	ratio: number; // 0..1 — cleared / total (hub + level)
+	masteredRatio: number; // 0..1 — mastered / total
+	learningRatio: number; // 0..1 — learning / total
 	level: LevelId;
 	levelLabel: string;
 };

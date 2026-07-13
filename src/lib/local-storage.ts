@@ -29,7 +29,21 @@ export function loadProgress(): QuizProgress {
 
 		const parsed = JSON.parse(raw) as Partial<QuizProgress>;
 		// Merge onto a fresh shape so older/partial records stay valid.
-		return { ...emptyProgress(), ...parsed };
+		const progress = { ...emptyProgress(), ...parsed };
+		// Stamp correctCount on legacy records (cleared once → learning, not attempts-based).
+		const questions: QuizProgress["questions"] = {};
+		for (const [id, record] of Object.entries(progress.questions ?? {})) {
+			if (!record) continue;
+			const correctCount =
+				typeof record.correctCount === "number"
+					? record.correctCount
+					: record.cleared
+						? 1
+						: 0;
+			questions[id] = { ...record, correctCount };
+		}
+		progress.questions = questions;
+		return progress;
 	} catch {
 		return emptyProgress();
 	}
