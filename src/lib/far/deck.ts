@@ -8,65 +8,66 @@ import { TEAM_QUESTIONS } from "./deck/team";
 import { VEHICLE_QUESTIONS } from "./deck/vehicle";
 import { WIN_PROTEST_QUESTIONS } from "./deck/win-protest";
 
-// The eight lifecycle slices of the pie, in the order a deal is actually run.
+// The lifecycle slices of the pie, starting with Fundamentals (the knowledge
+// floor), then the deal stages in the order a capture is actually run.
 // hue drives each slice's color on the wheel.
 export const UNITS: LifecycleUnit[] = [
 	{
-		"id": "fundamentals",
-		"label": "Basics",
-		"title": "Fundamentals",
-		"blurb": "Learn the players, money, contract types, capture craft, and how to navigate the FAR.",
-		"hue": 96
+		id: "fundamentals",
+		label: "Basics",
+		title: "Master the Basics",
+		blurb: "Acronyms, vehicles, and FAR terms every Prime capture teammate should know cold.",
+		hue: 200,
 	},
 	{
-		"id": "find",
-		"label": "Find",
-		"title": "Find the Opportunity",
-		"blurb": "Spot the right notices and read the set-aside before anyone else.",
-		"hue": 210
+		id: "find",
+		label: "Find",
+		title: "Find the Opportunity",
+		blurb: "Spot the right notices and read the set-aside before anyone else.",
+		hue: 210,
 	},
 	{
-		"id": "shape",
-		"label": "Shape",
-		"title": "Shape the Requirement",
-		"blurb": "Influence the acquisition early — without tripping an OCI.",
-		"hue": 265
+		id: "shape",
+		label: "Shape",
+		title: "Shape the Requirement",
+		blurb: "Influence the acquisition early — without tripping an OCI.",
+		hue: 265,
 	},
 	{
-		"id": "bid-no-bid",
-		"label": "Bid?",
-		"title": "Bid / No-Bid",
-		"blurb": "Decide where you can actually win before you spend B&P.",
-		"hue": 22
+		id: "bid-no-bid",
+		label: "Bid?",
+		title: "Bid / No-Bid",
+		blurb: "Decide where you can actually win before you spend B&P.",
+		hue: 22,
 	},
 	{
-		"id": "vehicle",
-		"label": "Vehicle",
-		"title": "Pick the Vehicle",
-		"blurb": "Schedule, IDIQ, GWAC, BPA, or open market — pick the lane.",
-		"hue": 158
+		id: "vehicle",
+		label: "Vehicle",
+		title: "Pick the Vehicle",
+		blurb: "Schedule, IDIQ, GWAC, BPA, or open market — pick the lane.",
+		hue: 158,
 	},
 	{
-		"id": "team",
-		"label": "Team",
-		"title": "Team & Subcontract",
-		"blurb": "CTAs, JVs, and the 50% rule — build a compliant winning team.",
-		"hue": 330
+		id: "team",
+		label: "Team",
+		title: "Team & Subcontract",
+		blurb: "CTAs, JVs, and the 50% rule — build a compliant winning team.",
+		hue: 330,
 	},
 	{
-		"id": "propose",
-		"label": "Propose",
-		"title": "Write the Proposal",
-		"blurb": "Answer Section L, win on Section M, stay responsive.",
-		"hue": 44
+		id: "propose",
+		label: "Propose",
+		title: "Write the Proposal",
+		blurb: "Answer Section L, win on Section M, stay responsive.",
+		hue: 44,
 	},
 	{
-		"id": "win-protest",
-		"label": "Win",
-		"title": "Win & Protest",
-		"blurb": "Debriefings, protests, and the CICA stay clock.",
-		"hue": 4
-	}
+		id: "win-protest",
+		label: "Win",
+		title: "Win & Protest",
+		blurb: "Debriefings, protests, and the CICA stay clock.",
+		hue: 4,
+	},
 ];
 
 // Authored + adversarially fact-checked against the FAR by a subagent fleet,

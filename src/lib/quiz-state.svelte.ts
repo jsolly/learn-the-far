@@ -13,9 +13,10 @@ import {
 	DIFFICULTY_ORDER,
 	LEVELS,
 	type LevelId,
+	PLACEMENT_MAX,
+	PLACEMENT_WRONG_LIMIT,
 	SESSION_LENGTH,
 	STREAK_MILESTONES,
-	TESTOUT_LENGTH,
 	TESTOUT_PASS,
 	TIER_SCORE,
 	TIER_UNLOCK_RATIO,
@@ -30,6 +31,7 @@ import type {
 	UnitStats,
 	View,
 } from "$lib/types";
+import { SvelteDate, SvelteMap, SvelteSet } from "svelte/reactivity";
 
 // ---- date + rng helpers (browser-only; no workflow constraints here) ----
 
@@ -49,7 +51,7 @@ function today(): string {
 
 function isYesterday(prevDay: string, ref: string): boolean {
 	// Parse ref at local noon so the -1 day step can't be swallowed by a DST shift.
-	const d = new Date(`${ref}T12:00:00`);
+	const d = new SvelteDate(`${ref}T12:00:00`);
 	d.setDate(d.getDate() - 1);
 	return localDay(d) === prevDay;
 }
@@ -107,9 +109,11 @@ export class QuizGame {
 	studyKind = $state<StudyKind | null>(null);
 	queue = $state<string[]>([]);
 	outcomes = $state<AnswerOutcome[]>([]);
-	requeued = new Set<string>();
+	requeued = new SvelteSet<string>();
 	/** Cards already continued past in a study session (quiz outcomes stay empty). */
 	studyViewed = $state(0);
+	/** Remaining ids for adaptive placement (fundamentals, then core stretch). */
+	placementDeck: string[] = [];
 
 	// current question interaction
 	answeredOptionId = $state<string | null>(null);
@@ -190,13 +194,30 @@ export class QuizGame {
 		return this.progress.fundamentalsUnlocked;
 	}
 
+	/** Whether the learner has any persisted progress worth resetting. */
+	get hasProgress(): boolean {
+		const { questions, dailyDone, testedOut, fundamentalsUnlocked, achievements, streak } =
+			this.progress;
+		return (
+			Object.keys(questions ?? {}).length > 0 ||
+			(dailyDone?.length ?? 0) > 0 ||
+			Boolean(testedOut) ||
+			Boolean(fundamentalsUnlocked) ||
+			Object.keys(achievements ?? {}).length > 0 ||
+			Boolean(streak?.current || streak?.longest || streak?.lastDay)
+		);
+	}
+
 	/** Any fundamentals quiz attempt on record (enables gap study after first placement). */
 	get hasFundamentalsAttempt(): boolean {
 		return fundamentalsQuestions().some((q) => !!this.recordFor(q.id));
 	}
 
 	get fundamentalsGaps(): QuizQuestion[] {
-		return fundamentalsQuestions().filter((q) => !this.isCleared(q.id));
+		return fundamentalsQuestions().filter((q) => {
+			const r = this.recordFor(q.id);
+			return !!r && !r.cleared;
+		});
 	}
 
 	get shakyQuestions(): QuizQuestion[] {
@@ -219,12 +240,27 @@ export class QuizGame {
 		return !this.fundamentalsUnlocked;
 	}
 
+	private placementWrongCount(): number {
+		return this.outcomes.filter((o) => !o.cleared).length;
+	}
+
+	/** After the current answered card, should adaptive placement end? */
+	private placementShouldStopAfterCurrent(): boolean {
+		if (this.mode !== "testout" || !this.isAnswered) return false;
+		const last = this.outcomes[this.outcomes.length - 1];
+		const wrongs = this.placementWrongCount();
+		if (last && !last.cleared && wrongs >= PLACEMENT_WRONG_LIMIT) return true;
+		if (this.outcomes.length >= PLACEMENT_MAX) return true;
+		if (this.placementDeck.length === 0) return true;
+		return false;
+	}
+
 	// Fundamentals and Core are open from the start (so no unit ever serves a
 	// thin one-question session); Advanced unlocks once most of this unit's Core
 	// is cleared. Difficulty still ramps because sessions lead with the easiest
 	// uncleared tier — see startUnit and workingTier.
 	unlockedTiers(unitId: UnitId): Set<Difficulty> {
-		const unlocked = new Set<Difficulty>(["fundamentals", "core"]);
+		const unlocked = new SvelteSet<Difficulty>(["fundamentals", "core"]);
 		const core = this.questionsIn(unitId).filter((q) => q.difficulty === "core");
 		const clearedCore = core.filter((q) => this.isCleared(q.id)).length;
 		const coreRatio = core.length === 0 ? 1 : clearedCore / core.length;
@@ -267,13 +303,16 @@ export class QuizGame {
 		this.beginSession("daily", null, picks);
 	}
 
-	/** Fundamentals placement or retest — only quiz path while gated. */
+	/** Adaptive placement — keep going while correct; stop after too many misses. */
 	startTestOut() {
 		const fundamentals = fundamentalsQuestions();
 		const weak = shuffle(fundamentals.filter((q) => !this.isCleared(q.id)));
 		const strong = shuffle(fundamentals.filter((q) => this.isCleared(q.id)));
-		const picks = [...weak, ...strong].slice(0, Math.min(TESTOUT_LENGTH, fundamentals.length));
-		this.beginSession("testout", null, picks);
+		const core = shuffle(QUESTIONS.filter((q) => q.difficulty === "core"));
+		this.placementDeck = [...weak, ...strong, ...core].map((q) => q.id);
+		const firstId = this.placementDeck.shift();
+		const first = firstId ? QUESTIONS.find((q) => q.id === firstId) : undefined;
+		this.beginSession("testout", null, first ? [first] : []);
 	}
 
 	/** Reveal-first study of uncleared fundamentals (no progress writes). */
@@ -310,8 +349,9 @@ export class QuizGame {
 		this.studyKind = studyKind;
 		this.queue = questions.map((q) => q.id);
 		this.outcomes = [];
-		this.requeued = new Set();
+		this.requeued = new SvelteSet();
 		this.studyViewed = 0;
+		if (mode !== "testout") this.placementDeck = [];
 		this.answeredOptionId = null;
 		this.pendingStake = null;
 		this.summary = null;
@@ -332,6 +372,10 @@ export class QuizGame {
 			const remaining = this.queue.length;
 			return { done: this.studyViewed, total: this.studyViewed + remaining };
 		}
+		if (this.mode === "testout") {
+			// Adaptive length — show current question index as "Q N".
+			return { done: this.outcomes.length + (this.isAnswered ? 0 : 1), total: 0 };
+		}
 		// The current question sits at queue[0] even after it's answered, so once
 		// answered it must not be double-counted as "remaining". A wrong answer
 		// that requeues legitimately grows the total by one (an extra rep).
@@ -344,16 +388,11 @@ export class QuizGame {
 	// Continue/Finish label so "Finish" never lies on a wrong final answer.
 	get willFinishAfterNext(): boolean {
 		if (this.mode === "study") return this.queue.length <= 1;
+		if (this.mode === "testout") return this.placementShouldStopAfterCurrent();
 		if (this.queue.length > 1) return false;
 		const q = this.currentQuestion;
 		const last = this.outcomes[this.outcomes.length - 1];
-		// Placement has no jail — a miss on the last card still ends the session.
-		const willRequeue =
-			this.mode !== "testout" &&
-			!!q &&
-			!!last &&
-			!last.cleared &&
-			!this.requeued.has(q.id);
+		const willRequeue = !!q && !!last && !last.cleared && !this.requeued.has(q.id);
 		return !willRequeue;
 	}
 
@@ -404,9 +443,12 @@ export class QuizGame {
 			attempts: (prev?.attempts ?? 0) + 1,
 			bestScore: Math.max(prev?.bestScore ?? 0, score),
 			cleared: (prev?.cleared ?? false) || cleared,
-			lastAt: new Date().toISOString(),
+			lastAt: new SvelteDate().toISOString(),
 		};
-		this.maybeUnlockFundamentals();
+		// Placement unlocks only when the diagnostic finishes — not mid-session via ratio.
+		if (this.mode !== "testout") {
+			this.maybeUnlockFundamentals();
+		}
 		saveProgress(this.progress);
 	}
 
@@ -423,17 +465,32 @@ export class QuizGame {
 			return;
 		}
 
+		if (this.mode === "testout") {
+			const stop = this.placementShouldStopAfterCurrent();
+			this.queue = this.queue.slice(1);
+			this.answeredOptionId = null;
+			this.pendingStake = null;
+
+			if (stop) {
+				this.placementDeck = [];
+				this.finishSession();
+				return;
+			}
+
+			const nextId = this.placementDeck.shift();
+			if (nextId) {
+				this.queue = [nextId];
+			} else {
+				this.finishSession();
+			}
+			return;
+		}
+
 		const last = this.outcomes[this.outcomes.length - 1];
 		this.queue = this.queue.slice(1);
 
 		// wrong-answer jail: requeue a missed question once, near the end.
-		// Placement/retest is a one-pass exam — no second look mid-test.
-		if (
-			this.mode !== "testout" &&
-			last &&
-			!last.cleared &&
-			!this.requeued.has(q.id)
-		) {
+		if (last && !last.cleared && !this.requeued.has(q.id)) {
 			this.requeued.add(q.id);
 			this.queue = [...this.queue, q.id];
 		}
@@ -446,17 +503,19 @@ export class QuizGame {
 		}
 	}
 
-	/** Unlock when quiz-cleared fundamentals already meet the pass bar (incl. early exit). */
+	/** Unlock after clearing 80% of the Fundamentals slice. */
 	private maybeUnlockFundamentals(): boolean {
 		if (this.progress.fundamentalsUnlocked) return false;
-		if (this.fundamentalsClearRatio < TESTOUT_PASS) return false;
-		this.progress.fundamentalsUnlocked = true;
-		return true;
+		if (this.progress.testedOut || this.fundamentalsClearRatio >= TESTOUT_PASS) {
+			this.progress.fundamentalsUnlocked = true;
+			return true;
+		}
+		return false;
 	}
 
 	private grant(id: string, into: string[]) {
 		if (!this.progress.achievements[id]) {
-			this.progress.achievements[id] = new Date().toISOString();
+			this.progress.achievements[id] = new SvelteDate().toISOString();
 			into.push(id);
 		}
 	}
@@ -468,7 +527,7 @@ export class QuizGame {
 				attempts: (prev?.attempts ?? 0) + 1,
 				bestScore: Math.max(prev?.bestScore ?? 0, 1),
 				cleared: true,
-				lastAt: new Date().toISOString(),
+				lastAt: new SvelteDate().toISOString(),
 			};
 		}
 	}
@@ -495,7 +554,7 @@ export class QuizGame {
 		// One outcome per question, keeping the BEST attempt — the jail gives a
 		// second chance, so a wrong→right question should count as the learner's
 		// win for the score %, the flawless achievement, and the test-out gate.
-		const bestByQuestion = new Map<string, AnswerOutcome>();
+		const bestByQuestion = new SvelteMap<string, AnswerOutcome>();
 		for (const o of this.outcomes) {
 			const prior = bestByQuestion.get(o.questionId);
 			if (!prior || o.score > prior.score) bestByQuestion.set(o.questionId, o);
@@ -513,15 +572,16 @@ export class QuizGame {
 		let unlockedNow = false;
 		if (this.mode === "testout") {
 			passedTestOut = answered > 0 && scoreSum / answered >= TESTOUT_PASS;
+			const wasLocked = !this.progress.fundamentalsUnlocked;
 			if (passedTestOut) {
 				this.progress.testedOut = true;
 				this.creditAllFundamentals();
 			}
-			const wasLocked = !this.progress.fundamentalsUnlocked;
 			if (passedTestOut || this.maybeUnlockFundamentals()) {
 				this.progress.fundamentalsUnlocked = true;
 			}
 			unlockedNow = wasLocked && this.progress.fundamentalsUnlocked;
+			this.placementDeck = [];
 		}
 
 		if (this.mode === "daily" && !this.progress.dailyDone.includes(today())) {
@@ -582,7 +642,7 @@ export class QuizGame {
 	}
 
 	get earnedAchievements(): Set<string> {
-		return new Set(Object.keys(this.progress.achievements));
+		return new SvelteSet(Object.keys(this.progress.achievements));
 	}
 
 	goHome() {

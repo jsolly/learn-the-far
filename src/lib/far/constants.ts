@@ -13,9 +13,13 @@ export const DIFFICULTY_LABEL: Record<Difficulty, string> = {
 // Fraction of a difficulty tier you must clear before the next tier unlocks.
 export const TIER_UNLOCK_RATIO = 0.6;
 
-// Test-out: a placement run of fundamentals sampled across units. Score at or
-// above this and every fundamentals question is credited so you start at Core.
-export const TESTOUT_LENGTH = 8;
+// Placement: adaptive diagnostic — keep going while correct, stop after too many
+// misses. Completing the session unlocks the chart (no score bar).
+export const PLACEMENT_WRONG_LIMIT = 2;
+/** Cap if they keep getting answers right (fundamentals, then core stretch). */
+export const PLACEMENT_MAX = 12;
+
+// Legacy threshold — only used to grandfather older localStorage progress.
 export const TESTOUT_PASS = 0.8;
 
 // Daily challenge: a date-seeded mixed set; completing it feeds the streak.
@@ -81,7 +85,12 @@ export const STREAK_MILESTONES = [3, 7, 14, 30];
 // few ids are computed (per-unit "prime-<unitId>", "streak-<n>").
 export const ACHIEVEMENTS: Achievement[] = [
 	{ id: "first-clear", label: "First Blood", description: "Clear your first question.", icon: "🎯" },
-	{ id: "tested-out", label: "Skip the Basics", description: "Place out of fundamentals and unlock the map.", icon: "⏭️" },
+	{
+		id: "tested-out",
+		label: "Initial Assessment",
+		description: "Complete the initial knowledge assessment.",
+		icon: "🧭",
+	},
 	{ id: "flawless", label: "Clean Audit", description: "Finish a session with a perfect score.", icon: "✨" },
 	{ id: "daily-1", label: "Daily Briefing", description: "Complete a daily challenge.", icon: "📰" },
 	{ id: "daily-7", label: "Beltway Regular", description: "Complete 7 daily challenges.", icon: "🗞️" },

@@ -1,3 +1,1 @@
-import type { QuizQuestion } from "../types";
-
-export const FUNDAMENTALS_QUESTIONS: QuizQuestion[] = [];
+export { FUNDAMENTALS_QUESTIONS } from "../fundamentals-questions";
