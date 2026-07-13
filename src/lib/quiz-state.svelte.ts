@@ -214,7 +214,10 @@ export class QuizGame {
 	}
 
 	get fundamentalsGaps(): QuizQuestion[] {
-		return fundamentalsQuestions().filter((q) => !this.isCleared(q.id));
+		return fundamentalsQuestions().filter((q) => {
+			const r = this.recordFor(q.id);
+			return !!r && !r.cleared;
+		});
 	}
 
 	get shakyQuestions(): QuizQuestion[] {
@@ -370,8 +373,8 @@ export class QuizGame {
 			return { done: this.studyViewed, total: this.studyViewed + remaining };
 		}
 		if (this.mode === "testout") {
-			// Adaptive length — UI shows "Q N" when total is 0.
-			return { done: this.outcomes.length + (this.isAnswered ? 1 : 0), total: 0 };
+			// Adaptive length — show current question index as "Q N".
+			return { done: this.outcomes.length + (this.isAnswered ? 0 : 1), total: 0 };
 		}
 		// The current question sits at queue[0] even after it's answered, so once
 		// answered it must not be double-counted as "remaining". A wrong answer
@@ -442,7 +445,10 @@ export class QuizGame {
 			cleared: (prev?.cleared ?? false) || cleared,
 			lastAt: new SvelteDate().toISOString(),
 		};
-		this.maybeUnlockFundamentals();
+		// Placement unlocks only when the diagnostic finishes — not mid-session via ratio.
+		if (this.mode !== "testout") {
+			this.maybeUnlockFundamentals();
+		}
 		saveProgress(this.progress);
 	}
 

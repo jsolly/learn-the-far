@@ -54,15 +54,17 @@
 			<div class="text-sm font-medium uppercase tracking-wide text-muted-foreground">
 				{s.mode === "daily" ? "Daily challenge" : s.unit?.title}
 			</div>
-			<div
-				class="flex size-36 items-center justify-center rounded-full p-3"
-				style={`background: conic-gradient(hsl(${s.unit?.hue ?? 210} 70% 52%) ${s.scorePct}%, var(--color-muted) 0);`}
-				aria-hidden="true"
-			>
-				<span
-					class="flex size-full items-center justify-center rounded-full bg-background text-3xl font-bold tabular-nums tracking-tight"
+			<div class="relative flex size-36 items-center justify-center">
+				<div
+					class="absolute inset-0 rounded-full p-3"
+					style={`background: conic-gradient(hsl(${s.unit?.hue ?? 210} 70% 52%) ${s.scorePct}%, var(--color-muted) 0);`}
+					aria-hidden="true"
 				>
+					<span class="block size-full rounded-full bg-background"></span>
+				</div>
+				<span class="relative text-3xl font-bold tabular-nums tracking-tight">
 					{s.scorePct}%
+					<span class="sr-only"> score</span>
 				</span>
 			</div>
 			<h1 class="text-2xl font-bold">{headline(s.scorePct)}</h1>

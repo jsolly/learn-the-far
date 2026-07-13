@@ -12,7 +12,7 @@
 	let studying = $derived(game.mode === "study");
 	let unit = $derived(q ? UNITS.find((u) => u.id === q.unitId) : undefined);
 	let counts = $derived(game.progressCount);
-	let adaptive = $derived(game.mode === "testout" && counts.total === 0);
+	let adaptive = $derived(game.mode === "testout");
 	let pct = $derived(
 		adaptive ? 0 : counts.total === 0 ? 0 : Math.round((counts.done / counts.total) * 100),
 	);
