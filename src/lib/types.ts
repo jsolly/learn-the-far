@@ -8,7 +8,7 @@ export type QuestionRecord = {
 	bestScore: number; // 0..1
 	cleared: boolean;
 	/** Times the learner cleared this question (score >= CLEAR_THRESHOLD). */
-	correctCount?: number;
+	correctCount: number;
 	lastAt: string; // ISO timestamp
 };
 

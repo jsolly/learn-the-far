@@ -135,13 +135,9 @@ export class QuizGame {
 		return this.recordFor(id)?.cleared ?? false;
 	}
 
-	/** How many times this question has been cleared (legacy records inferred). */
+	/** How many times this question has been cleared. */
 	private timesCorrect(id: string): number {
-		const r = this.recordFor(id);
-		if (!r?.cleared) return 0;
-		if (typeof r.correctCount === "number") return r.correctCount;
-		// Pre-correctCount records: multi-attempt clears count as mastered.
-		return (r.attempts ?? 0) >= MASTERED_CORRECT_COUNT ? MASTERED_CORRECT_COUNT : 1;
+		return this.recordFor(id)?.correctCount ?? 0;
 	}
 
 	private isMastered(id: string): boolean {
@@ -405,19 +401,11 @@ export class QuizGame {
 
 	private persistOutcome(outcome: AnswerOutcome) {
 		const prev = this.progress.questions[outcome.questionId];
-		const prevCorrect =
-			typeof prev?.correctCount === "number"
-				? prev.correctCount
-				: prev?.cleared
-					? (prev.attempts ?? 0) >= MASTERED_CORRECT_COUNT
-						? MASTERED_CORRECT_COUNT
-						: 1
-					: 0;
 		this.progress.questions[outcome.questionId] = {
 			attempts: (prev?.attempts ?? 0) + 1,
 			bestScore: Math.max(prev?.bestScore ?? 0, outcome.score),
 			cleared: (prev?.cleared ?? false) || outcome.cleared,
-			correctCount: prevCorrect + (outcome.cleared ? 1 : 0),
+			correctCount: (prev?.correctCount ?? 0) + (outcome.cleared ? 1 : 0),
 			lastAt: new SvelteDate().toISOString(),
 		};
 	}
@@ -523,19 +511,11 @@ export class QuizGame {
 	private creditAllFundamentals() {
 		for (const q of fundamentalsQuestions()) {
 			const prev = this.progress.questions[q.id];
-			const prevCorrect =
-				typeof prev?.correctCount === "number"
-					? prev.correctCount
-					: prev?.cleared
-						? (prev.attempts ?? 0) >= MASTERED_CORRECT_COUNT
-							? MASTERED_CORRECT_COUNT
-							: 1
-						: 0;
 			this.progress.questions[q.id] = {
 				attempts: (prev?.attempts ?? 0) + 1,
 				bestScore: Math.max(prev?.bestScore ?? 0, 1),
 				cleared: true,
-				correctCount: Math.max(prevCorrect + 1, MASTERED_CORRECT_COUNT),
+				correctCount: Math.max((prev?.correctCount ?? 0) + 1, MASTERED_CORRECT_COUNT),
 				lastAt: new SvelteDate().toISOString(),
 			};
 		}
