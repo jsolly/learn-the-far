@@ -11,7 +11,7 @@
 
 	type Props = {
 		stats: UnitStats[];
-		/** When true, lifecycle slices are dimmed; Fundamentals stays selectable. */
+		/** When true, lifecycle slices are dimmed; Basics stays selectable. */
 		locked?: boolean;
 		onpick: (unitId: UnitId) => void;
 	};
@@ -39,7 +39,7 @@
 
 	function sliceLabel(stat: UnitStats, isLocked = locked): string {
 		return sliceIsLocked(stat.unit.id, isLocked)
-			? `${stat.unit.label}: complete Fundamentals to unlock`
+			? `${stat.unit.label}: complete Basics to unlock`
 			: `${stat.unit.label}: ${Math.round(clampRatio(stat.ratio) * 100)}% mastered`;
 	}
 
@@ -74,7 +74,8 @@
 			emphasis: {
 				scale: true,
 				scaleSize: HOVER_SCALE_SIZE,
-				focus: "self",
+				// Locked mode already dims lifecycle slices — don't also blur siblings on hover.
+				focus: isLocked ? "none" : "self",
 				itemStyle: {
 					shadowBlur: 12,
 					shadowOffsetX: 0,
@@ -82,21 +83,25 @@
 				},
 			},
 			blur: {
-				itemStyle: { opacity: isLocked ? 0.2 : 0.35 },
+				itemStyle: { opacity: 0.35 },
 			},
 			data: currentStats.map((stat) => {
 				const dimmed = sliceIsLocked(stat.unit.id, isLocked);
 				return {
 					value: 1,
 					name: stat.unit.label,
+					cursor: dimmed ? "not-allowed" : "pointer",
 					itemStyle: {
 						color: `hsla(${stat.unit.hue}, 45%, 50%, ${dimmed ? 0.08 : 0.14})`,
 					},
-					emphasis: {
-						itemStyle: {
-							color: `hsla(${stat.unit.hue}, 55%, 48%, ${dimmed ? 0.32 : 0.5})`,
-						},
-					},
+					// Locked slices stay dim — no hover brighten that fights the locked look.
+					emphasis: dimmed
+						? { disabled: true }
+						: {
+								itemStyle: {
+									color: `hsla(${stat.unit.hue}, 55%, 48%, 0.5)`,
+								},
+							},
 				};
 			}),
 		};
@@ -145,15 +150,14 @@
 				show: true,
 				position: "inside",
 				formatter: "{b}",
-				color: "#111827",
-				backgroundColor: "#f9fafb",
-				borderColor: "rgba(17, 24, 39, 0.35)",
-				borderWidth: 1,
-				borderRadius: 5,
-				padding: [3, 6],
+				// Pale pastel slices already contrast with dark type — no chip or outline needed.
+				color: "#0f172a",
+				backgroundColor: "transparent",
+				borderWidth: 0,
+				padding: 0,
 				fontFamily: "Inter Variable, Inter, sans-serif",
 				fontSize: chartLabelFontSize(chartWidth),
-				fontWeight: 600,
+				fontWeight: 700,
 			},
 			labelLayout: { hideOverlap: false },
 			labelLine: { show: false },
@@ -232,7 +236,7 @@
 	class="relative mx-auto aspect-square w-full max-w-[20rem] sm:max-w-[26rem] lg:max-w-[28rem]"
 	role="group"
 	aria-label={locked
-		? "Mastery wheel — Fundamentals is available; clear 80% or pass the test to unlock lifecycle slices"
+		? "Mastery wheel — Basics is available; clear 80% or pass the test to unlock lifecycle slices"
 		: "Mastery wheel"}
 >
 	<div class="absolute inset-0 h-full w-full" aria-hidden="true" {@attach attachChart}></div>
