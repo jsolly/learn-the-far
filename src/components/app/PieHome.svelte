@@ -39,7 +39,7 @@
 				{@attach capturePageHeading}
 				data-home-heading
 				tabindex="-1"
-				class="rounded-sm text-xl font-bold tracking-tight focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 sm:text-2xl lg:text-[1.75rem]"
+				class="text-xl font-bold tracking-tight outline-none sm:text-2xl lg:text-[1.75rem]"
 			>
 				Learn The FAR
 			</h1>
@@ -67,17 +67,17 @@
 		<section class="mt-4 rounded-2xl border-2 border-primary/30 bg-card p-4 sm:mt-6 sm:p-6">
 			<h2 class="text-sm font-semibold leading-snug sm:text-lg">Unlock the deal lifecycle</h2>
 			<p class="mt-1 text-xs leading-5 text-muted-foreground sm:mt-2 sm:text-sm sm:leading-6">
-				Learn the Fundamentals at your pace, or take a short {TESTOUT_LENGTH}-question test.
+				Learn the Basics at your pace, or take a short {TESTOUT_LENGTH}-question test.
 				Score {Math.round(TESTOUT_PASS * 100)}% or better to unlock every lifecycle slice.
 			</p>
 			{#if game.hasFundamentalsAttempt}
 				<p class="mt-2 text-[0.65rem] tabular-nums text-muted-foreground sm:mt-3 sm:text-xs">
-					{game.fundamentalsPercent}% of Fundamentals cleared
+					{game.fundamentalsPercent}% of Basics cleared
 				</p>
 			{/if}
 			<div class="mt-4 grid gap-2 sm:mt-5 sm:grid-cols-2 sm:gap-3">
 				<Button size="lg" class="sm:h-11 sm:text-base" onclick={() => game.startUnit("fundamentals")}>
-					Quiz Fundamentals
+					Quiz Basics
 				</Button>
 				<Button
 					size="lg"
@@ -85,7 +85,7 @@
 					class="sm:h-11 sm:text-base"
 					onclick={() => game.startStudyUnit("fundamentals")}
 				>
-					Study Fundamentals
+					Study Basics
 				</Button>
 			</div>
 			<div class="mt-2 flex flex-col gap-2 sm:mt-3 sm:gap-3">
@@ -95,7 +95,7 @@
 					class="w-full sm:h-11 sm:text-base"
 					onclick={() => game.startTestOut()}
 				>
-					Take the Fundamentals test
+					Take the Basics test
 				</Button>
 				{#if game.hasFundamentalsAttempt && game.fundamentalsGaps.length > 0}
 					<Button
@@ -152,22 +152,37 @@
 	<h2
 		class="mb-2 mt-6 text-xs font-semibold uppercase tracking-wide text-muted-foreground sm:mb-3 sm:mt-8 sm:text-sm"
 	>
-		Fundamentals & capture slices
+		Basics & capture slices
 	</h2>
 	<div class="flex flex-col gap-2 sm:gap-3">
 		{#each stats as s (s.unit.id)}
 			{@const lifecycleLocked = game.isUnitLocked(s.unit.id)}
-			<div class="rounded-2xl border-2 border-border bg-card p-3 sm:p-4 lg:p-5">
+			<div
+				class={`rounded-2xl border-2 p-3 sm:p-4 lg:p-5 ${
+					lifecycleLocked
+						? "border-border/50 bg-muted/40 opacity-60"
+						: "border-border bg-card"
+				}`}
+				aria-disabled={lifecycleLocked ? "true" : undefined}
+			>
 				<div class="flex items-start gap-3 sm:gap-4">
 					<span
-						class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white sm:h-12 sm:w-12 sm:text-base"
-						style={`background:hsl(${s.unit.hue} 70% 27%)`}
+						class={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold sm:h-12 sm:w-12 sm:text-base ${
+							lifecycleLocked ? "bg-muted-foreground/35 text-muted-foreground" : "text-white"
+						}`}
+						style={lifecycleLocked ? undefined : `background:hsl(${s.unit.hue} 70% 27%)`}
 					>
 						{Math.round(s.ratio * 100)}%
 					</span>
 					<div class="min-w-0 flex-1">
 						<div class="flex flex-wrap items-center gap-2 sm:gap-x-3">
-							<h3 class="font-semibold leading-tight sm:text-lg">{s.unit.title}</h3>
+							<h3
+								class={`font-semibold leading-tight sm:text-lg ${
+									lifecycleLocked ? "text-muted-foreground" : ""
+								}`}
+							>
+								{s.unit.title}
+							</h3>
 							{#if lifecycleLocked}
 								<Badge variant="secondary" class="shrink-0 text-[0.65rem] sm:text-xs">Locked</Badge>
 							{:else if s.level !== "new"}
@@ -177,7 +192,7 @@
 							{/if}
 							{#if lifecycleLocked}
 								<span class="text-[0.65rem] text-muted-foreground sm:text-xs">
-									Complete Fundamentals to unlock
+									Complete Basics to unlock
 								</span>
 							{:else if game.workingTier(s.unit.id) === "advanced"}
 								<span class="text-[0.65rem] text-muted-foreground sm:text-xs">
@@ -186,13 +201,14 @@
 							{/if}
 						</div>
 						<p class="mt-0.5 text-xs text-muted-foreground sm:text-sm">{s.unit.blurb}</p>
-						<div
-							class="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-muted sm:mt-2 sm:h-2"
-							class:opacity-50={lifecycleLocked}
-						>
+						<div class="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-muted sm:mt-2 sm:h-2">
 							<div
-								class="h-full rounded-full transition-all"
-								style={`width:${s.ratio * 100}%; background:hsl(${s.unit.hue} 70% 52%)`}
+								class={`h-full rounded-full transition-all ${
+									lifecycleLocked ? "bg-muted-foreground/30" : ""
+								}`}
+								style={lifecycleLocked
+									? `width:${s.ratio * 100}%`
+									: `width:${s.ratio * 100}%; background:hsl(${s.unit.hue} 70% 52%)`}
 							></div>
 						</div>
 					</div>
