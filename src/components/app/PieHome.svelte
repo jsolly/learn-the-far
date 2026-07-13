@@ -9,8 +9,6 @@
 	let gated = $derived(game.needsFundamentalsPlacement);
 	let confirmReset = $state(false);
 	let passPct = $derived(Math.round(TESTOUT_PASS * 100));
-	let hubPercent = $derived(gated ? game.fundamentalsPercent : game.masteryPercent);
-	let hubLabel = $derived(gated ? "fundamentals" : "captured");
 </script>
 
 <div class="mx-auto w-full max-w-xl px-4 pb-16 pt-5">
@@ -32,20 +30,15 @@
 	</header>
 
 	<div class="mt-4">
-		<PieWheel
-			{stats}
-			{hubPercent}
-			{hubLabel}
-			locked={gated}
-			onpick={(id) => game.startUnit(id)}
-		/>
+		<PieWheel {stats} {gated} onpick={(id) => game.startUnit(id)} />
 	</div>
 
 	{#if gated}
 		<section class="mt-4 rounded-2xl border-2 border-primary/30 bg-card p-4">
-			<h2 class="text-sm font-semibold leading-snug">Fundamentals</h2>
+			<h2 class="text-sm font-semibold leading-snug">Unlock the deal lifecycle</h2>
 			<p class="mt-1 text-xs leading-5 text-muted-foreground">
-				Pass a short test to unlock the rest of the capture map.
+				Learn the Fundamentals at your pace, or pass a short placement test to unlock the
+				rest of the capture map.
 			</p>
 			<div class="mt-3 h-2 w-full overflow-hidden rounded-full bg-muted">
 				<div
@@ -56,9 +49,21 @@
 			<p class="mt-1 text-[0.65rem] tabular-nums text-muted-foreground">
 				{game.fundamentalsPercent}% · need {passPct}% to continue
 			</p>
-			<div class="mt-4 flex flex-col gap-2">
-				<Button size="lg" class="w-full" onclick={() => game.startTestOut()}>
-					{game.hasFundamentalsAttempt ? "Try again" : "Start the test"}
+			<div class="mt-4 grid gap-2 sm:grid-cols-2">
+				<Button size="lg" onclick={() => game.startUnit("fundamentals")}>
+					Quiz Fundamentals
+				</Button>
+				<Button
+					size="lg"
+					variant="outline"
+					onclick={() => game.startStudyUnit("fundamentals")}
+				>
+					Study Fundamentals
+				</Button>
+			</div>
+			<div class="mt-2 flex flex-col gap-2">
+				<Button size="lg" variant="secondary" class="w-full" onclick={() => game.startTestOut()}>
+					{game.hasFundamentalsAttempt ? "Retake placement test" : "Take placement test"}
 				</Button>
 				{#if game.hasFundamentalsAttempt && game.fundamentalsGaps.length > 0}
 					<Button
@@ -107,13 +112,18 @@
 				</button>
 			{/if}
 		</div>
+	{/if}
 
-		<h2 class="mb-2 mt-6 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-			The deal lifecycle
-		</h2>
-		<div class="flex flex-col gap-2">
-			{#each stats as s (s.unit.id)}
-				<div class="rounded-2xl border-2 border-border bg-card p-3">
+	<h2 class="mb-2 mt-6 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+		Fundamentals & the deal lifecycle
+	</h2>
+	<div class="flex flex-col gap-2">
+		{#each stats as s (s.unit.id)}
+			{@const lifecycleLocked = gated && s.unit.id !== "fundamentals"}
+				<div
+					class="rounded-2xl border-2 border-border bg-card p-3 transition-opacity"
+					class:opacity-50={lifecycleLocked}
+				>
 					<div class="flex items-start gap-3">
 						<span
 							class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white"
@@ -124,11 +134,15 @@
 						<div class="min-w-0 flex-1">
 							<div class="flex flex-wrap items-center gap-2">
 								<p class="font-semibold leading-tight">{s.unit.title}</p>
-								{#if s.level !== "new"}
+								{#if lifecycleLocked}
+									<Badge variant="secondary" class="shrink-0 text-[0.65rem]">Locked</Badge>
+								{:else if s.level !== "new"}
 									<Badge variant="secondary" class="shrink-0 text-[0.65rem]">{s.levelLabel}</Badge>
 								{/if}
 								<span class="text-[0.65rem] text-muted-foreground">
-									{DIFFICULTY_LABEL[game.workingTier(s.unit.id)]}
+									{lifecycleLocked
+										? "Complete Fundamentals to unlock"
+										: DIFFICULTY_LABEL[game.workingTier(s.unit.id)]}
 								</span>
 							</div>
 							<p class="mt-0.5 text-xs text-muted-foreground">{s.unit.blurb}</p>
@@ -141,13 +155,19 @@
 						</div>
 					</div>
 					<div class="mt-3 flex gap-2">
-						<Button class="flex-1" size="sm" onclick={() => game.startUnit(s.unit.id)}>
+						<Button
+							class="flex-1"
+							size="sm"
+							disabled={lifecycleLocked}
+							onclick={() => game.startUnit(s.unit.id)}
+						>
 							Quiz me
 						</Button>
 						<Button
 							class="flex-1"
 							size="sm"
 							variant="outline"
+							disabled={lifecycleLocked}
 							onclick={() => game.startStudyUnit(s.unit.id)}
 						>
 							Study this
@@ -156,7 +176,6 @@
 				</div>
 			{/each}
 		</div>
-	{/if}
 
 	<div class="mt-8 flex justify-center">
 		{#if confirmReset}

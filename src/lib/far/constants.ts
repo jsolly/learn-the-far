@@ -37,7 +37,7 @@ export const LEVELS = [
 	{ id: "new", label: "New", min: 0 },
 	{ id: "apprentice", label: "Apprentice", min: 0.0001 },
 	{ id: "journeyman", label: "Journeyman", min: 0.5 },
-	{ id: "prime", label: "Prime", min: 0.999 },
+	{ id: "prime", label: "Prime", min: 0.9 },
 ] as const;
 
 export type LevelId = (typeof LEVELS)[number]["id"];

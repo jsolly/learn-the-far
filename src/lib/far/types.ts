@@ -1,5 +1,6 @@
-// The seven lifecycle units are the pie slices, the skill tree, and the nav.
+// The eight lifecycle units are the pie slices, the skill tree, and the nav.
 export type UnitId =
+	| "fundamentals"
 	| "find"
 	| "shape"
 	| "bid-no-bid"

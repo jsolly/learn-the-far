@@ -94,7 +94,7 @@ function levelFor(ratio: number): LevelId {
 }
 
 function fundamentalsQuestions(): QuizQuestion[] {
-	return QUESTIONS.filter((q) => q.difficulty === "fundamentals");
+	return QUESTIONS.filter((q) => q.unitId === "fundamentals");
 }
 
 export class QuizGame {
@@ -131,7 +131,7 @@ export class QuizGame {
 			return;
 		}
 		const pastBasics = QUESTIONS.some(
-			(q) => q.difficulty !== "fundamentals" && this.isCleared(q.id),
+			(q) => q.unitId !== "fundamentals" && this.isCleared(q.id),
 		);
 		if (pastBasics) {
 			this.progress.fundamentalsUnlocked = true;
@@ -248,7 +248,7 @@ export class QuizGame {
 	// ---- session lifecycle ----
 
 	startUnit(unitId: UnitId) {
-		if (!this.fundamentalsUnlocked) return;
+		if (!this.fundamentalsUnlocked && unitId !== "fundamentals") return;
 		const unlocked = this.unlockedTiers(unitId);
 		const qs = this.questionsIn(unitId).filter((q) => unlocked.has(q.difficulty));
 		// uncleared first, ordered by difficulty ramp; fall back to a review shuffle
@@ -283,9 +283,9 @@ export class QuizGame {
 		this.beginSession("study", null, gaps, "fundamentals-gaps");
 	}
 
-	/** Reveal-first walkthrough of a unit after the gate opens. */
+	/** Reveal-first walkthrough (Fundamentals remains available while gated). */
 	startStudyUnit(unitId: UnitId) {
-		if (!this.fundamentalsUnlocked) return;
+		if (!this.fundamentalsUnlocked && unitId !== "fundamentals") return;
 		const qs = this.questionsIn(unitId);
 		if (qs.length === 0) return;
 		this.beginSession("study", unitId, qs, "unit");
