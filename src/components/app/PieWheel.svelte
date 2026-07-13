@@ -11,9 +11,6 @@
 
 	type Props = {
 		stats: UnitStats[];
-		/** Center hub percentage (overall mastery). */
-		hubPercent: number;
-		hubLabel: string;
 		/** When true, lifecycle slices are dimmed; Fundamentals stays selectable. */
 		locked?: boolean;
 		onpick: (unitId: UnitId) => void;
@@ -21,7 +18,6 @@
 
 	type WheelOption = ComposeOption<PieSeriesOption | TooltipComponentOption>;
 
-	const INNER_RADIUS = 39;
 	/** Leave room for emphasis.scaleSize so hover can grow without clipping. */
 	const OUTER_RADIUS = 88;
 	const PAD_ANGLE = 2;
@@ -31,18 +27,18 @@
 
 	use([PieChart, TooltipComponent, LabelLayout, SVGRenderer]);
 
-	let { stats, hubPercent, hubLabel, locked = false, onpick }: Props = $props();
+	let { stats, locked = false, onpick }: Props = $props();
 
 	function clampRatio(ratio: number): number {
 		return Math.min(1, Math.max(0, ratio));
 	}
 
-	function sliceIsLocked(unitId: UnitId): boolean {
-		return locked && unitId !== "fundamentals";
+	function sliceIsLocked(unitId: UnitId, isLocked = locked): boolean {
+		return isLocked && unitId !== "fundamentals";
 	}
 
-	function sliceLabel(stat: UnitStats): string {
-		return sliceIsLocked(stat.unit.id)
+	function sliceLabel(stat: UnitStats, isLocked = locked): string {
+		return sliceIsLocked(stat.unit.id, isLocked)
 			? `${stat.unit.label}: complete Fundamentals to unlock`
 			: `${stat.unit.label}: ${Math.round(clampRatio(stat.ratio) * 100)}% mastered`;
 	}
@@ -67,7 +63,7 @@
 		const track: PieSeriesOption = {
 			...pieGeometry,
 			id: TRACK_SERIES_ID,
-			radius: [`${INNER_RADIUS}%`, `${OUTER_RADIUS}%`],
+			radius: ["0%", `${OUTER_RADIUS}%`],
 			// Keep hover live while locked; click handler gates lifecycle slices.
 			silent: false,
 			cursor: "pointer",
@@ -89,7 +85,7 @@
 				itemStyle: { opacity: isLocked ? 0.2 : 0.35 },
 			},
 			data: currentStats.map((stat) => {
-				const dimmed = sliceIsLocked(stat.unit.id);
+				const dimmed = sliceIsLocked(stat.unit.id, isLocked);
 				return {
 					value: 1,
 					name: stat.unit.label,
@@ -109,15 +105,13 @@
 			(stat, progressIndex): PieSeriesOption[] => {
 				const ratio = clampRatio(stat.ratio);
 				if (ratio === 0) return [];
+				const dimmed = sliceIsLocked(stat.unit.id, isLocked);
 
 				return [
 					{
 						...pieGeometry,
 						id: `wheel-progress-${stat.unit.id}`,
-						radius: [
-							`${INNER_RADIUS}%`,
-							`${INNER_RADIUS + (OUTER_RADIUS - INNER_RADIUS) * ratio}%`,
-						],
+						radius: ["0%", `${OUTER_RADIUS * ratio}%`],
 						silent: true,
 						z: 2,
 						label: { show: false },
@@ -130,7 +124,7 @@
 							itemStyle: {
 								color:
 									sliceIndex === progressIndex
-										? `hsl(${stat.unit.hue}, 70%, 52%)`
+										? `hsla(${stat.unit.hue}, 70%, 52%, ${dimmed ? 0.18 : 1})`
 										: "transparent",
 							},
 						})),
@@ -142,7 +136,7 @@
 		const labels: PieSeriesOption = {
 			...pieGeometry,
 			id: LABEL_SERIES_ID,
-			radius: [`${INNER_RADIUS}%`, `${OUTER_RADIUS}%`],
+			radius: ["0%", `${OUTER_RADIUS}%`],
 			silent: true,
 			z: 3,
 			avoidLabelOverlap: false,
@@ -151,28 +145,23 @@
 				show: true,
 				position: "inside",
 				formatter: "{b}",
+				color: "#111827",
+				backgroundColor: "#f9fafb",
+				borderColor: "rgba(17, 24, 39, 0.35)",
+				borderWidth: 1,
+				borderRadius: 5,
+				padding: [3, 6],
 				fontFamily: "Inter Variable, Inter, sans-serif",
 				fontSize: chartLabelFontSize(chartWidth),
 				fontWeight: 600,
 			},
 			labelLayout: { hideOverlap: false },
 			labelLine: { show: false },
-			data: currentStats.map((stat) => {
-				const progressCoversLabel = clampRatio(stat.ratio) >= 0.5;
-				return {
-					value: 1,
-					name: stat.unit.label,
-					itemStyle: { color: "transparent" },
-					label: {
-						color: progressCoversLabel ? "#fff" : `hsl(${stat.unit.hue}, 50%, 28%)`,
-						opacity: isLocked ? 0.55 : 1,
-						textBorderColor: progressCoversLabel
-							? `hsl(${stat.unit.hue}, 70%, 36%)`
-							: "var(--color-card)",
-						textBorderWidth: 3,
-					},
-				};
-			}),
+			data: currentStats.map((stat) => ({
+				value: 1,
+				name: stat.unit.label,
+				itemStyle: { color: "transparent" },
+			})),
 		};
 
 		return {
@@ -192,7 +181,7 @@
 						return "";
 					}
 					const stat = currentStats[params.dataIndex];
-					return stat ? sliceLabel(stat) : "";
+					return stat ? sliceLabel(stat, isLocked) : "";
 				},
 			},
 			series: [track, ...progress, labels],
@@ -240,27 +229,13 @@
 </script>
 
 <div
-	class={[
-		"relative mx-auto aspect-square w-full max-w-[20rem] sm:max-w-[26rem] lg:max-w-[28rem]",
-		locked && "opacity-80",
-	]}
+	class="relative mx-auto aspect-square w-full max-w-[20rem] sm:max-w-[26rem] lg:max-w-[28rem]"
 	role="group"
 	aria-label={locked
-		? "Capture chart — Fundamentals is open; finish assessing to unlock the rest"
+		? "Mastery wheel — Fundamentals is available; clear 80% or pass the test to unlock lifecycle slices"
 		: "Mastery wheel"}
 >
 	<div class="absolute inset-0 h-full w-full" aria-hidden="true" {@attach attachChart}></div>
-
-	<div
-		class="pointer-events-none absolute left-1/2 top-1/2 z-10 flex aspect-square w-[39%] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full border-2 bg-card"
-		style:border-color={locked ? "hsl(210 70% 52%)" : "var(--color-border)"}
-	>
-		<span class="text-2xl font-bold tabular-nums sm:text-3xl lg:text-4xl">{hubPercent}%</span>
-		<span
-			class="text-[0.65rem] uppercase tracking-wide text-muted-foreground sm:text-xs lg:text-sm"
-			>{hubLabel}</span
-		>
-	</div>
 
 	<div class="pointer-events-none absolute inset-0 z-20">
 		{#each stats as stat (stat.unit.id)}
@@ -290,6 +265,7 @@
 	}
 
 	.slice-control:focus-visible {
+		pointer-events: auto;
 		left: 50%;
 		bottom: 0.75rem;
 		z-index: 1;

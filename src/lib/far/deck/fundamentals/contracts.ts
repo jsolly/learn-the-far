@@ -150,35 +150,35 @@ export const CONTRACT_FUNDAMENTALS: QuizQuestion[] = [
 		difficulty: "core",
 		scoring: "tiered",
 		situation:
-			"You are the capture manager for a services requirement expected under OASIS+, a multiple-award IDIQ. A teammate calls it a 'delivery order' and assumes the agency can simply send it to the incumbent.",
-		prompt: "How should you frame the opportunity?",
+			"A new contracts analyst is labeling two individual requirements under an IDIQ: one buys cybersecurity support services, and the other buys network appliances.",
+		prompt: "Which vocabulary should the analyst use?",
 		options: [
 			{
 				id: "a",
-				text: "Treat services as a task order and plan for fair-opportunity consideration among eligible holders, while checking the solicitation and any documented exception",
+				text: "Call the cybersecurity-services requirement a task order and the network-appliance requirement a delivery order",
 				tier: "best",
 			},
 			{
 				id: "b",
-				text: "Confirm the ordering guide and holder pool before spending heavily, but defer the task-versus-delivery distinction until the order is released",
+				text: "For a genuinely mixed requirement, identify whether its principal object is supplies or services and confirm the order label with the contracting officer",
 				tier: "defensible",
 			},
 			{
 				id: "c",
-				text: "Assume the incumbent receives the order automatically because it performed the predecessor work",
+				text: "Call both actions delivery orders because a contractor will deliver an outcome under each one",
 				tier: "costly",
 			},
 			{
 				id: "d",
-				text: "Market the work as a delivery order for supplies and tell the agency that fair opportunity never applies on a multiple-award IDIQ",
+				text: "Reverse the labels: services are delivery orders and supplies are task orders",
 				tier: "disqualifying",
 			},
 		],
 		explanation:
-			"A task order is for services; a delivery order is for supplies. On a multiple-award contract, each eligible holder generally receives a fair opportunity to be considered for an order, subject to statutory and regulatory exceptions. Incumbency alone is not an exception, so capture should identify the correct pool and compete at order level.",
-		citation: "FAR 2.101; FAR 16.505(b)(1)",
-		sourceUrl: "https://www.acquisition.gov/far/16.505",
-		tags: ["task-order", "delivery-order", "fair-opportunity", "OASIS+", "capture"],
+			"FAR 2.101 defines a task order as an order for services and a delivery order as an order for supplies. Both are orders for individual requirements placed under an indefinite-delivery contract; the noun describes what the order buys, not whether the contractor delivers a result.",
+		citation: "FAR 2.101",
+		sourceUrl: "https://www.acquisition.gov/far/2.101",
+		tags: ["task-order", "delivery-order", "IDIQ", "contract-vocabulary"],
 	},
 	{
 		id: "fund-contracts-bpa-orders",
@@ -221,7 +221,7 @@ export const CONTRACT_FUNDAMENTALS: QuizQuestion[] = [
 		],
 		explanation:
 			"A BPA is a streamlined method for filling anticipated repetitive needs, not the same instrument as each call or order placed under it. A Schedule BPA sits against underlying MAS contracts, and the agency makes specific purchases through orders. Capture may track estimated value, but contracts and finance should not confuse that estimate with obligated backlog.",
-		citation: "FAR 8.405-3; FAR 13.303-1",
+		citation: "FAR 8.405-3",
 		sourceUrl: "https://www.acquisition.gov/far/8.405-3",
 		tags: ["BPA", "GSA-MAS", "orders", "backlog", "contracts"],
 	},
@@ -314,34 +314,34 @@ export const CONTRACT_FUNDAMENTALS: QuizQuestion[] = [
 		difficulty: "advanced",
 		scoring: "confidence-bet",
 		situation:
-			"You are supporting capture on a one-year base plus four one-year options. Section M says evaluated price is the total of the base and all options. The account plan schedules the recompete immediately after the base year because options are 'new contracts.'",
-		prompt: "Which planning assumption is strongest?",
+			"Your contract includes FAR 52.217-9. Before the base period expires, the contracting officer sends the preliminary written notice required by the contract stating that the agency intends to exercise the first option. No written notice exercising the option or option modification has arrived, but the account team wants to book the option and commit staff.",
+		prompt: "What is the strongest interpretation of the preliminary notice?",
 		options: [
 			{
 				id: "a",
-				text: "Price the full evaluated base-plus-options model, but treat option exercise as a Government choice and track the likely recompete near the end of the exercised performance horizon",
+				text: "It preserves the agency's ability to follow the option process but does not commit the Government; treat the option as unexercised until the contracting officer provides the actual written exercise within the contract's specified time",
 				correct: true,
 			},
 			{
 				id: "b",
-				text: "Price only the base year because evaluated options can never affect source selection",
+				text: "It is the actual option exercise because any written statement of intent extends the contract immediately",
 				correct: false,
 			},
 			{
 				id: "c",
-				text: "Assume all four options are automatic renewals that the contractor may exercise",
+				text: "It makes the option automatic unless the contractor rejects it before the base period expires",
 				correct: false,
 			},
 			{
 				id: "d",
-				text: "Treat each option as a mandatory full-and-open recompete immediately after the preceding period",
+				text: "It authorizes performance and billing in the option period even if the Government never sends a later written exercise notice",
 				correct: false,
 			},
 		],
 		explanation:
-			"When the solicitation evaluates options, the Government generally adds their total price to the basic requirement for evaluation, but that evaluation does not obligate exercise. The contracting officer later must determine that exercise satisfies the option rules. Pipeline timing should therefore monitor option decisions and acquisition planning rather than assume either an automatic five-year term or an annual recompete.",
-		citation: "FAR 17.206(a), 17.207",
-		sourceUrl: "https://www.acquisition.gov/far/17.206",
-		tags: ["base-period", "options", "evaluated-price", "recompete", "capture"],
+			"FAR 17.207(a) requires the contracting officer to exercise an option by written notice within the time specified in the contract. Under FAR 52.217-9, a required preliminary notice states intent and preserves the option process, but expressly does not commit the Government to an extension. Capture and delivery must distinguish that preliminary signal from the later written exercise that actually extends the term.",
+		citation: "FAR 17.207(a); FAR 52.217-9(a)",
+		sourceUrl: "https://www.acquisition.gov/far/52.217-9",
+		tags: ["base-period", "options", "preliminary-notice", "option-exercise", "capture"],
 	},
 ];

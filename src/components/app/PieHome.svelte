@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { tick } from "svelte";
+
 	import { game } from "$lib/quiz-state.svelte.js";
-	import { DIFFICULTY_LABEL } from "$lib/far/constants";
+	import { DIFFICULTY_LABEL, TESTOUT_LENGTH, TESTOUT_PASS } from "$lib/far/constants";
 	import PieWheel from "./PieWheel.svelte";
 	import { Button } from "$lib/components/ui/button";
 	import { Badge } from "$lib/components/ui/badge";
@@ -8,16 +10,24 @@
 	let stats = $derived(game.allStats);
 	let gated = $derived(game.needsFundamentalsPlacement);
 	let confirmReset = $state(false);
-	let hubPercent = $derived(game.masteryPercent);
-	let hubLabel = $derived("captured");
-	let resetButtonEl: HTMLElement | null = $state(null);
 	let confirmYesEl: HTMLElement | null = $state(null);
+	let resetButtonEl: HTMLElement | null = $state(null);
+	let pageHeadingEl: HTMLHeadingElement | null = null;
 
-	$effect(() => {
-		if (confirmReset) {
-			queueMicrotask(() => confirmYesEl?.focus());
-		}
-	});
+	function capturePageHeading(element: HTMLHeadingElement) {
+		pageHeadingEl = element;
+		return () => {
+			if (pageHeadingEl === element) pageHeadingEl = null;
+		};
+	}
+
+	async function finishResetConfirmation(reset: boolean) {
+		if (reset) game.resetProgress();
+		confirmReset = false;
+		await tick();
+		if (reset) pageHeadingEl?.focus();
+		else resetButtonEl?.focus();
+	}
 </script>
 
 <div
@@ -25,7 +35,14 @@
 >
 	<header class="flex items-center justify-between gap-3 sm:gap-5">
 		<div>
-			<h1 class="text-xl font-bold tracking-tight sm:text-2xl lg:text-[1.75rem]">Learn The FAR</h1>
+			<h1
+				{@attach capturePageHeading}
+				data-home-heading
+				tabindex="-1"
+				class="rounded-sm text-xl font-bold tracking-tight focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 sm:text-2xl lg:text-[1.75rem]"
+			>
+				Learn The FAR
+			</h1>
 			{#if !gated}
 				<p class="text-xs text-muted-foreground sm:text-sm">
 					A fun way to learn the FAR, one scenario at a time.
@@ -43,25 +60,19 @@
 	</header>
 
 	<div class="mt-4 sm:mt-6">
-		<PieWheel
-			{stats}
-			{hubPercent}
-			{hubLabel}
-			locked={gated}
-			onpick={(id) => game.startUnit(id)}
-		/>
+		<PieWheel {stats} locked={gated} onpick={(id) => game.startUnit(id)} />
 	</div>
 
 	{#if gated}
 		<section class="mt-4 rounded-2xl border-2 border-primary/30 bg-card p-4 sm:mt-6 sm:p-6">
 			<h2 class="text-sm font-semibold leading-snug sm:text-lg">Unlock the deal lifecycle</h2>
 			<p class="mt-1 text-xs leading-5 text-muted-foreground sm:mt-2 sm:text-sm sm:leading-6">
-				Learn the Fundamentals at your pace, or take a short placement test to seed your capture
-				chart.
+				Learn the Fundamentals at your pace, or take a short {TESTOUT_LENGTH}-question test.
+				Score {Math.round(TESTOUT_PASS * 100)}% or better to unlock every lifecycle slice.
 			</p>
 			{#if game.hasFundamentalsAttempt}
 				<p class="mt-2 text-[0.65rem] tabular-nums text-muted-foreground sm:mt-3 sm:text-xs">
-					{game.masteryPercent}% of the chart already filled from your answers
+					{game.fundamentalsPercent}% of Fundamentals cleared
 				</p>
 			{/if}
 			<div class="mt-4 grid gap-2 sm:mt-5 sm:grid-cols-2 sm:gap-3">
@@ -84,7 +95,7 @@
 					class="w-full sm:h-11 sm:text-base"
 					onclick={() => game.startTestOut()}
 				>
-					{game.hasFundamentalsAttempt ? "Continue placement" : "See what I know"}
+					Take the Fundamentals test
 				</Button>
 				{#if game.hasFundamentalsAttempt && game.fundamentalsGaps.length > 0}
 					<Button
@@ -150,8 +161,7 @@
 				<div class="flex items-start gap-3 sm:gap-4">
 					<span
 						class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white sm:h-12 sm:w-12 sm:text-base"
-						class:opacity-50={lifecycleLocked}
-						style={`background:hsl(${s.unit.hue} 70% 52%)`}
+						style={`background:hsl(${s.unit.hue} 70% 27%)`}
 					>
 						{Math.round(s.ratio * 100)}%
 					</span>
@@ -213,24 +223,24 @@
 	{#if game.hasProgress}
 		<div class="mt-8 flex justify-center sm:mt-10">
 			{#if confirmReset}
-				<div class="flex items-center gap-2 text-sm">
-					<span class="text-muted-foreground">Wipe all local progress?</span>
+				<div
+					role="group"
+					aria-labelledby="reset-confirmation-question"
+					class="flex flex-wrap items-center justify-center gap-2 text-sm"
+				>
+					<span id="reset-confirmation-question" class="w-full text-center text-muted-foreground">
+						Wipe all local quiz progress, streaks, and achievements?
+					</span>
 					<Button
 						bind:ref={confirmYesEl}
 						variant="destructive"
 						size="sm"
-						onclick={() => {
-							game.resetProgress();
-							confirmReset = false;
-						}}>Yes</Button
+						onclick={() => finishResetConfirmation(true)}>Yes, wipe progress</Button
 					>
 					<Button
 						variant="outline"
 						size="sm"
-						onclick={() => {
-							confirmReset = false;
-							queueMicrotask(() => resetButtonEl?.focus());
-						}}>No</Button
+						onclick={() => finishResetConfirmation(false)}>No, keep progress</Button
 					>
 				</div>
 			{:else}
@@ -239,7 +249,11 @@
 					variant="ghost"
 					size="sm"
 					class="text-muted-foreground"
-					onclick={() => (confirmReset = true)}
+					onclick={async () => {
+						confirmReset = true;
+						await tick();
+						confirmYesEl?.focus();
+					}}
 				>
 					Reset progress
 				</Button>

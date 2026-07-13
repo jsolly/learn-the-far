@@ -31,8 +31,8 @@ export const CRAFT_FUNDAMENTALS: QuizQuestion[] = [
 			}
 		],
 		explanation:
-			"Pwin supports investment and bid decisions; it is not a promise or a sales quota. A useful Pwin is traceable to current evidence about the customer, competition, solution, price, past performance, and ability to execute, and it changes when that evidence changes.",
-		citation: "Industry capture practice",
+			"Pwin supports investment and bid decisions; it is not a promise or a sales quota. A useful Pwin is traceable to current evidence about the customer, competition, solution, price, past performance, and ability to execute, and it changes when that evidence changes. Neither the FAR nor APMP prescribes one universal numeric Pwin formula; organizations must define and apply a documented method consistently.",
+		citation: "Industry capture practice; APMP Winning Business Ecosystem",
 		sourceUrl: "https://www.apmp.org/Web/Web/About-Us/Winning-Business-Ecosystem.aspx",
 		tags: ["pwin", "evidence", "decision-support", "capture"]
 	},
@@ -69,7 +69,7 @@ export const CRAFT_FUNDAMENTALS: QuizQuestion[] = [
 			"A cost estimate starts with the solution and predicts the resources and costs needed to deliver it. Price to win starts with the customer, evaluation method, budget, competitors, and likely trade space to estimate the position needed to win. Pricing leadership must reconcile the two; a winning target below executable cost is a warning to redesign or stop, not permission to invent savings.",
 		citation: "Industry capture practice",
 		sourceUrl:
-			"https://www.apmp.org/Common/Uploaded%20files/APMP/Certification/APMP-Practitioner-Capture-Practitioner-OTE-Preparation-Guide-V4.pdf",
+			"https://www.apmp.org/Common/Uploaded%20files/APMP/Certification/APMP%20Practitioner%20OTE%20Preparation%20Guide%202026%20-v3.pdf",
 		tags: ["price-to-win", "cost-estimate", "pricing", "strategy"]
 	},
 	{
@@ -121,7 +121,7 @@ export const CRAFT_FUNDAMENTALS: QuizQuestion[] = [
 		options: [
 			{
 				id: "a",
-				text: "Use the capture plan to record the hypothesis and strategy; use a call plan with objectives, questions, roles, boundaries, and follow-up to test it, then update the capture plan with sourced findings",
+				text: "Use the capture plan to record the hypothesis and strategy; use a common call-plan template covering objectives, questions, roles, boundaries, and follow-up to test it, then update the capture plan with sourced findings",
 				correct: true
 			},
 			{
@@ -141,10 +141,10 @@ export const CRAFT_FUNDAMENTALS: QuizQuestion[] = [
 			}
 		],
 		explanation:
-			"The capture plan is the living record of customer, competition, capability, strategy, actions, and evidence. A call plan prepares one purposeful interaction: desired outcomes, questions, participants, roles, legal boundaries, and follow-up. The call tests assumptions; its sourced results feed the broader capture plan rather than becoming an isolated contact report.",
-		citation: "Industry capture practice",
+			"The capture plan is the living record of customer, competition, capability, strategy, actions, and evidence. One common industry call-plan convention covers desired outcomes, questions, participants, roles, legal boundaries, and follow-up; it is a useful template, not a canonical APMP rule or FAR-required format. The call tests assumptions, and its sourced results feed the broader capture plan rather than becoming an isolated contact report.",
+		citation: "Common industry convention; APMP Practitioner OTE Preparation Guide v4.2 (2026)",
 		sourceUrl:
-			"https://www.apmp.org/Common/Uploaded%20files/APMP/Certification/APMP-Practitioner-Capture-Practitioner-OTE-Preparation-Guide-V4.pdf",
+			"https://www.apmp.org/Common/Uploaded%20files/APMP/Certification/APMP%20Practitioner%20OTE%20Preparation%20Guide%202026%20-v3.pdf",
 		tags: ["capture-plan", "call-plan", "customer-engagement", "evidence"]
 	},
 	{
@@ -159,7 +159,7 @@ export const CRAFT_FUNDAMENTALS: QuizQuestion[] = [
 		options: [
 			{
 				id: "a",
-				text: "Pink tests planned content and storyboards; Red evaluates a substantially complete proposal as the customer would; Gold confirms executive readiness, remaining risk, and authority to submit",
+				text: "Under one common review design, Pink tests planned content and storyboards; Red evaluates a substantially complete proposal as the customer would; Gold confirms executive readiness, remaining risk, and authority to submit",
 				tier: "best",
 				consequence:
 					"Each review answers a different maturity question, so authors receive useful feedback without treating every review as copyediting."
@@ -188,7 +188,7 @@ export const CRAFT_FUNDAMENTALS: QuizQuestion[] = [
 		],
 		explanation:
 			"Color names are industry conventions, not FAR mandates. The useful distinction is maturity and purpose: Pink validates planned content and approach early, Red assesses a near-complete proposal for compliance and persuasiveness from the evaluator's viewpoint, and Gold is a final executive readiness and risk decision—not a late rewrite or a waiver of RFP requirements.",
-		citation: "Industry capture practice",
+		citation: "Common industry review convention; APMP Winning Business Ecosystem",
 		sourceUrl: "https://www.apmp.org/Web/Web/About-Us/Winning-Business-Ecosystem.aspx",
 		tags: ["pink-team", "red-team", "gold-team", "proposal-review"]
 	},
@@ -200,7 +200,7 @@ export const CRAFT_FUNDAMENTALS: QuizQuestion[] = [
 		scoring: "confidence-bet",
 		situation:
 			"A proposal writer drafts this headline: 'We have 20 years of experience.' The capture record also shows your transition method cut service interruptions by 40% on three comparable civilian programs, while the likely incumbent lacks an integrated transition tool.",
-		prompt: "Which revision best turns the raw strength into a supported discriminator and customer-focused win theme while using ethical ghosting?",
+		prompt: "Which revision best turns the raw strength into a supported discriminator and customer-focused win theme while using supported indirect competitive positioning?",
 		options: [
 			{
 				id: "a",
@@ -224,10 +224,11 @@ export const CRAFT_FUNDAMENTALS: QuizQuestion[] = [
 			}
 		],
 		explanation:
-			"Experience alone is a strength. A discriminator is a relevant, supported difference competitors cannot readily claim. A win theme connects that difference and proof to a customer benefit. Ethical ghosting highlights a decision criterion or risk that favors your approach without naming or making unsupported claims about a competitor.",
-		citation: "Industry capture practice",
-		sourceUrl: "https://tv.apmp.org/Play?pId=4c2ce967-0aa1-42be-9198-814fedfc24a5",
-		tags: ["win-theme", "discriminator", "strength", "ghosting", "proof"]
+			"Experience alone is a strength. A discriminator is a relevant, supported difference competitors cannot readily claim. A win theme connects that difference and proof to a customer benefit. Supported indirect competitive positioning highlights a decision criterion or risk that favors your approach without naming a competitor or making unsupported claims about one.",
+		citation: "Industry capture practice; APMP Practitioner OTE Preparation Guide v4.2 (2026)",
+		sourceUrl:
+			"https://www.apmp.org/Common/Uploaded%20files/APMP/Certification/APMP%20Practitioner%20OTE%20Preparation%20Guide%202026%20-v3.pdf",
+		tags: ["win-theme", "discriminator", "strength", "competitive-positioning", "proof"]
 	},
 	{
 		id: "fund-craft-bp-vs-ird",
@@ -318,7 +319,7 @@ export const CRAFT_FUNDAMENTALS: QuizQuestion[] = [
 		difficulty: "advanced",
 		scoring: "reveal-tradeoff",
 		situation:
-			"You are the delivery executive at kickoff for a five-year civilian-agency services contract that is likely to be recompeted. The capture team has moved on, and the program manager proposes waiting until year four to assemble past-performance evidence.",
+			"You are the delivery executive at kickoff for a covered five-year civilian-agency services contract above the applicable CPARS reporting threshold, with no reporting exception, that is likely to be recompeted. The capture team has moved on, and the program manager proposes waiting until year four to assemble past-performance evidence.",
 		prompt: "What operating approach best treats CPARS as future capture currency?",
 		options: [
 			{
@@ -351,9 +352,9 @@ export const CRAFT_FUNDAMENTALS: QuizQuestion[] = [
 			}
 		],
 		explanation:
-			"FAR 42.1501 calls past performance relevant information for future source selections, and FAR 42.1502 requires evaluations at least annually and at completion, entered in CPARS. Delivery therefore creates future competitive evidence from day one. Managing outcomes, proof, relationships, and corrective action at kickoff is sound execution—not premature proposal writing.",
-		citation: "FAR 42.1501-42.1503",
-		sourceUrl: "https://www.acquisition.gov/far/subpart-42.15",
+			"FAR 42.1501 makes past performance relevant to future source selections. For covered contracts and orders above the applicable reporting threshold, FAR 42.1502 requires evaluations at least annually and at completion, entered in CPARS, subject to its contract-type, order, threshold, and reporting exceptions. Delivery therefore creates future competitive evidence from day one. Managing outcomes, proof, relationships, and corrective action at kickoff is sound execution—not premature proposal writing.",
+		citation: "FAR 42.1501; FAR 42.1502(a)-(h); FAR 42.1503",
+		sourceUrl: "https://www.acquisition.gov/far/42.1502",
 		tags: ["cpars", "past-performance", "recompete", "delivery", "kickoff"]
 	}
 ];

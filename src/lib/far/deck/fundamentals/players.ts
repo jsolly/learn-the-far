@@ -68,9 +68,9 @@ export const PLAYERS_FUNDAMENTALS: QuizQuestion[] = [
 			},
 		],
 		explanation:
-			"Government PMs and requiring-activity leaders may shape requirements, coordinate stakeholders, and oversee mission outcomes. Those responsibilities do not by themselves confer authority to enter into or change a contract. Confirm contractual direction through the contracting officer or another official whose written delegation covers the action; a PM could hold separate authority, but the PM title alone is not enough.",
-		citation: "FAR 1.602-1(a); FAR 15.303(c)",
-		sourceUrl: "https://www.acquisition.gov/far/1.602-1",
+			"FAR 15.201(c) recognizes the program manager as a participant in early acquisition exchanges, but a Government PM's exact duties are agency-specific. PMs and requiring-activity leaders may shape requirements, coordinate stakeholders, and oversee mission outcomes; those responsibilities and the PM title do not by themselves confer authority to enter into or change a contract. Confirm contractual direction through the contracting officer or another official whose written delegation covers the action.",
+		citation: "FAR 15.201(c); FAR 1.602-1(a)",
+		sourceUrl: "https://www.acquisition.gov/far/15.201",
 		tags: ["government-pm", "acquisition-authority", "requirements", "role-boundaries"],
 	},
 	{
@@ -126,7 +126,7 @@ export const PLAYERS_FUNDAMENTALS: QuizQuestion[] = [
 			},
 			{
 				id: "b",
-				text: "Ask the COR and contracting officer for immediate clarification, keep staff ready, and perform only the work already authorized by the contract",
+				text: "Decline the added work in a reply to the COR and ask the COR to obtain contracting-officer direction, while continuing only the work already authorized by the contract",
 				tier: "defensible",
 			},
 			{
@@ -264,43 +264,43 @@ export const PLAYERS_FUNDAMENTALS: QuizQuestion[] = [
 		difficulty: "advanced",
 		scoring: "reveal-tradeoff",
 		situation:
-			"You are the deputy capture manager after an adverse civilian-agency award. Counsel believes there is a strong evaluation error, all relevant filing windows remain open, and leadership prioritizes independent review plus the best available chance to pause performance without immediately entering full federal litigation.",
-		prompt: "Which path best fits those stated objectives?",
+			"A training slide says an agency protest, a GAO protest, and a Court of Federal Claims action are interchangeable reviews that all produce binding judicial orders.",
+		prompt: "Which correction accurately assigns each institution's authority and role?",
 		options: [
 			{
 				id: "a",
-				text: "File a timely protest at GAO and coordinate the stay strategy with counsel",
+				text: "The procuring agency decides an agency-level protest and may take corrective action; GAO provides an independent administrative forum that issues recommendations and generally decides within 100 days; COFC exercises judicial bid-protest authority and may award declaratory or injunctive relief",
 				tier: "best",
 				consequence:
-					"GAO provides independent administrative review, and a filing that meets the statutory timing rules can trigger a performance suspension, subject to the agency's limited override authority.",
+					"The slide now distinguishes an internal executive-agency process, GAO's recommendation-based forum, and a court empowered to issue judicial relief.",
 			},
 			{
 				id: "b",
-				text: "File an agency-level protest and request review above the contracting officer",
+				text: "Remove the claim that the forums are interchangeable and require protest counsel to verify the governing forum, deadlines, and available relief before describing a specific case",
 				tier: "defensible",
 				consequence:
-					"This can be faster and less expensive, and the agency can grant corrective relief, but the reviewing forum remains within the procuring agency and does not provide the same independent-review posture.",
+					"This prevents a false equivalence, but it does not yet teach the audience which institution decides, recommends, or grants judicial relief.",
 			},
 			{
 				id: "c",
-				text: "File at the U.S. Court of Federal Claims and seek preliminary injunctive relief",
+				text: "GAO is the protest court, its recommendations are injunctions, and COFC merely gives nonbinding acquisition advice",
 				tier: "costly",
 				consequence:
-					"COFC offers judicial review and potentially binding injunctive relief, but there is no automatic CICA stay; obtaining an injunction generally requires more intensive and expensive litigation.",
+					"The slide reverses the legal character of the two independent forums and misstates their remedies.",
 			},
 			{
 				id: "d",
-				text: "Send the allegation only to the agency Inspector General and treat it as a bid protest",
+				text: "The contracting officer controls all three processes and can overrule any GAO decision or COFC judgment without further action",
 				tier: "disqualifying",
 				consequence:
-					"An IG referral may address fraud, waste, abuse, or misconduct, but it is not a substitute protest forum and does not preserve protest deadlines or provide ordinary bid-protest relief.",
+					"This erases institutional independence and wrongly places judicial and GAO authority inside the contracting office.",
 			},
 		],
 		explanation:
-			"Agency-level protests, GAO protests, and COFC actions are distinct routes with different decision-makers, procedures, timing rules, costs, and stay mechanics. On these facts, timely GAO filing best matches independent review and potential statutory suspension without beginning in court. Forum choice is legal strategy: teams must involve protest counsel immediately and preserve every applicable deadline.",
-		citation: "FAR 33.102(a), (e); FAR 33.103; FAR 33.104",
+			"An agency protest remains with the procuring agency, which may provide review above the contracting officer and may take corrective action. GAO is an independent legislative-branch forum: it resolves protests through recommendations, ordinarily within 100 days, rather than issuing court injunctions. COFC exercises Tucker Act judicial review and may grant declaratory and injunctive relief. These institutional roles are separate from the fact-specific legal decision about where and when to file.",
+		citation: "FAR 33.102; FAR 33.103; FAR 33.104(f); 28 U.S.C. § 1491(b)(2)",
 		sourceUrl: "https://www.acquisition.gov/far/33.102",
-		tags: ["bid-protest", "gao", "cofc", "agency-protest", "forum-selection"],
+		tags: ["bid-protest", "agency-protest", "GAO", "COFC", "institutional-authority"],
 	},
 	{
 		id: "fund-players-ig-suspension-debarment",
@@ -310,7 +310,7 @@ export const PLAYERS_FUNDAMENTALS: QuizQuestion[] = [
 		scoring: "confidence-bet",
 		situation:
 			"You are the business development vice president. An agency IG report raises integrity concerns about a proposed teammate, but the company is not currently shown as excluded in SAM. The exclusive teaming agreement is due today.",
-		prompt: "What should you do?",
+		prompt: "How should the company handle the teammate integrity signal before signing?",
 		options: [
 			{
 				id: "a",
@@ -335,8 +335,8 @@ export const PLAYERS_FUNDAMENTALS: QuizQuestion[] = [
 		],
 		explanation:
 			"An agency IG may investigate and refer integrity matters, but the agency's suspending and debarring official follows the procedures in FAR subpart 9.4 and makes the exclusion decision. A public report is therefore not itself proof of debarment, while a clean SAM check does not erase responsibility, reputational, disclosure, or future-action risk. The prime should preserve facts and use its formal diligence and escalation channels before committing.",
-		citation: "FAR 9.406-3(a), (d); FAR 9.405",
-		sourceUrl: "https://www.acquisition.gov/far/9.406-3",
+		citation: "FAR 9.406-3(a), (d); FAR 9.407-3; FAR 9.405",
+		sourceUrl: "https://www.acquisition.gov/far/9.407-3",
 		tags: ["inspector-general", "suspension", "debarment", "sam-exclusions", "due-diligence"],
 	},
 ];

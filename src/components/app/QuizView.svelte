@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { tick } from "svelte";
+
 	import { game } from "$lib/quiz-state.svelte.js";
 	import type { OptionTier, QuizOption, Tone } from "$lib/far/types";
 	import { CONFIDENCE_STAKES, DIFFICULTY_LABEL, SCORING_LABEL, TIER_VERDICT } from "$lib/far/constants";
@@ -12,11 +14,24 @@
 	let studying = $derived(game.mode === "study");
 	let unit = $derived(q ? UNITS.find((u) => u.id === q.unitId) : undefined);
 	let counts = $derived(game.progressCount);
-	let adaptive = $derived(game.mode === "testout");
-	let pct = $derived(
-		adaptive ? 0 : counts.total === 0 ? 0 : Math.round((counts.done / counts.total) * 100),
-	);
+	let pct = $derived(counts.total === 0 ? 0 : Math.round((counts.done / counts.total) * 100));
 	let best = $derived(q ? game.bestOption(q) : undefined);
+	let feedbackStatusEl: HTMLParagraphElement | null = null;
+
+	function focusQuestionHeading(questionId: string) {
+		return (element: HTMLHeadingElement) => {
+			void tick().then(() => {
+				if (game.currentQuestion?.id === questionId) element.focus();
+			});
+		};
+	}
+
+	function captureFeedbackStatus(element: HTMLParagraphElement) {
+		feedbackStatusEl = element;
+		return () => {
+			if (feedbackStatusEl === element) feedbackStatusEl = null;
+		};
+	}
 
 	let pickedOption = $derived(
 		q && game.answeredOptionId ? q.options.find((o) => o.id === game.answeredOptionId) : undefined,
@@ -67,6 +82,13 @@
 
 	let confidenceLocked = $derived(q?.scoring === "confidence-bet" && !game.pendingStake && !answered);
 
+	async function answer(optionId: QuizOption["id"]) {
+		const questionId = q?.id;
+		game.answer(optionId);
+		await tick();
+		if (questionId && game.currentQuestion?.id === questionId) feedbackStatusEl?.focus();
+	}
+
 	function verdict(): { label: string; tone: Tone } | undefined {
 		if (!q || !pickedOption) return undefined;
 		if (q.scoring === "tiered" || q.scoring === "reveal-tradeoff") {
@@ -98,16 +120,10 @@
 				<span aria-hidden="true">✕</span>
 			</Button>
 			<div class="flex-1">
-				{#if adaptive}
-					<div class="h-2 w-full overflow-hidden rounded-full bg-muted" aria-hidden="true">
-						<div class="h-full w-1/3 animate-pulse rounded-full bg-primary/40"></div>
-					</div>
-				{:else}
-					<Progress value={pct} max={100} aria-label="Session progress" />
-				{/if}
+				<Progress value={pct} max={100} aria-label="Session progress" />
 			</div>
 			<span class="shrink-0 text-xs tabular-nums text-muted-foreground">
-				{adaptive ? `Q ${Math.max(1, counts.done)}` : `${counts.done}/${counts.total}`}
+				{counts.done}/{counts.total}
 			</span>
 		</div>
 
@@ -115,7 +131,7 @@
 			{#if studying}
 				<Badge variant="secondary" class="border-0">Study</Badge>
 			{/if}
-			<Badge style={`background:hsl(${unit.hue} 70% 52%); color:white`} class="border-0">{unit.title}</Badge>
+			<Badge style={`background:hsl(${unit.hue} 70% 30%); color:white`} class="border-0">{unit.title}</Badge>
 			{#if unit.id !== q.difficulty && DIFFICULTY_LABEL[q.difficulty] !== unit.title}
 				<Badge variant="outline">{DIFFICULTY_LABEL[q.difficulty]}</Badge>
 			{/if}
@@ -132,7 +148,13 @@
 				</div>
 			{/if}
 
-			<h1 class="mt-4 text-xl font-semibold leading-snug sm:text-2xl">{q.prompt}</h1>
+			<h1
+				{@attach focusQuestionHeading(q.id)}
+				tabindex="-1"
+				class="mt-4 rounded-sm text-xl font-semibold leading-snug focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 sm:text-2xl"
+			>
+				{q.prompt}
+			</h1>
 
 			<div class="mt-4 rounded-2xl border bg-card p-4">
 				<p class="text-sm leading-6 text-foreground/90">{q.explanation}</p>
@@ -180,7 +202,13 @@
 				</div>
 			{/if}
 
-			<h1 class="mt-4 text-xl font-semibold leading-snug sm:text-2xl">{q.prompt}</h1>
+			<h1
+				{@attach focusQuestionHeading(q.id)}
+				tabindex="-1"
+				class="mt-4 rounded-sm text-xl font-semibold leading-snug focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 sm:text-2xl"
+			>
+				{q.prompt}
+			</h1>
 
 			{#if q.scoring === "confidence-bet" && !answered}
 				<div class="mt-4">
@@ -191,6 +219,7 @@
 						{#each CONFIDENCE_STAKES as stake (stake.id)}
 							<button
 								type="button"
+								aria-pressed={game.pendingStake === stake.id}
 								onclick={() => game.setStake(stake.id)}
 								class={`rounded-xl border-2 p-3 text-center transition-all ${
 									game.pendingStake === stake.id
@@ -212,7 +241,7 @@
 						type="button"
 						class={optionClass(opt)}
 						disabled={answered || confidenceLocked}
-						onclick={() => game.answer(opt.id)}
+						onclick={() => answer(opt.id)}
 					>
 						<span class="flex items-start gap-3">
 							<span class="text-base leading-6">{opt.text}</span>
@@ -232,7 +261,14 @@
 			{#if answered}
 				<div class="mt-5 rounded-2xl border bg-card p-4">
 					{#if v}
-						<p class={`text-lg font-bold ${TONE_CLASS[v.tone]}`}>{v.label}</p>
+						<p
+							{@attach captureFeedbackStatus}
+							role="status"
+							aria-live="polite"
+							aria-atomic="true"
+							tabindex="-1"
+							class={`text-lg font-bold ${TONE_CLASS[v.tone]}`}>{v.label}</p
+						>
 					{/if}
 					<p class="mt-1 text-sm leading-6 text-foreground/90">{q.explanation}</p>
 					<a
