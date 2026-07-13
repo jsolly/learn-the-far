@@ -1,8 +1,16 @@
 import type { LifecycleUnit, QuizQuestion } from "./types";
 
-// The seven lifecycle slices of the pie, in the order a deal is actually run.
+// The lifecycle slices of the pie, starting with Fundamentals (the knowledge
+// floor), then the deal stages in the order a capture is actually run.
 // hue drives each slice's color on the wheel.
 export const UNITS: LifecycleUnit[] = [
+	{
+		"id": "fundamentals",
+		"label": "Basics",
+		"title": "Fundamentals",
+		"blurb": "The floor every capture person needs before running a deal.",
+		"hue": 200
+	},
 	{
 		"id": "find",
 		"label": "Find",
@@ -60,7 +68,7 @@ export const UNITS: LifecycleUnit[] = [
 export const QUESTIONS: QuizQuestion[] = [
 	{
 		"id": "find-sam-registration-timing",
-		"unitId": "find",
+		"unitId": "fundamentals",
 		"format": "recall",
 		"difficulty": "fundamentals",
 		"scoring": "single-best",
@@ -220,7 +228,7 @@ export const QUESTIONS: QuizQuestion[] = [
 	},
 	{
 		"id": "shape-rfi-nonbinding",
-		"unitId": "shape",
+		"unitId": "fundamentals",
 		"format": "recall",
 		"difficulty": "fundamentals",
 		"scoring": "single-best",
@@ -259,7 +267,7 @@ export const QUESTIONS: QuizQuestion[] = [
 	},
 	{
 		"id": "shape-rule-of-two-threshold",
-		"unitId": "shape",
+		"unitId": "fundamentals",
 		"format": "recall",
 		"difficulty": "fundamentals",
 		"scoring": "single-best",
@@ -672,7 +680,7 @@ export const QUESTIONS: QuizQuestion[] = [
 	},
 	{
 		"id": "vehicle-thresholds-recall",
-		"unitId": "vehicle",
+		"unitId": "fundamentals",
 		"format": "recall",
 		"difficulty": "fundamentals",
 		"scoring": "single-best",
@@ -711,7 +719,7 @@ export const QUESTIONS: QuizQuestion[] = [
 	},
 	{
 		"id": "vehicle-gwac-definition",
-		"unitId": "vehicle",
+		"unitId": "fundamentals",
 		"format": "recall",
 		"difficulty": "fundamentals",
 		"scoring": "single-best",
@@ -1196,7 +1204,7 @@ export const QUESTIONS: QuizQuestion[] = [
 	},
 	{
 		"id": "propose-l-vs-m-sections",
-		"unitId": "propose",
+		"unitId": "fundamentals",
 		"format": "recall",
 		"difficulty": "fundamentals",
 		"scoring": "single-best",

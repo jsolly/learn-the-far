@@ -19,9 +19,14 @@ User progress is stored only in the browser with `localStorage`. There is no dat
 | :-- | :-- |
 | `npm install` | Install dependencies |
 | `npm run dev` | Start the local dev server |
+| `npm run mcp:echarts` | Start the project-local Apache ECharts MCP server |
 | `npm run check` | Run Astro/Svelte type checks |
 | `npm run build` | Build the static app to `dist/` |
 | `npm run preview` | Preview the production build locally |
+
+The ECharts MCP connection is scoped to this repository in `.cursor/mcp.json`. Before
+starting it, copy `.env.example` to `.env` and add Baidu BOS credentials; the upstream
+server requires BOS to publish generated chart images.
 
 ## Hosting
 

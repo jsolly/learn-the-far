@@ -12,7 +12,10 @@
 	let studying = $derived(game.mode === "study");
 	let unit = $derived(q ? UNITS.find((u) => u.id === q.unitId) : undefined);
 	let counts = $derived(game.progressCount);
-	let pct = $derived(counts.total === 0 ? 0 : Math.round((counts.done / counts.total) * 100));
+	let adaptive = $derived(game.mode === "testout" && counts.total === 0);
+	let pct = $derived(
+		adaptive ? 0 : counts.total === 0 ? 0 : Math.round((counts.done / counts.total) * 100),
+	);
 	let best = $derived(q ? game.bestOption(q) : undefined);
 
 	let pickedOption = $derived(
@@ -42,14 +45,14 @@
 			return `${base} border-border bg-card hover:border-primary/50 hover:bg-muted/50 active:scale-[0.99]`;
 		}
 		const picked = opt.id === game.answeredOptionId;
-		const ring = picked ? "ring-2 ring-offset-2 ring-offset-background ring-foreground/40" : "";
+		const pickMark = picked ? "font-semibold" : "opacity-80";
 		if (q && (q.scoring === "tiered" || q.scoring === "reveal-tradeoff")) {
 			const tierClass = opt.tier ? TIER_CLASS[opt.tier] : "border-border";
-			return `${base} ${tierClass} ${ring} ${picked ? "" : "opacity-80"}`;
+			return `${base} ${tierClass} ${pickMark}`;
 		}
-		// single-best / confidence-bet
-		if (opt.correct) return `${base} ${TIER_CLASS.best} ${ring}`;
-		if (picked) return `${base} ${TIER_CLASS.disqualifying} ${ring}`;
+		// single-best / confidence-bet — color alone marks right/wrong; no ring (double border)
+		if (opt.correct) return `${base} ${TIER_CLASS.best}${picked ? " font-semibold" : ""}`;
+		if (picked) return `${base} ${TIER_CLASS.disqualifying} font-semibold`;
 		return `${base} border-border opacity-60`;
 	}
 
@@ -95,9 +98,17 @@
 				<span aria-hidden="true">✕</span>
 			</Button>
 			<div class="flex-1">
-				<Progress value={pct} max={100} aria-label="Session progress" />
+				{#if adaptive}
+					<div class="h-2 w-full overflow-hidden rounded-full bg-muted" aria-hidden="true">
+						<div class="h-full w-1/3 animate-pulse rounded-full bg-primary/40"></div>
+					</div>
+				{:else}
+					<Progress value={pct} max={100} aria-label="Session progress" />
+				{/if}
 			</div>
-			<span class="shrink-0 text-xs tabular-nums text-muted-foreground">{counts.done}/{counts.total}</span>
+			<span class="shrink-0 text-xs tabular-nums text-muted-foreground">
+				{adaptive ? `Q ${Math.max(1, counts.done)}` : `${counts.done}/${counts.total}`}
+			</span>
 		</div>
 
 		<div class="mt-5 flex flex-wrap items-center gap-2">
@@ -105,14 +116,16 @@
 				<Badge variant="secondary" class="border-0">Study</Badge>
 			{/if}
 			<Badge style={`background:hsl(${unit.hue} 70% 52%); color:white`} class="border-0">{unit.title}</Badge>
-			<Badge variant="outline">{DIFFICULTY_LABEL[q.difficulty]}</Badge>
+			{#if DIFFICULTY_LABEL[q.difficulty] !== unit.title}
+				<Badge variant="outline">{DIFFICULTY_LABEL[q.difficulty]}</Badge>
+			{/if}
 			{#if !studying}
 				<Badge variant="secondary">{SCORING_LABEL[q.scoring]}</Badge>
 			{/if}
 		</div>
 
 		{#if studying}
-			<!-- teaching stack: situation → best → explanation → citation → autopsy -->
+			<!-- teaching stack: situation → explanation → citation → autopsy -->
 			{#if q.situation}
 				<div class="mt-4 rounded-2xl border border-dashed bg-muted/40 p-4 text-sm leading-6 text-muted-foreground">
 					{q.situation}
@@ -120,15 +133,6 @@
 			{/if}
 
 			<h1 class="mt-4 text-xl font-semibold leading-snug sm:text-2xl">{q.prompt}</h1>
-
-			{#if best}
-				<div class="mt-4 rounded-2xl border-2 border-emerald-500/60 bg-emerald-500/10 p-4">
-					<p class="text-xs font-semibold uppercase tracking-wide text-emerald-700 dark:text-emerald-400">
-						Strong move
-					</p>
-					<p class="mt-1 text-base leading-6">{best.text}</p>
-				</div>
-			{/if}
 
 			<div class="mt-4 rounded-2xl border bg-card p-4">
 				<p class="text-sm leading-6 text-foreground/90">{q.explanation}</p>

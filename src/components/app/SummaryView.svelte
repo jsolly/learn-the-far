@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { game } from "$lib/quiz-state.svelte.js";
-	import { ACHIEVEMENTS, TESTOUT_PASS } from "$lib/far/constants";
+	import { ACHIEVEMENTS } from "$lib/far/constants";
 	import { Button } from "$lib/components/ui/button";
 
 	let s = $derived(game.summary);
@@ -8,7 +8,6 @@
 		s ? s.newAchievements.map((id) => ACHIEVEMENTS.find((a) => a.id === id)).filter(Boolean) : [],
 	);
 	let unitNotPrime = $derived(s?.unit ? game.unitStats(s.unit.id).level !== "prime" : false);
-	let passPct = $derived(Math.round(TESTOUT_PASS * 100));
 	let gated = $derived(game.needsFundamentalsPlacement);
 
 	function headline(pct: number): string {
@@ -20,8 +19,15 @@
 
 	function studyHeadline(): string {
 		if (s?.studyKind === "fundamentals-gaps") return "Gaps reviewed.";
-		if (s?.studyKind === "misses") return "Misses reviewed.";
+		if (s?.studyKind === "misses") return "Focused study complete.";
 		return "Study complete.";
+	}
+
+	function assessmentSummary(answered: number, masteryPercent: number): string {
+		const checked = `Checked ${answered} question${answered === 1 ? "" : "s"}`;
+		return masteryPercent > 0
+			? `${checked} · ${masteryPercent}% of the capture chart filled.`
+			: `${checked}.`;
 	}
 </script>
 
@@ -39,14 +45,10 @@
 				<p class="text-sm text-muted-foreground">Ready to try the test again?</p>
 			{/if}
 		{:else if s.mode === "testout"}
-			<div class="text-5xl">{s.unlockedNow || s.passedTestOut ? "⏭️" : "📚"}</div>
-			<h1 class="text-2xl font-bold">
-				{s.unlockedNow || s.passedTestOut ? "You're in." : "Not quite yet."}
-			</h1>
+			<div class="text-5xl">🧭</div>
+			<h1 class="text-2xl font-bold">Starting point set.</h1>
 			<p class="text-muted-foreground">
-				{s.unlockedNow || s.passedTestOut
-					? "The capture map is open — pick a deal stage and go."
-					: `You scored ${s.scorePct}% (need ${passPct}%). Review what you missed, then try again.`}
+				{assessmentSummary(s.answered, game.masteryPercent)}
 			</p>
 		{:else}
 			<div class="text-sm font-medium uppercase tracking-wide text-muted-foreground">
@@ -87,20 +89,14 @@
 
 		<div class="flex w-full flex-col gap-2">
 			{#if s.mode === "study" && gated && s.studyKind === "fundamentals-gaps"}
-				<Button size="lg" onclick={() => game.startTestOut()}>Try the test again</Button>
+				<Button size="lg" onclick={() => game.startTestOut()}>Continue the test</Button>
 				<Button size="lg" variant="outline" onclick={() => game.goHome()}>Back</Button>
-			{:else if s.mode === "testout" && gated}
-				{#if game.fundamentalsGaps.length > 0}
-					<Button size="lg" onclick={() => game.startStudyFundamentalsGaps()}>Review what you missed</Button>
-				{/if}
-				<Button size="lg" variant="outline" onclick={() => game.startTestOut()}>Try again</Button>
-				<Button size="lg" variant="ghost" onclick={() => game.goHome()}>Back</Button>
 			{:else if s.mode === "unit" && s.unit && unitNotPrime}
 				<Button size="lg" onclick={() => s?.unit && game.startUnit(s.unit.id)}>Keep going</Button>
-				<Button size="lg" variant="outline" onclick={() => game.goHome()}>Back to the map</Button>
+				<Button size="lg" variant="outline" onclick={() => game.goHome()}>Back to the chart</Button>
 			{:else}
 				<Button size="lg" onclick={() => game.goHome()}>
-					{s.mode === "study" ? "Done studying" : "Back to the map"}
+					{s.mode === "study" ? "Done studying" : "Back to the chart"}
 				</Button>
 			{/if}
 		</div>
