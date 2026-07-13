@@ -72,7 +72,7 @@ export const FIND_CORE: QuizQuestion[] = [
 			{
 				id: "d",
 				text: "Archive the lead permanently because a forecasted set-aside can never change and a large prime cannot participate at any tier",
-				tier: "defensible",
+				tier: "costly",
 				consequence:
 					"This avoids false prime-pipeline value, but it gives up legitimate subcontracting and early partner options and overstates the certainty of a pre-solicitation forecast."
 			}

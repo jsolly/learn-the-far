@@ -369,6 +369,16 @@ export class QuizGame {
 		return option.correct ? 1 : 0;
 	}
 
+	private persistOutcome(outcome: AnswerOutcome) {
+		const prev = this.progress.questions[outcome.questionId];
+		this.progress.questions[outcome.questionId] = {
+			attempts: (prev?.attempts ?? 0) + 1,
+			bestScore: Math.max(prev?.bestScore ?? 0, outcome.score),
+			cleared: (prev?.cleared ?? false) || outcome.cleared,
+			lastAt: new SvelteDate().toISOString(),
+		};
+	}
+
 	/** Best option for study-mode teaching stack (tiered best, else correct). */
 	bestOption(q: QuizQuestion) {
 		if (q.scoring === "tiered" || q.scoring === "reveal-tradeoff") {
@@ -401,19 +411,12 @@ export class QuizGame {
 		};
 		this.outcomes = [...this.outcomes, outcome];
 
-		// persist question record (best-of)
-		const prev = this.progress.questions[q.id];
-		this.progress.questions[q.id] = {
-			attempts: (prev?.attempts ?? 0) + 1,
-			bestScore: Math.max(prev?.bestScore ?? 0, score),
-			cleared: (prev?.cleared ?? false) || cleared,
-			lastAt: new SvelteDate().toISOString(),
-		};
 		// Placement unlocks only when the diagnostic finishes — not mid-session via ratio.
 		if (this.mode !== "testout") {
+			this.persistOutcome(outcome);
 			this.maybeUnlockFundamentals();
+			saveProgress(this.progress);
 		}
-		saveProgress(this.progress);
 	}
 
 	next() {
@@ -531,6 +534,9 @@ export class QuizGame {
 				this.creditAllFundamentals();
 				this.progress.fundamentalsUnlocked = true;
 			} else {
+				for (const outcome of uniqueOutcomes) {
+					this.persistOutcome(outcome);
+				}
 				this.maybeUnlockFundamentals();
 			}
 			unlockedNow = wasLocked && this.progress.fundamentalsUnlocked;
