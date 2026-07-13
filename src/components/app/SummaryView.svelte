@@ -1,7 +1,11 @@
 <script lang="ts">
+	import { tick } from "svelte";
+
 	import { game } from "$lib/quiz-state.svelte.js";
-	import { ACHIEVEMENTS } from "$lib/far/constants";
+	import { ACHIEVEMENTS, TESTOUT_PASS } from "$lib/far/constants";
 	import { Button } from "$lib/components/ui/button";
+
+	const TESTOUT_PASS_PERCENT = Math.round(TESTOUT_PASS * 100);
 
 	let s = $derived(game.summary);
 	let earned = $derived(
@@ -9,6 +13,19 @@
 	);
 	let unitNotPrime = $derived(s?.unit ? game.unitStats(s.unit.id).level !== "prime" : false);
 	let gated = $derived(game.needsFundamentalsPlacement);
+	let unlockedByMastery = $derived(
+		s?.mode === "testout" && !s.passedTestOut && s.unlockedNow === true,
+	);
+	let resultHeadingEl: HTMLHeadingElement | null = $state(null);
+
+	$effect(() => {
+		const result = s;
+		if (!result) return;
+
+		void tick().then(() => {
+			if (game.summary === result) resultHeadingEl?.focus();
+		});
+	});
 
 	function headline(pct: number): string {
 		if (pct >= 90) return "Clean audit.";
@@ -22,13 +39,6 @@
 		if (s?.studyKind === "misses") return "Focused study complete.";
 		return "Study complete.";
 	}
-
-	function assessmentSummary(answered: number, masteryPercent: number): string {
-		const checked = `Checked ${answered} question${answered === 1 ? "" : "s"}`;
-		return masteryPercent > 0
-			? `${checked} · ${masteryPercent}% of the capture chart filled.`
-			: `${checked}.`;
-	}
 </script>
 
 {#if s}
@@ -37,7 +47,13 @@
 	>
 		{#if s.mode === "study"}
 			<div class="text-5xl">📖</div>
-			<h1 class="text-2xl font-bold">{studyHeadline()}</h1>
+			<h1
+				bind:this={resultHeadingEl}
+				tabindex="-1"
+				class="rounded-sm text-2xl font-bold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
+			>
+				{studyHeadline()}
+			</h1>
 			<p class="text-muted-foreground">
 				{s.answered} card{s.answered === 1 ? "" : "s"} reviewed.
 			</p>
@@ -45,10 +61,28 @@
 				<p class="text-sm text-muted-foreground">Ready to try the test again?</p>
 			{/if}
 		{:else if s.mode === "testout"}
-			<div class="text-5xl">🧭</div>
-			<h1 class="text-2xl font-bold">Starting point set.</h1>
+			<div class="text-5xl" aria-hidden="true">{s.passedTestOut || unlockedByMastery ? "✅" : "📖"}</div>
+			<h1
+				bind:this={resultHeadingEl}
+				tabindex="-1"
+				aria-live="polite"
+				class="rounded-sm text-2xl font-bold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
+			>
+				{s.passedTestOut
+					? "Placement passed — lifecycle unlocked."
+					: unlockedByMastery
+						? "Lifecycle unlocked through Fundamentals mastery."
+						: "More Fundamentals are needed."}
+			</h1>
 			<p class="text-muted-foreground">
-				{assessmentSummary(s.answered, game.masteryPercent)}
+				{#if s.passedTestOut}
+					You scored {s.scorePct}%. Every lifecycle slice is now unlocked.
+				{:else if unlockedByMastery}
+					You scored {s.scorePct}%. Your cumulative cleared Fundamentals reached {TESTOUT_PASS_PERCENT}%,
+					so every lifecycle slice is now unlocked.
+				{:else}
+					You scored {s.scorePct}%. Score {TESTOUT_PASS_PERCENT}% or better to unlock the deal lifecycle.
+				{/if}
 			</p>
 		{:else}
 			<div class="text-sm font-medium uppercase tracking-wide text-muted-foreground">
@@ -67,7 +101,13 @@
 					<span class="sr-only"> score</span>
 				</span>
 			</div>
-			<h1 class="text-2xl font-bold">{headline(s.scorePct)}</h1>
+			<h1
+				bind:this={resultHeadingEl}
+				tabindex="-1"
+				class="rounded-sm text-2xl font-bold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
+			>
+				{headline(s.scorePct)}
+			</h1>
 			<p class="text-muted-foreground">
 				{s.answered} question{s.answered === 1 ? "" : "s"} · {game.streak.current}-day streak 🔥
 			</p>
@@ -94,8 +134,16 @@
 
 		<div class="flex w-full flex-col gap-2">
 			{#if s.mode === "study" && gated && s.studyKind === "fundamentals-gaps"}
-				<Button size="lg" onclick={() => game.startTestOut()}>Continue the test</Button>
+				<Button size="lg" onclick={() => game.startTestOut()}>Try the test again</Button>
 				<Button size="lg" variant="outline" onclick={() => game.goHome()}>Back</Button>
+			{:else if s.mode === "testout" && unlockedByMastery}
+				<Button size="lg" onclick={() => game.goHome()}>Back to the chart</Button>
+			{:else if s.mode === "testout" && !s.passedTestOut}
+				<Button size="lg" onclick={() => game.startStudyUnit("fundamentals")}>Study Fundamentals</Button>
+				<Button size="lg" variant="outline" onclick={() => game.startTestOut()}>Try the test again</Button>
+				<Button size="lg" variant="ghost" onclick={() => game.goHome()}>Back to the chart</Button>
+			{:else if s.mode === "testout"}
+				<Button size="lg" onclick={() => game.goHome()}>Back to the chart</Button>
 			{:else if s.mode === "unit" && s.unit && unitNotPrime}
 				<Button size="lg" onclick={() => s?.unit && game.startUnit(s.unit.id)}>Keep going</Button>
 				<Button size="lg" variant="outline" onclick={() => game.goHome()}>Back to the chart</Button>

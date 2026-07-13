@@ -1,19 +1,27 @@
 <script lang="ts">
+	import { tick } from "svelte";
+
 	import { game } from "$lib/quiz-state.svelte.js";
 	import PieHome from "./PieHome.svelte";
 	import QuizView from "./QuizView.svelte";
 	import SummaryView from "./SummaryView.svelte";
 
 	let main = $state<HTMLElement | null>(null);
-	// Move focus to the view container on each view swap so keyboard and screen
-	// reader users aren't stranded on a detached node when the screen changes.
+	// Child views focus their own descriptive headings. On the home transition,
+	// focus its persistent heading instead of announcing an unnamed container.
 	$effect(() => {
-		game.view; // track the view so this re-runs on every transition
-		main?.focus();
+		const view = game.view;
+		if (view !== "home") return;
+
+		void tick().then(() => {
+			if (game.view === "home") {
+				main?.querySelector<HTMLHeadingElement>("[data-home-heading]")?.focus();
+			}
+		});
 	});
 </script>
 
-<main bind:this={main} tabindex="-1" class="min-h-[100dvh] bg-background text-foreground outline-none">
+<main bind:this={main} class="min-h-[100dvh] bg-background text-foreground">
 	{#if game.view === "session"}
 		<QuizView />
 	{:else if game.view === "summary"}

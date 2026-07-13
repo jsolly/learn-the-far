@@ -13,10 +13,9 @@ import {
 	DIFFICULTY_ORDER,
 	LEVELS,
 	type LevelId,
-	PLACEMENT_MAX,
-	PLACEMENT_WRONG_LIMIT,
 	SESSION_LENGTH,
 	STREAK_MILESTONES,
+	TESTOUT_LENGTH,
 	TESTOUT_PASS,
 	TIER_SCORE,
 	TIER_UNLOCK_RATIO,
@@ -112,8 +111,6 @@ export class QuizGame {
 	requeued = new SvelteSet<string>();
 	/** Cards already continued past in a study session (quiz outcomes stay empty). */
 	studyViewed = $state(0);
-	/** Remaining ids for adaptive placement (fundamentals, then core stretch). */
-	placementDeck: string[] = [];
 
 	// current question interaction
 	answeredOptionId = $state<string | null>(null);
@@ -123,16 +120,6 @@ export class QuizGame {
 
 	constructor() {
 		this.progress = loadProgress();
-		this.ensureGateMigration();
-	}
-
-	/** Grandfather returning learners who already progressed past fundamentals. */
-	private ensureGateMigration() {
-		if (this.progress.fundamentalsUnlocked) return;
-		if (this.progress.testedOut || this.fundamentalsClearRatio >= TESTOUT_PASS) {
-			this.progress.fundamentalsUnlocked = true;
-			saveProgress(this.progress);
-		}
 	}
 
 	private questionsIn(unitId: UnitId): QuizQuestion[] {
@@ -241,21 +228,6 @@ export class QuizGame {
 		return !this.isUnitLocked(unitId);
 	}
 
-	private placementWrongCount(): number {
-		return this.outcomes.filter((o) => !o.cleared).length;
-	}
-
-	/** After the current answered card, should adaptive placement end? */
-	private placementShouldStopAfterCurrent(): boolean {
-		if (this.mode !== "testout" || !this.isAnswered) return false;
-		const last = this.outcomes[this.outcomes.length - 1];
-		const wrongs = this.placementWrongCount();
-		if (last && !last.cleared && wrongs >= PLACEMENT_WRONG_LIMIT) return true;
-		if (this.outcomes.length >= PLACEMENT_MAX) return true;
-		if (this.placementDeck.length === 0) return true;
-		return false;
-	}
-
 	// Fundamentals and Core are open from the start (so no unit ever serves a
 	// thin one-question session); Advanced unlocks once most of this unit's Core
 	// is cleared. Difficulty still ramps because sessions lead with the easiest
@@ -304,16 +276,12 @@ export class QuizGame {
 		this.beginSession("daily", null, picks);
 	}
 
-	/** Adaptive placement — keep going while correct; stop after too many misses. */
+	/** One-pass Fundamentals test, prioritizing questions not yet cleared. */
 	startTestOut() {
 		const fundamentals = fundamentalsQuestions();
-		const weak = shuffle(fundamentals.filter((q) => !this.isCleared(q.id)));
-		const strong = shuffle(fundamentals.filter((q) => this.isCleared(q.id)));
-		const core = shuffle(QUESTIONS.filter((q) => q.difficulty === "core"));
-		this.placementDeck = [...weak, ...strong, ...core].map((q) => q.id);
-		const firstId = this.placementDeck.shift();
-		const first = firstId ? QUESTIONS.find((q) => q.id === firstId) : undefined;
-		this.beginSession("testout", null, first ? [first] : []);
+		const uncleared = shuffle(fundamentals.filter((q) => !this.isCleared(q.id)));
+		const cleared = shuffle(fundamentals.filter((q) => this.isCleared(q.id)));
+		this.beginSession("testout", null, [...uncleared, ...cleared].slice(0, TESTOUT_LENGTH));
 	}
 
 	/** Reveal-first study of uncleared fundamentals (no progress writes). */
@@ -352,7 +320,6 @@ export class QuizGame {
 		this.outcomes = [];
 		this.requeued = new SvelteSet();
 		this.studyViewed = 0;
-		if (mode !== "testout") this.placementDeck = [];
 		this.answeredOptionId = null;
 		this.pendingStake = null;
 		this.summary = null;
@@ -373,13 +340,9 @@ export class QuizGame {
 			const remaining = this.queue.length;
 			return { done: this.studyViewed, total: this.studyViewed + remaining };
 		}
-		if (this.mode === "testout") {
-			// Adaptive length — show current question index as "Q N".
-			return { done: this.outcomes.length + (this.isAnswered ? 0 : 1), total: 0 };
-		}
 		// The current question sits at queue[0] even after it's answered, so once
 		// answered it must not be double-counted as "remaining". A wrong answer
-		// that requeues legitimately grows the total by one (an extra rep).
+		// in a normal quiz that requeues legitimately grows the total by one.
 		const remaining = this.queue.length - (this.isAnswered ? 1 : 0);
 		return { done: this.outcomes.length, total: this.outcomes.length + remaining };
 	}
@@ -389,7 +352,7 @@ export class QuizGame {
 	// Continue/Finish label so "Finish" never lies on a wrong final answer.
 	get willFinishAfterNext(): boolean {
 		if (this.mode === "study") return this.queue.length <= 1;
-		if (this.mode === "testout") return this.placementShouldStopAfterCurrent();
+		if (this.mode === "testout") return this.queue.length <= 1;
 		if (this.queue.length > 1) return false;
 		const q = this.currentQuestion;
 		const last = this.outcomes[this.outcomes.length - 1];
@@ -404,6 +367,16 @@ export class QuizGame {
 			return option.tier ? TIER_SCORE[option.tier] : 0;
 		}
 		return option.correct ? 1 : 0;
+	}
+
+	private persistOutcome(outcome: AnswerOutcome) {
+		const prev = this.progress.questions[outcome.questionId];
+		this.progress.questions[outcome.questionId] = {
+			attempts: (prev?.attempts ?? 0) + 1,
+			bestScore: Math.max(prev?.bestScore ?? 0, outcome.score),
+			cleared: (prev?.cleared ?? false) || outcome.cleared,
+			lastAt: new SvelteDate().toISOString(),
+		};
 	}
 
 	/** Best option for study-mode teaching stack (tiered best, else correct). */
@@ -438,19 +411,12 @@ export class QuizGame {
 		};
 		this.outcomes = [...this.outcomes, outcome];
 
-		// persist question record (best-of)
-		const prev = this.progress.questions[q.id];
-		this.progress.questions[q.id] = {
-			attempts: (prev?.attempts ?? 0) + 1,
-			bestScore: Math.max(prev?.bestScore ?? 0, score),
-			cleared: (prev?.cleared ?? false) || cleared,
-			lastAt: new SvelteDate().toISOString(),
-		};
 		// Placement unlocks only when the diagnostic finishes — not mid-session via ratio.
 		if (this.mode !== "testout") {
+			this.persistOutcome(outcome);
 			this.maybeUnlockFundamentals();
+			saveProgress(this.progress);
 		}
-		saveProgress(this.progress);
 	}
 
 	next() {
@@ -467,21 +433,11 @@ export class QuizGame {
 		}
 
 		if (this.mode === "testout") {
-			const stop = this.placementShouldStopAfterCurrent();
 			this.queue = this.queue.slice(1);
 			this.answeredOptionId = null;
 			this.pendingStake = null;
 
-			if (stop) {
-				this.placementDeck = [];
-				this.finishSession();
-				return;
-			}
-
-			const nextId = this.placementDeck.shift();
-			if (nextId) {
-				this.queue = [nextId];
-			} else {
+			if (this.queue.length === 0) {
 				this.finishSession();
 			}
 			return;
@@ -552,9 +508,8 @@ export class QuizGame {
 			return;
 		}
 
-		// One outcome per question, keeping the BEST attempt — the jail gives a
-		// second chance, so a wrong→right question should count as the learner's
-		// win for the score %, the flawless achievement, and the test-out gate.
+		// Keep the best outcome per question. Normal quizzes can requeue a miss,
+		// while the fixed testout contains each sampled question only once.
 		const bestByQuestion = new SvelteMap<string, AnswerOutcome>();
 		for (const o of this.outcomes) {
 			const prior = bestByQuestion.get(o.questionId);
@@ -574,16 +529,17 @@ export class QuizGame {
 		if (this.mode === "testout") {
 			passedTestOut = answered > 0 && scoreSum / answered >= TESTOUT_PASS;
 			const wasLocked = !this.progress.fundamentalsUnlocked;
-			// Completing placement unlocks the chart; high score also credits the Basics slice.
-			if (answered > 0) {
-				this.progress.fundamentalsUnlocked = true;
-			}
 			if (passedTestOut) {
 				this.progress.testedOut = true;
 				this.creditAllFundamentals();
+				this.progress.fundamentalsUnlocked = true;
+			} else {
+				for (const outcome of uniqueOutcomes) {
+					this.persistOutcome(outcome);
+				}
+				this.maybeUnlockFundamentals();
 			}
 			unlockedNow = wasLocked && this.progress.fundamentalsUnlocked;
-			this.placementDeck = [];
 		}
 
 		if (this.mode === "daily" && !this.progress.dailyDone.includes(today())) {

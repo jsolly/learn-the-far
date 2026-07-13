@@ -138,42 +138,42 @@ export const MONEY_FUNDAMENTALS: QuizQuestion[] = [
     difficulty: "core",
     scoring: "tiered",
     situation:
-      "You are the capture lead for a proposed civilian-agency program that did not operate or receive authority in the prior fiscal year. The Government is now under a continuing resolution (CR) whose text restricts new starts, and the program has no specific anomaly or other authority.",
-    prompt: "How should you carry the opportunity in the pipeline?",
+      "A new budget analyst describes a continuing resolution (CR) as an agency policy memo that automatically supplies a full year of funding for every program, including new starts.",
+    prompt: "Which explanation correctly describes CR mechanics?",
     options: [
       {
         id: "a",
-        text: "Treat award timing and executable funding as at risk, verify the enacted CR and any later anomaly with the contracting team, and plan scenarios for delay until authority exists.",
+        text: "A CR is enacted temporary appropriations legislation; its duration, funding rate, and terms come from its text, and any anomaly or authority for a new start must also be found in enacted law.",
         tier: "best",
       },
       {
         id: "b",
-        text: "Keep capture work moving at a controlled level, but gate major B&P and staffing commitments on confirmation that the agency has legal authority to start the program.",
+        text: "Read the enacted CR and incorporated terms before deciding what operations or new activities it funds, because CR provisions and exceptions can differ.",
         tier: "defensible",
       },
       {
         id: "c",
-        text: "Assume the agency can start because a CR is simply a shorter version of a full-year appropriation.",
+        text: "Treat a CR as the agency's full-year regular appropriation, available at the amount in the President's budget request.",
         tier: "costly",
       },
       {
         id: "d",
-        text: "Promise immediate performance and tell the agency it can cure the new-start restriction after award with next year's funds.",
+        text: "Assume every CR permanently bans every new activity and that an anomaly cannot provide different authority.",
         tier: "disqualifying",
       },
     ],
     explanation:
-      "A CR temporarily funds covered operations on the terms Congress enacted; common CR language restricts projects or activities for which prior-year authority was unavailable, while anomalies can create specific exceptions. The actual CR text controls. For capture, a forecasted procurement is not proof of executable authority: preserve customer readiness, but model schedule and B&P around the legal funding gate.",
+      "A CR is a temporary appropriations act used when one or more regular appropriations acts have not been enacted. It supplies budget authority for the period, rate, projects, and activities specified by Congress and carries the terms and conditions stated or incorporated in the legislation. CRs commonly continue prior operations and may restrict new starts, but anomalies or other provisions can change those rules. The enacted text—not the label 'CR' by itself—determines new-start authority.",
     citation:
-      "GAO-22-104701, Federal Budget: Continuing Resolution Constraints, pp. 1–2, 7–9",
+      "GAO-22-104701, Federal Budget: Selected Agencies and Programs Used Strategies to Manage Constraints of Continuing Resolutions, pp. 1–2, 7–9",
     sourceUrl: "https://www.gao.gov/assets/gao-22-104701.pdf",
     tags: [
       "continuing-resolution",
       "new-start",
       "appropriation",
-      "capture",
-      "pipeline-risk",
-      "civilian-agency",
+      "budget-authority",
+      "anomaly",
+      "enacted-text",
     ],
   },
   {
@@ -328,10 +328,10 @@ export const MONEY_FUNDAMENTALS: QuizQuestion[] = [
       },
       {
         id: "b",
-        text: "Staff only to the current allotment but ignore how the SLIN maps to accounting, covered work, and period of performance.",
+        text: "Use a conservative portion of the current allotment while reconciling the SLIN to accounting, covered work, period of performance, and the burn forecast before expanding staffing.",
         tier: "defensible",
         consequence:
-          "You reduce immediate overrun risk, but weak line-item mapping can still produce charging errors, bad forecasts, and a late request for the next increment.",
+          "The cautious staffing posture reduces immediate overrun risk and respects the mapping controls, but it may unnecessarily constrain authorized performance until the reconciliation is complete.",
       },
       {
         id: "c",

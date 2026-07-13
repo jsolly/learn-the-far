@@ -70,7 +70,7 @@ export const FAR_MAP_FUNDAMENTALS: QuizQuestion[] = [
 		explanation:
 			"FAR 1.301 permits agencies to issue acquisition regulations that implement or supplement the FAR. GSA publishes the GSAM/GSAR and VA publishes the VAAR; neither displaces the governmentwide FAR. Under FAR 1.401, a deviation is an authorized inconsistency, omission, or other departure from FAR coverage, so the capture baseline is the FAR plus the applicable agency supplement, solicitation terms, and any identified deviation.",
 		citation: "FAR 1.301; FAR 1.401",
-		sourceUrl: "https://www.acquisition.gov/gsam",
+		sourceUrl: "https://www.acquisition.gov/far/1.301",
 		tags: ["civilian-agencies", "GSAM", "GSAR", "VAAR", "deviations"],
 	},
 	{
@@ -261,8 +261,8 @@ export const FAR_MAP_FUNDAMENTALS: QuizQuestion[] = [
 		],
 		explanation:
 			"FAR 2.101 defines a PWS as a statement of work for performance-based acquisitions that describes required results in objective terms with measurable outcomes. A SOO is a Government-prepared solicitation document stating overall performance objectives and maximizing offeror flexibility. A conventional SOW may describe the work or tasks more directly. Here, the short objectives plus a request for an offeror-designed measurable solution point to a SOO, not a prescriptive task SOW.",
-		citation: "FAR 2.101; FAR 11.101",
-		sourceUrl: "https://www.acquisition.gov/far/2.101",
+		citation: "FAR 2.101; FAR 37.602(a), (c)",
+		sourceUrl: "https://www.acquisition.gov/far/37.602",
 		tags: ["PWS", "SOW", "SOO", "performance-based-acquisition", "VA"],
 	},
 	{
@@ -272,7 +272,7 @@ export const FAR_MAP_FUNDAMENTALS: QuizQuestion[] = [
 		difficulty: "advanced",
 		scoring: "confidence-bet",
 		situation:
-			"An HHS capture brief says the recompete may be unrestricted, may become a total small-business set-aside after market research, or may go directly to one source because the program office prefers continuity. Your company is a large incumbent.",
+			"An HHS capture brief for an open-market acquisition subject to FAR Part 6 says the recompete may be unrestricted, may become a total small-business set-aside after market research, or may go directly to one source because the program office prefers continuity. Your company is a large incumbent.",
 		prompt: "Which interpretation should drive the capture plan?",
 		options: [
 			{
@@ -297,7 +297,7 @@ export const FAR_MAP_FUNDAMENTALS: QuizQuestion[] = [
 			},
 		],
 		explanation:
-			"FAR 6.101 makes full and open competition the general rule. FAR 6.203 permits competition after excluding other-than-small firms and says a separate justification under Part 6 is not required for a small-business set-aside; FAR Part 19 supplies the set-aside rules. A sole-source action is different: the contracting officer needs an applicable FAR 6.302 exception and, when required, a written, certified, approved J&A. Lack of planning, expiring funds, or customer preference is not enough.",
+			"For this open-market acquisition within Part 6's scope, FAR 6.101 makes full and open competition the general rule. FAR 6.203 permits competition after excluding other-than-small firms and says a separate justification under Part 6 is not required for a small-business set-aside; FAR Part 19 supplies the set-aside rules. A sole-source action is different: the contracting officer needs an applicable FAR 6.302 exception and, when required, a written, certified, approved J&A. Orders and other acquisitions outside Part 6's scope follow their applicable limited-source, sole-source, or fair-opportunity authority instead.",
 		citation: "FAR 6.101; FAR 6.203; FAR 6.301; FAR 6.303-1",
 		sourceUrl: "https://www.acquisition.gov/far/6.303-1",
 		tags: ["full-and-open", "set-aside", "sole-source", "J&A", "large-prime"],
