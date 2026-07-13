@@ -11,10 +11,10 @@
 
 	type Props = {
 		stats: UnitStats[];
-		/** Center hub percentage (mastery when unlocked, fundamentals when gated). */
+		/** Center hub percentage (overall mastery). */
 		hubPercent: number;
 		hubLabel: string;
-		/** When true, slices are dimmed and not selectable (fundamentals hard gate). */
+		/** When true, lifecycle slices are dimmed; Fundamentals stays selectable. */
 		locked?: boolean;
 		onpick: (unitId: UnitId) => void;
 	};
@@ -37,9 +37,13 @@
 		return Math.min(1, Math.max(0, ratio));
 	}
 
-	function sliceLabel(stat: UnitStats, isLocked = locked): string {
-		return isLocked
-			? `${stat.unit.label}: finish assessing to open this stage`
+	function sliceIsLocked(unitId: UnitId): boolean {
+		return locked && unitId !== "fundamentals";
+	}
+
+	function sliceLabel(stat: UnitStats): string {
+		return sliceIsLocked(stat.unit.id)
+			? `${stat.unit.label}: complete Fundamentals to unlock`
 			: `${stat.unit.label}: ${Math.round(clampRatio(stat.ratio) * 100)}% mastered`;
 	}
 
@@ -64,9 +68,9 @@
 			...pieGeometry,
 			id: TRACK_SERIES_ID,
 			radius: [`${INNER_RADIUS}%`, `${OUTER_RADIUS}%`],
-			// Keep hover live while locked; click handler still no-ops.
+			// Keep hover live while locked; click handler gates lifecycle slices.
 			silent: false,
-			cursor: isLocked ? "not-allowed" : "pointer",
+			cursor: "pointer",
 			z: 1,
 			avoidLabelOverlap: false,
 			label: { show: false },
@@ -84,18 +88,21 @@
 			blur: {
 				itemStyle: { opacity: isLocked ? 0.2 : 0.35 },
 			},
-			data: currentStats.map((stat) => ({
-				value: 1,
-				name: stat.unit.label,
-				itemStyle: {
-					color: `hsla(${stat.unit.hue}, 45%, 50%, ${isLocked ? 0.08 : 0.14})`,
-				},
-				emphasis: {
+			data: currentStats.map((stat) => {
+				const dimmed = sliceIsLocked(stat.unit.id);
+				return {
+					value: 1,
+					name: stat.unit.label,
 					itemStyle: {
-						color: `hsla(${stat.unit.hue}, 55%, 48%, ${isLocked ? 0.32 : 0.5})`,
+						color: `hsla(${stat.unit.hue}, 45%, 50%, ${dimmed ? 0.08 : 0.14})`,
 					},
-				},
-			})),
+					emphasis: {
+						itemStyle: {
+							color: `hsla(${stat.unit.hue}, 55%, 48%, ${dimmed ? 0.32 : 0.5})`,
+						},
+					},
+				};
+			}),
 		};
 
 		const progress = currentStats.flatMap(
@@ -185,7 +192,7 @@
 						return "";
 					}
 					const stat = currentStats[params.dataIndex];
-					return stat ? sliceLabel(stat, isLocked) : "";
+					return stat ? sliceLabel(stat) : "";
 				},
 			},
 			series: [track, ...progress, labels],
@@ -203,16 +210,13 @@
 		};
 
 		chart.on("click", (event) => {
-			if (
-				locked ||
-				event.seriesId !== TRACK_SERIES_ID ||
-				typeof event.dataIndex !== "number"
-			) {
+			if (event.seriesId !== TRACK_SERIES_ID || typeof event.dataIndex !== "number") {
 				return;
 			}
 
 			const stat = stats[event.dataIndex];
-			if (stat) onpick(stat.unit.id);
+			if (!stat || sliceIsLocked(stat.unit.id)) return;
+			onpick(stat.unit.id);
 		});
 
 		$effect(updateChart);
@@ -241,7 +245,9 @@
 		locked && "opacity-80",
 	]}
 	role="group"
-	aria-label={locked ? "Capture chart — finish assessing to explore" : "Mastery wheel"}
+	aria-label={locked
+		? "Capture chart — Fundamentals is open; finish assessing to unlock the rest"
+		: "Mastery wheel"}
 >
 	<div class="absolute inset-0 h-full w-full" aria-hidden="true" {@attach attachChart}></div>
 
@@ -261,7 +267,7 @@
 			<button
 				type="button"
 				class="slice-control"
-				disabled={locked}
+				disabled={sliceIsLocked(stat.unit.id)}
 				onclick={() => onpick(stat.unit.id)}
 			>
 				{sliceLabel(stat)}

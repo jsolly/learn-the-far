@@ -96,7 +96,7 @@ function levelFor(ratio: number): LevelId {
 }
 
 function fundamentalsQuestions(): QuizQuestion[] {
-	return QUESTIONS.filter((q) => q.difficulty === "fundamentals");
+	return QUESTIONS.filter((q) => q.unitId === "fundamentals");
 }
 
 export class QuizGame {
@@ -130,14 +130,6 @@ export class QuizGame {
 	private ensureGateMigration() {
 		if (this.progress.fundamentalsUnlocked) return;
 		if (this.progress.testedOut || this.fundamentalsClearRatio >= TESTOUT_PASS) {
-			this.progress.fundamentalsUnlocked = true;
-			saveProgress(this.progress);
-			return;
-		}
-		const pastBasics = QUESTIONS.some(
-			(q) => q.difficulty !== "fundamentals" && this.isCleared(q.id),
-		);
-		if (pastBasics) {
 			this.progress.fundamentalsUnlocked = true;
 			saveProgress(this.progress);
 		}
@@ -240,6 +232,15 @@ export class QuizGame {
 		return !this.fundamentalsUnlocked;
 	}
 
+	/** Lifecycle slices stay locked until Fundamentals unlocks; Basics stays open. */
+	isUnitLocked(unitId: UnitId): boolean {
+		return !this.fundamentalsUnlocked && unitId !== "fundamentals";
+	}
+
+	canStartUnit(unitId: UnitId): boolean {
+		return !this.isUnitLocked(unitId);
+	}
+
 	private placementWrongCount(): number {
 		return this.outcomes.filter((o) => !o.cleared).length;
 	}
@@ -262,9 +263,9 @@ export class QuizGame {
 	unlockedTiers(unitId: UnitId): Set<Difficulty> {
 		const unlocked = new SvelteSet<Difficulty>(["fundamentals", "core"]);
 		const core = this.questionsIn(unitId).filter((q) => q.difficulty === "core");
+		if (core.length === 0) return unlocked;
 		const clearedCore = core.filter((q) => this.isCleared(q.id)).length;
-		const coreRatio = core.length === 0 ? 1 : clearedCore / core.length;
-		if (coreRatio >= TIER_UNLOCK_RATIO) unlocked.add("advanced");
+		if (clearedCore / core.length >= TIER_UNLOCK_RATIO) unlocked.add("advanced");
 		return unlocked;
 	}
 
@@ -284,7 +285,7 @@ export class QuizGame {
 	// ---- session lifecycle ----
 
 	startUnit(unitId: UnitId) {
-		if (!this.fundamentalsUnlocked) return;
+		if (!this.canStartUnit(unitId)) return;
 		const unlocked = this.unlockedTiers(unitId);
 		const qs = this.questionsIn(unitId).filter((q) => unlocked.has(q.difficulty));
 		// uncleared first, ordered by difficulty ramp; fall back to a review shuffle
@@ -322,9 +323,9 @@ export class QuizGame {
 		this.beginSession("study", null, gaps, "fundamentals-gaps");
 	}
 
-	/** Reveal-first walkthrough of a unit after the gate opens. */
+	/** Reveal-first walkthrough (Fundamentals remains available while gated). */
 	startStudyUnit(unitId: UnitId) {
-		if (!this.fundamentalsUnlocked) return;
+		if (!this.canStartUnit(unitId)) return;
 		const qs = this.questionsIn(unitId);
 		if (qs.length === 0) return;
 		this.beginSession("study", unitId, qs, "unit");
@@ -503,7 +504,7 @@ export class QuizGame {
 		}
 	}
 
-	/** Grandfather only — live unlock happens when placement finishes. */
+	/** Unlock after clearing 80% of the Fundamentals slice. */
 	private maybeUnlockFundamentals(): boolean {
 		if (this.progress.fundamentalsUnlocked) return false;
 		if (this.progress.testedOut || this.fundamentalsClearRatio >= TESTOUT_PASS) {
@@ -517,6 +518,18 @@ export class QuizGame {
 		if (!this.progress.achievements[id]) {
 			this.progress.achievements[id] = new SvelteDate().toISOString();
 			into.push(id);
+		}
+	}
+
+	private creditAllFundamentals() {
+		for (const q of fundamentalsQuestions()) {
+			const prev = this.progress.questions[q.id];
+			this.progress.questions[q.id] = {
+				attempts: (prev?.attempts ?? 0) + 1,
+				bestScore: Math.max(prev?.bestScore ?? 0, 1),
+				cleared: true,
+				lastAt: new SvelteDate().toISOString(),
+			};
 		}
 	}
 
@@ -559,12 +572,17 @@ export class QuizGame {
 		let passedTestOut: boolean | undefined;
 		let unlockedNow = false;
 		if (this.mode === "testout") {
-			// Diagnostic complete — unlock the chart. No score bar.
-			passedTestOut = true;
-			this.progress.testedOut = true;
+			passedTestOut = answered > 0 && scoreSum / answered >= TESTOUT_PASS;
 			const wasLocked = !this.progress.fundamentalsUnlocked;
-			this.progress.fundamentalsUnlocked = true;
-			unlockedNow = wasLocked;
+			// Completing placement unlocks the chart; high score also credits the Basics slice.
+			if (answered > 0) {
+				this.progress.fundamentalsUnlocked = true;
+			}
+			if (passedTestOut) {
+				this.progress.testedOut = true;
+				this.creditAllFundamentals();
+			}
+			unlockedNow = wasLocked && this.progress.fundamentalsUnlocked;
 			this.placementDeck = [];
 		}
 

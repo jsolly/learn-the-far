@@ -19,7 +19,8 @@
 		// Archival planning/spec records — not active content, not lint-gated.
 		"docs/plans/**",
 		"docs/specs/**",
-		// Vendor runtime dir (never tracked) — not repo content.
+		// Agent skill installs (vendored from skills.sh) — not authored repo docs.
+		".agents/**",
 		".claude/**",
 		// CLAUDE.md is a symlink to its sibling AGENTS.md (already linted) — skip to avoid double-linting.
 		"CLAUDE.md",

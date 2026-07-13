@@ -10,6 +10,14 @@
 	let confirmReset = $state(false);
 	let hubPercent = $derived(game.masteryPercent);
 	let hubLabel = $derived("captured");
+	let resetButtonEl: HTMLElement | null = $state(null);
+	let confirmYesEl: HTMLElement | null = $state(null);
+
+	$effect(() => {
+		if (confirmReset) {
+			queueMicrotask(() => confirmYesEl?.focus());
+		}
+	});
 </script>
 
 <div
@@ -46,18 +54,37 @@
 
 	{#if gated}
 		<section class="mt-4 rounded-2xl border-2 border-primary/30 bg-card p-4 sm:mt-6 sm:p-6">
-			<h2 class="text-sm font-semibold leading-snug sm:text-lg">Find your starting point</h2>
+			<h2 class="text-sm font-semibold leading-snug sm:text-lg">Unlock the deal lifecycle</h2>
 			<p class="mt-1 text-xs leading-5 text-muted-foreground sm:mt-2 sm:text-sm sm:leading-6">
-				A few quick questions will seed your capture chart.
+				Learn the Fundamentals at your pace, or take a short placement test to seed your capture
+				chart.
 			</p>
 			{#if game.hasFundamentalsAttempt}
 				<p class="mt-2 text-[0.65rem] tabular-nums text-muted-foreground sm:mt-3 sm:text-xs">
 					{game.masteryPercent}% of the chart already filled from your answers
 				</p>
 			{/if}
-			<div class="mt-4 flex flex-col gap-2 sm:mt-5 sm:gap-3">
-				<Button size="lg" class="w-full sm:h-11 sm:text-base" onclick={() => game.startTestOut()}>
-					{game.hasFundamentalsAttempt ? "Continue" : "See what I know"}
+			<div class="mt-4 grid gap-2 sm:mt-5 sm:grid-cols-2 sm:gap-3">
+				<Button size="lg" class="sm:h-11 sm:text-base" onclick={() => game.startUnit("fundamentals")}>
+					Quiz Fundamentals
+				</Button>
+				<Button
+					size="lg"
+					variant="outline"
+					class="sm:h-11 sm:text-base"
+					onclick={() => game.startStudyUnit("fundamentals")}
+				>
+					Study Fundamentals
+				</Button>
+			</div>
+			<div class="mt-2 flex flex-col gap-2 sm:mt-3 sm:gap-3">
+				<Button
+					size="lg"
+					variant="secondary"
+					class="w-full sm:h-11 sm:text-base"
+					onclick={() => game.startTestOut()}
+				>
+					{game.hasFundamentalsAttempt ? "Continue placement" : "See what I know"}
 				</Button>
 				{#if game.hasFundamentalsAttempt && game.fundamentalsGaps.length > 0}
 					<Button
@@ -81,7 +108,7 @@
 				onclick={() => game.startDaily()}
 				class="flex items-center gap-3 rounded-2xl border-2 p-4 text-left transition-all enabled:hover:border-primary/50 enabled:hover:bg-muted/40 disabled:opacity-60 sm:gap-4 sm:p-5 lg:p-6"
 			>
-				<span class="text-2xl sm:text-3xl">{game.dailyDoneToday ? "✅" : "📰"}</span>
+				<span class="text-2xl sm:text-3xl" aria-hidden="true">{game.dailyDoneToday ? "✅" : "📰"}</span>
 				<div class="min-w-0 flex-1">
 					<p class="font-semibold leading-tight sm:text-lg">Daily challenge</p>
 					<p class="text-xs text-muted-foreground sm:text-sm">
@@ -97,7 +124,7 @@
 					onclick={() => game.startStudyMisses()}
 					class="flex items-center gap-3 rounded-2xl border-2 p-4 text-left transition-all hover:border-primary/50 hover:bg-muted/40 sm:gap-4 sm:p-5 lg:p-6"
 				>
-					<span class="text-2xl sm:text-3xl">📖</span>
+					<span class="text-2xl sm:text-3xl" aria-hidden="true">📖</span>
 					<div class="min-w-0 flex-1">
 						<p class="font-semibold leading-tight sm:text-lg">Study what you need</p>
 						<p class="text-xs text-muted-foreground sm:text-sm">
@@ -109,62 +136,79 @@
 				</button>
 			{/if}
 		</div>
+	{/if}
 
-		<h2
-			class="mb-2 mt-6 text-xs font-semibold uppercase tracking-wide text-muted-foreground sm:mb-3 sm:mt-8 sm:text-sm"
-		>
-			Capture slices
-		</h2>
-		<div class="flex flex-col gap-2 sm:gap-3">
-			{#each stats as s (s.unit.id)}
-				<div class="rounded-2xl border-2 border-border bg-card p-3 sm:p-4 lg:p-5">
-					<div class="flex items-start gap-3 sm:gap-4">
-						<span
-							class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white sm:h-12 sm:w-12 sm:text-base"
-							style={`background:hsl(${s.unit.hue} 70% 52%)`}
+	<h2
+		class="mb-2 mt-6 text-xs font-semibold uppercase tracking-wide text-muted-foreground sm:mb-3 sm:mt-8 sm:text-sm"
+	>
+		Fundamentals & capture slices
+	</h2>
+	<div class="flex flex-col gap-2 sm:gap-3">
+		{#each stats as s (s.unit.id)}
+			{@const lifecycleLocked = game.isUnitLocked(s.unit.id)}
+			<div class="rounded-2xl border-2 border-border bg-card p-3 sm:p-4 lg:p-5">
+				<div class="flex items-start gap-3 sm:gap-4">
+					<span
+						class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white sm:h-12 sm:w-12 sm:text-base"
+						class:opacity-50={lifecycleLocked}
+						style={`background:hsl(${s.unit.hue} 70% 52%)`}
+					>
+						{Math.round(s.ratio * 100)}%
+					</span>
+					<div class="min-w-0 flex-1">
+						<div class="flex flex-wrap items-center gap-2 sm:gap-x-3">
+							<h3 class="font-semibold leading-tight sm:text-lg">{s.unit.title}</h3>
+							{#if lifecycleLocked}
+								<Badge variant="secondary" class="shrink-0 text-[0.65rem] sm:text-xs">Locked</Badge>
+							{:else if s.level !== "new"}
+								<Badge variant="secondary" class="shrink-0 text-[0.65rem] sm:text-xs"
+									>{s.levelLabel}</Badge
+								>
+							{/if}
+							{#if lifecycleLocked}
+								<span class="text-[0.65rem] text-muted-foreground sm:text-xs">
+									Complete Fundamentals to unlock
+								</span>
+							{:else if game.workingTier(s.unit.id) === "advanced"}
+								<span class="text-[0.65rem] text-muted-foreground sm:text-xs">
+									{DIFFICULTY_LABEL.advanced}
+								</span>
+							{/if}
+						</div>
+						<p class="mt-0.5 text-xs text-muted-foreground sm:text-sm">{s.unit.blurb}</p>
+						<div
+							class="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-muted sm:mt-2 sm:h-2"
+							class:opacity-50={lifecycleLocked}
 						>
-							{Math.round(s.ratio * 100)}%
-						</span>
-						<div class="min-w-0 flex-1">
-							<div class="flex flex-wrap items-center gap-2 sm:gap-x-3">
-								<p class="font-semibold leading-tight sm:text-lg">{s.unit.title}</p>
-								{#if s.level !== "new"}
-									<Badge variant="secondary" class="shrink-0 text-[0.65rem] sm:text-xs"
-										>{s.levelLabel}</Badge
-									>
-								{/if}
-								{#if game.workingTier(s.unit.id) === "advanced"}
-									<span class="text-[0.65rem] text-muted-foreground sm:text-xs">
-										{DIFFICULTY_LABEL.advanced}
-									</span>
-								{/if}
-							</div>
-							<p class="mt-0.5 text-xs text-muted-foreground sm:text-sm">{s.unit.blurb}</p>
-							<div class="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-muted sm:mt-2 sm:h-2">
-								<div
-									class="h-full rounded-full transition-all"
-									style={`width:${s.ratio * 100}%; background:hsl(${s.unit.hue} 70% 52%)`}
-								></div>
-							</div>
+							<div
+								class="h-full rounded-full transition-all"
+								style={`width:${s.ratio * 100}%; background:hsl(${s.unit.hue} 70% 52%)`}
+							></div>
 						</div>
 					</div>
-					<div class="mt-3 flex gap-2 sm:mt-4 sm:gap-3">
-						<Button class="flex-1" size="sm" onclick={() => game.startUnit(s.unit.id)}>
-							Quiz me
-						</Button>
-						<Button
-							class="flex-1"
-							size="sm"
-							variant="outline"
-							onclick={() => game.startStudyUnit(s.unit.id)}
-						>
-							Study this
-						</Button>
-					</div>
 				</div>
-			{/each}
-		</div>
-	{/if}
+				<div class="mt-3 flex gap-2 sm:mt-4 sm:gap-3">
+					<Button
+						class="flex-1"
+						size="sm"
+						disabled={lifecycleLocked}
+						onclick={() => game.startUnit(s.unit.id)}
+					>
+						Quiz me
+					</Button>
+					<Button
+						class="flex-1"
+						size="sm"
+						variant="outline"
+						disabled={lifecycleLocked}
+						onclick={() => game.startStudyUnit(s.unit.id)}
+					>
+						Study this
+					</Button>
+				</div>
+			</div>
+		{/each}
+	</div>
 
 	{#if game.hasProgress}
 		<div class="mt-8 flex justify-center sm:mt-10">
@@ -172,6 +216,7 @@
 				<div class="flex items-center gap-2 text-sm">
 					<span class="text-muted-foreground">Wipe all local progress?</span>
 					<Button
+						bind:ref={confirmYesEl}
 						variant="destructive"
 						size="sm"
 						onclick={() => {
@@ -179,10 +224,18 @@
 							confirmReset = false;
 						}}>Yes</Button
 					>
-					<Button variant="outline" size="sm" onclick={() => (confirmReset = false)}>No</Button>
+					<Button
+						variant="outline"
+						size="sm"
+						onclick={() => {
+							confirmReset = false;
+							queueMicrotask(() => resetButtonEl?.focus());
+						}}>No</Button
+					>
 				</div>
 			{:else}
 				<Button
+					bind:ref={resetButtonEl}
 					variant="ghost"
 					size="sm"
 					class="text-muted-foreground"
