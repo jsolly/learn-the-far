@@ -60,7 +60,7 @@
 	</header>
 
 	<div class="mt-4 sm:mt-6">
-		<PieWheel {stats} locked={gated} onpick={(id) => game.startUnit(id)} />
+		<PieWheel {stats} hubPercent={game.masteryPercent} locked={gated} />
 	</div>
 
 	{#if gated}
@@ -187,13 +187,23 @@
 						</div>
 						<p class="mt-0.5 text-xs text-muted-foreground sm:text-sm">{s.unit.blurb}</p>
 						<div
-							class="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-muted sm:mt-2 sm:h-2"
+							class="mt-1.5 flex h-1.5 w-full overflow-hidden rounded-full bg-muted sm:mt-2 sm:h-2"
 							class:opacity-50={lifecycleLocked}
 						>
-							<div
-								class="h-full rounded-full transition-all"
-								style={`width:${s.ratio * 100}%; background:hsl(${s.unit.hue} 70% 52%)`}
-							></div>
+							{#if s.masteredRatio > 0}
+								<div
+									class="h-full transition-all"
+									style={`width:${s.masteredRatio * 100}%; background:hsl(${s.unit.hue} 72% 48%)`}
+									title="Mastered"
+								></div>
+							{/if}
+							{#if s.learningRatio > 0}
+								<div
+									class="h-full transition-all"
+									style={`width:${s.learningRatio * 100}%; background:hsl(${s.unit.hue} 55% 68%)`}
+									title="Learning"
+								></div>
+							{/if}
 						</div>
 					</div>
 				</div>

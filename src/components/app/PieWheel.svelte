@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { PieChart, type PieSeriesOption } from "echarts/charts";
-	import { TooltipComponent, type TooltipComponentOption } from "echarts/components";
 	import { type ComposeOption, init, use } from "echarts/core";
 	import { LabelLayout } from "echarts/features";
 	import { SVGRenderer } from "echarts/renderers";
@@ -11,23 +10,23 @@
 
 	type Props = {
 		stats: UnitStats[];
-		/** When true, lifecycle slices are dimmed; Fundamentals stays selectable. */
+		/** Overall mastery shown in the ALEKS-style center hub. */
+		hubPercent: number;
+		/** When true, lifecycle slices are dimmed. */
 		locked?: boolean;
-		onpick: (unitId: UnitId) => void;
 	};
 
-	type WheelOption = ComposeOption<PieSeriesOption | TooltipComponentOption>;
+	type WheelOption = ComposeOption<PieSeriesOption>;
 
-	/** Leave room for emphasis.scaleSize so hover can grow without clipping. */
-	const OUTER_RADIUS = 88;
+	const OUTER_RADIUS = 92;
+	/** Donut hole — fill grows from this edge outward (ALEKS pie). */
+	const INNER_RADIUS = 36;
 	const PAD_ANGLE = 2;
-	const TRACK_SERIES_ID = "wheel-track";
 	const LABEL_SERIES_ID = "wheel-labels";
-	const HOVER_SCALE_SIZE = 8;
 
-	use([PieChart, TooltipComponent, LabelLayout, SVGRenderer]);
+	use([PieChart, LabelLayout, SVGRenderer]);
 
-	let { stats, locked = false, onpick }: Props = $props();
+	let { stats, hubPercent, locked = false }: Props = $props();
 
 	function clampRatio(ratio: number): number {
 		return Math.min(1, Math.max(0, ratio));
@@ -37,14 +36,69 @@
 		return isLocked && unitId !== "fundamentals";
 	}
 
-	function sliceLabel(stat: UnitStats, isLocked = locked): string {
-		return sliceIsLocked(stat.unit.id, isLocked)
-			? `${stat.unit.label}: complete Fundamentals to unlock`
-			: `${stat.unit.label}: ${Math.round(clampRatio(stat.ratio) * 100)}% mastered`;
-	}
-
 	function chartLabelFontSize(chartWidth: number): number {
 		return Math.round(Math.min(14, Math.max(11, chartWidth / 32)));
+	}
+
+	function progressOuterRadius(ratio: number): number {
+		const band = OUTER_RADIUS - INNER_RADIUS;
+		return INNER_RADIUS + band * clampRatio(ratio);
+	}
+
+	function sliceSummary(stat: UnitStats, isLocked = locked): string {
+		if (sliceIsLocked(stat.unit.id, isLocked)) {
+			return `${stat.unit.label}: locked`;
+		}
+		const masteredPct = Math.round(clampRatio(stat.masteredRatio) * 100);
+		const learningPct = Math.round(clampRatio(stat.learningRatio) * 100);
+		const capturedPct = Math.round(clampRatio(stat.ratio) * 100);
+		return `${stat.unit.label}: ${capturedPct}% captured (${masteredPct}% mastered, ${learningPct}% learning)`;
+	}
+
+	function sliceFill(
+		currentStats: UnitStats[],
+		stat: UnitStats,
+		progressIndex: number,
+		kind: "learning" | "mastered",
+		isLocked: boolean,
+	): PieSeriesOption | null {
+		const masteredRatio = clampRatio(stat.masteredRatio);
+		const learningRatio = clampRatio(stat.learningRatio);
+		const capturedRatio = clampRatio(masteredRatio + learningRatio);
+		if (kind === "learning" && learningRatio === 0) return null;
+		if (kind === "mastered" && masteredRatio === 0) return null;
+
+		const outer =
+			kind === "learning"
+				? progressOuterRadius(capturedRatio)
+				: progressOuterRadius(masteredRatio);
+		const dimmed = sliceIsLocked(stat.unit.id, isLocked);
+		const color =
+			kind === "mastered"
+				? `hsla(${stat.unit.hue}, 72%, 48%, ${dimmed ? 0.22 : 1})`
+				: `hsla(${stat.unit.hue}, 55%, 68%, ${dimmed ? 0.14 : 0.85})`;
+
+		return {
+			type: "pie",
+			center: ["50%", "50%"],
+			startAngle: 90,
+			clockwise: true,
+			padAngle: PAD_ANGLE,
+			id: `wheel-${kind}-${stat.unit.id}`,
+			radius: [`${INNER_RADIUS}%`, `${outer}%`],
+			silent: true,
+			z: kind === "learning" ? 2 : 3,
+			label: { show: false },
+			labelLine: { show: false },
+			emphasis: { disabled: true },
+			data: currentStats.map((slice, sliceIndex) => ({
+				value: 1,
+				name: slice.unit.label,
+				itemStyle: {
+					color: sliceIndex === progressIndex ? color : "transparent",
+				},
+			})),
+		};
 	}
 
 	function createOption(
@@ -62,28 +116,15 @@
 
 		const track: PieSeriesOption = {
 			...pieGeometry,
-			id: TRACK_SERIES_ID,
-			radius: ["0%", `${OUTER_RADIUS}%`],
-			// Keep hover live while locked; click handler gates lifecycle slices.
-			silent: false,
-			cursor: "pointer",
+			id: "wheel-track",
+			radius: [`${INNER_RADIUS}%`, `${OUTER_RADIUS}%`],
+			silent: true,
+			cursor: "default",
 			z: 1,
 			avoidLabelOverlap: false,
 			label: { show: false },
 			labelLine: { show: false },
-			emphasis: {
-				scale: true,
-				scaleSize: HOVER_SCALE_SIZE,
-				focus: "self",
-				itemStyle: {
-					shadowBlur: 12,
-					shadowOffsetX: 0,
-					shadowColor: "rgba(0, 0, 0, 0.28)",
-				},
-			},
-			blur: {
-				itemStyle: { opacity: isLocked ? 0.2 : 0.35 },
-			},
+			emphasis: { disabled: true },
 			data: currentStats.map((stat) => {
 				const dimmed = sliceIsLocked(stat.unit.id, isLocked);
 				return {
@@ -92,53 +133,24 @@
 					itemStyle: {
 						color: `hsla(${stat.unit.hue}, 45%, 50%, ${dimmed ? 0.08 : 0.14})`,
 					},
-					emphasis: {
-						itemStyle: {
-							color: `hsla(${stat.unit.hue}, 55%, 48%, ${dimmed ? 0.32 : 0.5})`,
-						},
-					},
 				};
 			}),
 		};
 
-		const progress = currentStats.flatMap(
-			(stat, progressIndex): PieSeriesOption[] => {
-				const ratio = clampRatio(stat.ratio);
-				if (ratio === 0) return [];
-				const dimmed = sliceIsLocked(stat.unit.id, isLocked);
-
-				return [
-					{
-						...pieGeometry,
-						id: `wheel-progress-${stat.unit.id}`,
-						radius: ["0%", `${OUTER_RADIUS * ratio}%`],
-						silent: true,
-						z: 2,
-						label: { show: false },
-						labelLine: { show: false },
-						// Keep progress rings still while the track scales on hover.
-						emphasis: { disabled: true },
-						data: currentStats.map((slice, sliceIndex) => ({
-							value: 1,
-							name: slice.unit.label,
-							itemStyle: {
-								color:
-									sliceIndex === progressIndex
-										? `hsla(${stat.unit.hue}, 70%, 52%, ${dimmed ? 0.18 : 1})`
-										: "transparent",
-							},
-						})),
-					},
-				];
-			},
-		);
+		const progress = currentStats.flatMap((stat, progressIndex): PieSeriesOption[] => {
+			const layers = [
+				sliceFill(currentStats, stat, progressIndex, "learning", isLocked),
+				sliceFill(currentStats, stat, progressIndex, "mastered", isLocked),
+			];
+			return layers.filter((layer): layer is PieSeriesOption => layer !== null);
+		});
 
 		const labels: PieSeriesOption = {
 			...pieGeometry,
 			id: LABEL_SERIES_ID,
-			radius: ["0%", `${OUTER_RADIUS}%`],
+			radius: [`${INNER_RADIUS}%`, `${OUTER_RADIUS}%`],
 			silent: true,
-			z: 3,
+			z: 4,
 			avoidLabelOverlap: false,
 			emphasis: { disabled: true },
 			label: {
@@ -167,23 +179,6 @@
 		return {
 			animationDuration: 500,
 			animationDurationUpdate: 500,
-			tooltip: {
-				trigger: "item",
-				confine: true,
-				formatter: (params) => {
-					if (
-						typeof params !== "object" ||
-						params === null ||
-						!("seriesId" in params) ||
-						params.seriesId !== TRACK_SERIES_ID ||
-						typeof params.dataIndex !== "number"
-					) {
-						return "";
-					}
-					const stat = currentStats[params.dataIndex];
-					return stat ? sliceLabel(stat, isLocked) : "";
-				},
-			},
 			series: [track, ...progress, labels],
 		};
 	}
@@ -197,16 +192,6 @@
 				notMerge: true,
 			});
 		};
-
-		chart.on("click", (event) => {
-			if (event.seriesId !== TRACK_SERIES_ID || typeof event.dataIndex !== "number") {
-				return;
-			}
-
-			const stat = stats[event.dataIndex];
-			if (!stat || sliceIsLocked(stat.unit.id)) return;
-			onpick(stat.unit.id);
-		});
 
 		$effect(updateChart);
 
@@ -226,63 +211,50 @@
 			chart.dispose();
 		};
 	};
+
+	let wheelDescription = $derived(
+		[
+			locked
+				? `Mastery wheel — ${hubPercent}% captured. Fundamentals is available; clear 80% or pass the test to unlock lifecycle slices.`
+				: `Mastery wheel — ${hubPercent}% captured.`,
+			...stats.map((stat) => sliceSummary(stat)),
+		].join(" "),
+	);
 </script>
 
 <div
 	class="relative mx-auto aspect-square w-full max-w-[20rem] sm:max-w-[26rem] lg:max-w-[28rem]"
-	role="group"
-	aria-label={locked
-		? "Mastery wheel — Fundamentals is available; clear 80% or pass the test to unlock lifecycle slices"
-		: "Mastery wheel"}
+	role="img"
+	aria-label={wheelDescription}
 >
 	<div class="absolute inset-0 h-full w-full" aria-hidden="true" {@attach attachChart}></div>
 
-	<div class="pointer-events-none absolute inset-0 z-20">
-		{#each stats as stat (stat.unit.id)}
-			<button
-				type="button"
-				class="slice-control"
-				disabled={sliceIsLocked(stat.unit.id)}
-				onclick={() => onpick(stat.unit.id)}
+	<!-- ALEKS-style center hub: overall progress -->
+	<div class="pointer-events-none absolute inset-0 z-10 flex items-center justify-center" aria-hidden="true">
+		<div
+			class="flex flex-col items-center justify-center rounded-full border-2 bg-card shadow-sm"
+			class:border-primary={locked}
+			class:border-border={!locked}
+			style={`width: ${INNER_RADIUS}%; aspect-ratio: 1`}
+		>
+			<span class="text-2xl font-bold tabular-nums leading-none sm:text-3xl">{hubPercent}%</span>
+			<span class="mt-1 text-[0.65rem] uppercase tracking-wide text-muted-foreground sm:text-xs"
+				>captured</span
 			>
-				{sliceLabel(stat)}
-			</button>
-		{/each}
+		</div>
 	</div>
 </div>
 
-<style>
-	.slice-control {
-		position: absolute;
-		width: 1px;
-		height: 1px;
-		padding: 0;
-		margin: -1px;
-		overflow: hidden;
-		clip: rect(0, 0, 0, 0);
-		white-space: nowrap;
-		border: 0;
-	}
-
-	.slice-control:focus-visible {
-		pointer-events: auto;
-		left: 50%;
-		bottom: 0.75rem;
-		z-index: 1;
-		width: max-content;
-		max-width: calc(100% - 1.5rem);
-		height: auto;
-		padding: 0.4rem 0.65rem;
-		margin: 0;
-		overflow: visible;
-		clip: auto;
-		white-space: normal;
-		color: var(--color-card-foreground);
-		background: var(--color-card);
-		border: 2px solid var(--color-foreground);
-		border-radius: 0.375rem;
-		outline: 2px solid var(--color-background);
-		outline-offset: 2px;
-		transform: translateX(-50%);
-	}
-</style>
+<p
+	class="mt-2 flex items-center justify-center gap-4 text-[0.65rem] text-muted-foreground sm:mt-3 sm:gap-5 sm:text-xs"
+	aria-hidden="true"
+>
+	<span class="inline-flex items-center gap-1.5">
+		<span class="size-2.5 rounded-sm bg-[hsl(210_72%_48%)]"></span>
+		Mastered
+	</span>
+	<span class="inline-flex items-center gap-1.5">
+		<span class="size-2.5 rounded-sm bg-[hsl(210_55%_68%)]"></span>
+		Learning
+	</span>
+</p>

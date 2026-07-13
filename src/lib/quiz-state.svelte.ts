@@ -13,6 +13,7 @@ import {
 	DIFFICULTY_ORDER,
 	LEVELS,
 	type LevelId,
+	MASTERED_CORRECT_COUNT,
 	SESSION_LENGTH,
 	STREAK_MILESTONES,
 	TESTOUT_LENGTH,
@@ -134,6 +135,24 @@ export class QuizGame {
 		return this.recordFor(id)?.cleared ?? false;
 	}
 
+	/** How many times this question has been cleared (legacy records inferred). */
+	private timesCorrect(id: string): number {
+		const r = this.recordFor(id);
+		if (!r?.cleared) return 0;
+		if (typeof r.correctCount === "number") return r.correctCount;
+		// Pre-correctCount records: multi-attempt clears count as mastered.
+		return (r.attempts ?? 0) >= MASTERED_CORRECT_COUNT ? MASTERED_CORRECT_COUNT : 1;
+	}
+
+	private isMastered(id: string): boolean {
+		return this.timesCorrect(id) >= MASTERED_CORRECT_COUNT;
+	}
+
+	private isLearning(id: string): boolean {
+		const n = this.timesCorrect(id);
+		return n > 0 && n < MASTERED_CORRECT_COUNT;
+	}
+
 	// ---- derived stats for the pie + home ----
 
 	unitStats(unitId: UnitId): UnitStats {
@@ -141,10 +160,25 @@ export class QuizGame {
 		const qs = this.questionsIn(unitId);
 		const total = qs.length;
 		const cleared = qs.filter((q) => this.isCleared(q.id)).length;
+		const mastered = qs.filter((q) => this.isMastered(q.id)).length;
+		const learning = qs.filter((q) => this.isLearning(q.id)).length;
 		const ratio = total === 0 ? 0 : cleared / total;
+		const masteredRatio = total === 0 ? 0 : mastered / total;
+		const learningRatio = total === 0 ? 0 : learning / total;
 		const level = levelFor(ratio);
 		const levelLabel = LEVELS.find((l) => l.id === level)?.label ?? "New";
-		return { unit, total, cleared, ratio, level, levelLabel };
+		return {
+			unit,
+			total,
+			cleared,
+			mastered,
+			learning,
+			ratio,
+			masteredRatio,
+			learningRatio,
+			level,
+			levelLabel,
+		};
 	}
 
 	get allStats(): UnitStats[] {
@@ -371,10 +405,19 @@ export class QuizGame {
 
 	private persistOutcome(outcome: AnswerOutcome) {
 		const prev = this.progress.questions[outcome.questionId];
+		const prevCorrect =
+			typeof prev?.correctCount === "number"
+				? prev.correctCount
+				: prev?.cleared
+					? (prev.attempts ?? 0) >= MASTERED_CORRECT_COUNT
+						? MASTERED_CORRECT_COUNT
+						: 1
+					: 0;
 		this.progress.questions[outcome.questionId] = {
 			attempts: (prev?.attempts ?? 0) + 1,
 			bestScore: Math.max(prev?.bestScore ?? 0, outcome.score),
 			cleared: (prev?.cleared ?? false) || outcome.cleared,
+			correctCount: prevCorrect + (outcome.cleared ? 1 : 0),
 			lastAt: new SvelteDate().toISOString(),
 		};
 	}
@@ -480,10 +523,19 @@ export class QuizGame {
 	private creditAllFundamentals() {
 		for (const q of fundamentalsQuestions()) {
 			const prev = this.progress.questions[q.id];
+			const prevCorrect =
+				typeof prev?.correctCount === "number"
+					? prev.correctCount
+					: prev?.cleared
+						? (prev.attempts ?? 0) >= MASTERED_CORRECT_COUNT
+							? MASTERED_CORRECT_COUNT
+							: 1
+						: 0;
 			this.progress.questions[q.id] = {
 				attempts: (prev?.attempts ?? 0) + 1,
 				bestScore: Math.max(prev?.bestScore ?? 0, 1),
 				cleared: true,
+				correctCount: Math.max(prevCorrect + 1, MASTERED_CORRECT_COUNT),
 				lastAt: new SvelteDate().toISOString(),
 			};
 		}

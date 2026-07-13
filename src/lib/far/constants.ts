@@ -31,6 +31,9 @@ export const TIER_SCORE: Record<OptionTier, number> = {
 // A question counts as "cleared" (advances unit mastery) at or above this score.
 export const CLEAR_THRESHOLD = 0.6;
 
+// Cleared this many times → "mastered" (solid pie tone). Once → "learning".
+export const MASTERED_CORRECT_COUNT = 2;
+
 // Mastery tiers a slice climbs as its cleared-question ratio rises.
 export const LEVELS = [
 	{ id: "new", label: "New", min: 0 },
