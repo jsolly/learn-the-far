@@ -11,7 +11,7 @@
 
 	type Props = {
 		stats: UnitStats[];
-		/** Center hub percentage (mastery when unlocked, fundamentals when gated). */
+		/** Center hub percentage (overall mastery). */
 		hubPercent: number;
 		hubLabel: string;
 		/** When true, lifecycle slices are dimmed; Fundamentals stays selectable. */

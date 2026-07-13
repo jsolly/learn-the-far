@@ -132,14 +132,6 @@ export class QuizGame {
 		if (this.progress.testedOut || this.fundamentalsClearRatio >= TESTOUT_PASS) {
 			this.progress.fundamentalsUnlocked = true;
 			saveProgress(this.progress);
-			return;
-		}
-		const pastBasics = QUESTIONS.some(
-			(q) => q.unitId !== "fundamentals" && this.isCleared(q.id),
-		);
-		if (pastBasics) {
-			this.progress.fundamentalsUnlocked = true;
-			saveProgress(this.progress);
 		}
 	}
 
@@ -240,6 +232,15 @@ export class QuizGame {
 		return !this.fundamentalsUnlocked;
 	}
 
+	/** Lifecycle slices stay locked until Fundamentals unlocks; Basics stays open. */
+	isUnitLocked(unitId: UnitId): boolean {
+		return !this.fundamentalsUnlocked && unitId !== "fundamentals";
+	}
+
+	canStartUnit(unitId: UnitId): boolean {
+		return !this.isUnitLocked(unitId);
+	}
+
 	private placementWrongCount(): number {
 		return this.outcomes.filter((o) => !o.cleared).length;
 	}
@@ -262,9 +263,9 @@ export class QuizGame {
 	unlockedTiers(unitId: UnitId): Set<Difficulty> {
 		const unlocked = new SvelteSet<Difficulty>(["fundamentals", "core"]);
 		const core = this.questionsIn(unitId).filter((q) => q.difficulty === "core");
+		if (core.length === 0) return unlocked;
 		const clearedCore = core.filter((q) => this.isCleared(q.id)).length;
-		const coreRatio = core.length === 0 ? 1 : clearedCore / core.length;
-		if (coreRatio >= TIER_UNLOCK_RATIO) unlocked.add("advanced");
+		if (clearedCore / core.length >= TIER_UNLOCK_RATIO) unlocked.add("advanced");
 		return unlocked;
 	}
 
@@ -284,7 +285,7 @@ export class QuizGame {
 	// ---- session lifecycle ----
 
 	startUnit(unitId: UnitId) {
-		if (!this.fundamentalsUnlocked && unitId !== "fundamentals") return;
+		if (!this.canStartUnit(unitId)) return;
 		const unlocked = this.unlockedTiers(unitId);
 		const qs = this.questionsIn(unitId).filter((q) => unlocked.has(q.difficulty));
 		// uncleared first, ordered by difficulty ramp; fall back to a review shuffle
@@ -324,7 +325,7 @@ export class QuizGame {
 
 	/** Reveal-first walkthrough (Fundamentals remains available while gated). */
 	startStudyUnit(unitId: UnitId) {
-		if (!this.fundamentalsUnlocked && unitId !== "fundamentals") return;
+		if (!this.canStartUnit(unitId)) return;
 		const qs = this.questionsIn(unitId);
 		if (qs.length === 0) return;
 		this.beginSession("study", unitId, qs, "unit");
@@ -573,12 +574,13 @@ export class QuizGame {
 		if (this.mode === "testout") {
 			passedTestOut = answered > 0 && scoreSum / answered >= TESTOUT_PASS;
 			const wasLocked = !this.progress.fundamentalsUnlocked;
+			// Completing placement unlocks the chart; high score also credits the Basics slice.
+			if (answered > 0) {
+				this.progress.fundamentalsUnlocked = true;
+			}
 			if (passedTestOut) {
 				this.progress.testedOut = true;
 				this.creditAllFundamentals();
-			}
-			if (passedTestOut || this.maybeUnlockFundamentals()) {
-				this.progress.fundamentalsUnlocked = true;
 			}
 			unlockedNow = wasLocked && this.progress.fundamentalsUnlocked;
 			this.placementDeck = [];
