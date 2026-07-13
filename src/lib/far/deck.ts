@@ -8,7 +8,7 @@ export const UNITS: LifecycleUnit[] = [
 	{
 		"id": "fundamentals",
 		"label": "Basics",
-		"title": "Fundamentals",
+		"title": "Master the Basics",
 		"blurb": "Acronyms, vehicles, and FAR terms every Prime capture teammate should know cold.",
 		"hue": 200
 	},

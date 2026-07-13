@@ -116,7 +116,7 @@
 				<Badge variant="secondary" class="border-0">Study</Badge>
 			{/if}
 			<Badge style={`background:hsl(${unit.hue} 70% 52%); color:white`} class="border-0">{unit.title}</Badge>
-			{#if DIFFICULTY_LABEL[q.difficulty] !== unit.title}
+			{#if unit.id !== q.difficulty && DIFFICULTY_LABEL[q.difficulty] !== unit.title}
 				<Badge variant="outline">{DIFFICULTY_LABEL[q.difficulty]}</Badge>
 			{/if}
 			{#if !studying}
