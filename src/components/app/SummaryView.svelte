@@ -55,10 +55,13 @@
 				{s.mode === "daily" ? "Daily challenge" : s.unit?.title}
 			</div>
 			<div
-				class="flex h-32 w-32 items-center justify-center rounded-full text-4xl font-bold tabular-nums"
+				class="flex size-36 items-center justify-center rounded-full p-3"
 				style={`background: conic-gradient(hsl(${s.unit?.hue ?? 210} 70% 52%) ${s.scorePct}%, var(--color-muted) 0);`}
+				aria-hidden="true"
 			>
-				<span class="flex h-24 w-24 items-center justify-center rounded-full bg-background">
+				<span
+					class="flex size-full items-center justify-center rounded-full bg-background text-3xl font-bold tabular-nums tracking-tight"
+				>
 					{s.scorePct}%
 				</span>
 			</div>
