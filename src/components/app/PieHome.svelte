@@ -133,9 +133,9 @@
 										>{s.levelLabel}</Badge
 									>
 								{/if}
-								{#if DIFFICULTY_LABEL[game.workingTier(s.unit.id)] !== s.unit.title}
+								{#if game.workingTier(s.unit.id) === "advanced"}
 									<span class="text-[0.65rem] text-muted-foreground sm:text-xs">
-										{DIFFICULTY_LABEL[game.workingTier(s.unit.id)]}
+										{DIFFICULTY_LABEL.advanced}
 									</span>
 								{/if}
 							</div>
