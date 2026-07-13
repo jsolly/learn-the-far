@@ -251,10 +251,7 @@
 		<div class="fixed inset-x-0 bottom-0 border-t bg-background/95 backdrop-blur">
 			<div class="mx-auto flex w-full max-w-2xl items-center justify-between gap-3 px-4 py-3">
 				{#if studying}
-					<span class="text-xs text-muted-foreground">
-						{game.willFinishAfterNext ? "Last card" : "Keep reading"}
-					</span>
-					<Button size="lg" class="flex-1 sm:flex-none sm:px-10" onclick={() => game.next()}>
+					<Button size="lg" class="w-full sm:ml-auto sm:w-auto sm:px-10" onclick={() => game.next()}>
 						{game.willFinishAfterNext ? "Finish" : "Continue"}
 					</Button>
 				{:else if answered}
