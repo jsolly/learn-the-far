@@ -30,10 +30,8 @@ export type QuizProgress = {
 
 // ---- Engine + views (owned by quiz-state.svelte.ts, consumed by components) ----
 
-export type View = "home" | "session" | "summary";
-export type SessionMode = "unit" | "daily" | "testout" | "study";
-/** What a reveal-first study session is pulling from. */
-export type StudyKind = "fundamentals-gaps" | "unit" | "misses";
+export type View = "home" | "session" | "summary" | "chapter" | "shelf";
+export type SessionMode = "unit" | "daily" | "testout";
 
 export type UnitStats = {
 	unit: LifecycleUnit;
@@ -60,6 +58,5 @@ export type SessionSummary = {
 	passedTestOut?: boolean;
 	/** True when this testout session just lifted the fundamentals hard gate. */
 	unlockedNow?: boolean;
-	studyKind?: StudyKind;
 	newAchievements: string[];
 };
