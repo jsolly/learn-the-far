@@ -535,9 +535,13 @@ export class QuizGame {
 		const q = this.currentQuestion;
 		if (!q) return;
 
+		// Clear answer chrome before advancing the queue so the next question
+		// never paints one frame as already-answered (shared a/b/c/d option ids
+		// would otherwise flash the new correct option green).
+		this.answeredOptionId = null;
+
 		if (this.mode === "testout") {
 			this.queue = this.queue.slice(1);
-			this.answeredOptionId = null;
 
 			if (this.queue.length === 0) {
 				this.finishSession();
@@ -553,8 +557,6 @@ export class QuizGame {
 			this.requeued.add(q.id);
 			this.queue = [...this.queue, q.id];
 		}
-
-		this.answeredOptionId = null;
 
 		if (this.queue.length === 0) {
 			this.finishSession();

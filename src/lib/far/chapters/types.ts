@@ -23,12 +23,13 @@ export type FurtherReading = {
 export type ChapterPiece = {
 	id: string;
 	title: string;
-	/** Optional narrative lead-in before the definitional spine. */
+	/** Optional concrete scene that makes the concept stick. */
 	story?: string;
-	is: string;
-	isNot: string;
-	fits: string;
-	/** Optional judgment / field-use cue after the definitional triad. */
+	/** Primary teaching prose — explains the concept/term the quiz will test. */
+	teach: string;
+	/** Common mix-up or near-miss the quiz distractors exploit. */
+	watchFor?: string;
+	/** Optional judgment / field-use cue after the teaching. */
 	judgment?: string;
 	/** Short field checklist items. */
 	checklist?: string[];

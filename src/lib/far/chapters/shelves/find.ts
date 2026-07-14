@@ -22,10 +22,10 @@ export const FIND_SHELF_CHAPTERS: Chapter[] = [
 				title: "Classify the notice before you treat it as demand",
 				story:
 					"A Friday SAM.gov alert lands with the right agency name and a familiar mission phrase. Someone forwards it as “the RFP.” The analyst who opens the notice first still has one job: name the notice type before anyone starts a full proposal plan.",
-				is: "A sources-sought or similar market-research notice asks for capability, capacity, and planning input. It can shape acquisition strategy, but it does not request an offer the Government can accept to form a contract. A solicitation is the instrument that invites offers or quotations for award.",
-				isNot:
-					"It is not automatic award if you answer first, not a guarantee of a later competition structure, and not a cue to submit binding price and a full technical volume unless the notice actually asks for offers.",
-				fits: "Use this at intake: label the lead by notice type, then decide response depth. Market-research answers earn early positioning; solicitation responses earn evaluation.",
+				teach:
+					"A sources-sought or similar market-research notice asks for capability, capacity, and planning input. It can shape acquisition strategy, but it does not request an offer the Government can accept to form a contract. A solicitation is the instrument that invites offers or quotations for award. Use this at intake: label the lead by notice type, then decide response depth — market-research answers earn early positioning; solicitation responses earn evaluation.",
+				watchFor:
+					"The trap is treating a sources sought as automatic award if you answer first, as a guarantee of later competition structure, or as a cue to submit binding price and a full technical volume when the notice only asks for capability or ROM data.",
 				judgment:
 					"If the notice has no proposal instructions and asks for capability or ROM data, treat it as research input — valuable, nonbinding, and still worth doing well.",
 				checklist: [
@@ -42,10 +42,10 @@ export const FIND_SHELF_CHAPTERS: Chapter[] = [
 				title: "A tailored sources-sought reply is market evidence",
 				story:
 					"The recompete looks familiar. Leadership wants “something in” before the week ends. A generic capability brochure is the fastest path — and the least useful one.",
-				is: "Under FAR Part 10, agencies may contact knowledgeable industry sources and use that input to judge capabilities, customary practices, competition, and acquisition approach. A concise, evidence-backed response that answers the posted questions creates a usable market-research record.",
-				isNot:
-					"It is not a binding proposal, not a place to dump unrequested firm pricing, and not a substitute for later Section L/M compliance when a real solicitation arrives.",
-				fits: "Place this beside early capture: the reply is how you show capable sources and viable buying paths without pretending the notice is already an RFP.",
+				teach:
+					"Under FAR Part 10, agencies may contact knowledgeable industry sources and use that input to judge capabilities, customary practices, competition, and acquisition approach. A concise, evidence-backed response that answers the posted questions creates a usable market-research record. Place this beside early capture: the reply is how you show capable sources and viable buying paths without pretending the notice is already an RFP.",
+				watchFor:
+					"Don’t confuse a sources-sought reply with a binding proposal. It is not a place to dump unrequested firm pricing, and it is not a substitute for later Section L/M compliance when a real solicitation arrives.",
 				judgment:
 					"Prefer specific past performance, vehicle access, and transition insight over corporate brochure language. Omit speculative pricing the agency did not request.",
 				checklist: [
@@ -88,10 +88,10 @@ export const FIND_SHELF_CHAPTERS: Chapter[] = [
 				title: "Intersect organization, NAICS, notice type, and dates",
 				story:
 					"The BD lead’s inbox has hundreds of civilian hits. The account covers one department, two NAICS codes, and only live response windows. Reading every title by hand is not a method.",
-				is: "SAM.gov advanced search supports combining department or office, NAICS, notice type, posted-date range, and response-deadline filters. Signed-in users can save searches. Intersecting those dimensions raises precision without treating one keyword as authoritative.",
-				isNot:
-					"It is not “filter only for solicitations and ignore everything earlier,” and not “one broad keyword plus heroic manual reading” as the standing operating picture.",
-				fits: "Build this as the standing radar for each account. Broaden temporarily when agency coding is noisy; do not permanently exclude presolicitations, sources sought, or justifications.",
+				teach:
+					"SAM.gov advanced search supports combining department or office, NAICS, notice type, posted-date range, and response-deadline filters. Signed-in users can save searches. Intersecting those dimensions raises precision without treating one keyword as authoritative. Build this as the standing radar for each account — broaden temporarily when agency coding is noisy; do not permanently exclude presolicitations, sources sought, or justifications.",
+				watchFor:
+					"The trap is filtering only for solicitations and ignoring everything earlier, or treating one broad keyword plus heroic manual reading as the standing operating picture.",
 				judgment:
 					"If the first pass is still noisy, add NAICS and notice-type cuts after organization and date — not instead of them.",
 				checklist: [
@@ -108,10 +108,10 @@ export const FIND_SHELF_CHAPTERS: Chapter[] = [
 				title: "Add forecasts and vehicle-only demand to the radar",
 				story:
 					"The team waits for public SAM.gov solicitations and keeps missing work that was visible months earlier — or only visible to holders of a Schedule category.",
-				is: "Agency acquisition forecasts and OSDBU / small-business office channels surface civilian demand earlier than many solicitations. FAR 5.404-1(b)(3) requires released long-range estimates to say they use the best available information, are subject to modification, and are not binding. Separately, GSA eBuy requests are generally visible to eligible contract holders for the relevant category or SIN — not necessarily as same-day public SAM.gov solicitations.",
-				isNot:
-					"A forecast date is not a committed solicitation date. An eBuy RFQ is not “nonexistent” because a public SAM.gov search is empty. Incumbent marketing pages and state/local expiration lists are not substitutes for federal forecast and vehicle channels.",
-				fits: "Put three tabs on the account desk: public notices, agency forecasts / vendor updates, and vehicle portals for the categories you or partners hold.",
+				teach:
+					"Agency acquisition forecasts and OSDBU / small-business office channels surface civilian demand earlier than many solicitations. FAR 5.404-1(b)(3) requires released long-range estimates to say they use the best available information, are subject to modification, and are not binding. Separately, GSA eBuy requests are generally visible to eligible contract holders for the relevant category or SIN — not necessarily as same-day public SAM.gov solicitations. Put three tabs on the account desk: public notices, agency forecasts / vendor updates, and vehicle portals for the categories you or partners hold.",
+				watchFor:
+					"Don’t treat a forecast date as a committed solicitation date, or call an eBuy RFQ “nonexistent” because a public SAM.gov search is empty. Incumbent marketing pages and state/local expiration lists are not substitutes for federal forecast and vehicle channels.",
 				judgment:
 					"Validate forecast fields against newer notices and vendor-communication updates. For rumored eBuy work, check through an authorized holder profile before declaring the RFQ missing.",
 				checklist: [
@@ -154,10 +154,10 @@ export const FIND_SHELF_CHAPTERS: Chapter[] = [
 				title: "Use the current award-data landscape, not legacy folklore",
 				story:
 					"A playbook still says “pull it from FPDS ezSearch.” The analyst needs incumbent awards for a 2026 civilian recompete and cannot afford a dead link as the method.",
-				is: "Public FPDS search has transitioned to SAM.gov Contract Awards and Data Bank. USAspending remains the official open source for federal spending analysis and receives procurement data derived from that reporting stream. Treat “FPDS” as lineage vocabulary, not as the current public destination.",
-				isNot:
-					"SAM.gov is not “pre-award only.” USAspending is not “grants only.” Data Bank is not limited to forecasts with no awards or modifications.",
-				fits: "Start every incumbent or spend reconstruction here: current SAM.gov award search / reports, then USAspending for transaction and spending analysis.",
+				teach:
+					"Public FPDS search has transitioned to SAM.gov Contract Awards and Data Bank. USAspending remains the official open source for federal spending analysis and receives procurement data derived from that reporting stream. Treat “FPDS” as lineage vocabulary, not as the current public destination. Start every incumbent or spend reconstruction here: current SAM.gov award search / reports, then USAspending for transaction and spending analysis.",
+				watchFor:
+					"Don’t confuse SAM.gov with “pre-award only,” USAspending with “grants only,” or Data Bank with forecasts that have no awards or modifications.",
 				judgment:
 					"Preserve old FPDS references in notes as data lineage when helpful, but update the team’s click path to SAM.gov and USAspending.",
 				checklist: [
@@ -174,10 +174,10 @@ export const FIND_SHELF_CHAPTERS: Chapter[] = [
 				title: "Reconstruct the chain: related notices, then transactions",
 				story:
 					"The award notice title is generic. The team wants the original requirements, amendments, and market-research history for the next recompete — and a clean read of what was actually obligated.",
-				is: "SAM.gov related-notice links can connect sources sought, presolicitation, solicitation, amendments, justification, and award for one acquisition story. For spend posture, separate parent IDVs from task orders, follow award and transaction records, net obligations including deobligations, and treat potential value as a ceiling rather than revenue.",
-				isNot:
-					"The awardee’s legal name alone is not a reliable identity key across notice types. An award notice does not contain the full SOW and every amendment. Potential value plus every child order is not “incumbent revenue.” Negative obligations are not automatic proof of failed performance.",
-				fits: "Use identifiers when building recompete binders: notice chain for requirement evolution; PIID / modification trail for dates and money.",
+				teach:
+					"SAM.gov related-notice links can connect sources sought, presolicitation, solicitation, amendments, justification, and award for one acquisition story. For spend posture, separate parent IDVs from task orders, follow award and transaction records, net obligations including deobligations, and treat potential value as a ceiling rather than revenue. Use identifiers when building recompete binders: notice chain for requirement evolution; PIID / modification trail for dates and money.",
+				watchFor:
+					"The trap is treating the awardee’s legal name alone as a reliable identity key, assuming an award notice holds the full SOW and every amendment, or counting potential value plus every child order as “incumbent revenue.” Negative obligations are not automatic proof of failed performance.",
 				judgment:
 					"Distinguish historical facts from assumptions about the next procurement. Ceiling is not spend; continuity is not customer sentiment.",
 				checklist: [
@@ -220,10 +220,10 @@ export const FIND_SHELF_CHAPTERS: Chapter[] = [
 				title: "Backsolve from award need, not from expiration folklore",
 				story:
 					"The incumbent ends September 30, 2028. The agency wants the successor awarded by June 30, 2028 for transition, and planning assumes eight months from solicitation to award. Someone still puts “solicitation = expiration day” on the whiteboard.",
-				is: "GAO describes PALT as the time from solicitation of offers to contract award — not acquisition planning before solicitation. Backsolve solicitation timing from the required award date using the agency’s planning assumption, then start discovery and shaping earlier than that anchor. Prefer a newer forecast award target over assuming the current end date can never move or that every option will be exercised.",
-				isNot:
-					"PALT does not begin at incumbent expiration. An ultimate potential end date does not prove every option will be exercised. Adding lead time after performance ends is not how solicitation-to-award math works.",
-				fits: "Use this whenever a recompete enters the pipeline: provisional award anchor → subtract PALT → set early-capture milestones upstream of that date.",
+				teach:
+					"GAO describes PALT as the time from solicitation of offers to contract award — not acquisition planning before solicitation. Backsolve solicitation timing from the required award date using the agency’s planning assumption, then start discovery and shaping earlier than that anchor. Prefer a newer forecast award target over assuming the current end date can never move or that every option will be exercised. Use this whenever a recompete enters the pipeline: provisional award anchor → subtract PALT → set early-capture milestones upstream of that date.",
+				watchFor:
+					"Don’t start PALT at incumbent expiration, treat an ultimate potential end date as proof every option will be exercised, or add lead time after performance ends — that is not how solicitation-to-award math works.",
 				judgment:
 					"Track remaining options and bridge evidence as validation points. Update the provisional window when newer official signals conflict with the old one.",
 				checklist: [
@@ -240,10 +240,10 @@ export const FIND_SHELF_CHAPTERS: Chapter[] = [
 				title: "Read bridge justifications as timing and continuity evidence",
 				story:
 					"A nine-month sole-source extension posts because the replacement competition is delayed. Half the team declares the follow-on “locked sole source.” The other half ignores the notice as “post-award noise.”",
-				is: "Posted justifications — under the applicable regime in FAR 6.305, 8.405-6(a)(2), or 16.505(b)(2)(ii)(D) — can reveal continuity need, delay rationale, and extension period. Successive bridges raise schedule-risk and incumbent-continuity assumptions and should move your backcast to the newest documented runway while you intensify monitoring.",
-				isNot:
-					"A bridge is not proof the planned competition is canceled forever. Repeated bridges do not by themselves authorize every future award as permanent sole source. Ignoring posted justifications is not disciplined capture.",
-				fits: "Fold bridge notices into the same recompete timeline you backcasted: update dates, raise risk flags, keep the replacement competition as a live hypothesis.",
+				teach:
+					"Posted justifications — under the applicable regime in FAR 6.305, 8.405-6(a)(2), or 16.505(b)(2)(ii)(D) — can reveal continuity need, delay rationale, and extension period. Successive bridges raise schedule-risk and incumbent-continuity assumptions and should move your backcast to the newest documented runway while you intensify monitoring. Fold bridge notices into the same recompete timeline you backcasted: update dates, raise risk flags, keep the replacement competition as a live hypothesis.",
+				watchFor:
+					"The trap is reading a bridge as proof the planned competition is canceled forever, treating repeated bridges as authorization for every future award as permanent sole source, or ignoring posted justifications as if they had no capture value.",
 				judgment:
 					"Use the document for what it proves. Do not invent a final acquisition strategy the justification does not establish.",
 				checklist: [
@@ -286,10 +286,10 @@ export const FIND_SHELF_CHAPTERS: Chapter[] = [
 				title: "A budget request is mission intent, not funded procurement",
 				story:
 					"A civilian CBJ describes a new modernization initiative. Congress has not enacted the request. No forecast line and no SAM.gov notice exist. The pipeline still wants a big number.",
-				is: "A budget request signals program priority. It is not an appropriation, acquisition strategy, or contract action. FAR 32.702 bars obligations in excess of or in advance of available appropriations unless authorized. Capture should triangulate enacted funding and execution evidence with forecasts, market research, and notices before upgrading the lead.",
-				isNot:
-					"Publication of a justification does not authorize obligation of the requested amount. Absence of an award in USAspending does not mean the CBJ has zero discovery value. A CBJ does not prove unrestricted competition under an incumbent’s NAICS.",
-				fits: "Park CBJ-driven ideas as directional leads with explicit funding unknowns until appropriations and acquisition artifacts appear.",
+				teach:
+					"A budget request signals program priority. It is not an appropriation, acquisition strategy, or contract action. FAR 32.702 bars obligations in excess of or in advance of available appropriations unless authorized. Capture should triangulate enacted funding and execution evidence with forecasts, market research, and notices before upgrading the lead. Park CBJ-driven ideas as directional leads with explicit funding unknowns until appropriations and acquisition artifacts appear.",
+				watchFor:
+					"Don’t confuse publication of a justification with authority to obligate the requested amount, treat absence of an award in USAspending as zero discovery value, or read a CBJ as proof of unrestricted competition under an incumbent’s NAICS.",
 				judgment:
 					"Keep the mission on the radar; keep the dollars provisional until you can point to authority and a buying path.",
 				checklist: [
@@ -306,10 +306,10 @@ export const FIND_SHELF_CHAPTERS: Chapter[] = [
 				title: "Continuing resolutions lower near-term confidence — they do not auto-cancel need",
 				story:
 					"The fiscal year opens under a CR. The regular appropriation is not enacted. A proposed new-start modernization still sits in the account plan with last quarter’s Pwin.",
-				is: "Continuing resolutions are temporary appropriations whose exact restrictions and exceptions depend on enacted text. They commonly constrain or delay new activities. FAR 32.702 still requires available funds or authorized conditioning before contract execution, so lower near-term funding and award confidence and verify the actual CR and program authority.",
-				isNot:
-					"A presidential budget request does not fund the award. A CR does not permanently prohibit every new contract. Appropriations status is not irrelevant to obligation timing.",
-				fits: "Adjust confidence and timing when fiscal instruments change; keep validating rather than deleting the underlying mission need by assumption.",
+				teach:
+					"Continuing resolutions are temporary appropriations whose exact restrictions and exceptions depend on enacted text. They commonly constrain or delay new activities. FAR 32.702 still requires available funds or authorized conditioning before contract execution, so lower near-term funding and award confidence and verify the actual CR and program authority. Adjust confidence and timing when fiscal instruments change; keep validating rather than deleting the underlying mission need by assumption.",
+				watchFor:
+					"The trap is treating a presidential budget request as funding for the award, assuming a CR permanently prohibits every new contract, or leaving timing and Pwin unchanged as if appropriations status had no relationship to obligation timing.",
 				judgment:
 					"Read the CR text and any program-specific anomaly language before briefing “funded” or “dead.”",
 				checklist: [
@@ -347,10 +347,10 @@ export const FIND_SHELF_CHAPTERS: Chapter[] = [
 				title: "Record the eligibility gate, then map partners early",
 				story:
 					"A forecast six months out shows a total small-business set-aside and a NAICS under which the large prime is other than small. The scope is a perfect fit. Someone wants it kept as an unrestricted prime opportunity “because it is only a forecast.”",
-				is: "FAR 19.102 ties the applicable size standard to the NAICS assigned to the acquisition. A total small-business set-aside excludes an other-than-small concern from priming. Early triage should mark current ineligibility to prime, validate the NAICS and set-aside signals, and discover qualified small-business partners and feasible workshare while the window is still open.",
-				isNot:
-					"Forecast status does not erase the current eligibility signal. Capability does not authorize a false size representation. Archiving forever is not required — subcontract and partner paths may still be live — but ignoring the gate inflates the prime pipeline.",
-				fits: "Use this at forecast intake for large primes: eligibility first, partner map second, bid/no-bid later.",
+				teach:
+					"FAR 19.102 ties the applicable size standard to the NAICS assigned to the acquisition. A total small-business set-aside excludes an other-than-small concern from priming. Early triage should mark current ineligibility to prime, validate the NAICS and set-aside signals, and discover qualified small-business partners and feasible workshare while the window is still open. Use this at forecast intake for large primes: eligibility first, partner map second, bid/no-bid later.",
+				watchFor:
+					"Don’t erase the current eligibility signal because the notice is “only a forecast,” invent a false size representation from capability fit, or archive forever when subcontract and partner paths may still be live — ignoring the gate inflates the prime pipeline.",
 				judgment:
 					"Keep the lead if a compliant path exists. Do not count it as unrestricted prime revenue on hope.",
 				checklist: [
@@ -367,10 +367,10 @@ export const FIND_SHELF_CHAPTERS: Chapter[] = [
 				title: "If you cannot see the vehicle request, find who can",
 				story:
 					"The RFQ will compete in eBuy under a Schedule category the large prime does not hold. Trusted partners do. Someone jokes about “borrowing a login.”",
-				is: "eBuy visibility and response rights follow supported contracts and categories. Without applicable access, identify eligible holders who can prime, assess coverage of the requirement, and pursue a compliant subcontract role before the request window closes.",
-				isNot:
-					"Sharing holder credentials so you can submit as if you held the category is not a path. Waiting passively for a future open-market competition is optional strategy, not the strongest find-stage move when partners already have access. A Schedule CTA does not cure lack of an applicable awarded category for your own quoted work.",
-				fits: "Treat vehicle mismatch like set-aside mismatch: mark direct ineligibility, then staff a partner path with time left on the clock.",
+				teach:
+					"eBuy visibility and response rights follow supported contracts and categories. Without applicable access, identify eligible holders who can prime, assess coverage of the requirement, and pursue a compliant subcontract role before the request window closes. Treat vehicle mismatch like set-aside mismatch: mark direct ineligibility, then staff a partner path with time left on the clock.",
+				watchFor:
+					"The trap is sharing holder credentials so you can submit as if you held the category, waiting passively for a future open-market competition when partners already have access, or assuming a Schedule CTA cures lack of an applicable awarded category for your own quoted work.",
 				judgment:
 					"Confirm the category mismatch in writing in the pipeline, then hand a named owner the partner pursuit.",
 				checklist: [
@@ -413,10 +413,10 @@ export const FIND_SHELF_CHAPTERS: Chapter[] = [
 				title: "Keep leads honest until qualification evidence arrives",
 				story:
 					"Someone heard a bureau “may modernize grants systems next year.” No named buyer, forecast entry, funding line, vehicle, or date. Leadership still wants it in the qualified forecast this quarter.",
-				is: "As capture practice, separate a discoverable lead from a qualified opportunity. Record source and date, explicit unknowns, a named owner, and a time-bound next validation action. Promote only when company qualification criteria — customer problem, funding, vehicle, competition type, incumbent timing, eligible path — are supported by evidence. Stale forecasts that conflict with newer official updates should lower confidence while remaining open for validation.",
-				isNot:
-					"Mission fit alone is not qualification. Waiting for a final RFP before any pipeline entry forfeits early positioning. Deleting every uncertain lead is not the same as hygiene. A missed forecast date does not prove the requirement vanished.",
-				fits: "This is house pipeline method — labeled capture practice, not a FAR stage model. Use it to protect investment decisions and forecast credibility.",
+				teach:
+					"As capture practice, separate a discoverable lead from a qualified opportunity. Record source and date, explicit unknowns, a named owner, and a time-bound next validation action. Promote only when company qualification criteria — customer problem, funding, vehicle, competition type, incumbent timing, eligible path — are supported by evidence. Stale forecasts that conflict with newer official updates should lower confidence while remaining open for validation. This is house pipeline method — labeled capture practice, not a FAR stage model — used to protect investment decisions and forecast credibility.",
+				watchFor:
+					"Don’t qualify on mission fit alone, wait for a final RFP before any pipeline entry (that forfeits early positioning), treat deleting every uncertain lead as hygiene, or treat a missed forecast date as proof the requirement vanished.",
 				judgment:
 					"If material unknowns lack owners and deadlines, the opportunity is not ready for the committed forecast — no matter how good the story sounds.",
 				checklist: [
@@ -433,10 +433,10 @@ export const FIND_SHELF_CHAPTERS: Chapter[] = [
 				title: "Public records are fair game; protected information is not",
 				story:
 					"The team has FOIA releases and public award data for a competitor profile. A consultant then offers an unredacted, nonpublic source-selection worksheet for an active procurement and will not name the source.",
-				is: "Lawfully public records — FOIA releases, SAM.gov, USAspending, and similar — are legitimate competitive-intelligence inputs. The Procurement Integrity Act and FAR 3.104-3 prohibit knowingly obtaining protected contractor bid or proposal information or source-selection information before award except as provided by law. Refuse and do not circulate the nonpublic material, preserve the facts of receipt, and escalate immediately to legal or ethics.",
-				isNot:
-					"A consultant’s assurance that “we did not ask a government employee” does not clear use. Silent deletion without escalation is not containment. Pausing for counsel is wise; continuing to review after recognizing protected content is not.",
-				fits: "Draw this line at every find-stage CI task: public evidence builds strategy; protected packets end the conversation and start counsel.",
+				teach:
+					"Lawfully public records — FOIA releases, SAM.gov, USAspending, and similar — are legitimate competitive-intelligence inputs. The Procurement Integrity Act and FAR 3.104-3 prohibit knowingly obtaining protected contractor bid or proposal information or source-selection information before award except as provided by law. Refuse and do not circulate the nonpublic material, preserve the facts of receipt, and escalate immediately to legal or ethics. Draw this line at every find-stage CI task: public evidence builds strategy; protected packets end the conversation and start counsel.",
+				watchFor:
+					"Don’t clear use on a consultant’s assurance that “we did not ask a government employee,” treat silent deletion without escalation as containment, or keep reviewing after recognizing protected content — pause for counsel instead.",
 				judgment:
 					"When in doubt, stop, preserve, escalate. Company counsel directs notice or remediation — this workflow is prudent practice supporting the statutory and FAR restrictions, not a substitute for legal advice.",
 				checklist: [
@@ -453,10 +453,10 @@ export const FIND_SHELF_CHAPTERS: Chapter[] = [
 				title: "Describe incumbent strength without inventing dissatisfaction",
 				story:
 					"Public data show repeated options and steady obligations. Users say continuity matters. The challenger team has no lawful evidence the customer is unhappy — but the color team wants a “customer is done with them” story.",
-				is: "As capture practice, use public award history for tenure, obligations, and contractual continuity. Treat continuity and switching cost as evidence-backed incumbent strengths, mark dissatisfaction as unknown, and seek lawful customer evidence before claiming a challenger discriminator.",
-				isNot:
-					"Option exercises do not prove the incumbent cannot lose. A recompete does not prove the agency wants a replacement. Invented dissatisfaction is not strategy.",
-				fits: "Hold this posture when building challenger plans: facts, hypotheses, and unknowns stay labeled separately.",
+				teach:
+					"As capture practice, use public award history for tenure, obligations, and contractual continuity. Treat continuity and switching cost as evidence-backed incumbent strengths, mark dissatisfaction as unknown, and seek lawful customer evidence before claiming a challenger discriminator. Hold this posture when building challenger plans: facts, hypotheses, and unknowns stay labeled separately.",
+				watchFor:
+					"Don’t read option exercises as proof the incumbent cannot lose, treat a recompete as proof the agency wants a replacement, or invent dissatisfaction as strategy.",
 				judgment:
 					"Build the case for change value against documented transition risk — not against a sentiment you wish were true.",
 				checklist: [

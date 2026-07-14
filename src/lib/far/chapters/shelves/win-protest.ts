@@ -23,10 +23,9 @@ export const WIN_PROTEST_SHELF_CHAPTERS: Chapter[] = [
 				title: "Apparent solicitation defects vs. later-known grounds",
 				story:
 					"Hours after proposals close, someone notices that two material evaluation instructions contradict each other. The team suggests saving the objection in case it loses.",
-				is: "GAO’s timeliness rules generally require protests based on alleged solicitation improprieties that are apparent before bid opening or the time set for receipt of proposals to be filed before that deadline. Other protest grounds ordinarily must be filed within ten days after the protester knew or should have known the basis for protest — subject to the separate required-debriefing rules that can extend that clock.",
-				isNot:
-					"Submission is not a reservation of every possible objection. Internal investigation, management review, or continued agency appeal does not automatically stop GAO’s clock. Blue & Gold Fleet and related waiver doctrine reinforce that competitors cannot sit on patent solicitation errors and raise them only after award.",
-				fits: "Open the post-award playbook only after a dated inventory of which objections are still live.",
+				teach: "GAO’s timeliness rules generally require protests based on alleged solicitation improprieties that are apparent before bid opening or the time set for receipt of proposals to be filed before that deadline. Other protest grounds ordinarily must be filed within ten days after the protester knew or should have known the basis for protest — subject to the separate required-debriefing rules that can extend that clock. Open the post-award playbook only after a dated inventory of which objections are still live.",
+				watchFor:
+					"Don’t treat submission as a reservation of every possible objection. Internal investigation, management review, or continued agency appeal does not automatically stop GAO’s clock. Blue & Gold Fleet and related waiver doctrine reinforce that competitors cannot sit on patent solicitation errors and raise them only after award.",
 				judgment:
 					"If the defect was patent on the face of the RFP, assume the protest ground may already be gone — then have counsel confirm before leadership builds a theory on it.",
 				checklist: [
@@ -69,10 +68,9 @@ export const WIN_PROTEST_SHELF_CHAPTERS: Chapter[] = [
 				title: "Notice first — then the three-day request",
 				story:
 					"The award email names the winner but says almost nothing about why the proposal lost.",
-				is: "FAR 15.503(b) generally requires written postaward notice within three days after award to each offeror whose proposal was in the competitive range but was not selected — identifying the competition and award and giving general reasons for nonselection while protecting confidential business information. Receipt of that notice starts the clock for a required postaward debriefing under FAR 15.506(a): the agency must receive the written debriefing request within three days after the offeror receives the notice.",
-				isNot:
-					"The notice is not the debriefing. It does not entitle the loser to the awardee’s proposal, cost buildup, profit, or indirect rates. Not every federal acquisition method carries a required FAR Part 15 debriefing, and an oral request or a request filed only inside GAO’s ordinary ten-day period does not preserve the FAR 15.506 entitlement.",
-				fits: "Immediately after award, contracts should confirm notice receipt date, send the written debrief request, and calendar protest and stay analyses in parallel.",
+				teach: "FAR 15.503(b) generally requires written postaward notice within three days after award to each offeror whose proposal was in the competitive range but was not selected — identifying the competition and award and giving general reasons for nonselection while protecting confidential business information. Receipt of that notice starts the clock for a required postaward debriefing under FAR 15.506(a): the agency must receive the written debriefing request within three days after the offeror receives the notice. Immediately after award, contracts should confirm notice receipt date, send the written debrief request, and calendar protest and stay analyses in parallel.",
+				watchFor:
+					"Don’t confuse the notice with the debriefing. The notice does not entitle the loser to the awardee’s proposal, cost buildup, profit, or indirect rates. Not every federal acquisition method carries a required FAR Part 15 debriefing, and an oral request or a request filed only inside GAO’s ordinary ten-day period does not preserve the FAR 15.506 entitlement.",
 				checklist: [
 					"Record the date/time the FAR 15.503(b) notice was received",
 					"Send a written debriefing request within three days",
@@ -113,10 +111,9 @@ export const WIN_PROTEST_SHELF_CHAPTERS: Chapter[] = [
 				title: "Seek the required content — expect the limits",
 				story:
 					"The team arrives with fifty questions and expects a courtroom-style comparison against the winning proposal.",
-				is: "FAR 15.506(d) calls for significant weaknesses or deficiencies in the debriefed offeror’s proposal, the overall evaluated cost or price and technical rating of the successful offeror and the debriefed offeror, the overall ranking of offerors when one was developed, a summary of the rationale for award, and reasonable responses to relevant questions about whether source-selection procedures in the solicitation were followed. Use that menu to sharpen a protest theory — not to litigate the room.",
-				isNot:
-					"FAR 15.506(e) bars point-by-point comparisons with other offerors’ proposals and disclosure of protected trade secrets, confidential commercial information, cost breakdowns, profit, indirect rates, and names of individuals providing reference information. A debriefing is not a negotiation to reopen the competition.",
-				fits: "Between notice and protest triage: harvest signal, confirm the debriefing completion date, and keep counsel’s clocks independent of hallway optimism.",
+				teach: "FAR 15.506(d) calls for significant weaknesses or deficiencies in the debriefed offeror’s proposal, the overall evaluated cost or price and technical rating of the successful offeror and the debriefed offeror, the overall ranking of offerors when one was developed, a summary of the rationale for award, and reasonable responses to relevant questions about whether source-selection procedures in the solicitation were followed. Use that menu to sharpen a protest theory — not to litigate the room. Between notice and protest triage: harvest signal, confirm the debriefing completion date, and keep counsel’s clocks independent of hallway optimism.",
+				watchFor:
+					"Don’t expect point-by-point comparisons with other offerors’ proposals or disclosure of protected trade secrets, confidential commercial information, cost breakdowns, profit, indirect rates, and names of individuals providing reference information — FAR 15.506(e) bars those. A debriefing is not a negotiation to reopen the competition.",
 				citation: "FAR 15.506(d)–(e)",
 				sourceUrl: "https://www.acquisition.gov/far/15.506",
 				sourceKind: "controlling-authority",
@@ -124,10 +121,9 @@ export const WIN_PROTEST_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "civilian-follow-up",
 				title: "Civilian follow-ups are not automatic clock extenders",
-				is: "Ask precise process questions and document what the agency says about when the debriefing is complete. Calculate each protest and stay deadline under the rules actually applicable to that procurement.",
-				isNot:
-					"On a civilian FAR Part 15 procurement, ordinary written follow-up questions should not be assumed to import the DoD enhanced-debriefing regime or to extend filing or stay clocks by themselves.",
-				fits: "Capture owns the question list; counsel owns the calendar — do not merge the two jobs.",
+				teach: "Ask precise process questions and document what the agency says about when the debriefing is complete. Calculate each protest and stay deadline under the rules actually applicable to that procurement. Capture owns the question list; counsel owns the calendar — do not merge the two jobs.",
+				watchFor:
+					"On a civilian FAR Part 15 procurement, don’t assume ordinary written follow-up questions import the DoD enhanced-debriefing regime or extend filing or stay clocks by themselves.",
 				citation: "FAR 15.506",
 				sourceUrl: "https://www.acquisition.gov/far/15.506",
 				sourceKind: "controlling-authority",
@@ -158,10 +154,9 @@ export const WIN_PROTEST_SHELF_CHAPTERS: Chapter[] = [
 				title: "Three parts of a theory",
 				story:
 					"The debrief contains an odd evaluator comment. Leadership is angry, but nobody can yet explain which rule was violated or whether correction could change the award.",
-				is: "Build the theory as: (1) the governing solicitation provision or procurement rule, (2) record evidence the agency departed from it — for example an unstated evaluation criterion, unequal discussions, or a misevaluation that overlooked proposal content — and (3) competitive prejudice showing a reasonable possibility that, but for the error, the protester would have had a substantial chance of award. Agency-level protests under FAR 33.103 similarly expect a detailed statement of legal and factual grounds, including copies of relevant documents.",
-				isNot:
-					"Disagreement with agency judgment, a list of every unfavorable comment, or proof of a harmless clerical mistake is not a theory. “The agency was wrong” is incomplete without prejudice. Filing to punish a loss is not a business case.",
-				fits: "After the debrief and before forum selection — a rapid counsel-led merits and business-case review.",
+				teach: "Build the theory as: (1) the governing solicitation provision or procurement rule, (2) record evidence the agency departed from it — for example an unstated evaluation criterion, unequal discussions, or a misevaluation that overlooked proposal content — and (3) competitive prejudice showing a reasonable possibility that, but for the error, the protester would have had a substantial chance of award. Agency-level protests under FAR 33.103 similarly expect a detailed statement of legal and factual grounds, including copies of relevant documents. Run that review after the debrief and before forum selection — a rapid counsel-led merits and business-case check.",
+				watchFor:
+					"Don’t treat disagreement with agency judgment, a list of every unfavorable comment, or proof of a harmless clerical mistake as a theory. “The agency was wrong” is incomplete without prejudice. Filing to punish a loss is not a business case.",
 				checklist: [
 					"Name the rule or solicitation text allegedly violated",
 					"Point to the contemporaneous evaluation record, not post-hoc speculation",
@@ -212,10 +207,9 @@ export const WIN_PROTEST_SHELF_CHAPTERS: Chapter[] = [
 				title: "Agency, GAO, and COFC",
 				story:
 					"One executive wants an agency protest, another wants GAO, and a third says every dispute can simply go to court.",
-				is: "FAR 33.103 provides a relatively informal agency-level protest process decided by the agency. GAO offers independent review on a statutory decision schedule and, when separate stay conditions are met, possible CICA performance-stay consequences. The Court of Federal Claims has bid-protest jurisdiction under 28 U.S.C. § 1491(b), but stopping performance requires court relief or Government agreement rather than an automatic CICA stay.",
-				isNot:
-					"The forums are not interchangeable. COFC is not a universal cure for missed or waived GAO grounds. Finishing every agency appeal does not automatically preserve a later GAO filing if GAO’s own timeliness rules were already blown.",
-				fits: "Pick the lane after you have a supportable theory and a clear business objective — speed, stay potential, cost, or injunctive relief.",
+				teach: "FAR 33.103 provides a relatively informal agency-level protest process decided by the agency. GAO offers independent review on a statutory decision schedule and, when separate stay conditions are met, possible CICA performance-stay consequences. The Court of Federal Claims has bid-protest jurisdiction under 28 U.S.C. § 1491(b), but stopping performance requires court relief or Government agreement rather than an automatic CICA stay. Pick the lane after you have a supportable theory and a clear business objective — speed, stay potential, cost, or injunctive relief.",
+				watchFor:
+					"Don’t treat the forums as interchangeable. COFC is not a universal cure for missed or waived GAO grounds. Finishing every agency appeal does not automatically preserve a later GAO filing if GAO’s own timeliness rules were already blown.",
 				citation: "FAR 33.103–33.105",
 				sourceUrl: "https://www.acquisition.gov/far/33.104",
 				sourceKind: "controlling-authority",
@@ -223,10 +217,9 @@ export const WIN_PROTEST_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "special-lanes",
 				title: "Task orders and SBA are special lanes",
-				is: "Qualifying protests of civilian task or delivery orders under multiple-award IDIQs may be limited to GAO under FAR 16.505(a)(10) and 41 U.S.C. § 4106(f) — subject to the statutory dollar and scope thresholds. Size and socioeconomic-status challenges generally belong in SBA’s procedures under FAR 19.302 and 13 CFR Part 121, not in an ordinary evaluation protest.",
-				isNot:
-					"SBA does not decide ordinary evaluation protests. Filing a size protest at GAO — or an evaluation protest at SBA — is the wrong window.",
-				fits: "Before drafting, confirm jurisdiction: evaluation error, size/status, or task-order lane.",
+				teach: "Qualifying protests of civilian task or delivery orders under multiple-award IDIQs may be limited to GAO under FAR 16.505(a)(10) and 41 U.S.C. § 4106(f) — subject to the statutory dollar and scope thresholds. Size and socioeconomic-status challenges generally belong in SBA’s procedures under FAR 19.302 and 13 CFR Part 121, not in an ordinary evaluation protest. Before drafting, confirm jurisdiction: evaluation error, size/status, or task-order lane.",
+				watchFor:
+					"Don’t send ordinary evaluation protests to SBA, or size protests to GAO as if it made the initial size determination. Filing in the wrong window wastes the right one.",
 				citation: "FAR 16.505(a)(10); FAR 19.302; 13 CFR 121.1001, 121.1004",
 				sourceUrl: "https://www.acquisition.gov/far/16.505",
 				sourceKind: "controlling-authority",
@@ -267,10 +260,9 @@ export const WIN_PROTEST_SHELF_CHAPTERS: Chapter[] = [
 				title: "Merits clock ≠ stay clock",
 				story:
 					"Counsel believes the merits deadline is ten days away, so leadership assumes there is no difference between filing on day four and day nine.",
-				is: "GAO merits timeliness under 4 CFR 21.2 and the CICA performance-stay trigger under 31 U.S.C. § 3553(d) and FAR 33.104(c) are separate calculations. A stay generally depends on the agency’s receipt of notice from GAO within the statutory window measured from award or from the offered date of a required debriefing — not merely from when the protester presses submit. Build a dated chronology covering award, notice, debriefing, knowledge, filing, and expected GAO notice to the agency.",
-				isNot:
-					"A timely protest does not invariably trigger a stay. An agency protest does not automatically preserve the later GAO stay window. Informal customer discussions do not toll either clock.",
-				fits: "The final decision gate immediately before filing: merits recommendation plus stay probability on one one-page timeline.",
+				teach: "GAO merits timeliness under 4 CFR 21.2 and the CICA performance-stay trigger under 31 U.S.C. § 3553(d) and FAR 33.104(c) are separate calculations. A stay generally depends on the agency’s receipt of notice from GAO within the statutory window measured from award or from the offered date of a required debriefing — not merely from when the protester presses submit. Build a dated chronology covering award, notice, debriefing, knowledge, filing, and expected GAO notice to the agency. Use that one-page timeline as the final decision gate immediately before filing: merits recommendation plus stay probability.",
+				watchFor:
+					"Don’t assume a timely protest invariably triggers a stay. An agency protest does not automatically preserve the later GAO stay window. Informal customer discussions do not toll either clock.",
 				judgment:
 					"If the business case depends on a stay, file early enough that GAO notice can reach the agency inside the statutory window — do not spend the margin on executive alignment meetings.",
 				checklist: [
@@ -313,10 +305,9 @@ export const WIN_PROTEST_SHELF_CHAPTERS: Chapter[] = [
 				title: "Intervene and preserve — do not rewrite",
 				story:
 					"The winner receives protest notice while transition is underway and protected evaluation material will be central to the case.",
-				is: "Assess intervention promptly under GAO’s rules (4 CFR Part 21), engage qualified protest counsel, preserve proposal and evaluation-related records you control, and centralize customer communications. Intervention protects proprietary and competitive interests; it does not authorize company personnel to browse protected material freely or to lobby evaluators into a new rationale.",
-				isNot:
-					"Winning does not authorize creating post-hoc justifications, controlling the incumbent’s workforce, or treating protest response as a rewrite of the source-selection record.",
-				fits: "Stand up an awardee war room with counsel ownership of filings and contracts ownership of performance direction.",
+				teach: "Assess intervention promptly under GAO’s rules (4 CFR Part 21), engage qualified protest counsel, preserve proposal and evaluation-related records you control, and centralize customer communications. Intervention protects proprietary and competitive interests; it does not authorize company personnel to browse protected material freely or to lobby evaluators into a new rationale. Stand up an awardee war room with counsel ownership of filings and contracts ownership of performance direction.",
+				watchFor:
+					"Don’t treat winning as license to create post-hoc justifications, control the incumbent’s workforce, or rewrite the source-selection record through protest response.",
 				citation: "4 CFR 21.0, 21.3, 21.4; FAR 33.104(a)",
 				sourceUrl: "https://www.ecfr.gov/current/title-4/part-21",
 				sourceKind: "controlling-authority",
@@ -324,10 +315,9 @@ export const WIN_PROTEST_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "stop-work-continuity",
 				title: "Performance follows the contracting officer",
-				is: "If the contracting officer issues a written stop-work order under FAR 52.233-3, comply. Transition planning should maintain executable continue, pause, and restart paths, mitigate and segregate affected costs, and use continuity clauses such as FAR 52.237-3 when they apply — without assuming every protest-related cost will be reimbursed.",
-				isNot:
-					"Keeping the team “fully productive on contract tasks” after a stop-work order to sort allowability later is not compliance. Ignoring the stay or stop-work while hoping for a quick dismissal is not risk management.",
-				fits: "Delivery, finance, and contracts share one performance-status board keyed to CO direction.",
+				teach: "If the contracting officer issues a written stop-work order under FAR 52.233-3, comply. Transition planning should maintain executable continue, pause, and restart paths, mitigate and segregate affected costs, and use continuity clauses such as FAR 52.237-3 when they apply — without assuming every protest-related cost will be reimbursed. Delivery, finance, and contracts should share one performance-status board keyed to CO direction.",
+				watchFor:
+					"Don’t keep the team “fully productive on contract tasks” after a stop-work order to sort allowability later — that is not compliance. Ignoring the stay or stop-work while hoping for a quick dismissal is not risk management.",
 				checklist: [
 					"Decide intervention with counsel within the GAO window",
 					"Freeze document retention and customer-communication lanes",
@@ -373,10 +363,9 @@ export const WIN_PROTEST_SHELF_CHAPTERS: Chapter[] = [
 				title: "Scope of corrective action controls what happens next",
 				story:
 					"The agency announces reevaluation, GAO dismisses the protest as academic, and both competitors declare victory.",
-				is: "Agencies may take corrective action under FAR 33.102(b). The actual scope — amend, reevaluate, discuss, re-solicit, reaward — controls remaining rights. A reaward is a new decision with a new record and potentially new debriefing, merits, and stay clocks. Preserve fresh rights against the corrective action actually taken; do not assume the original filing covers every later error.",
-				isNot:
-					"Corrective action is not an award to the protester. Dismissal as academic is not a win on the merits. The original protest does not automatically preserve every challenge to a later reaward.",
-				fits: "Return to the lifecycle: decode the corrective-action notice like a new solicitation event, then re-run notice/debrief/timeliness discipline.",
+				teach: "Agencies may take corrective action under FAR 33.102(b). The actual scope — amend, reevaluate, discuss, re-solicit, reaward — controls remaining rights. A reaward is a new decision with a new record and potentially new debriefing, merits, and stay clocks. Preserve fresh rights against the corrective action actually taken; do not assume the original filing covers every later error. Decode the corrective-action notice like a new solicitation event, then re-run notice/debrief/timeliness discipline.",
+				watchFor:
+					"Don’t treat corrective action as an award to the protester, or dismissal as academic as a win on the merits. The original protest does not automatically preserve every challenge to a later reaward.",
 				citation: "FAR 33.102(b); 4 CFR 21.2",
 				sourceUrl: "https://www.acquisition.gov/far/33.102",
 				sourceKind: "controlling-authority",
@@ -384,10 +373,9 @@ export const WIN_PROTEST_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "cpars-lane",
 				title: "CPARS shapes the next fight — it is not this protest",
-				is: "Performance evaluations under FAR 42.1503 can shape the next competition. Handle CPARS factually, meet rebuttal deadlines, and keep the record accurate. That work sits beside protest strategy; it does not replace a timely protest of the award decision.",
-				isNot:
-					"A CPARS rebuttal is not a substitute for a timely bid protest and should not become an accusation-driven protest brief filed in the wrong system.",
-				fits: "Close the chapter by reconnecting award → performance record → recompete — the same lifecycle the Basics shelf opens.",
+				teach: "Performance evaluations under FAR 42.1503 can shape the next competition. Handle CPARS factually, meet rebuttal deadlines, and keep the record accurate. That work sits beside protest strategy; it does not replace a timely protest of the award decision. Close the chapter by reconnecting award → performance record → recompete — the same lifecycle the Basics shelf opens.",
+				watchFor:
+					"Don’t treat a CPARS rebuttal as a substitute for a timely bid protest, or turn it into an accusation-driven protest brief filed in the wrong system.",
 				checklist: [
 					"Read the corrective-action notice for actual scope and deadlines",
 					"Recalculate debrief / merits / stay clocks from the new decision",
