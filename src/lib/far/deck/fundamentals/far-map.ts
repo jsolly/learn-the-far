@@ -38,6 +38,222 @@ export const FAR_MAP_FUNDAMENTALS: QuizQuestion[] = [
 		tags: ["far-navigation", "citations", "part-52", "provisions-and-clauses"],
 	},
 	{
+		id: "fund-map-cite-part",
+		unitId: "fundamentals",
+		format: "recall",
+		difficulty: "fundamentals",
+		scoring: "single-best",
+		situation: "You see this citation in a capture brief: FAR part 15",
+		prompt: "What level of the FAR hierarchy is that?",
+		options: [
+			{
+				id: "a",
+				text: "A part — the digits left of the decimal name the part",
+				correct: true,
+			},
+			{
+				id: "b",
+				text: "A subpart — any whole number is a subpart label",
+				correct: false,
+			},
+			{
+				id: "c",
+				text: "A section — parts are only written with a decimal",
+				correct: false,
+			},
+			{
+				id: "d",
+				text: "A subsection — the word “part” is decorative",
+				correct: false,
+			},
+		],
+		explanation:
+			"FAR 1.105-2 puts the part number to the left of the decimal. Outside the FAR, that level is written as “FAR part 15” (or “part 15” inside the FAR). Digits to the right of the decimal identify subpart and section; a dash starts a subsection.",
+		citation: "FAR 1.105-2(b)–(c)",
+		sourceUrl: "https://www.acquisition.gov/far/1.105-2",
+		tags: ["far-navigation", "citations", "part", "numbering"],
+	},
+	{
+		id: "fund-map-cite-subpart",
+		unitId: "fundamentals",
+		format: "recall",
+		difficulty: "fundamentals",
+		scoring: "single-best",
+		situation: "You see this citation in a capture brief: FAR subpart 15.2",
+		prompt: "What level of the FAR hierarchy is that?",
+		options: [
+			{
+				id: "a",
+				text: "A subpart — one or two digits after the decimal name the subpart before any section digits",
+				correct: true,
+			},
+			{
+				id: "b",
+				text: "A part — anything with a decimal is still just the part number",
+				correct: false,
+			},
+			{
+				id: "c",
+				text: "A section — every citation with a decimal is a section",
+				correct: false,
+			},
+			{
+				id: "d",
+				text: "A subsection — the first digit after the decimal is always a subsection",
+				correct: false,
+			},
+		],
+		explanation:
+			"FAR 1.105-2 places the subpart in the one or two digits immediately after the decimal and before any section digits or dash. Outside the FAR, that level is written as “FAR subpart 15.2.” A full section needs those two section digits (for example 15.204); a subsection adds a dash (for example 15.204-1).",
+		citation: "FAR 1.105-2(b)–(c)",
+		sourceUrl: "https://www.acquisition.gov/far/1.105-2",
+		tags: ["far-navigation", "citations", "subpart", "numbering"],
+	},
+	{
+		id: "fund-map-cite-section",
+		unitId: "fundamentals",
+		format: "recall",
+		difficulty: "fundamentals",
+		scoring: "single-best",
+		situation: "You see this citation in a capture brief: FAR 15.204",
+		prompt: "What level of the FAR hierarchy is that?",
+		options: [
+			{
+				id: "a",
+				text: "A section — after the decimal, the subpart digits are followed by two section digits, with no dash",
+				correct: true,
+			},
+			{
+				id: "b",
+				text: "A part — 15 is the only meaningful number",
+				correct: false,
+			},
+			{
+				id: "c",
+				text: "A subpart — any citation ending in a single digit group after the decimal is a subpart",
+				correct: false,
+			},
+			{
+				id: "d",
+				text: "A subsection — every three-digit group after the decimal is a subsection",
+				correct: false,
+			},
+		],
+		explanation:
+			"FAR 1.105-2 builds a section from the part, then subpart digits, then two section digits, with no dash. “FAR 15.204” is therefore a section (part 15, subpart 2, section 04). A dash would mark a subsection (for example 15.204-1).",
+		citation: "FAR 1.105-2(b)–(c)",
+		sourceUrl: "https://www.acquisition.gov/far/1.105-2",
+		tags: ["far-navigation", "citations", "section", "numbering"],
+	},
+	{
+		id: "fund-map-cite-subsection",
+		unitId: "fundamentals",
+		format: "recall",
+		difficulty: "fundamentals",
+		scoring: "single-best",
+		situation: "You see this citation in a capture brief: FAR 15.204-1",
+		prompt: "What level of the FAR hierarchy is that?",
+		options: [
+			{
+				id: "a",
+				text: "A subsection — the number to the right of the dash is the subsection",
+				correct: true,
+			},
+			{
+				id: "b",
+				text: "A section — the dash is only stylistic",
+				correct: false,
+			},
+			{
+				id: "c",
+				text: "A paragraph — every dashed citation is a parenthetical paragraph",
+				correct: false,
+			},
+			{
+				id: "d",
+				text: "A Part 52 clause — any dash means provision or clause text",
+				correct: false,
+			},
+		],
+		explanation:
+			"FAR 1.105-2 puts the subsection to the right of the dash. “FAR 15.204-1” is therefore a subsection of section 15.204. Parenthetical letters or numbers (for example 15.204-1(a)) mark paragraphs under that subsection. A Part 52 provision or clause uses a different convention such as 52.215-1.",
+		citation: "FAR 1.105-2(b)–(c)",
+		sourceUrl: "https://www.acquisition.gov/far/1.105-2",
+		tags: ["far-navigation", "citations", "subsection", "numbering"],
+	},
+	{
+		id: "fund-map-cite-paragraph",
+		unitId: "fundamentals",
+		format: "recall",
+		difficulty: "fundamentals",
+		scoring: "single-best",
+		situation: "You see this citation in a capture brief: FAR 9.106-4(d)",
+		prompt: "What level of the FAR hierarchy is that?",
+		options: [
+			{
+				id: "a",
+				text: "A paragraph — the parenthetical “(d)” is a subdivision below the subsection",
+				correct: true,
+			},
+			{
+				id: "b",
+				text: "A subsection — anything after a dash is still only a subsection",
+				correct: false,
+			},
+			{
+				id: "c",
+				text: "A section — parentheses do not change the section label",
+				correct: false,
+			},
+			{
+				id: "d",
+				text: "A subpart — 9.1 is the controlling label and “(d)” is ignored",
+				correct: false,
+			},
+		],
+		explanation:
+			"FAR 1.105-2 uses FAR 9.106-4(d) as its worked example: part 9, subpart 9.1, section 9.106, subsection 9.106-4, and paragraph 9.106-4(d). Parenthetical alpha-numerics mark subdivisions below the section or subsection level.",
+		citation: "FAR 1.105-2(b)–(c)",
+		sourceUrl: "https://www.acquisition.gov/far/1.105-2",
+		tags: ["far-navigation", "citations", "paragraph", "numbering"],
+	},
+	{
+		id: "fund-map-cite-read-levels",
+		unitId: "fundamentals",
+		format: "recall",
+		difficulty: "fundamentals",
+		scoring: "single-best",
+		situation: "A reviewer marks this string in a red team: FAR 19.502-2",
+		prompt: "Which reading correctly names each level in that citation?",
+		options: [
+			{
+				id: "a",
+				text: "Part 19; subpart 19.5; section 19.502; subsection 19.502-2",
+				correct: true,
+			},
+			{
+				id: "b",
+				text: "Part 19; section 19.5; subsection 19.502; paragraph 19.502-2",
+				correct: false,
+			},
+			{
+				id: "c",
+				text: "Subpart 19; part 19.5; clause 19.502; deviation 19.502-2",
+				correct: false,
+			},
+			{
+				id: "d",
+				text: "Part 195; section 02; subsection 2 — decimals only separate agency codes",
+				correct: false,
+			},
+		],
+		explanation:
+			"Apply FAR 1.105-2 left to right: 19 is the part; the first digit after the decimal (5) is the subpart; the next two digits (02) are the section; the number after the dash (2) is the subsection. So 19.502-2 is a subsection inside section 19.502 of subpart 19.5.",
+		citation: "FAR 1.105-2(b)–(c)",
+		sourceUrl: "https://www.acquisition.gov/far/1.105-2",
+		tags: ["far-navigation", "citations", "numbering", "small-business"],
+	},
+	{
 		id: "fund-map-civilian-supplements",
 		unitId: "fundamentals",
 		format: "recall",
