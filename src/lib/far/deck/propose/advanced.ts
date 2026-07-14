@@ -170,7 +170,7 @@ export const PROPOSE_ADVANCED: QuizQuestion[] = [
 		unitId: "propose",
 		format: "scenario",
 		difficulty: "advanced",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"You are the contracts lead. After establishing a competitive range, the agency labels an exchange with a competitor a 'clarification' but lets that firm replace a noncompliant key-person resume and materially improve its proposal. Your firm receives no similar opportunity.",
 		prompt: "What principle is most relevant?",

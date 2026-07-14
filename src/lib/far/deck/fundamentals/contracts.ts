@@ -111,7 +111,7 @@ export const CONTRACT_FUNDAMENTALS: QuizQuestion[] = [
 		unitId: "fundamentals",
 		format: "scenario",
 		difficulty: "core",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"You are the pricing lead for a civilian-agency pursuit. The draft RFP contemplates a cost-reimbursement contract, but the business unit has performed only FFP work and cannot yet show that its accounting system segregates and assigns costs to this contract.",
 		prompt: "What is the most important readiness action before committing to this contract shape?",
@@ -312,7 +312,7 @@ export const CONTRACT_FUNDAMENTALS: QuizQuestion[] = [
 		unitId: "fundamentals",
 		format: "scenario",
 		difficulty: "advanced",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"Your contract includes FAR 52.217-9. Before the base period expires, the contracting officer sends the preliminary written notice required by the contract stating that the agency intends to exercise the first option. No written notice exercising the option or option modification has arrived, but the account team wants to book the option and commit staff.",
 		prompt: "What is the strongest interpretation of the preliminary notice?",

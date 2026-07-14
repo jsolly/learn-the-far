@@ -367,7 +367,7 @@ export const MONEY_FUNDAMENTALS: QuizQuestion[] = [
     unitId: "fundamentals",
     format: "scenario",
     difficulty: "advanced",
-    scoring: "confidence-bet",
+    scoring: "single-best",
     situation:
       "You hold the contracts seat after award. The funded amount on an incrementally funded cost-reimbursement CLIN will be reached Friday. The COR emails, 'Keep the full team working; the contracting officer will add funds next week.' No funded modification or other written contracting-officer direction has arrived.",
     prompt: "What is the single best response?",

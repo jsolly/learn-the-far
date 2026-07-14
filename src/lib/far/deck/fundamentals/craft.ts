@@ -6,7 +6,7 @@ export const CRAFT_FUNDAMENTALS: QuizQuestion[] = [
 		unitId: "fundamentals",
 		format: "recall",
 		difficulty: "fundamentals",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		prompt: "In disciplined capture management, what is probability of win (Pwin) primarily used for?",
 		options: [
 			{
@@ -197,7 +197,7 @@ export const CRAFT_FUNDAMENTALS: QuizQuestion[] = [
 		unitId: "fundamentals",
 		format: "scenario",
 		difficulty: "core",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"A proposal writer drafts this headline: 'We have 20 years of experience.' The capture record also shows your transition method cut service interruptions by 40% on three comparable civilian programs, while the likely incumbent lacks an integrated transition tool.",
 		prompt: "Which revision best turns the raw strength into a supported discriminator and customer-focused win theme while using supported indirect competitive positioning?",

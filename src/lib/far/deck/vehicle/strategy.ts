@@ -89,7 +89,7 @@ export const STRATEGY_VEHICLE_QUESTIONS: QuizQuestion[] = [
 		unitId: "vehicle",
 		format: "scenario",
 		difficulty: "core",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"A civilian customer needs a commercial help-desk service. The acquisition team is comparing an open-market simplified RFQ, a GSA MAS order, and a negotiated Part 15 RFP. Your account team wants to pick MAS solely because the service is commercial.",
 		prompt: "Which channel-selection advice is strongest?",

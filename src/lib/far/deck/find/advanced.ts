@@ -6,7 +6,7 @@ export const FIND_ADVANCED: QuizQuestion[] = [
 		unitId: "find",
 		format: "scenario",
 		difficulty: "advanced",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"A contracts analyst finds a current contract end date of March 31, 2028 and an ultimate potential end date of March 31, 2029 in public award data. A newer agency forecast targets successor award for January 31, 2029, and the account team assumes a ten-month solicitation-to-award PALT.",
 		prompt: "Which date logic should drive the initial recompete backcast?",
@@ -170,7 +170,7 @@ export const FIND_ADVANCED: QuizQuestion[] = [
 		unitId: "find",
 		format: "scenario",
 		difficulty: "advanced",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"A capture analyst tracks a proposed new-start civilian modernization effort. The fiscal year begins under a continuing resolution, the regular appropriation is not enacted, and the team has found no program-specific anomaly or other funding authority.",
 		prompt: "How should this change the opportunity assessment?",

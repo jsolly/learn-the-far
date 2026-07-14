@@ -88,7 +88,7 @@ export const WIN_PROTEST_ADVANCED: QuizQuestion[] = [
 		unitId: "win-protest",
 		format: "scenario",
 		difficulty: "advanced",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"After a turbulent transition, your incumbent program receives a draft CPARS narrative that omits a documented recovery and overstates schedule impact. The recompete RFP is expected soon.",
 		prompt: "What is the best positioning move?",
@@ -201,7 +201,7 @@ export const WIN_PROTEST_ADVANCED: QuizQuestion[] = [
 		unitId: "win-protest",
 		format: "scenario",
 		difficulty: "advanced",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"Your large prime timely requested a required debriefing on a civilian FAR Part 15 procurement. The team has heard that written follow-up questions always keep a debriefing open and extend protest clocks.",
 		prompt: "What should the debrief lead do?",

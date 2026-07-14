@@ -100,7 +100,7 @@ export const BID_NO_BID_FUNDAMENTALS: QuizQuestion[] = [
 		unitId: "bid-no-bid",
 		format: "scenario",
 		difficulty: "fundamentals",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"A pursuit is eligible and winnable, but the remaining proposal effort will consume scarce solution architects needed on two stronger bids.",
 		prompt: "Which statement is the soundest basis for the gate decision?",

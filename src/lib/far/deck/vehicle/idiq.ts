@@ -43,7 +43,7 @@ export const IDIQ_VEHICLE_QUESTIONS: QuizQuestion[] = [
 		unitId: "vehicle",
 		format: "scenario",
 		difficulty: "fundamentals",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"A civilian portfolio review groups Alliant, NASA SEWP, OASIS+, and NITAAC's CIO-SP family together as interchangeable 'GSA IT schedules.'",
 		prompt: "Which correction is accurate as of July 2026?",
@@ -119,7 +119,7 @@ export const IDIQ_VEHICLE_QUESTIONS: QuizQuestion[] = [
 		unitId: "vehicle",
 		format: "scenario",
 		difficulty: "core",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"A civilian contracting officer asks whether fair opportunity can ever be bypassed for an order under a multiple-award IDIQ. The account team answers, 'Only if the incumbent agrees.'",
 		prompt: "Which response better reflects FAR 16.505?",

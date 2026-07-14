@@ -367,7 +367,7 @@ export const FAR_MAP_FUNDAMENTALS: QuizQuestion[] = [
 		unitId: "fundamentals",
 		format: "scenario",
 		difficulty: "core",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"A GSA negotiated RFP uses the Uniform Contract Format, Sections A through M. The solution team has read the scope in Section C but has not built its compliance matrix or win themes.",
 		prompt: "Where should the team look next to learn how to respond and how the response will be scored?",
@@ -486,7 +486,7 @@ export const FAR_MAP_FUNDAMENTALS: QuizQuestion[] = [
 		unitId: "fundamentals",
 		format: "scenario",
 		difficulty: "advanced",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"An HHS capture brief for an open-market acquisition subject to FAR Part 6 says the recompete may be unrestricted, may become a total small-business set-aside after market research, or may go directly to one source because the program office prefers continuity. Your company is a large incumbent.",
 		prompt: "Which interpretation should drive the capture plan?",

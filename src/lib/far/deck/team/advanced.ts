@@ -80,7 +80,7 @@ const questions: QuizQuestion[] = [
 		"unitId": "team",
 		"format": "scenario",
 		"difficulty": "advanced",
-		"scoring": "confidence-bet",
+		"scoring": "single-best",
 		"situation": "On a services set-aside, the small prime plans to retain 40% of receipts, pay 10% to a qualifying first-tier similarly situated entity, and pay 50% to your large company. The similarly situated entity plans to subcontract half of its share to your company.",
 		"prompt": "Does that allocation satisfy FAR 52.219-14?",
 		"options": [

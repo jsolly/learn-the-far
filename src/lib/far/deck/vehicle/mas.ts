@@ -6,7 +6,7 @@ export const MAS_VEHICLE_QUESTIONS: QuizQuestion[] = [
 		unitId: "vehicle",
 		format: "scenario",
 		difficulty: "fundamentals",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"A civilian account team calls GSA Multiple Award Schedule a single task-order contract and assumes winning one agency order makes the company a Schedule holder.",
 		prompt: "Which description should replace that assumption?",

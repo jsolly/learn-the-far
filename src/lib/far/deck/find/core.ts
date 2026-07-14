@@ -363,7 +363,7 @@ export const FIND_CORE: QuizQuestion[] = [
 		unitId: "find",
 		format: "scenario",
 		difficulty: "core",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"A capture manager sees a nine-month-old agency forecast predicting a second-quarter unrestricted solicitation. The quarter has passed, no notice is posted, and an official vendor-communication update says the acquisition strategy and schedule are under review.",
 		prompt: "How should the manager represent the opportunity?",

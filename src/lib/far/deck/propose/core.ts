@@ -133,7 +133,7 @@ export const PROPOSE_CORE: QuizQuestion[] = [
 		unitId: "propose",
 		format: "scenario",
 		difficulty: "core",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"You are the pricing lead on a civilian cost-reimbursement procurement. An executive says price reasonableness and cost realism are two names for the same test and both ask whether your proposed amount is too high.",
 		prompt: "Which distinction should govern your pricing review?",
@@ -289,7 +289,7 @@ export const PROPOSE_CORE: QuizQuestion[] = [
 		unitId: "propose",
 		format: "scenario",
 		difficulty: "core",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"You are the capture lead. The RFP evaluates named key personnel but does not require letters of commitment. A recruiter identifies a highly rated incumbent employee who has not agreed to join; the draft says the person is committed and available on day one.",
 		prompt: "What is the soundest course under GAO's material-misrepresentation principles?",
