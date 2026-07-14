@@ -222,7 +222,7 @@
 						class="w-full sm:h-11 sm:flex-1 sm:text-base"
 						onclick={() => game.openNextChapter()}
 					>
-						{hasNextChapter ? "Go to next chapter" : "Back to shelf"}
+						{hasNextChapter ? "Next chapter" : "Back to shelf"}
 					</Button>
 				{:else}
 					<Button
