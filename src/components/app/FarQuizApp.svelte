@@ -5,6 +5,8 @@
 	import PieHome from "./PieHome.svelte";
 	import QuizView from "./QuizView.svelte";
 	import SummaryView from "./SummaryView.svelte";
+	import ChapterView from "./ChapterView.svelte";
+	import ShelfView from "./ShelfView.svelte";
 
 	let main = $state<HTMLElement | null>(null);
 	// Child views focus their own descriptive headings. On the home transition,
@@ -26,6 +28,10 @@
 		<QuizView />
 	{:else if game.view === "summary"}
 		<SummaryView />
+	{:else if game.view === "shelf"}
+		<ShelfView />
+	{:else if game.view === "chapter"}
+		<ChapterView />
 	{:else}
 		<PieHome />
 	{/if}

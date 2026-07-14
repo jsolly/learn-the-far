@@ -12,7 +12,6 @@
 		s ? s.newAchievements.map((id) => ACHIEVEMENTS.find((a) => a.id === id)).filter(Boolean) : [],
 	);
 	let unitNotPrime = $derived(s?.unit ? game.unitStats(s.unit.id).level !== "prime" : false);
-	let gated = $derived(game.needsFundamentalsPlacement);
 	let unlockedByMastery = $derived(
 		s?.mode === "testout" && !s.passedTestOut && s.unlockedNow === true,
 	);
@@ -33,34 +32,13 @@
 		if (pct >= 50) return "Room to sharpen.";
 		return "Keep drilling.";
 	}
-
-	function studyHeadline(): string {
-		if (s?.studyKind === "fundamentals-gaps") return "Gaps reviewed.";
-		if (s?.studyKind === "misses") return "Focused study complete.";
-		return "Study complete.";
-	}
 </script>
 
 {#if s}
 	<div
 		class="mx-auto flex min-h-[100dvh] w-full max-w-md flex-col items-center justify-center gap-6 px-5 py-10 text-center"
 	>
-		{#if s.mode === "study"}
-			<div class="text-5xl">📖</div>
-			<h1
-				bind:this={resultHeadingEl}
-				tabindex="-1"
-				class="rounded-sm text-2xl font-bold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
-			>
-				{studyHeadline()}
-			</h1>
-			<p class="text-muted-foreground">
-				{s.answered} card{s.answered === 1 ? "" : "s"} reviewed.
-			</p>
-			{#if gated && s.studyKind === "fundamentals-gaps"}
-				<p class="text-sm text-muted-foreground">Ready to try the test again?</p>
-			{/if}
-		{:else if s.mode === "testout"}
+		{#if s.mode === "testout"}
 			<div class="text-5xl" aria-hidden="true">{s.passedTestOut || unlockedByMastery ? "✅" : "📖"}</div>
 			<h1
 				bind:this={resultHeadingEl}
@@ -133,13 +111,10 @@
 		{/if}
 
 		<div class="flex w-full flex-col gap-2">
-			{#if s.mode === "study" && gated && s.studyKind === "fundamentals-gaps"}
-				<Button size="lg" onclick={() => game.startTestOut()}>Try the test again</Button>
-				<Button size="lg" variant="outline" onclick={() => game.goHome()}>Back</Button>
-			{:else if s.mode === "testout" && unlockedByMastery}
+			{#if s.mode === "testout" && unlockedByMastery}
 				<Button size="lg" onclick={() => game.goHome()}>Back to the chart</Button>
 			{:else if s.mode === "testout" && !s.passedTestOut}
-				<Button size="lg" onclick={() => game.startStudyUnit("fundamentals")}>Study Basics</Button>
+				<Button size="lg" onclick={() => game.openShelf("fundamentals")}>Browse Basics shelf</Button>
 				<Button size="lg" variant="outline" onclick={() => game.startTestOut()}>Try the test again</Button>
 				<Button size="lg" variant="ghost" onclick={() => game.goHome()}>Back to the chart</Button>
 			{:else if s.mode === "testout"}
@@ -148,9 +123,7 @@
 				<Button size="lg" onclick={() => s?.unit && game.startUnit(s.unit.id)}>Keep going</Button>
 				<Button size="lg" variant="outline" onclick={() => game.goHome()}>Back to the chart</Button>
 			{:else}
-				<Button size="lg" onclick={() => game.goHome()}>
-					{s.mode === "study" ? "Done studying" : "Back to the chart"}
-				</Button>
+				<Button size="lg" onclick={() => game.goHome()}>Back to the chart</Button>
 			{/if}
 		</div>
 	</div>

@@ -22,12 +22,27 @@ import {
 	TIER_UNLOCK_RATIO,
 } from "$lib/far/constants";
 import { clearProgress, emptyProgress, loadProgress, saveProgress } from "$lib/local-storage";
+import {
+	clearReadingProgress,
+	emptyReadingProgress,
+	loadReadingProgress,
+	markChapterRead,
+	rememberOpen,
+	saveReadingProgress,
+} from "$lib/reading-storage";
+import { buildMissManuscript, chapterById, shelfForUnit } from "$lib/far/chapters";
+import type {
+	Chapter,
+	ChapterKind,
+	ChapterQuizAction,
+	ChapterShelf,
+	ReadingProgress,
+} from "$lib/far/chapters/types";
 import type {
 	QuestionRecord,
 	QuizProgress,
 	SessionMode,
 	SessionSummary,
-	StudyKind,
 	UnitStats,
 	View,
 } from "$lib/types";
@@ -106,12 +121,16 @@ export class QuizGame {
 	// active session
 	mode = $state<SessionMode>("unit");
 	activeUnit = $state<UnitId | null>(null);
-	studyKind = $state<StudyKind | null>(null);
 	queue = $state<string[]>([]);
 	outcomes = $state<AnswerOutcome[]>([]);
 	requeued = new SvelteSet<string>();
-	/** Cards already continued past in a study session (quiz outcomes stay empty). */
-	studyViewed = $state(0);
+
+	/** Long-form chapter reading (shelf chapter / miss manuscript). */
+	chapter = $state<Chapter | null>(null);
+	chapterKind = $state<ChapterKind | null>(null);
+	/** Unit reference shelf (multi-chapter hub). */
+	shelf = $state<ChapterShelf | null>(null);
+	reading = $state<ReadingProgress>(emptyReadingProgress());
 
 	// current question interaction
 	answeredOptionId = $state<string | null>(null);
@@ -121,6 +140,7 @@ export class QuizGame {
 
 	constructor() {
 		this.progress = loadProgress();
+		this.reading = loadReadingProgress();
 	}
 
 	private questionsIn(unitId: UnitId): QuizQuestion[] {
@@ -213,7 +233,8 @@ export class QuizGame {
 			Boolean(testedOut) ||
 			Boolean(fundamentalsUnlocked) ||
 			Object.keys(achievements ?? {}).length > 0 ||
-			Boolean(streak?.current || streak?.longest || streak?.lastDay)
+			Boolean(streak?.current || streak?.longest || streak?.lastDay) ||
+			Object.keys(this.reading.read).length > 0
 		);
 	}
 
@@ -314,45 +335,97 @@ export class QuizGame {
 		this.beginSession("testout", null, [...uncleared, ...cleared].slice(0, TESTOUT_LENGTH));
 	}
 
-	/** Reveal-first study of uncleared fundamentals (no progress writes). */
+	private openChapter(chapter: Chapter, kind: ChapterKind) {
+		this.chapter = chapter;
+		this.chapterKind = kind;
+		this.shelf = null;
+		this.summary = null;
+		this.view = "chapter";
+		if (kind === "shelf-chapter") {
+			this.reading = rememberOpen(this.reading, chapter.unitId, chapter.id);
+			saveReadingProgress(this.reading);
+		}
+	}
+
+	openShelf(unitId: UnitId) {
+		if (!this.canStartUnit(unitId)) return;
+		this.shelf = shelfForUnit(unitId);
+		this.chapter = null;
+		this.chapterKind = null;
+		this.summary = null;
+		this.view = "shelf";
+		this.reading = { ...this.reading, lastUnitId: unitId };
+		saveReadingProgress(this.reading);
+	}
+
+	openShelfChapter(chapterId: string) {
+		const found = chapterById(chapterId);
+		if (!found) return;
+		if (!this.canStartUnit(found.unitId)) return;
+		this.openChapter(found, "shelf-chapter");
+	}
+
+	isChapterRead(chapterId: string): boolean {
+		return Boolean(this.reading.read[chapterId]);
+	}
+
+	markCurrentChapterRead() {
+		if (!this.chapter || this.chapterKind !== "shelf-chapter") return;
+		this.reading = markChapterRead(this.reading, this.chapter.id);
+		saveReadingProgress(this.reading);
+	}
+
+	/** Shame-free manuscript for uncleared fundamentals (no progress writes). */
 	startStudyFundamentalsGaps() {
 		const gaps = this.fundamentalsGaps;
 		if (gaps.length === 0) return;
-		this.beginSession("study", null, gaps, "fundamentals-gaps");
+		this.openChapter(buildMissManuscript(gaps), "miss-manuscript");
 	}
 
-	/** Reveal-first walkthrough (Fundamentals remains available while gated). */
-	startStudyUnit(unitId: UnitId) {
-		if (!this.canStartUnit(unitId)) return;
-		const qs = this.questionsIn(unitId);
-		if (qs.length === 0) return;
-		this.beginSession("study", unitId, qs, "unit");
-	}
-
-	/** Reveal-first study of quiz misses (attempted, not cleared). */
+	/** Shame-free manuscript of quiz misses (no progress writes). */
 	startStudyMisses() {
 		if (!this.fundamentalsUnlocked) return;
 		const misses = this.shakyQuestions;
 		if (misses.length === 0) return;
-		this.beginSession("study", null, shuffle(misses).slice(0, SESSION_LENGTH), "misses");
+		const chapter = buildMissManuscript(shuffle(misses).slice(0, SESSION_LENGTH));
+		chapter.quizCta = {
+			label: "Back to the chart",
+			action: { kind: "home" },
+		};
+		this.openChapter(chapter, "miss-manuscript");
 	}
 
-	private beginSession(
-		mode: SessionMode,
-		unitId: UnitId | null,
-		questions: QuizQuestion[],
-		studyKind: StudyKind | null = null,
-	) {
+	runChapterQuizAction(action: ChapterQuizAction) {
+		switch (action.kind) {
+			case "quiz-fundamentals":
+				this.startUnit("fundamentals");
+				return;
+			case "testout":
+				this.startTestOut();
+				return;
+			case "quiz-unit":
+				this.startUnit(action.unitId);
+				return;
+			case "shelf":
+				this.openShelf(action.unitId);
+				return;
+			case "home":
+				this.goHome();
+		}
+	}
+
+	private beginSession(mode: SessionMode, unitId: UnitId | null, questions: QuizQuestion[]) {
 		this.mode = mode;
 		this.activeUnit = unitId;
-		this.studyKind = studyKind;
 		this.queue = questions.map((q) => q.id);
 		this.outcomes = [];
 		this.requeued = new SvelteSet();
-		this.studyViewed = 0;
 		this.answeredOptionId = null;
 		this.pendingStake = null;
 		this.summary = null;
+		this.chapter = null;
+		this.chapterKind = null;
+		this.shelf = null;
 		this.view = questions.length > 0 ? "session" : "home";
 	}
 
@@ -366,10 +439,6 @@ export class QuizGame {
 	}
 
 	get progressCount(): { done: number; total: number } {
-		if (this.mode === "study") {
-			const remaining = this.queue.length;
-			return { done: this.studyViewed, total: this.studyViewed + remaining };
-		}
 		// The current question sits at queue[0] even after it's answered, so once
 		// answered it must not be double-counted as "remaining". A wrong answer
 		// in a normal quiz that requeues legitimately grows the total by one.
@@ -381,7 +450,6 @@ export class QuizGame {
 	// it's the last queued item AND it won't be requeued for a miss. Drives the
 	// Continue/Finish label so "Finish" never lies on a wrong final answer.
 	get willFinishAfterNext(): boolean {
-		if (this.mode === "study") return this.queue.length <= 1;
 		if (this.mode === "testout") return this.queue.length <= 1;
 		if (this.queue.length > 1) return false;
 		const q = this.currentQuestion;
@@ -410,21 +478,12 @@ export class QuizGame {
 		};
 	}
 
-	/** Best option for study-mode teaching stack (tiered best, else correct). */
-	bestOption(q: QuizQuestion) {
-		if (q.scoring === "tiered" || q.scoring === "reveal-tradeoff") {
-			return q.options.find((o) => o.tier === "best") ?? q.options[0];
-		}
-		return q.options.find((o) => o.correct) ?? q.options[0];
-	}
-
 	setStake(stake: ConfidenceStake) {
-		if (this.mode === "study" || this.isAnswered) return;
+		if (this.isAnswered) return;
 		this.pendingStake = stake;
 	}
 
 	answer(optionId: string) {
-		if (this.mode === "study") return;
 		const q = this.currentQuestion;
 		if (!q || this.isAnswered) return;
 		if (q.scoring === "confidence-bet" && !this.pendingStake) return; // must stake first
@@ -453,15 +512,6 @@ export class QuizGame {
 	next() {
 		const q = this.currentQuestion;
 		if (!q) return;
-
-		if (this.mode === "study") {
-			this.studyViewed += 1;
-			this.queue = this.queue.slice(1);
-			if (this.queue.length === 0) {
-				this.finishSession();
-			}
-			return;
-		}
 
 		if (this.mode === "testout") {
 			this.queue = this.queue.slice(1);
@@ -525,21 +575,6 @@ export class QuizGame {
 		const newAchievements: string[] = [];
 		const unit = this.activeUnit ? UNITS.find((u) => u.id === this.activeUnit) : undefined;
 
-		if (this.mode === "study") {
-			this.summary = {
-				mode: "study",
-				unit: unit ?? undefined,
-				answered: this.studyViewed,
-				scoreSum: 0,
-				scorePct: 0,
-				perfect: false,
-				studyKind: this.studyKind ?? undefined,
-				newAchievements: [],
-			};
-			this.view = "summary";
-			return;
-		}
-
 		// Keep the best outcome per question. Normal quizzes can requeue a miss,
 		// while the fixed testout contains each sampled question only once.
 		const bestByQuestion = new SvelteMap<string, AnswerOutcome>();
@@ -553,7 +588,7 @@ export class QuizGame {
 		const scorePct = answered === 0 ? 0 : Math.round((scoreSum / answered) * 100);
 		const perfect = answered > 0 && uniqueOutcomes.every((o) => o.score >= 0.999);
 
-		// streak: any completed quiz session marks today active (study does not)
+		// streak: any completed quiz session marks today active
 		this.markActive();
 
 		let passedTestOut: boolean | undefined;
@@ -640,11 +675,16 @@ export class QuizGame {
 		saveProgress(this.progress);
 		this.view = "home";
 		this.summary = null;
+		this.chapter = null;
+		this.chapterKind = null;
+		this.shelf = null;
 	}
 
 	resetProgress() {
 		this.progress = emptyProgress();
 		clearProgress();
+		this.reading = emptyReadingProgress();
+		clearReadingProgress();
 		this.goHome();
 	}
 }

@@ -67,8 +67,9 @@
 		<section class="mt-4 rounded-2xl border-2 border-primary/30 bg-card p-4 sm:mt-6 sm:p-6">
 			<h2 class="text-sm font-semibold leading-snug sm:text-lg">Unlock the deal lifecycle</h2>
 			<p class="mt-1 text-xs leading-5 text-muted-foreground sm:mt-2 sm:text-sm sm:leading-6">
-				Learn the Basics at your pace, or take a short {TESTOUT_LENGTH}-question test.
-				Score {Math.round(TESTOUT_PASS * 100)}% or better to unlock every lifecycle slice.
+				Read the Basics shelf for the map, then check yourself with a quiz or the short
+				{TESTOUT_LENGTH}-question test. Score {Math.round(TESTOUT_PASS * 100)}% or better to unlock
+				every lifecycle slice. Reading never clears the pie on its own.
 			</p>
 			{#if game.hasFundamentalsAttempt}
 				<p class="mt-2 text-[0.65rem] tabular-nums text-muted-foreground sm:mt-3 sm:text-xs">
@@ -76,16 +77,20 @@
 				</p>
 			{/if}
 			<div class="mt-4 grid gap-2 sm:mt-5 sm:grid-cols-2 sm:gap-3">
-				<Button size="lg" class="sm:h-11 sm:text-base" onclick={() => game.startUnit("fundamentals")}>
-					Quiz Basics
+				<Button
+					size="lg"
+					class="sm:h-11 sm:text-base"
+					onclick={() => game.openShelf("fundamentals")}
+				>
+					Read Basics shelf
 				</Button>
 				<Button
 					size="lg"
 					variant="outline"
 					class="sm:h-11 sm:text-base"
-					onclick={() => game.startStudyUnit("fundamentals")}
+					onclick={() => game.startUnit("fundamentals")}
 				>
-					Study Basics
+					Quiz Basics
 				</Button>
 			</div>
 			<div class="mt-2 flex flex-col gap-2 sm:mt-3 sm:gap-3">
@@ -104,7 +109,7 @@
 						class="w-full sm:h-11 sm:text-base"
 						onclick={() => game.startStudyFundamentalsGaps()}
 					>
-						Review what you missed
+						Here’s the missing picture
 					</Button>
 				{/if}
 			</div>
@@ -137,10 +142,10 @@
 				>
 					<span class="text-2xl sm:text-3xl" aria-hidden="true">📖</span>
 					<div class="min-w-0 flex-1">
-						<p class="font-semibold leading-tight sm:text-lg">Study what you need</p>
+						<p class="font-semibold leading-tight sm:text-lg">Here’s the missing picture</p>
 						<p class="text-xs text-muted-foreground sm:text-sm">
-							{game.shakyQuestions.length} question{game.shakyQuestions.length === 1 ? "" : "s"}
-							selected for you
+							{game.shakyQuestions.length} concept{game.shakyQuestions.length === 1 ? "" : "s"} to
+							re-read — not a soft quiz
 						</p>
 					</div>
 					<span class="shrink-0 text-lg text-muted-foreground sm:text-xl" aria-hidden="true">›</span>
@@ -160,7 +165,7 @@
 			<div
 				class={`rounded-2xl border-2 p-3 sm:p-4 lg:p-5 ${
 					lifecycleLocked
-						? "border-border/50 bg-muted/40 opacity-60"
+						? "border-border/50 bg-muted/40"
 						: "border-border bg-card"
 				}`}
 				aria-disabled={lifecycleLocked ? "true" : undefined}
@@ -236,9 +241,9 @@
 						size="sm"
 						variant="outline"
 						disabled={lifecycleLocked}
-						onclick={() => game.startStudyUnit(s.unit.id)}
+						onclick={() => game.openShelf(s.unit.id)}
 					>
-						Study this
+						Browse shelf
 					</Button>
 				</div>
 			</div>
@@ -254,7 +259,7 @@
 					class="flex flex-wrap items-center justify-center gap-2 text-sm"
 				>
 					<span id="reset-confirmation-question" class="w-full text-center text-muted-foreground">
-						Wipe all local quiz progress, streaks, and achievements?
+						Wipe all local quiz progress, streaks, achievements, and reading marks?
 					</span>
 					<Button
 						bind:ref={confirmYesEl}
