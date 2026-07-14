@@ -16,7 +16,6 @@ export const SHAPE_SHELF_CHAPTERS: Chapter[] = [
 		tags: ["early-exchange", "rfi", "one-on-one", "warrant", "call-plan"],
 		readingMinutes: 8,
 		suggestedOrder: 1,
-		startHere: true,
 		pieces: [
 			{
 				id: "rfi-and-one-on-ones",

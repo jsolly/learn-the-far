@@ -40,7 +40,7 @@ export type ChapterPiece = {
 };
 
 export type ChapterQuizAction =
-	| { kind: "quiz-fundamentals" }
+	| { kind: "quiz-chapter"; chapterId: string }
 	| { kind: "testout" }
 	| { kind: "quiz-unit"; unitId: UnitId }
 	| { kind: "shelf"; unitId: UnitId }
@@ -58,8 +58,6 @@ export type Chapter = {
 	readingMinutes: number;
 	/** Suggested browse order within the unit shelf (1-based). */
 	suggestedOrder: number;
-	/** Highlighted onboarding entry for newcomers. */
-	startHere?: boolean;
 	pieces: ChapterPiece[];
 	closing: string;
 	furtherReading?: FurtherReading[];

@@ -60,10 +60,9 @@ export const WIN_PROTEST_SHELF_CHAPTERS: Chapter[] = [
 		summary: "Postaward notice is not a debrief — request the debrief in writing within three days.",
 		intro:
 			"For newcomers landing after award, start here. The unsuccessful-offeror notice starts a short operational sprint: on covered negotiated procurements, a required postaward debriefing generally must be requested in writing within three days after you receive that notice.",
-		tags: ["start-here", "definition", "decision", "debriefing"],
+		tags: ["definition", "decision", "debriefing"],
 		readingMinutes: 5,
 		suggestedOrder: 2,
-		startHere: true,
 		pieces: [
 			{
 				id: "notice-vs-debrief",

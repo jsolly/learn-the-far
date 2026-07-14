@@ -31,11 +31,13 @@
 				class="mb-3 text-sm text-muted-foreground underline-offset-4 hover:underline"
 				onclick={() => game.goHome()}
 			>
-				← Back to the chart
+				← Back to home
 			</button>
-			<p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground sm:text-sm">
-				{shelf.subtitle}
-			</p>
+			{#if shelf.subtitle}
+				<p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground sm:text-sm">
+					{shelf.subtitle}
+				</p>
+			{/if}
 			<h1
 				bind:this={headingEl}
 				tabindex="-1"
@@ -43,9 +45,11 @@
 			>
 				{shelf.title}
 			</h1>
-			<p class="mt-3 text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
-				{shelf.intro}
-			</p>
+			{#if shelf.intro}
+				<p class="mt-3 text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
+					{shelf.intro}
+				</p>
+			{/if}
 		</header>
 
 		<ul class="flex flex-col gap-3 sm:gap-4" aria-label="Chapters on this shelf">
@@ -58,9 +62,6 @@
 						onclick={() => game.openShelfChapter(ch.id)}
 					>
 						<div class="flex flex-wrap items-center gap-2">
-							{#if ch.startHere}
-								<Badge class="text-[0.65rem] sm:text-xs">Start here</Badge>
-							{/if}
 							{#if read}
 								<Badge variant="secondary" class="text-[0.65rem] sm:text-xs">Read</Badge>
 							{/if}
