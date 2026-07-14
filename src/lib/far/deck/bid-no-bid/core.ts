@@ -164,7 +164,7 @@ export const BID_NO_BID_CORE: QuizQuestion[] = [
 		unitId: "bid-no-bid",
 		format: "scenario",
 		difficulty: "core",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"You are challenging a well-rated incumbent. The capture plan calls customer dissatisfaction 'high' because one stakeholder complained, but CPARS themes, recompete structure, and most interviews indicate continuity is valued.",
 		prompt: "Which Pwin judgment is best supported?",
@@ -259,7 +259,7 @@ export const BID_NO_BID_CORE: QuizQuestion[] = [
 		unitId: "bid-no-bid",
 		format: "scenario",
 		difficulty: "core",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"The team passed its draft-RFP gate. The final RFP changes the contract type, makes transition a pass/fail factor, shortens the start date, and removes the technical factor that carried your main discriminator.",
 		prompt: "What is the right governance response?",

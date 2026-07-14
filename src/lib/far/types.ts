@@ -27,15 +27,14 @@ export type Difficulty = "fundamentals" | "core" | "advanced";
 export type ScoringMode =
 	| "single-best" // one right answer, rest wrong (recall + simple scenarios)
 	| "tiered" // options rated best/defensible/costly/disqualifying, partial credit
-	| "reveal-tradeoff" // like tiered, but every option's consequence unfolds after you pick
-	| "confidence-bet"; // stake how sure you are, graded on calibration
+	| "reveal-tradeoff"; // like tiered, but every option's consequence unfolds after you pick
 
 export type OptionTier = "best" | "defensible" | "costly" | "disqualifying";
 
 export type QuizOption = {
 	id: string;
 	text: string;
-	// single-best / confidence-bet: exactly one option sets correct: true.
+	// single-best: exactly one option sets correct: true.
 	correct?: boolean;
 	// tiered / reveal-tradeoff: every option carries a tier.
 	tier?: OptionTier;
@@ -58,9 +57,6 @@ export type QuizQuestion = {
 	tags: string[];
 };
 
-// Confidence stakes for the confidence-bet scoring mode.
-export type ConfidenceStake = "hunch" | "confident" | "certain";
-
 // Feedback tone for a tier verdict — drives color + wording after an answer.
 export type Tone = "good" | "ok" | "warn" | "bad";
 
@@ -76,7 +72,6 @@ export type Achievement = {
 export type AnswerOutcome = {
 	questionId: string;
 	optionId: string;
-	stake?: ConfidenceStake;
 	score: number; // 0..1
 	cleared: boolean; // score >= CLEAR_THRESHOLD
 };

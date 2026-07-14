@@ -173,7 +173,7 @@ export const SHAPE_CORE: QuizQuestion[] = [
 		unitId: "shape",
 		format: "scenario",
 		difficulty: "core",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"You are a product strategist at a large prime. A civilian customer likes your platform and asks what to put in a future 'brand name or equal' description without excluding legitimate equivalents.",
 		prompt: "What input should you provide?",
@@ -367,7 +367,7 @@ export const SHAPE_CORE: QuizQuestion[] = [
 		unitId: "shape",
 		format: "scenario",
 		difficulty: "core",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"Before award, a capture-team mailbox receives an anonymous attachment labeled with a competitor's name. A reviewer opens the first page and sees proposal pricing and evaluation notes.",
 		prompt: "What is the proper immediate response?",

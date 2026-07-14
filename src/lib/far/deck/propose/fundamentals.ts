@@ -43,7 +43,7 @@ export const PROPOSE_FUNDAMENTALS: QuizQuestion[] = [
 		unitId: "propose",
 		format: "scenario",
 		difficulty: "fundamentals",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"As capture lead, you hear reviewers use four terms: strength, weakness, significant weakness, and deficiency. One gap materially increases performance risk but does not violate a material solicitation requirement.",
 		prompt: "Which finding best fits that gap under FAR 15.001?",

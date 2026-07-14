@@ -517,6 +517,6 @@ export const SHAPE_SHELF_CHAPTERS: Chapter[] = [
 			},
 		],
 		closing:
-			"Shape work succeeds when early exchange stays lawful, evidence stays usable, ownership stays with the Government, and integrity incidents get stopped cold. Reading this shelf does not clear quiz progress. When the picture feels steadier, check yourself — or return to the shelf for another chapter.",
+			"Shape work succeeds when early exchange stays lawful, evidence stays usable, ownership stays with the Government, and integrity incidents get stopped cold. When the picture feels steadier, check yourself — or return to the shelf for another chapter.",
 	}),
 ];

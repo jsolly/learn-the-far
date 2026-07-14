@@ -108,7 +108,7 @@ const questions: QuizQuestion[] = [
 		"unitId": "team",
 		"format": "recall",
 		"difficulty": "fundamentals",
-		"scoring": "confidence-bet",
+		"scoring": "single-best",
 		"prompt": "Your supplier-diversity lead labels every qualifying teammate simply 'small.' Which status map is accurate for capture and subcontracting-plan decisions?",
 		"options": [
 			{

@@ -6,7 +6,7 @@ const questions: QuizQuestion[] = [
 		"unitId": "team",
 		"format": "scenario",
 		"difficulty": "core",
-		"scoring": "confidence-bet",
+		"scoring": "single-best",
 		"situation": "Your large prime signed a two-page teaming agreement saying a specialist will receive 'approximately 35%' after award, while price, statement of work, duration, and termination remain subject to later good-faith negotiation. The agreement selects a state's law.",
 		"prompt": "What is the sound capture/legal assessment?",
 		"options": [
@@ -224,7 +224,7 @@ const questions: QuizQuestion[] = [
 		"unitId": "team",
 		"format": "scenario",
 		"difficulty": "core",
-		"scoring": "confidence-bet",
+		"scoring": "single-best",
 		"situation": "Your large prime lacks one highly relevant reference. A proposed major subcontractor has excellent performance on nearly identical civilian work, and capture wants to present it as if it automatically becomes the prime's own record.",
 		"prompt": "How should the proposal team treat that past performance?",
 		"options": [

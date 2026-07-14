@@ -82,7 +82,7 @@ export const SHAPE_FUNDAMENTALS: QuizQuestion[] = [
 		unitId: "shape",
 		format: "scenario",
 		difficulty: "fundamentals",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"You are a solutions architect advising a civilian program that wants vendors to propose innovative ways to improve claims-processing outcomes rather than follow a prescribed staffing recipe.",
 		prompt: "Which requirements approach best supports that goal?",

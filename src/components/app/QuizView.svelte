@@ -3,7 +3,7 @@
 
 	import { game } from "$lib/quiz-state.svelte.js";
 	import type { OptionTier, QuizOption, Tone } from "$lib/far/types";
-	import { CONFIDENCE_STAKES, DIFFICULTY_LABEL, SCORING_LABEL, TIER_VERDICT } from "$lib/far/constants";
+	import { DIFFICULTY_LABEL, SCORING_LABEL, TIER_VERDICT } from "$lib/far/constants";
 	import { UNITS } from "$lib/far/deck";
 	import { chaptersForQuestion } from "$lib/far/chapters";
 	import { Badge } from "$lib/components/ui/badge";
@@ -74,13 +74,11 @@
 			const tierClass = opt.tier ? TIER_CLASS[opt.tier] : "border-border";
 			return `${base} ${tierClass} ${pickMark}`.trim();
 		}
-		// single-best / confidence-bet — color alone marks right/wrong; no ring (double border)
+		// single-best — color alone marks right/wrong; no ring (double border)
 		if (opt.correct) return `${base} ${TIER_CLASS.best}`;
 		if (picked) return `${base} ${TIER_CLASS.disqualifying}`;
 		return `${base} border-border opacity-60`;
 	}
-
-	let confidenceLocked = $derived(q?.scoring === "confidence-bet" && !game.pendingStake && !answered);
 
 	async function answer(optionId: QuizOption["id"]) {
 		const questionId = q?.id;
@@ -95,15 +93,7 @@
 			return pickedOption.tier ? TIER_VERDICT[pickedOption.tier] : undefined;
 		}
 		const right = pickedOption.correct === true;
-		if (q.scoring === "confidence-bet") {
-			const stake = game.answeredOptionId
-				? game.outcomes[game.outcomes.length - 1]?.stake
-				: undefined;
-			const s = stake ?? "hunch";
-			if (right) return { label: `Correct — and you bet "${s}"`, tone: "good" };
-			return { label: `Wrong — and you bet "${s}"`, tone: s === "certain" ? "bad" : "warn" };
-		}
-		return right ? { label: "Correct", tone: "good" } : { label: "Not quite", tone: "bad" };
+		return right ? { label: "Correct!", tone: "good" } : { label: "Not quite", tone: "bad" };
 	}
 	let v = $derived(verdict());
 </script>
@@ -147,37 +137,12 @@
 			{q.prompt}
 		</h1>
 
-		{#if q.scoring === "confidence-bet" && !answered}
-			<div class="mt-4">
-				<p class="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-					Stake your confidence, then answer
-				</p>
-				<div class="grid grid-cols-3 gap-2">
-					{#each CONFIDENCE_STAKES as stake (stake.id)}
-						<button
-							type="button"
-							aria-pressed={game.pendingStake === stake.id}
-							onclick={() => game.setStake(stake.id)}
-							class={`rounded-xl border-2 p-3 text-center transition-all ${
-								game.pendingStake === stake.id
-									? "border-primary bg-primary/10"
-									: "border-border hover:bg-muted/50"
-							}`}
-						>
-							<span class="block text-sm font-semibold">{stake.label}</span>
-							<span class="block text-[0.7rem] text-muted-foreground">{stake.helper}</span>
-						</button>
-					{/each}
-				</div>
-			</div>
-		{/if}
-
-		<div class={`mt-4 flex flex-col gap-3 ${confidenceLocked ? "pointer-events-none opacity-40" : ""}`}>
+		<div class="mt-4 flex flex-col gap-3">
 			{#each q.options as opt (`${q.id}:${opt.id}`)}
 				<button
 					type="button"
 					class={optionClass(opt)}
-					disabled={answered || confidenceLocked}
+					disabled={answered}
 					onclick={() => answer(opt.id)}
 				>
 					<span class="flex items-start gap-3">
@@ -245,9 +210,7 @@
 						{game.willFinishAfterNext ? "Finish" : "Continue"}
 					</Button>
 				{:else}
-					<span class="text-xs text-muted-foreground">
-						{confidenceLocked ? "Pick a confidence level" : "Pick your answer"}
-					</span>
+					<span class="text-xs text-muted-foreground">Pick your answer</span>
 				{/if}
 			</div>
 		</div>

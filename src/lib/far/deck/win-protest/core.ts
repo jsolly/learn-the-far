@@ -43,7 +43,7 @@ export const WIN_PROTEST_CORE: QuizQuestion[] = [
 		unitId: "win-protest",
 		format: "scenario",
 		difficulty: "core",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"Your large-prime contracts director learns on Monday, from an agency email, of a protest basis unrelated to an apparent solicitation defect. No required debriefing applies. The team wants to wait for a monthly pipeline review.",
 		prompt: "Which timing rule should drive the decision?",
@@ -200,7 +200,7 @@ export const WIN_PROTEST_CORE: QuizQuestion[] = [
 		unitId: "win-protest",
 		format: "scenario",
 		difficulty: "core",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"An evaluator assigned your proposal a weakness for omitting a staffing commitment that appears on a cited proposal page. Correcting the weakness would put your lower-priced proposal close to the awardee in the documented tradeoff.",
 		prompt: "What makes the protest ground strongest?",

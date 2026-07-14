@@ -179,7 +179,7 @@ export const BID_NO_BID_ADVANCED: QuizQuestion[] = [
 		unitId: "bid-no-bid",
 		format: "scenario",
 		difficulty: "advanced",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"For a cost-reimbursement RFP, finance says the accounting system is 'DCAA compliant' because a different segment passed a review six years ago. The proposing segment has since changed ERP, indirect-rate structures, and timekeeping.",
 		prompt: "What evidence should the gate require?",

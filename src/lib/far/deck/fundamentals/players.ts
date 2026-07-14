@@ -307,7 +307,7 @@ export const PLAYERS_FUNDAMENTALS: QuizQuestion[] = [
 		unitId: "fundamentals",
 		format: "scenario",
 		difficulty: "advanced",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"You are the business development vice president. An agency IG report raises integrity concerns about a proposed teammate, but the company is not currently shown as excluded in SAM. The exclusive teaming agreement is due today.",
 		prompt: "How should the company handle the teammate integrity signal before signing?",

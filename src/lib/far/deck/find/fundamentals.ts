@@ -154,7 +154,7 @@ export const FIND_FUNDAMENTALS: QuizQuestion[] = [
 		unitId: "find",
 		format: "scenario",
 		difficulty: "fundamentals",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"A contracts analyst is asked where to research a civilian agency’s incumbent awards in 2026. A legacy playbook still directs the team to FPDS ezSearch.",
 		prompt: "Which answer reflects the current public-data landscape?",

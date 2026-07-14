@@ -1,4 +1,4 @@
-import type { Achievement, ConfidenceStake, Difficulty, OptionTier, ScoringMode, Tone } from "./types";
+import type { Achievement, Difficulty, OptionTier, ScoringMode, Tone } from "./types";
 
 // Difficulty ramp: sessions serve earlier tiers first and unlock the next once
 // the current one is mostly cleared.
@@ -44,27 +44,16 @@ export const LEVELS = [
 
 export type LevelId = (typeof LEVELS)[number]["id"];
 
-// Confidence-bet: the learner stakes a confidence level before answering. The
-// stake does not change the score (a correct answer clears the question either
-// way) — it drives the calibration feedback tone: a confident miss reads harsher
-// than a hunch that missed. See QuizView's verdict() and quiz-state scoring.
-export const CONFIDENCE_STAKES: { id: ConfidenceStake; label: string; helper: string }[] = [
-	{ id: "hunch", label: "Hunch", helper: "Not sure" },
-	{ id: "confident", label: "Confident", helper: "Fairly sure" },
-	{ id: "certain", label: "Certain", helper: "Bet on it" },
-];
-
 // Short human labels for non-obvious scoring modes (badge on the question card).
 // single-best is unlabeled — one-pick options already read as "pick the best answer".
 export const SCORING_LABEL: Partial<Record<ScoringMode, string>> = {
 	tiered: "Rank the move",
 	"reveal-tradeoff": "See the tradeoff",
-	"confidence-bet": "Bet your read",
 };
 
 // Tier feedback shown after a tiered / reveal-tradeoff answer.
 export const TIER_VERDICT: Record<OptionTier, { label: string; tone: Tone }> = {
-	best: { label: "Sharp move", tone: "good" },
+	best: { label: "Sharp move!", tone: "good" },
 	defensible: { label: "Defensible", tone: "ok" },
 	costly: { label: "Costly", tone: "warn" },
 	disqualifying: { label: "Disqualifying", tone: "bad" },

@@ -1,6 +1,5 @@
 import type {
 	AnswerOutcome,
-	ConfidenceStake,
 	Difficulty,
 	LifecycleUnit,
 	QuizQuestion,
@@ -135,7 +134,6 @@ export class QuizGame {
 
 	// current question interaction
 	answeredOptionId = $state<string | null>(null);
-	pendingStake = $state<ConfidenceStake | null>(null);
 
 	summary = $state<SessionSummary | null>(null);
 
@@ -388,7 +386,6 @@ export class QuizGame {
 		this.outcomes = [];
 		this.requeued = new SvelteSet();
 		this.answeredOptionId = null;
-		this.pendingStake = null;
 		this.summary = null;
 		this.openChapter(found, "shelf-chapter");
 	}
@@ -454,7 +451,6 @@ export class QuizGame {
 		this.outcomes = [];
 		this.requeued = new SvelteSet();
 		this.answeredOptionId = null;
-		this.pendingStake = null;
 		this.summary = null;
 		this.chapter = null;
 		this.chapterKind = null;
@@ -511,15 +507,9 @@ export class QuizGame {
 		};
 	}
 
-	setStake(stake: ConfidenceStake) {
-		if (this.isAnswered) return;
-		this.pendingStake = stake;
-	}
-
 	answer(optionId: string) {
 		const q = this.currentQuestion;
 		if (!q || this.isAnswered) return;
-		if (q.scoring === "confidence-bet" && !this.pendingStake) return; // must stake first
 
 		const score = this.scoreQuestion(q, optionId);
 		const cleared = score >= CLEAR_THRESHOLD;
@@ -528,7 +518,6 @@ export class QuizGame {
 		const outcome: AnswerOutcome = {
 			questionId: q.id,
 			optionId,
-			stake: this.pendingStake ?? undefined,
 			score,
 			cleared,
 		};
@@ -550,7 +539,6 @@ export class QuizGame {
 		// never paints one frame as already-answered (shared a/b/c/d option ids
 		// would otherwise flash the new correct option green).
 		this.answeredOptionId = null;
-		this.pendingStake = null;
 
 		if (this.mode === "testout") {
 			this.queue = this.queue.slice(1);

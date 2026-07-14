@@ -143,25 +143,24 @@
 							<p class="italic text-foreground/95">“{piece.quote.text}”</p>
 							<footer class="mt-2 not-italic">
 								<a
-									class="text-xs font-medium text-primary underline-offset-4 hover:underline sm:text-sm"
+									class="text-xs font-medium text-primary underline underline-offset-2 sm:text-sm"
 									href={piece.quote.sourceUrl}
 									target="_blank"
 									rel="noopener noreferrer"
 								>
-									{piece.quote.citation}
+									{piece.quote.citation} ↗
 								</a>
-								<span class="text-xs text-muted-foreground"> · public domain</span>
 							</footer>
 						</blockquote>
 					{:else if piece.sourceUrl && piece.citation}
 						<p class="mt-4 text-xs sm:text-sm">
 							<a
-								class="font-medium text-primary underline-offset-4 hover:underline"
+								class="font-medium text-primary underline underline-offset-2"
 								href={piece.sourceUrl}
 								target="_blank"
 								rel="noopener noreferrer"
 							>
-								{piece.citation}
+								{piece.citation} ↗
 							</a>
 							{#if piece.sourceKind}
 								<span class="text-muted-foreground">
@@ -181,12 +180,12 @@
 					{#each chapter.furtherReading as link (link.url + link.label)}
 						<li>
 							<a
-								class="font-medium text-primary underline-offset-4 hover:underline"
+								class="font-medium text-primary underline underline-offset-2"
 								href={link.url}
 								target="_blank"
 								rel="noopener noreferrer"
 							>
-								{link.label}
+								{link.label} ↗
 							</a>
 							<span class="text-muted-foreground"> · {sourceKindLabel(link.kind)}</span>
 						</li>
@@ -196,23 +195,35 @@
 		{/if}
 
 		<section class="mt-10 border-t pt-8 sm:mt-12">
-			<p class="text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">{chapter.closing}</p>
-			<div class="mt-6 flex flex-col gap-2 sm:flex-row sm:items-center">
+			{#if chapter.closing}
+				<p class="text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">{chapter.closing}</p>
+			{/if}
+			<div class={`${chapter.closing ? "mt-6" : ""} flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center`}>
 				<Button
 					size="lg"
-					class="w-full sm:h-11 sm:flex-1 sm:text-base"
+					class="w-full sm:h-11 sm:min-w-[12rem] sm:flex-1 sm:text-base"
 					onclick={() => game.runChapterQuizAction(chapter.quizCta.action)}
 				>
 					{chapter.quizCta.label}
 				</Button>
 				{#if game.chapterKind === "shelf-chapter"}
+					{#if hasNextChapter}
+						<Button
+							size="lg"
+							variant="outline"
+							class="w-full sm:h-11 sm:min-w-[12rem] sm:flex-1 sm:text-base"
+							onclick={() => game.openNextChapter()}
+						>
+							Next chapter
+						</Button>
+					{/if}
 					<Button
 						size="lg"
 						variant="outline"
-						class="w-full sm:h-11 sm:flex-1 sm:text-base"
-						onclick={() => game.openNextChapter()}
+						class="w-full sm:h-11 sm:min-w-[12rem] sm:flex-1 sm:text-base"
+						onclick={() => game.openShelf(chapter.unitId)}
 					>
-						{hasNextChapter ? "Go to next chapter" : "Back to shelf"}
+						Browse chapters
 					</Button>
 				{:else}
 					<Button

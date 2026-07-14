@@ -248,7 +248,7 @@ export const SHAPE_ADVANCED: QuizQuestion[] = [
 		unitId: "shape",
 		format: "scenario",
 		difficulty: "advanced",
-		scoring: "confidence-bet",
+		scoring: "single-best",
 		situation:
 			"Your proposal team receives a civilian solicitation built around a Government SOO. The solution lead asks which document should translate your promised method, standards, and measurable results into the contractual performance baseline.",
 		prompt: "Which answer is correct under FAR 37.602?",
