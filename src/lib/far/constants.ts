@@ -54,9 +54,9 @@ export const CONFIDENCE_STAKES: { id: ConfidenceStake; label: string; helper: st
 	{ id: "certain", label: "Certain", helper: "Bet on it" },
 ];
 
-// Short human labels for each scoring mode (badge on the question card).
-export const SCORING_LABEL: Record<ScoringMode, string> = {
-	"single-best": "Best answer",
+// Short human labels for non-obvious scoring modes (badge on the question card).
+// single-best is unlabeled — one-pick options already read as "pick the best answer".
+export const SCORING_LABEL: Partial<Record<ScoringMode, string>> = {
 	tiered: "Rank the move",
 	"reveal-tradeoff": "See the tradeoff",
 	"confidence-bet": "Bet your read",

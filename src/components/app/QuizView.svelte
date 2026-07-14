@@ -19,7 +19,11 @@
 	function focusQuestionHeading(questionId: string) {
 		return (element: HTMLHeadingElement) => {
 			void tick().then(() => {
-				if (game.currentQuestion?.id === questionId) element.focus();
+				if (game.currentQuestion?.id !== questionId) return;
+				// preventScroll: focus alone scrolls the heading into view and leaves
+				// mobile mid-page after Continue; pin to the top of the quiz instead.
+				element.focus({ preventScroll: true });
+				window.scrollTo({ top: 0, left: 0, behavior: "auto" });
 			});
 		};
 	}
@@ -52,20 +56,21 @@
 	};
 
 	// Visual state for one option once the question is answered (quiz mode).
+	// Avoid font-weight changes — semibold shifts glyph widths and reflows the line.
 	function optionClass(opt: QuizOption): string {
-		const base = "w-full rounded-2xl border-2 p-4 text-left transition-all";
+		const base = "w-full rounded-2xl border-2 p-4 text-left transition-[transform,opacity] duration-150";
 		if (!answered) {
 			return `${base} border-border bg-card hover:border-primary/50 hover:bg-muted/50 active:scale-[0.99]`;
 		}
 		const picked = opt.id === game.answeredOptionId;
-		const pickMark = picked ? "font-semibold" : "opacity-80";
+		const pickMark = picked ? "" : "opacity-80";
 		if (q && (q.scoring === "tiered" || q.scoring === "reveal-tradeoff")) {
 			const tierClass = opt.tier ? TIER_CLASS[opt.tier] : "border-border";
-			return `${base} ${tierClass} ${pickMark}`;
+			return `${base} ${tierClass} ${pickMark}`.trim();
 		}
 		// single-best / confidence-bet — color alone marks right/wrong; no ring (double border)
-		if (opt.correct) return `${base} ${TIER_CLASS.best}${picked ? " font-semibold" : ""}`;
-		if (picked) return `${base} ${TIER_CLASS.disqualifying} font-semibold`;
+		if (opt.correct) return `${base} ${TIER_CLASS.best}`;
+		if (picked) return `${base} ${TIER_CLASS.disqualifying}`;
 		return `${base} border-border opacity-60`;
 	}
 
@@ -117,7 +122,9 @@
 			{#if unit.id !== q.difficulty && DIFFICULTY_LABEL[q.difficulty] !== unit.title}
 				<Badge variant="outline">{DIFFICULTY_LABEL[q.difficulty]}</Badge>
 			{/if}
-			<Badge variant="secondary">{SCORING_LABEL[q.scoring]}</Badge>
+			{#if SCORING_LABEL[q.scoring]}
+				<Badge variant="secondary">{SCORING_LABEL[q.scoring]}</Badge>
+			{/if}
 		</div>
 
 		{#if q.situation}
@@ -160,7 +167,7 @@
 		{/if}
 
 		<div class={`mt-4 flex flex-col gap-3 ${confidenceLocked ? "pointer-events-none opacity-40" : ""}`}>
-			{#each q.options as opt (opt.id)}
+			{#each q.options as opt (`${q.id}:${opt.id}`)}
 				<button
 					type="button"
 					class={optionClass(opt)}
@@ -208,12 +215,11 @@
 
 		<!-- sticky action bar -->
 		<div class="fixed inset-x-0 bottom-0 border-t bg-background/95 backdrop-blur">
-			<div class="mx-auto flex w-full max-w-2xl items-center justify-between gap-3 px-4 py-3">
+			<div
+				class={`mx-auto flex w-full max-w-2xl items-center gap-3 px-4 py-3 ${answered ? "justify-center" : ""}`}
+			>
 				{#if answered}
-					<span class="text-xs text-muted-foreground">
-						{game.willFinishAfterNext ? "Last one" : "Keep going"}
-					</span>
-					<Button size="lg" class="flex-1 sm:flex-none sm:px-10" onclick={() => game.next()}>
+					<Button size="lg" class="w-full max-w-xs sm:w-auto sm:px-10" onclick={() => game.next()}>
 						{game.willFinishAfterNext ? "Finish" : "Continue"}
 					</Button>
 				{:else}
