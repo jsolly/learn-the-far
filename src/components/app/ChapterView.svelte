@@ -106,26 +106,16 @@
 						</p>
 					{/if}
 
-					<dl class="mt-5 space-y-4">
-						<div>
-							<dt class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-								What it is
-							</dt>
-							<dd class="mt-1 text-sm leading-6 sm:text-base sm:leading-7">{piece.is}</dd>
+					<p class="mt-5 text-sm leading-6 sm:text-base sm:leading-7">{piece.teach}</p>
+
+					{#if piece.watchFor}
+						<div class="mt-4 rounded-md border border-border/80 bg-muted/30 px-4 py-3">
+							<p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+								Watch for
+							</p>
+							<p class="mt-1 text-sm leading-6 sm:text-base sm:leading-7">{piece.watchFor}</p>
 						</div>
-						<div>
-							<dt class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-								What it is not
-							</dt>
-							<dd class="mt-1 text-sm leading-6 sm:text-base sm:leading-7">{piece.isNot}</dd>
-						</div>
-						<div>
-							<dt class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-								Where it fits
-							</dt>
-							<dd class="mt-1 text-sm leading-6 sm:text-base sm:leading-7">{piece.fits}</dd>
-						</div>
-					</dl>
+					{/if}
 
 					{#if piece.judgment}
 						<p class="mt-4 text-sm leading-6 sm:text-base sm:leading-7">

@@ -24,10 +24,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 				title: "The stations of an acquisition",
 				story:
 					"A program office says it “needs cyber support next fiscal year.” Your pipeline already shows revenue. Nothing on SAM.gov yet matches the story.",
-				is: "A federal acquisition moves through distinct stations: a mission need and planning inputs; market research and notices that gather capability; a solicitation that requests offers or quotations; an award that creates a mutually binding relationship; orders or modifications that authorize specific work and funding; and performance that creates the record the next competition will read.",
-				isNot:
-					"A need is not a solicitation. A solicitation is not a contract. A vehicle award is not funded backlog. A forecast or budget line is not an obligation. Calling every stage “the deal” hides which instrument — if any — actually exists.",
-				fits: "Use this map at opportunity intake and at every gate: name the station you are in, what evidence you have, and what still has to happen before money and performance can move.",
+				teach: "A federal acquisition moves through distinct stations: a mission need and planning inputs; market research and notices that gather capability; a solicitation that requests offers or quotations; an award that creates a mutually binding relationship; orders or modifications that authorize specific work and funding; and performance that creates the record the next competition will read. You’ll use this map at opportunity intake and at every gate — name the station you’re in, what evidence you have, and what still has to happen before money and performance can move.",
+				watchFor:
+					"Don’t collapse every stage into “the deal.” A need is not a solicitation, a solicitation is not a contract, a vehicle award is not funded backlog, and a forecast or budget line is not an obligation. Calling every stage “the deal” hides which instrument — if any — actually exists.",
 				judgment:
 					"If you cannot point to the operative instrument for the claim you are making — notice, solicitation, contract, order, or modification — you are still upstream of that claim.",
 				checklist: [
@@ -42,10 +41,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "signals-are-not-awards",
 				title: "Market signals are not awards",
-				is: "Forecasts, sources-sought notices, RFIs, draft solicitations, and industry days are orientation tools. They help the Government and industry learn about capability, timing, and acquisition strategy before anyone is asked for a binding offer.",
-				isNot:
-					"They are not promises of funding, set-aside outcomes, or award. A strong customer conversation does not convert a forecast into an obligation.",
-				fits: "Place signal work in Find and Shape: gather evidence and shape fair competition without treating the signal as booked work.",
+				teach: "Forecasts, sources-sought notices, RFIs, draft solicitations, and industry days are orientation tools. They help the Government and industry learn about capability, timing, and acquisition strategy before anyone is asked for a binding offer. Place that work in Find and Shape: gather evidence and shape fair competition without treating the signal as booked work.",
+				watchFor:
+					"Don’t treat a forecast, sources-sought reply, or warm customer conversation as a promise of funding, set-aside outcome, or award. A strong customer conversation does not convert a forecast into an obligation.",
 				citation: "FAR 15.201; FAR 10.001",
 				sourceUrl: "https://www.acquisition.gov/far/15.201",
 				sourceKind: "controlling-authority",
@@ -84,10 +82,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 				title: "The contracting officer’s written authority",
 				story:
 					"Imagine a Friday afternoon call: a program office wants you to “just start” extra work. Senior people are on the line. Only one kind of authority can bind the Government to a contract action.",
-				is: "A contracting officer (often called a KO) may enter into, administer, or terminate contracts only to the extent of the authority delegated in writing. Industry commonly calls that appointment a warrant; the FAR itself speaks in terms of appointment and written limits (see also SF 1402 practice under FAR 1.603-3). The practical check is that written delegation and its limits — not seniority or budget control.",
-				isNot:
-					"It is not “whoever seems in charge,” not the program manager by title alone, and not a COR email. A meeting introduction or a customer relationship does not create contracting authority.",
-				fits: "This sits at the front of every capture and contracts conversation: before you treat direction as contractual, ask who has the written authority to bind the Government for that action.",
+				teach: "A contracting officer (KO) may enter into, administer, or terminate contracts only to the extent of authority delegated in writing — industry often calls that a warrant; the FAR speaks of appointment and written limits. The check that matters is the written delegation and its limits, not seniority or budget control. Put this question first in every capture and contracts conversation before you treat direction as contractual.",
+				watchFor:
+					"Don’t confuse seniority, a PM title, a COR email, or a warm customer relationship with contracting authority. None of those bind the Government.",
 				judgment:
 					"When direction would change price, quantity, delivery, or other terms, stop and route it to an official whose written delegation covers the change.",
 				checklist: [
@@ -106,10 +103,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 				title: "The contracting officer’s representative (COR)",
 				story:
 					"The COR is often the person you talk to most on a live contract — technical monitoring, site visits, invoice review. That closeness is useful. It is also where unauthorized commitments are born.",
-				is: "A COR assists in the technical monitoring or administration of a contract under a written designation from the contracting officer. The COR keeps a file that includes that designation and documents actions taken within the delegated authority.",
-				isNot:
-					"A COR is not a second contracting officer. Delegation for technical monitoring does not include authority to change scope, obligate funds, or invent new workstreams outside the contract. “Subordinate to the warrant” is shorthand for that limit — not an org-chart reporting claim.",
-				fits: "Place the COR beside the CO on your org sketch: closest to performance reality, still limited to the written designation for anything that changes the deal.",
+				teach: "A COR assists in the technical monitoring or administration of a contract under a written designation from the contracting officer. The COR keeps a file that includes that designation and documents actions taken within the delegated authority. Place the COR beside the CO on your org sketch: closest to performance reality, still limited to the written designation for anything that changes the deal.",
+				watchFor:
+					"Don’t treat the COR as a second contracting officer. Technical-monitoring delegation does not include authority to change scope, obligate funds, or invent new workstreams outside the contract. “Subordinate to the warrant” is shorthand for that limit — not an org-chart reporting claim.",
 				judgment:
 					"Treat COR guidance as performance insight; treat contractual direction as coming only from someone with authority to change the instrument.",
 				quote: {
@@ -121,10 +117,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "government-pm",
 				title: "The Government program manager",
-				is: "A Government program manager (or requiring-activity lead) typically owns mission need, outcomes, stakeholder coordination, and much of the requirements dialogue. FAR 15.201 recognizes the program manager as a participant in early exchanges. Exact duties are agency-specific.",
-				isNot:
-					"The PM title does not, by itself, confer authority to enter into or change a contract. Budget visibility is not contracting authority. A PM preference is not a modification.",
-				fits: "In capture, treat the PM as a primary voice on need and success criteria — and still confirm contractual direction through the CO or another official whose written delegation covers the action.",
+				teach: "A Government program manager (or requiring-activity lead) typically owns mission need, outcomes, stakeholder coordination, and much of the requirements dialogue. FAR 15.201 recognizes the program manager as a participant in early exchanges; exact duties are agency-specific. In capture, treat the PM as a primary voice on need and success criteria — and still confirm contractual direction through the CO or another official whose written delegation covers the action.",
+				watchFor:
+					"Don’t confuse the PM title, budget visibility, or a PM preference with authority to enter into or change a contract. A preference is not a modification.",
 				citation: "FAR 15.201(c); FAR 1.602-1(a)",
 				sourceUrl: "https://www.acquisition.gov/far/15.201",
 				sourceKind: "controlling-authority",
@@ -164,10 +159,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "far-citations",
 				title: "How FAR citations are built",
-				is: "The FAR is divided into parts, subparts, sections, and subsections. Digits left of the decimal are the part; digits right of the decimal identify subpart and section; numbers after a dash identify a subsection. Part 52 holds provision and clause text keyed to subject parts (see also FAR 52.101 for how that numbering works).",
-				isNot:
-					"“Part,” “subpart,” “section,” and “clause” are not interchangeable labels. A Part 52 number is not “just another section” of the subject part — it is the prescribed text living in subpart 52.2.",
-				fits: "Whenever you cite a rule in a review or a proposal narrative, this grammar tells a reader where to look — and whether you mean a prescription or the clause text itself.",
+				teach: "The FAR is divided into parts, subparts, sections, and subsections. Digits left of the decimal are the part; digits right of the decimal identify subpart and section; numbers after a dash identify a subsection. Part 52 holds provision and clause text keyed to subject parts (see also FAR 52.101 for how that numbering works). Whenever you cite a rule in a review or a proposal narrative, this grammar tells a reader where to look — and whether you mean a prescription or the clause text itself.",
+				watchFor:
+					"Don’t treat “part,” “subpart,” “section,” and “clause” as interchangeable labels. A Part 52 number is not “just another section” of the subject part — it is the prescribed text living in subpart 52.2.",
 				quote: {
 					text: "The FAR is divided into subchapters, parts (each of which covers a separate aspect of acquisition), subparts, sections, and subsections. … The digits to the left of the decimal point represent the part number. The numbers to the right of the decimal point and to the left of the dash represent, in order, the subpart (one or two digits), and the section (two digits). The number to the right of the dash represents the subsection.",
 					citation: "FAR 1.105-2(a)–(b)",
@@ -177,10 +171,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "supplements",
 				title: "FAR, agency supplements, deviations, and the solicitation",
-				is: "Agencies may issue acquisition regulations that implement or supplement the FAR. Your baseline for a civilian buy is usually the FAR plus that agency’s supplement (for example GSAM/GSAR or VAAR), plus any authorized deviation identified for the acquisition, plus the operative solicitation’s own terms.",
-				isNot:
-					"An agency supplement does not replace the FAR wholesale. A supplemental provision is not automatically a “deviation,” and deviations are not free-form agency preferences — they are authorized departures from FAR coverage. Reading only the FAR (or only the supplement) without the solicitation leaves gaps.",
-				fits: "At opportunity kickoff, put four tabs in your binder: FAR, agency supplement, identified deviations, and the solicitation package as amended.",
+				teach: "Agencies may issue acquisition regulations that implement or supplement the FAR. Your baseline for a civilian buy is usually the FAR plus that agency’s supplement (for example GSAM/GSAR or VAAR), plus any authorized deviation identified for the acquisition, plus the operative solicitation’s own terms. At opportunity kickoff, put four tabs in your binder: FAR, agency supplement, identified deviations, and the solicitation package as amended.",
+				watchFor:
+					"Don’t read an agency supplement as replacing the FAR wholesale, and don’t call every supplemental provision a “deviation.” Deviations are authorized departures from FAR coverage — not free-form agency preferences. Reading only the FAR (or only the supplement) without the solicitation leaves gaps.",
 				checklist: [
 					"Name the buying agency’s supplement",
 					"Scan for class or solicitation-specific deviations",
@@ -197,10 +190,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 				title: "Solicitation, provision, and clause",
 				story:
 					"Proposal teams live in RFPs. Performance teams live in contracts. The vocabulary that bridges them prevents you from arguing about the wrong document.",
-				is: "A solicitation is any request to submit offers or quotations. A solicitation provision applies only before award. A contract clause is a term used in contracts, or in both solicitations and contracts, applying after award or both before and after award. When a negotiated solicitation uses the Uniform Contract Format, Section L typically carries instructions to offerors and Section M carries evaluation factors for award — that L/M split is a UCF mapping, not a universal label for every instrument.",
-				isNot:
-					"A solicitation is not already a contract. A provision is not a post-award performance rule. A clause is not “just numbering.” Sections labeled “L” and “M” outside UCF (or in non-UCF vehicles) may mean something else — read the document’s own map.",
-				fits: "Read the solicitation’s instruction and evaluation sections with this split in mind: some text dies at award; some text rides with you for years.",
+				teach: "A solicitation is any request to submit offers or quotations. A solicitation provision applies only before award. A contract clause is a term used in contracts, or in both solicitations and contracts, applying after award or both before and after award. When a negotiated solicitation uses the Uniform Contract Format, Section L typically carries instructions to offerors and Section M carries evaluation factors for award — that L/M split is a UCF mapping, not a universal label for every instrument. Read the solicitation’s instruction and evaluation sections with this split in mind: some text dies at award; some text rides with you for years.",
+				watchFor:
+					"Don’t treat a solicitation as already a contract, a provision as a post-award performance rule, or a clause as “just numbering.” Sections labeled “L” and “M” outside UCF (or in non-UCF vehicles) may mean something else — read the document’s own map.",
 				quote: {
 					text: "Solicitation means any request to submit offers or quotations to the Government. … Solicitation provision or provision means a term or condition used only in solicitations and applying only before contract award. … Contract clause or “clause” means a term or condition used in contracts or in both solicitations and contracts, and applying after contract award or both before and after award.",
 					citation: "FAR 2.101",
@@ -239,10 +231,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 				title: "Appropriation, obligation, outlay",
 				story:
 					"A forecast says the program is “fully funded.” Finance asks whether that means authority to obligate, a signed commitment, or cash already paid.",
-				is: "An appropriation is budget authority to incur obligations and make payments for specified purposes. An obligation is a definite commitment that creates a legal liability (for example, signing a contract). An outlay (disbursement) is the payment that liquidates that obligation. Treat “expenditure” carefully — do not assume every speaker uses it as a perfect synonym for outlay.",
-				isNot:
-					"An appropriation is not cash sitting in a drawer with your company name on it. An obligation is not the same event as payment. Winning a vehicle or seeing a forecast line is not an obligation.",
-				fits: "Use this sequence whenever someone asks “is it funded?” — authority to obligate, then the binding commitment, then the money moving.",
+				teach: "An appropriation is budget authority to incur obligations and make payments for specified purposes. An obligation is a definite commitment that creates a legal liability (for example, signing a contract). An outlay (disbursement) is the payment that liquidates that obligation. Treat “expenditure” carefully — do not assume every speaker uses it as a perfect synonym for outlay. Use this sequence whenever someone asks “is it funded?” — authority to obligate, then the binding commitment, then the money moving.",
+				watchFor:
+					"Don’t treat an appropriation as cash sitting in a drawer with your company name on it, or confuse obligation with payment. Winning a vehicle or seeing a forecast line is not an obligation.",
 				quote: {
 					text: "Appropriations. Budget authority to incur obligations and to make payments from the Treasury for specified purposes. … Appropriations do not represent cash actually set aside in the Treasury for purposes specified in the appropriation act; they represent amounts that agencies may obligate during the period of time specified in the respective appropriation acts.",
 					citation: "GAO, A Glossary of Terms Used in the Federal Budget Process (GAO-05-734SP)",
@@ -252,10 +243,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "purpose-time-amount",
 				title: "Purpose, time, and amount",
-				is: "Legal use of appropriations turns on three controls: purpose (the account may fund only authorized objects), time (obligation only during availability and for a proper need), and amount (obligations and expenditures within applicable limits). “Color of money” is useful shorthand for those controls — not a license to move funds between accounts.",
-				isNot:
-					"A contract ceiling does not invent budget authority. Program preference does not rewrite statutory purpose. A continuing resolution does not automatically authorize every new start.",
-				fits: "When a customer informally describes accounts as different colors, capture should surface mismatches to contracts and the customer — not design a proposal that assumes accounts are interchangeable.",
+				teach: "Legal use of appropriations turns on three controls: purpose (the account may fund only authorized objects), time (obligation only during availability and for a proper need), and amount (obligations and expenditures within applicable limits). “Color of money” is useful shorthand for those controls — not a license to move funds between accounts. When a customer informally describes accounts as different colors, capture should surface mismatches to contracts and the customer — not design a proposal that assumes accounts are interchangeable.",
+				watchFor:
+					"Don’t let a contract ceiling invent budget authority, program preference rewrite statutory purpose, or a continuing resolution automatically authorize every new start. Colors are not interchangeable transfer authority.",
 				citation:
 					"GAO Red Book, Availability of Appropriations: Purpose; 31 U.S.C. §§ 1301(a), 1502(a), 1341(a)",
 				sourceUrl: "https://www.gao.gov/assets/gao-17-797sp.pdf",
@@ -264,10 +254,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "igce-vs-funding",
 				title: "IGCE versus funding and price",
-				is: "An Independent Government Cost Estimate is an agency tool for analyzing proposed prices or costs. FAR 15.404-1 recognizes comparison with independent Government estimates as one proposal-analysis technique. It can shape affordability views; it does not itself obligate funds.",
-				isNot:
-					"The IGCE is not a promise of funding, not the contractor’s basis of estimate, and not a score key the offeror must match digit-for-digit.",
-				fits: "Pricing builds a credible cost and price story from the solution; any lawful affordability signal informs strategy without replacing the company’s own estimate or inventing an obligated ceiling.",
+				teach: "An Independent Government Cost Estimate is an agency tool for analyzing proposed prices or costs. FAR 15.404-1 recognizes comparison with independent Government estimates as one proposal-analysis technique. It can shape affordability views; it does not itself obligate funds. Pricing builds a credible cost and price story from the solution; any lawful affordability signal informs strategy without replacing the company’s own estimate or inventing an obligated ceiling.",
+				watchFor:
+					"Don’t treat the IGCE as a promise of funding, the contractor’s basis of estimate, or a score key the offeror must match digit-for-digit.",
 				citation: "FAR 15.404-1(b)(2)(v), (c)(2)(iii)(D)",
 				sourceUrl: "https://www.acquisition.gov/far/15.404-1",
 				sourceKind: "controlling-authority",
@@ -304,10 +293,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 				title: "Sources sought, RFI, RFQ, RFP, and IFB",
 				story:
 					"A civilian agency posts a sources-sought notice, then signals that the next release could be an RFI, RFQ, RFP, or IFB. The capture lead asks what each would mean for the team’s response posture.",
-				is: "Sources-sought notices and RFIs support market research and planning; RFI responses are not offers when the Government does not presently intend to award. An RFQ requests a quotation (and, depending on its terms, sometimes an offer). An RFP requests proposals in a negotiated acquisition. An IFB requests sealed bids evaluated without discussions.",
-				isNot:
-					"Every posted notice is not a solicitation capable of immediate award. An RFQ response is not automatically a binding offer unless the instrument makes it one. An IFB is not an invitation to negotiate after bid opening.",
-				fits: "Classify the notice before staffing a response factory. Wait for each document’s instructions before deciding whether the agency expects capability data, a quote, a proposal, or a bid.",
+				teach: "Sources-sought notices and RFIs support market research and planning; RFI responses are not offers when the Government does not presently intend to award. An RFQ requests a quotation (and, depending on its terms, sometimes an offer). An RFP requests proposals in a negotiated acquisition. An IFB requests sealed bids evaluated without discussions. Classify the notice before staffing a response factory — wait for each document’s instructions before deciding whether the agency expects capability data, a quote, a proposal, or a bid.",
+				watchFor:
+					"Don’t treat every posted notice as a solicitation capable of immediate award. An RFQ response is not automatically a binding offer unless the instrument makes it one. An IFB is not an invitation to negotiate after bid opening.",
 				checklist: [
 					"Name the notice type and its purpose",
 					"Confirm whether responses are offers, quotations, or market research",
@@ -320,10 +308,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "ucf-l-m",
 				title: "When UCF Sections L and M apply",
-				is: "Under the Uniform Contract Format for negotiated acquisitions, Section L contains instructions, conditions, and notices to offerors or respondents; Section M contains evaluation factors for award. Crosswalk every L instruction to the associated M factor, while also tracing requirements and terms in Sections C, H, I, and J.",
-				isNot:
-					"L and M are not universal labels for every FAR buy. Non-UCF packages (including many vehicle orders) use different sectioning — follow that document’s map, not muscle memory from Part 15 UCF.",
-				fits: "Build the compliance matrix from the operative solicitation’s instruction and evaluation sections — after confirming UCF or an alternate structure.",
+				teach: "Under the Uniform Contract Format for negotiated acquisitions, Section L contains instructions, conditions, and notices to offerors or respondents; Section M contains evaluation factors for award. Crosswalk every L instruction to the associated M factor, while also tracing requirements and terms in Sections C, H, I, and J. Build the compliance matrix from the operative solicitation’s instruction and evaluation sections — after confirming UCF or an alternate structure.",
+				watchFor:
+					"Don’t assume L and M are universal labels for every FAR buy. Non-UCF packages (including many vehicle orders) use different sectioning — follow that document’s map, not muscle memory from Part 15 UCF.",
 				citation: "FAR 15.204-1, Table 15-1",
 				sourceUrl: "https://www.acquisition.gov/far/15.204-1",
 				sourceKind: "controlling-authority",
@@ -331,10 +318,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "sow-pws-soo",
 				title: "SOW, PWS, and SOO",
-				is: "A statement of work (SOW) typically specifies tasks and how work is to be done. A performance work statement (PWS) emphasizes outcomes and measurable performance standards. A statement of objectives (SOO) states overall objectives and leaves maximum flexibility for offerors to propose an approach — often including an offeror-developed PWS.",
-				isNot:
-					"Calling every requirements attachment a “SOW” does not make it one. A SOO is not a detailed Government PWS. The solicitation’s instructions control which artifact the offeror must submit.",
-				fits: "In Shape and Propose, match solution depth to the requirements shape: method-heavy for many SOWs, metrics-heavy for PWS, offeror-architected for SOO.",
+				teach: "A statement of work (SOW) typically specifies tasks and how work is to be done. A performance work statement (PWS) emphasizes outcomes and measurable performance standards. A statement of objectives (SOO) states overall objectives and leaves maximum flexibility for offerors to propose an approach — often including an offeror-developed PWS. In Shape and Propose, match solution depth to the requirements shape: method-heavy for many SOWs, metrics-heavy for PWS, offeror-architected for SOO.",
+				watchFor:
+					"Don’t call every requirements attachment a “SOW” and assume that makes it one. A SOO is not a detailed Government PWS. The solicitation’s instructions control which artifact the offeror must submit.",
 				citation: "FAR 37.602; FAR 11.101–11.104",
 				sourceUrl: "https://www.acquisition.gov/far/37.602",
 				sourceKind: "controlling-authority",
@@ -371,10 +357,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 				title: "Source selection authority vs. evaluation team",
 				story:
 					"Color teams, SSEBs, and “the evaluators” dominate proposal folklore. The FAR is clearer about who decides and who advises.",
-				is: "The source selection authority (SSA) — often the contracting officer unless the agency head appoints someone else — establishes an evaluation team, ensures evaluation against the solicitation’s factors, considers advisory recommendations, and selects the source whose proposal is the best value to the Government.",
-				isNot:
-					"The evaluation team does not replace the SSA’s decision. Scoring every proposal alone is not the SSA’s default job description, and “the board picked the winner” is not how the regulation assigns responsibility.",
-				fits: "In Part 15 negotiated acquisitions, this split explains why your proposal must speak to stated factors: the team evaluates against those factors; the SSA owns the selection judgment.",
+				teach: "The source selection authority (SSA) — often the contracting officer unless the agency head appoints someone else — establishes an evaluation team, ensures evaluation against the solicitation’s factors, considers advisory recommendations, and selects the source whose proposal is the best value to the Government. In Part 15 negotiated acquisitions, this split explains why your proposal must speak to stated factors: the team evaluates against those factors; the SSA owns the selection judgment.",
+				watchFor:
+					"Don’t let “the board picked the winner” replace the SSA’s decision. Scoring every proposal alone is not the SSA’s default job, and the evaluation team does not own the selection.",
 				quote: {
 					text: "The source selection authority shall— … Ensure that proposals are evaluated based solely on the factors and subfactors contained in the solicitation … Select the source or sources whose proposal is the best value to the Government.",
 					citation: "FAR 15.303(b)",
@@ -384,10 +369,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "competition-paths",
 				title: "Full and open, set-aside, and sole-source",
-				is: "For open-market acquisitions within Part 6’s scope, full and open competition is the general rule. A small-business set-aside limits eligibility under Part 19 without requiring a separate Part 6 justification. A sole-source path needs an applicable FAR 6.302 authority and, when required, a written justification and approval — not program-office preference alone. Orders and other acquisitions outside Part 6 follow their own limited-source or fair-opportunity rules.",
-				isNot:
-					"A set-aside is not the same instrument as a sole-source award. Full and open does not mean a large business must be allowed to win a total small-business set-aside. Vehicle brand names do not rewrite competition rules.",
-				fits: "At strategy time, name the competition path and the eligibility consequences for your prime structure — before you spend B&P as if the field were already fixed.",
+				teach: "For open-market acquisitions within Part 6’s scope, full and open competition is the general rule. A small-business set-aside limits eligibility under Part 19 without requiring a separate Part 6 justification. A sole-source path needs an applicable FAR 6.302 authority and, when required, a written justification and approval — not program-office preference alone. Orders and other acquisitions outside Part 6 follow their own limited-source or fair-opportunity rules. At strategy time, name the competition path and the eligibility consequences for your prime structure — before you spend B&P as if the field were already fixed.",
+				watchFor:
+					"Don’t confuse a set-aside with a sole-source award. Full and open does not mean a large business must be allowed to win a total small-business set-aside. Vehicle brand names do not rewrite competition rules.",
 				judgment:
 					"Large primes should answer market research with facts and a credible small-business story; they should not treat OSDBU conversations as guarantees of full and open.",
 				citation: "FAR 6.101; FAR 6.203; FAR 6.302; FAR Part 19",
@@ -424,10 +408,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "contract",
 				title: "What a contract is",
-				is: "A contract is a mutually binding legal relationship obligating the seller to furnish supplies or services and the buyer to pay for them. In the FAR sense it includes written commitments that obligate the Government to spend appropriated funds — awards, orders that become effective by acceptance or performance, and bilateral modifications, among other instruments.",
-				isNot:
-					"It is not a grant or cooperative agreement under 31 U.S.C. 6301 et seq. It is not a handshake, a slide deck, or an email that merely discusses future scope. It is not identical to a solicitation. And the acquisition system does not wait for a signed contract before every dispute: pre-award protests can challenge a solicitation or exclusion before a contract exists.",
-				fits: "Clauses, modifications, invoices, and post-award protests assume a binding relationship. Pre-award protest work assumes a live competition and an operative solicitation. Name which world you are in.",
+				teach: "A contract is a mutually binding legal relationship obligating the seller to furnish supplies or services and the buyer to pay for them. In the FAR sense it includes written commitments that obligate the Government to spend appropriated funds — awards, orders that become effective by acceptance or performance, and bilateral modifications, among other instruments. Clauses, modifications, invoices, and post-award protests assume a binding relationship; pre-award protest work assumes a live competition and an operative solicitation. Name which world you are in.",
+				watchFor:
+					"Don’t confuse a contract with a grant or cooperative agreement under 31 U.S.C. 6301 et seq., a handshake, a slide deck, or an email that merely discusses future scope. It is not identical to a solicitation. And the acquisition system does not wait for a signed contract before every dispute: pre-award protests can challenge a solicitation or exclusion before a contract exists.",
 				judgment:
 					"If you cannot point to an instrument — or to a solicitation defect you intend to challenge — you are still narrating upstream hope.",
 				quote: {
@@ -439,10 +422,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "ffp",
 				title: "Firm-fixed-price risk",
-				is: "A firm-fixed-price (FFP) contract provides a price that is not adjusted based on the contractor’s cost experience. It places maximum cost risk and full responsibility for profit or loss on the contractor, and it creates strong incentive to control costs.",
-				isNot:
-					"FFP is not a reimbursable budget. Cost overruns do not automatically become the Government’s problem. An FFP price is not “just an estimate the CO will fix later” unless a separate adjustment clause actually applies. FFP is also not the only alternative to cost-reimbursement — Part 16 includes T&M, labor-hour, incentive, EPA, and hybrid structures.",
-				fits: "When pricing and capture argue about risk, place FFP on the fixed end of a spectrum of types — then name the actual type (or CLIN mix) in the solicitation before modeling margin.",
+				teach: "A firm-fixed-price (FFP) contract provides a price that is not adjusted based on the contractor’s cost experience. It places maximum cost risk and full responsibility for profit or loss on the contractor, and it creates strong incentive to control costs. When pricing and capture argue about risk, place FFP on the fixed end of a spectrum of types — then name the actual type (or CLIN mix) in the solicitation before modeling margin.",
+				watchFor:
+					"Don’t treat FFP as a reimbursable budget, or assume cost overruns automatically become the Government’s problem. An FFP price is not “just an estimate the CO will fix later” unless a separate adjustment clause actually applies. FFP is also not the only alternative to cost-reimbursement — Part 16 includes T&M, labor-hour, incentive, EPA, and hybrid structures.",
 				quote: {
 					text: "A firm-fixed-price contract provides for a price that is not subject to any adjustment on the basis of the contractor’s cost experience in performing the contract. This contract type places upon the contractor maximum risk and full responsibility for all costs and resulting profit or loss.",
 					citation: "FAR 16.202-1",
@@ -452,10 +434,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "mas-vs-gwac",
 				title: "MAS versus GWAC",
-				is: "GSA Multiple Award Schedule (MAS) is the Federal Supply Schedule program for commercial offerings, with ordering procedures in FAR Subpart 8.4. A governmentwide acquisition contract (GWAC) is a separate governmentwide task- or delivery-order contract for information technology — Alliant and NASA SEWP are examples, not synonyms for MAS.",
-				isNot:
-					"MAS and GWAC are not interchangeable names for one underlying contract. Commercial status under Part 12 does not automatically select MAS. A GWAC is not limited to its awarding agency’s own buyers in the way a single-agency IDIQ often is — but access, scope, and pools still must be checked.",
-				fits: "At vehicle selection, classify the buying path before chasing a brand: open-market negotiated, MAS order, GWAC/IDIQ order, or another authorized method.",
+				teach: "GSA Multiple Award Schedule (MAS) is the Federal Supply Schedule program for commercial offerings, with ordering procedures in FAR Subpart 8.4. A governmentwide acquisition contract (GWAC) is a separate governmentwide task- or delivery-order contract for information technology — Alliant and NASA SEWP are examples, not synonyms for MAS. At vehicle selection, classify the buying path before chasing a brand: open-market negotiated, MAS order, GWAC/IDIQ order, or another authorized method.",
+				watchFor:
+					"Don’t treat MAS and GWAC as interchangeable names for one underlying contract. Commercial status under Part 12 does not automatically select MAS. A GWAC is not limited to its awarding agency’s own buyers in the way a single-agency IDIQ often is — but access, scope, and pools still must be checked.",
 				citation: "FAR 2.101; FAR Subpart 8.4",
 				sourceUrl: "https://www.acquisition.gov/far/subpart-8.4",
 				sourceKind: "controlling-authority",
@@ -490,10 +471,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "idiq-min-ceiling",
 				title: "IDIQ minimum and ceiling",
-				is: "An indefinite-delivery indefinite-quantity (IDIQ) contract states a minimum the Government must order and a maximum it may not exceed. Especially on a multiple-award vehicle, industry often calls the base award a “hunting license” — a metaphor, not FAR text: beyond the contractual minimum, the holder still must capture and win orders rather than book the vehicle ceiling as backlog.",
-				isNot:
-					"The ceiling is not guaranteed revenue. The minimum is not a proposal target shared equally among holders. Winning a seat on the vehicle is not winning every order under it.",
-				fits: "Price and forecast the minimum honestly; treat the remainder of the ceiling as competitive potential that still requires order wins.",
+				teach: "An indefinite-delivery indefinite-quantity (IDIQ) contract states a minimum the Government must order and a maximum it may not exceed. Especially on a multiple-award vehicle, industry often calls the base award a “hunting license” — a metaphor, not FAR text: beyond the contractual minimum, the holder still must capture and win orders rather than book the vehicle ceiling as backlog. Price and forecast the minimum honestly; treat the remainder of the ceiling as competitive potential that still requires order wins.",
+				watchFor:
+					"Don’t treat the ceiling as guaranteed revenue, the minimum as a proposal target shared equally among holders, or a seat on the vehicle as winning every order under it.",
 				judgment:
 					"Label “hunting license” as industry metaphor in reviews so finance never mistakes it for a FAR guarantee.",
 				citation: "FAR 16.504(a)(1), 16.504(a)(4)(ii)",
@@ -503,10 +483,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "base-and-options",
 				title: "Base periods and options",
-				is: "A base-plus-options structure may be evaluated across priced periods, but an option is not automatic backlog. The contracting officer must exercise the option by written notice within the time specified; a preliminary notice of intent preserves the process without committing the Government. Funds availability and continued need are among the exercise findings.",
-				isNot:
-					"Evaluated option prices are not a promise the option will be exercised. Preliminary notice is not exercise. Unexercised option value is not authorized work.",
-				fits: "Model staffing and revenue with option-exercise risk while still pricing every evaluated period the solicitation requires.",
+				teach: "A base-plus-options structure may be evaluated across priced periods, but an option is not automatic backlog. The contracting officer must exercise the option by written notice within the time specified; a preliminary notice of intent preserves the process without committing the Government. Funds availability and continued need are among the exercise findings. Model staffing and revenue with option-exercise risk while still pricing every evaluated period the solicitation requires.",
+				watchFor:
+					"Don’t confuse evaluated option prices with a promise the option will be exercised. Preliminary notice is not exercise. Unexercised option value is not authorized work.",
 				citation: "FAR 17.207; FAR 52.217-9",
 				sourceUrl: "https://www.acquisition.gov/far/17.207",
 				sourceKind: "controlling-authority",
@@ -516,10 +495,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 				title: "CLIN value versus allotted funding",
 				story:
 					"CLIN 0001 shows a large estimated cost. Funded SLIN 0001AA shows a smaller allotted amount. The COR says keep the full team working — funds are “coming Monday.”",
-				is: "CLINs and SLINs organize deliverables, pricing, accounting, funding, and performance periods. On an incrementally funded cost-reimbursement contract, the amount actually allotted — not the total estimated cost, ceiling, or option value — is the operative limit on paid and payable cost under the Limitation of Funds framework.",
-				isNot:
-					"Estimated CLIN value is not interchangeable with funded ceiling. Expected funding is not funded authority. COR urgency is not a funding modification.",
-				fits: "Hand the win to delivery by preserving total potential value, estimated cost, obligated/allotted funding, and the specific work each funded line covers as separate columns.",
+				teach: "CLINs and SLINs organize deliverables, pricing, accounting, funding, and performance periods. On an incrementally funded cost-reimbursement contract, the amount actually allotted — not the total estimated cost, ceiling, or option value — is the operative limit on paid and payable cost under the Limitation of Funds framework. Hand the win to delivery by preserving total potential value, estimated cost, obligated/allotted funding, and the specific work each funded line covers as separate columns.",
+				watchFor:
+					"Don’t treat estimated CLIN value as interchangeable with funded ceiling, or expected funding as funded authority. COR urgency is not a funding modification.",
 				checklist: [
 					"Reconcile allotted funding to covered work and burn",
 					"Give advance notice before hitting the allotted limit",
@@ -561,10 +539,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 				title: "Probability of win (Pwin) — course working definition",
 				story:
 					"Leadership asks for “the Pwin” as if it were a FAR metric. The room freezes between optimism and a fake decimal.",
-				is: "In this course’s working definition, Pwin is an evidence-based decision input: a living judgment about win likelihood that updates when customer, competitive, solution, price, past-performance, and execution evidence changes. Neither the FAR nor a single industry body mandates one universal numeric formula — organizations must define and apply a documented method consistently.",
-				isNot:
-					"It is not a sales promise, not a quota, not a number frozen when B&P is approved, and not a count of meetings held. It is not a substitute for cost, price-to-win, or eligibility analysis.",
-				fits: "Use it beside price-to-win and cost estimating: Pwin asks “can we win?”, price-to-win asks “what position wins?”, cost asks “what does performance cost us?” — three different questions.",
+				teach: "In this course’s working definition, Pwin is an evidence-based decision input: a living judgment about win likelihood that updates when customer, competitive, solution, price, past-performance, and execution evidence changes. Neither the FAR nor a single industry body mandates one universal numeric formula — organizations must define and apply a documented method consistently. Use it beside price-to-win and cost estimating: Pwin asks “can we win?”, price-to-win asks “what position wins?”, cost asks “what does performance cost us?” — three different questions.",
+				watchFor:
+					"Don’t treat Pwin as a sales promise, a quota, a number frozen when B&P is approved, or a count of meetings held. It is not a substitute for cost, price-to-win, or eligibility analysis.",
 				judgment:
 					"Say “course working definition” or “our method” out loud in gates so nobody mistakes Pwin for a regulatory score.",
 				citation: "Industry capture practice; APMP Winning Business Ecosystem",
@@ -574,10 +551,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "price-to-win",
 				title: "Price-to-win versus cost estimate",
-				is: "Price-to-win estimates the competitive price or value position needed to win, given customer budget signals, evaluation method, and likely competitors. A cost estimate forecasts what the proposed solution will cost the company to perform. Pricing leadership must reconcile the two.",
-				isNot:
-					"Price-to-win is not the cost estimate plus maximum profit. It is not the IGCE. The terms are not interchangeable because the solicitation uses best-value tradeoff.",
-				fits: "A winning target below executable cost is a warning to redesign or stop — not permission to invent savings in the pricing volume.",
+				teach: "Price-to-win estimates the competitive price or value position needed to win, given customer budget signals, evaluation method, and likely competitors. A cost estimate forecasts what the proposed solution will cost the company to perform. Pricing leadership must reconcile the two — a winning target below executable cost is a warning to redesign or stop, not permission to invent savings in the pricing volume.",
+				watchFor:
+					"Don’t treat price-to-win as the cost estimate plus maximum profit, or as the IGCE. The terms are not interchangeable just because the solicitation uses best-value tradeoff.",
 				citation: "Industry capture practice",
 				sourceUrl:
 					"https://www.apmp.org/Common/Uploaded%20files/APMP/Certification/APMP%20Practitioner%20OTE%20Preparation%20Guide%202026%20-v3.pdf",
@@ -586,10 +562,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "gates-and-reviews",
 				title: "Gates and color reviews (house convention)",
-				is: "Bid/no-bid gates and color-team reviews (often called Pink, Red, and Gold) are common industry conventions for deciding whether to continue investing and for testing proposal maturity. Under one common house design, Pink tests planned content early, Red evaluates a substantially complete proposal as the customer would, and Gold confirms executive readiness and remaining risk before submit. Label this as capture practice — not FAR procedure.",
-				isNot:
-					"Gates are not ceremonial status meetings. Color names are not FAR-required. Gold approval cannot waive solicitation requirements. Sunk B&P is not a reason to continue a deteriorating pursuit.",
-				fits: "Run gates on evidence and remaining cost-to-bid; run reviews on maturity questions so authors get useful feedback instead of three rounds of the same copyedit.",
+				teach: "Bid/no-bid gates and color-team reviews (often called Pink, Red, and Gold) are common industry conventions for deciding whether to continue investing and for testing proposal maturity. Under one common house design, Pink tests planned content early, Red evaluates a substantially complete proposal as the customer would, and Gold confirms executive readiness and remaining risk before submit. Label this as capture practice — not FAR procedure. Run gates on evidence and remaining cost-to-bid; run reviews on maturity questions so authors get useful feedback instead of three rounds of the same copyedit.",
+				watchFor:
+					"Don’t run gates as ceremonial status meetings. Color names are not FAR-required. Gold approval cannot waive solicitation requirements. Sunk B&P is not a reason to continue a deteriorating pursuit.",
 				checklist: [
 					"State the house gate criteria in writing",
 					"Give each color review a distinct purpose",
@@ -628,10 +603,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 				title: "CPARS as future capture currency",
 				story:
 					"Kickoff for a covered multi-year services contract. Capture has moved on. Delivery proposes waiting until the recompete year to assemble past-performance evidence.",
-				is: "Past performance is relevant to future source selections. For covered contracts and orders above applicable thresholds, evaluations are required at least annually and at completion, entered in CPARS (subject to type, order, threshold, and reporting exceptions). Delivery therefore creates competitive evidence from day one.",
-				isNot:
-					"CPARS is not a protest substitute. Waiting until year four is not a strategy. Asking capture to ghostwrite ratings for the CO is not integrity-preserving practice.",
-				fits: "Map CPARS factors and customer outcomes to owners, evidence, quality controls, and regular reviews while performance can still improve — then hand a clean record to the next capture team.",
+				teach: "Past performance is relevant to future source selections. For covered contracts and orders above applicable thresholds, evaluations are required at least annually and at completion, entered in CPARS (subject to type, order, threshold, and reporting exceptions). Delivery therefore creates competitive evidence from day one. Map CPARS factors and customer outcomes to owners, evidence, quality controls, and regular reviews while performance can still improve — then hand a clean record to the next capture team.",
+				watchFor:
+					"Don’t treat CPARS as a protest substitute, wait until year four to assemble evidence, or ask capture to ghostwrite ratings for the CO.",
 				checklist: [
 					"Confirm whether the contract/order is CPARS-covered",
 					"Assign evidence owners at kickoff",
@@ -644,10 +618,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "options-and-recompete",
 				title: "Options, continuity, and recompete",
-				is: "Option exercise can extend performance when the CO follows the contract’s notice and exercise rules and finds funds, continued need, and advantage. Recompete planning backcasts from successor timing, PALT, and whether options or bridges are uncertainties — not certainties.",
-				isNot:
-					"Preliminary option notice is not exercise. A bridge is not permanent sole-source. Strong CPARS does not eliminate competition or protest risk on the follow-on.",
-				fits: "Close the Basics shelf by tying delivery discipline to Find/Shape timing: today’s performance file is tomorrow’s proposal volume and tomorrow’s responsibility record.",
+				teach: "Option exercise can extend performance when the CO follows the contract’s notice and exercise rules and finds funds, continued need, and advantage. Recompete planning backcasts from successor timing, PALT, and whether options or bridges are uncertainties — not certainties. Close the Basics shelf by tying delivery discipline to Find/Shape timing: today’s performance file is tomorrow’s proposal volume and tomorrow’s responsibility record.",
+				watchFor:
+					"Don’t confuse preliminary option notice with exercise, a bridge with permanent sole-source, or strong CPARS with elimination of competition or protest risk on the follow-on.",
 				citation: "FAR 17.207; FAR 42.1503(d)",
 				sourceUrl: "https://www.acquisition.gov/far/17.207",
 				sourceKind: "controlling-authority",
