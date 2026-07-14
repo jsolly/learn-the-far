@@ -207,22 +207,32 @@
 
 		<section class="mt-10 border-t pt-8 sm:mt-12">
 			<p class="text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">{chapter.closing}</p>
-			<div class="mt-6 flex flex-col gap-2 sm:flex-row sm:items-center">
+			<div class="mt-6 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
 				<Button
 					size="lg"
-					class="w-full sm:h-11 sm:flex-1 sm:text-base"
+					class="w-full sm:h-11 sm:min-w-[12rem] sm:flex-1 sm:text-base"
 					onclick={() => game.runChapterQuizAction(chapter.quizCta.action)}
 				>
 					{chapter.quizCta.label}
 				</Button>
 				{#if game.chapterKind === "shelf-chapter"}
+					{#if hasNextChapter}
+						<Button
+							size="lg"
+							variant="outline"
+							class="w-full sm:h-11 sm:min-w-[12rem] sm:flex-1 sm:text-base"
+							onclick={() => game.openNextChapter()}
+						>
+							Next chapter
+						</Button>
+					{/if}
 					<Button
 						size="lg"
 						variant="outline"
-						class="w-full sm:h-11 sm:flex-1 sm:text-base"
-						onclick={() => game.openNextChapter()}
+						class="w-full sm:h-11 sm:min-w-[12rem] sm:flex-1 sm:text-base"
+						onclick={() => game.openShelf(chapter.unitId)}
 					>
-						{hasNextChapter ? "Next chapter" : "Back to shelf"}
+						Browse chapters
 					</Button>
 				{:else}
 					<Button
