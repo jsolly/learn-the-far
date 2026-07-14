@@ -157,7 +157,7 @@
 	<h2
 		class="mb-2 mt-6 text-xs font-semibold uppercase tracking-wide text-muted-foreground sm:mb-3 sm:mt-8 sm:text-sm"
 	>
-		Basics & capture slices
+		Capture slices
 	</h2>
 	<div class="flex flex-col gap-2 sm:gap-3">
 		{#each stats as s (s.unit.id)}
