@@ -171,13 +171,15 @@ function pieceFromQuestion(q: QuizQuestion): ChapterPiece {
 		q.citation.trim() ||
 		q.tags[0]?.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) ||
 		"Concept";
+	const tagsHint = q.tags.slice(0, 4).join(", ");
 	return {
 		id: q.id,
 		title,
 		story: q.situation,
-		is: q.explanation,
-		isNot: trapLine(q),
-		fits: `This sits with ${q.tags.slice(0, 4).join(", ") || "the Basics map"} — use it when a prompt or real deal touches the same ideas.`,
+		teach: tagsHint
+			? `${q.explanation} You’ll meet this idea again under tags like ${tagsHint}.`
+			: q.explanation,
+		watchFor: trapLine(q),
 		citation: q.citation || undefined,
 		sourceUrl: q.sourceUrl || undefined,
 		sourceKind: "controlling-authority",
@@ -195,7 +197,7 @@ export function buildMissManuscript(questions: QuizQuestion[]): Chapter {
 		subtitle: "A short briefing on what hasn’t clicked yet",
 		summary: "Shame-free repair reading for concepts that are still shaky on the quiz.",
 		intro:
-			"This is not a review of wrong answers as punishment. It is the picture those questions were pointing at — what each idea is, what it is not, and where it fits — so the next quiz attempt has something to latch onto.",
+			"This is not a review of wrong answers as punishment. It is a short teach-up of the concepts those questions were testing — plus the mix-ups that usually trip people — so the next quiz attempt has something solid to latch onto.",
 		tags: ["repair", "misses"],
 		readingMinutes: Math.max(5, pieces.length * 2),
 		suggestedOrder: 0,

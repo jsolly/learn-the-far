@@ -22,10 +22,10 @@ export const BID_NO_BID_SHELF_CHAPTERS: Chapter[] = [
 				title: "What the board is deciding",
 				story:
 					"A capture lead walks in with a glowing customer meeting and asks for a full proposal budget. The room wants to say yes to momentum. The board’s job is narrower and harder.",
-				is: "A bid gate is a staged investment decision: authorize the next tranche of bid and proposal (B&P) effort only when eligibility, readiness, win likelihood, and risk-adjusted economics clear agreed thresholds. The board challenges evidence and owners—not vibes.",
-				isNot:
-					"It is not a pep rally, not a reward for customer access alone, and not a promise that every technically feasible pursuit deserves a full color-team cycle. Technical capability without a path to award and return is incomplete.",
-				fits: "Use this lens at every tranche—from early capture spend through final proposal authorization. Portfolio capacity (solution architects, pricing, proposal ops) is finite; one weak yes starves stronger bids.",
+				teach:
+					"A bid gate is a staged investment decision: authorize the next tranche of bid and proposal (B&P) effort only when eligibility, readiness, win likelihood, and risk-adjusted economics clear agreed thresholds. The board challenges evidence and owners—not vibes. Apply that lens at every tranche, from early capture spend through final proposal authorization. Portfolio capacity (solution architects, pricing, proposal ops) is finite; one weak yes starves stronger bids. Compare incremental B&P and specialist opportunity cost with expected risk-adjusted contribution before cheering the chase.",
+				watchFor:
+					"Treating the gate as a pep rally, a reward for customer access alone, or a promise that every technically feasible pursuit deserves a full color-team cycle. Technical capability without a path to award and return is incomplete. FAR 31.205-18 addresses allowability of B&P costs; it does not make a particular agency reimburse each losing bid or erase the opportunity cost of internal labor.",
 				judgment:
 					"If the package cannot name the hard gates, the Section M method, the competitor picture, and the remaining B&P versus expected contribution, the board is not ready to fund—it is being asked to hope.",
 				checklist: [
@@ -40,10 +40,10 @@ export const BID_NO_BID_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "why-triad",
 				title: "Why change, why now, why us",
-				is: "Disciplined capture separates three customer questions: why change (problem or opportunity the buyer must solve), why now (trigger, consequence, or funding/acquisition window that forces action), and why us (a discriminator the evaluation will actually reward).",
-				isNot:
-					"It is not ‘why our growth target,’ ‘why our fiscal year end,’ or ‘why our logo.’ A slogans-only triad collapses under Section M scrutiny.",
-				fits: "Park the triad next to evaluation factors: if ‘why us’ cannot map to stated factors and evidence, the pursuit’s value case is marketing theater.",
+				teach:
+					"Disciplined capture separates three customer questions: why change (the problem or opportunity the buyer must solve), why now (the trigger, consequence, or funding/acquisition window that forces action), and why us (a discriminator the evaluation will actually reward). Park the triad next to evaluation factors under FAR 15.304: if ‘why us’ cannot map to stated factors and evidence, the pursuit’s value case is marketing theater.",
+				watchFor:
+					"Collapsing the triad into ‘why our growth target,’ ‘why our fiscal year end,’ or ‘why our logo.’ A slogans-only triad fails under Section M scrutiny. Why change and why now do not become irrelevant just because an RFP has posted.",
 				citation: "FAR 15.304 (evaluation factors); capture craft (customer-value framing)",
 				sourceUrl: "https://www.acquisition.gov/far/15.304",
 				sourceKind: "controlling-authority",
@@ -79,10 +79,10 @@ export const BID_NO_BID_SHELF_CHAPTERS: Chapter[] = [
 				title: "LPTA versus tradeoff changes the bid",
 				story:
 					"Two RFPs look similar on scope. One is lowest price technically acceptable; the other weights technical approach above price in a best-value tradeoff. Same solution and price strategy for both is how teams lose twice.",
-				is: "Under LPTA, the gate tests whether the team can meet or exceed every acceptability standard at a competitive evaluated price—tradeoffs against price are not the award logic. Under a stated tradeoff, the gate tests whether evaluated strengths can justify the price position against named competitors.",
-				isNot:
-					"It is not ‘evaluators will use unstated preferences,’ and it is not ‘lowest price always wins.’ The solicitation’s method controls what a strength is worth.",
-				fits: "Rewrite Pwin, solution shape, and pricing when Section M (or its Subpart 8.4 / 16.505 analogue) changes—method is a hard input, not a style preference.",
+				teach:
+					"Under LPTA (FAR 15.101-2), the gate tests whether the team can meet or exceed every acceptability standard at a competitive evaluated price—tradeoffs against price are not the award logic. Under a stated tradeoff (FAR 15.101-1), the gate tests whether evaluated strengths can justify the price position against named competitors. Rewrite Pwin, solution shape, and pricing when Section M (or its Subpart 8.4 / 16.505 analogue) changes—method is a hard input, not a style preference.",
+				watchFor:
+					"Assuming evaluators will use unstated preferences, that lowest price always wins, or that one premium solution and price strategy fits both LPTA and tradeoff competitions.",
 				checklist: [
 					"Quote the stated basis of award and relative importance of factors",
 					"Map each discriminator to a scored factor or subfactor",
@@ -95,10 +95,10 @@ export const BID_NO_BID_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "past-performance-inventory",
 				title: "Inventory what evaluators may weigh",
-				is: "Build a verified inventory of eligible references—scope, recency, CPARS themes, customer contacts, and risks—before writers ‘make relevance sound stronger.’ When affiliate past performance is allowed, show committed affiliate resources and meaningful involvement as the solicitation and case law require.",
-				isNot:
-					"It is not two contracts the capture lead remembers, not dumping every corporate award without Section M fit, and not assuming the agency will mine CPARS for your best story.",
-				fits: "Run this inventory early enough to drive teaming and reference selection—not as a compliance scramble after Pink Team.",
+				teach:
+					"Build a verified inventory of eligible references—scope, recency, CPARS themes, customer contacts, and risks—before writers ‘make relevance sound stronger.’ When affiliate past performance is allowed, show committed affiliate resources and meaningful involvement as the solicitation and case law require (see Eagle Eye Electric). Run this inventory early enough to drive teaming and reference selection—not as a compliance scramble after Pink Team. FAR 15.305(a)(2) permits evaluation of relevant past performance and information from sources beyond the offeror’s submission.",
+				watchFor:
+					"Relying on two contracts the capture lead remembers, dumping every corporate award without Section M fit, or assuming the agency will mine CPARS for your best story. Affiliate examples without committed resources showing meaningful involvement may get little or no weight.",
 				judgment:
 					"If the inventory cannot support the factors that dominate Section M, either fix the case or lower Pwin—do not paper over a thin record.",
 				citation: "FAR 15.305(a)(2); Eagle Eye Electric, LLC, B-415562, B-415562.3",
@@ -108,10 +108,10 @@ export const BID_NO_BID_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "black-hat-use",
 				title: "Use the black hat to change decisions",
-				is: "A black hat models the strongest competitor from observable signals—incumbency, transition risk, price band, neutralizing features—and forces the board to separate facts from assumptions with owners and tests.",
-				isNot:
-					"It is not permission to relabel adverse findings ‘low confidence’ and proceed unchanged, and it is not automatic ‘incumbent always wins / always loses.’",
-				fits: "Feed black-hat outputs into discriminator design, transition narrative, price-to-win, and Pwin—or into a no-bid—before color teams polish a losing case.",
+				teach:
+					"A black hat models the strongest competitor from observable signals—incumbency, transition risk, price band, neutralizing features—and forces the board to separate facts from assumptions with owners and tests. Feed black-hat outputs into discriminator design, transition narrative, price-to-win, and Pwin—or into a no-bid—before color teams polish a losing case. Incumbency is neither an automatic win nor loss; the decision turns on the solicitation’s factors, credible customer evidence, and discriminators the evaluation will reward.",
+				watchFor:
+					"Relabeling adverse findings ‘low confidence’ and proceeding unchanged; treating a single stakeholder complaint as proof the customer will replace the incumbent; or assuming every recompete favors the challenger because agencies ‘must rotate vendors.’",
 				citation: "FAR 15.305; capture craft (competitive black hat)",
 				sourceUrl: "https://www.acquisition.gov/far/15.305",
 				sourceKind: "controlling-authority",
@@ -145,10 +145,10 @@ export const BID_NO_BID_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "responsibility-standards",
 				title: "FAR 9.104-1 is a readiness checklist",
-				is: "General standards of responsibility cover adequate financial resources (or ability to obtain them); ability to comply with schedule considering all commitments; satisfactory performance, integrity, and ethics records; necessary organization, experience, accounting and operational controls, and technical skills (or ability to obtain them); necessary equipment and facilities (or ability to obtain them); and legal qualification and eligibility.",
-				isNot:
-					"It is not ‘annual revenue exceeds contract value,’ not technical acceptability alone, and not something you safely defer until after award when the RFP already demands evidence of readiness.",
-				fits: "Assign owners and remediation paths for each gap at the gate—especially financing, facilities, and schedule compression on aggressive starts.",
+				teach:
+					"FAR 9.104-1’s general standards of responsibility cover adequate financial resources (or ability to obtain them); ability to comply with schedule considering all commitments; satisfactory performance, integrity, and ethics records; necessary organization, experience, accounting and operational controls, and technical skills (or ability to obtain them); necessary equipment and facilities (or ability to obtain them); and legal qualification and eligibility. Assign owners and remediation paths for each gap at the gate—especially financing, facilities, and schedule compression on aggressive starts. Large size and past awards do not make readiness automatic.",
+				watchFor:
+					"Checking only whether annual revenue exceeds contract value, treating technical acceptability as conclusive proof of responsibility, or deferring every responsibility issue until after award when the RFP already demands evidence of readiness.",
 				citation: "FAR 9.104-1",
 				sourceUrl: "https://www.acquisition.gov/far/9.104-1",
 				sourceKind: "controlling-authority",
@@ -158,10 +158,10 @@ export const BID_NO_BID_SHELF_CHAPTERS: Chapter[] = [
 				title: "SAM, vehicle, and clearance belong to the offeror",
 				story:
 					"Proposals are due Friday. The legal entity is correct, but SAM is inactive. An affiliate holds the named IDIQ; clearances are ‘pending.’ Affiliation does not transfer eligibility.",
-				is: "Map every hard gate—active SAM under FAR 4.1102 / 52.204-7 (and listed exceptions or Alternate I where they apply), vehicle or Schedule access, licenses, clearances, set-aside size status—to the actual offeror and the due date. Proceed only on written evidence or a solicitation-supported cure path.",
-				isNot:
-					"It is not using an affiliate’s SAM or contract as if it were yours, not explaining missing gates in an assumptions volume, and not treating planned approvals as present facts.",
-				fits: "Keep a hard-gate register beside the compliance matrix; any red item without a timed cure is a no-bid candidate.",
+				teach:
+					"Map every hard gate—active SAM under FAR 4.1102 / 52.204-7 (and listed exceptions or Alternate I where they apply), vehicle or Schedule access, licenses, clearances, set-aside size status—to the actual offeror and the due date. Proceed only on written evidence or a solicitation-supported cure path. Keep a hard-gate register beside the compliance matrix; any red item without a timed cure is a no-bid candidate. Under basic 52.204-7, active SAM is required at submission and award unless a listed exception or the prescribed Alternate I applies.",
+				watchFor:
+					"Using an affiliate’s SAM or contract as if it were yours, explaining missing gates in an assumptions volume, treating planned approvals as present facts, or assuming SAM is required only at award when the solicitation and basic clause require it at submission.",
 				checklist: [
 					"Confirm offeror UEI / SAM status against the solicitation’s timing rule",
 					"Confirm the submitting entity holds the named vehicle pool or Schedule coverage",
@@ -174,10 +174,10 @@ export const BID_NO_BID_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "accounting-and-keys",
 				title: "Cost-type systems and named keys",
-				is: "For cost-reimbursement work, require current, entity- and system-specific evidence that costs can be identified and accumulated as required—not a six-year-old review of a different segment after ERP and rate changes. When Section M demands named keys with commitment letters, require available, qualified people and compliant commitments before submission.",
-				isNot:
-					"‘DCAA compliant’ as a permanent brand is not evidence. Submitting an unavailable key person and ‘signing later’ is not a strategy—it is a protest risk.",
-				fits: "Treat accounting adequacy and key-person availability as bid gates when the solicitation makes them material; redesign or no-bid when they fail late.",
+				teach:
+					"For cost-reimbursement work, FAR 16.301-3 requires an accounting system adequate for determining costs applicable to the contract. Require current, entity- and system-specific evidence that costs can be identified and accumulated as required—not a six-year-old review of a different segment after ERP and rate changes. When Section M demands named keys with commitment letters, require available, qualified people and compliant commitments before submission (see IT Objects). Treat accounting adequacy and key-person availability as bid gates when the solicitation makes them material; redesign or no-bid when they fail late.",
+				watchFor:
+					"Treating ‘DCAA compliant’ as a permanent brand that transfers across segments and systems. Submitting an unavailable key person and ‘signing later’ is not a strategy—it is a protest risk. Renaming a deputy as program manager without checking minimum qualifications or rewriting the solution leaves the proposal inconsistent.",
 				citation: "FAR 16.301-3; FAR 15.305(a); IT Objects, LLC, B-418012, B-418012.2",
 				sourceUrl: "https://www.acquisition.gov/far/16.301-3",
 				sourceKind: "controlling-authority",
@@ -213,10 +213,10 @@ export const BID_NO_BID_SHELF_CHAPTERS: Chapter[] = [
 				title: "Rebuild when the competition changes",
 				story:
 					"The CRM still says 65%. The draft RFP changed the evaluation method months ago. Nobody refreshed the number. The board is about to fund a full proposal on a museum piece.",
-				is: "Evidence-based Pwin scores current customer, competitive, solution, price, past-performance, and hard-gate evidence against the stated factors; records assumptions and owners; and updates when Section M, competitors, or gates change.",
-				isNot:
-					"It is not a sales promise, not a quota, not a number frozen at B&P approval, and not an average of CRM folklore and the capture lead’s optimism. A system field is not objective by virtue of being stored.",
-				fits: "Park Pwin beside price-to-win and cost estimating: three different questions—can we win, what price position wins, what does performance cost.",
+				teach:
+					"Evidence-based Pwin scores current customer, competitive, solution, price, past-performance, and hard-gate evidence against the stated factors; records assumptions and owners; and updates when Section M, competitors, or gates change. Park Pwin beside price-to-win and cost estimating: three different questions—can we win, what price position wins, what does performance cost. Conditional funding is acceptable only when cheap, fast evidence can retire named uncertainty.",
+				watchFor:
+					"Treating Pwin as a sales promise, a quota, a number frozen at B&P approval, or an average of CRM folklore and the capture lead’s optimism. A system field is not objective by virtue of being stored.",
 				judgment:
 					"Conditional funding is acceptable only when cheap, fast evidence can retire named uncertainty—not as a way to postpone a no-bid.",
 				checklist: [
@@ -231,10 +231,10 @@ export const BID_NO_BID_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "pwin-weighted",
 				title: "Weight evidence the way the agency weights factors",
-				is: "On a tradeoff, customer access that improves information quality still does not erase an evaluated technical weakness or a material price gap. Lower Pwin unless named actions can close the gaps the solicitation will score.",
-				isNot:
-					"It is not ‘relationship outweighs stated factors,’ not a company-wide historical win rate pasted onto this competition, and not counting every favorable fact as independent when they share one assumption.",
-				fits: "Force the gate to either fund actions that change scored outcomes or accept a lower forecast—governance theater that holds Pwin constant after material change is a control failure.",
+				teach:
+					"On a tradeoff, customer access that improves information quality still does not erase an evaluated technical weakness or a material price gap. Score current evidence against the stated factors and competitor positions, model dependencies, and lower Pwin unless named actions can close the gaps the solicitation will score. Force the gate to either fund actions that change scored outcomes or accept a lower forecast.",
+				watchFor:
+					"Claiming ‘relationship outweighs stated factors,’ pasting a company-wide historical win rate onto this competition, counting every favorable fact as independent when they share one assumption, or holding Pwin constant after material change for ‘governance consistency.’",
 				citation: "Capture craft (weighted Pwin); FAR 15.304; FAR 15.305",
 				sourceUrl: "https://www.acquisition.gov/far/15.304",
 				sourceKind: "capture-practice",
@@ -265,10 +265,10 @@ export const BID_NO_BID_SHELF_CHAPTERS: Chapter[] = [
 				title: "Two numbers, one gate",
 				story:
 					"Black hat says $92–96M wins. Finance says $101M is the walk-away. Bidding $94M ‘to stay in it’ and recovering margin through changes is not a pricing strategy—it is a hope.",
-				is: "Price-to-win estimates the competitive award zone given method, competitors, and solution. Walk-away is the seller’s minimum acceptable economics and risk. A sound gate keeps them separate, tests lawful redesign to close a gap, and updates Pwin when price position moves.",
-				isNot:
-					"It is not bidding below walk-away to ‘win then recover,’ not freezing Pwin while bidding above the competitive zone, and not treating Government price-analysis rules as a substitute for the company’s own floor.",
-				fits: "Escalate gap closures as redesign sprints with compliance and deadline checks—or no-bid. Portfolio economics also compare incremental B&P and specialist opportunity cost to risk-adjusted contribution.",
+				teach:
+					"Price-to-win estimates the competitive award zone given method, competitors, and solution. Walk-away is the seller’s minimum acceptable economics and risk. A sound gate keeps them separate, tests lawful redesign to close a gap, and updates Pwin when price position moves. Escalate gap closures as redesign sprints with compliance and deadline checks—or no-bid. Portfolio economics also compare incremental B&P and specialist opportunity cost to risk-adjusted contribution.",
+				watchFor:
+					"Bidding below walk-away to ‘win then recover,’ freezing Pwin while bidding above the competitive zone, or treating Government price-analysis rules (FAR 15.404-1) as a substitute for the company’s own floor.",
 				checklist: [
 					"State price-to-win range with competitor and method assumptions",
 					"State walk-away with risk-adjusted margin and contingency",
@@ -281,10 +281,10 @@ export const BID_NO_BID_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "set-aside-team-economics",
 				title: "Eligibility does not cure bad economics",
-				is: "When the company is ineligible to prime (for example a small-business or 8(a) set-aside), a compliant subcontract role still needs acceptable workshare, risk allocation, and return. No-bid the role if negotiations cannot clear the floor.",
-				isNot:
-					"It is not priming while ineligible, not ‘any set-aside subcontract revenue is strategic,’ and not accepting exclusivity-plus-uncompensated risk just to stay on the chart.",
-				fits: "After strategy is final, this unit owns the business decision—market shaping is upstream; team economics are the gate.",
+				teach:
+					"When the company is ineligible to prime (for example a small-business or 8(a) set-aside), a compliant subcontract role still needs acceptable workshare, risk allocation, and return. FAR 52.219-6 solicits offers only from small business concerns; FAR 52.219-14 limits payments to subcontractors that are not similarly situated. No-bid the role if negotiations cannot clear the floor. After strategy is final, this unit owns the business decision—market shaping is upstream; team economics are the gate.",
+				watchFor:
+					"Priming while ineligible, treating any set-aside subcontract revenue as ‘always strategic,’ accepting exclusivity-plus-uncompensated risk just to stay on the chart, or having a small prime pass through most service revenue to a large subcontractor in violation of limitations on subcontracting.",
 				citation: "FAR 52.219-6; FAR 52.219-14; FAR 19.805-2",
 				sourceUrl: "https://www.acquisition.gov/far/52.219-6",
 				sourceKind: "controlling-authority",
@@ -318,10 +318,10 @@ export const BID_NO_BID_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "final-rfp-regate",
 				title: "Final terms reset the evidence",
-				is: "When the final RFP materially changes contract type, evaluation, transition, or schedule, run a new gate: refresh compliance, solution, price, Pwin, staffing, and economics—and be willing to no-bid. The solicitation is the Government’s request; draft assumptions do not survive by inertia.",
-				isNot:
-					"It is not ‘continue because we already approved,’ not updating only the compliance matrix while strategy stays frozen, and not waiting for color teams to notice that the deal changed.",
-				fits: "Treat final RFP drop as a mandatory control point on the pursuit calendar—same seriousness as the first investment gate.",
+				teach:
+					"When the final RFP materially changes contract type, evaluation, transition, or schedule, run a new gate: refresh compliance, solution, price, Pwin, staffing, and economics—and be willing to no-bid. FAR 15.203 makes the solicitation the Government’s request for proposals; draft assumptions do not survive by inertia. Treat final RFP drop as a mandatory control point on the pursuit calendar—same seriousness as the first investment gate.",
+				watchFor:
+					"Continuing because the draft-RFP gate already authorized the bid, updating only the compliance matrix while strategy stays frozen, or waiting for color teams to notice that the deal changed.",
 				citation: "Capture craft (final-RFP re-gate); FAR 15.203",
 				sourceUrl: "https://www.acquisition.gov/far/15.203",
 				sourceKind: "capture-practice",
@@ -331,10 +331,10 @@ export const BID_NO_BID_SHELF_CHAPTERS: Chapter[] = [
 				title: "Ignore spent B&P; judge the remainder",
 				story:
 					"$1.4M is gone. The final RFP killed the discriminator and drove Pwin below floor. Another $600K would finish the proposal. ‘We can’t waste the $1.4M’ is the fallacy talking.",
-				is: "Compare remaining proposal cost and opportunity cost with the present risk-adjusted value of bidding. No-bid if the revised case fails. Authorize only a small, time-boxed fact check when one unresolved assumption could restore the business case.",
-				isNot:
-					"It is not continuing to justify past spend, and it is not holding Pwin constant for ‘internal consistency’ after the competition changed.",
-				fits: "Executives own this control; capture teams escalate early when the case is failing so the board can stop while options remain.",
+				teach:
+					"Compare remaining proposal cost and opportunity cost with the present risk-adjusted value of bidding. No-bid if the revised case fails. Authorize only a small, time-boxed fact check when one unresolved assumption could restore the business case. Executives own this control; capture teams escalate early when the case is failing so the board can stop while options remain.",
+				watchFor:
+					"Continuing to justify past spend (‘stopping would waste the money already invested’), or holding Pwin constant for ‘internal consistency’ after the competition changed.",
 				citation: "Capture craft (sunk-cost discipline); FAR 31.205-18",
 				sourceUrl: "https://www.acquisition.gov/far/31.205-18",
 				sourceKind: "capture-practice",
@@ -342,10 +342,10 @@ export const BID_NO_BID_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "ambiguity-and-stack",
 				title: "Ambiguity deadlines and the full stack",
-				is: "Apparent solicitation improprieties (for example conflicting LPTA vs tradeoff text that Q&A fails to resolve) demand timely counsel-led decisions—preaward protest clocks generally run before initial proposals. Separately, at the final gate, passing hard gates is necessary but not sufficient: if why-us, urgency, Pwin, and economics fail, no-bid.",
-				isNot:
-					"It is not choosing the interpretation that favors you and protesting after award, and it is not bidding because eligibility and compliance ‘guarantee competitiveness.’",
-				fits: "Keep legal timing and portfolio economics on the same gate agenda—either can end the pursuit cleanly.",
+				teach:
+					"Apparent solicitation improprieties (for example conflicting LPTA vs tradeoff text that Q&A fails to resolve) demand timely counsel-led decisions—under 4 C.F.R. 21.2(a)(1), protests based on apparent solicitation improprieties generally must be filed before the time set for initial proposals; also attend to FAR 33.103 for agency-level paths. Separately, at the final gate, passing hard gates is necessary but not sufficient: if why-us, urgency, Pwin, and economics fail, no-bid. Keep legal timing and portfolio economics on the same gate agenda—either can end the pursuit cleanly.",
+				watchFor:
+					"Choosing the interpretation that favors you and protesting after award (generally untimely for an apparent preaward defect), or bidding because eligibility and compliance ‘guarantee competitiveness.’ Bid/no-bid is a stack: one passed layer does not cure another.",
 				checklist: [
 					"Calendar protest / clarification deadlines against proposal due date",
 					"Re-score the full stack: eligibility → value case → Pwin → price → return",
