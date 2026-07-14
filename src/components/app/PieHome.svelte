@@ -243,7 +243,7 @@
 						disabled={lifecycleLocked}
 						onclick={() => game.openShelf(s.unit.id)}
 					>
-						Browse shelf
+						Learn this
 					</Button>
 				</div>
 			</div>
