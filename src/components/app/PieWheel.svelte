@@ -232,9 +232,7 @@
 	<!-- ALEKS-style center hub: overall progress -->
 	<div class="pointer-events-none absolute inset-0 z-10 flex items-center justify-center" aria-hidden="true">
 		<div
-			class="flex flex-col items-center justify-center rounded-full border-2 bg-card shadow-sm"
-			class:border-primary={locked}
-			class:border-border={!locked}
+			class="flex flex-col items-center justify-center rounded-full bg-card shadow-sm"
 			style={`width: ${INNER_RADIUS}%; aspect-ratio: 1`}
 		>
 			<span class="text-2xl font-bold tabular-nums leading-none sm:text-3xl">{hubPercent}%</span>
@@ -244,17 +242,3 @@
 		</div>
 	</div>
 </div>
-
-<p
-	class="mt-2 flex items-center justify-center gap-4 text-[0.65rem] text-muted-foreground sm:mt-3 sm:gap-5 sm:text-xs"
-	aria-hidden="true"
->
-	<span class="inline-flex items-center gap-1.5">
-		<span class="size-2.5 rounded-sm bg-[hsl(210_72%_48%)]"></span>
-		Mastered
-	</span>
-	<span class="inline-flex items-center gap-1.5">
-		<span class="size-2.5 rounded-sm bg-[hsl(210_55%_68%)]"></span>
-		Learning
-	</span>
-</p>
