@@ -88,7 +88,7 @@
 			return pickedOption.tier ? TIER_VERDICT[pickedOption.tier] : undefined;
 		}
 		const right = pickedOption.correct === true;
-		return right ? { label: "Correct", tone: "good" } : { label: "Not quite", tone: "bad" };
+		return right ? { label: "Correct!", tone: "good" } : { label: "Not quite", tone: "bad" };
 	}
 	let v = $derived(verdict());
 </script>

@@ -53,7 +53,7 @@ export const SCORING_LABEL: Record<ScoringMode, string> = {
 
 // Tier feedback shown after a tiered / reveal-tradeoff answer.
 export const TIER_VERDICT: Record<OptionTier, { label: string; tone: Tone }> = {
-	best: { label: "Sharp move", tone: "good" },
+	best: { label: "Sharp move!", tone: "good" },
 	defensible: { label: "Defensible", tone: "ok" },
 	costly: { label: "Costly", tone: "warn" },
 	disqualifying: { label: "Disqualifying", tone: "bad" },
