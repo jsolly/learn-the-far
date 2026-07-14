@@ -666,6 +666,6 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 			},
 		],
 		closing:
-			"You now have a shelf, not a single anthology card: need versus contract, who may bind, where rules live, how money moves, how solicitations form, how competition decides, what awards are, what value is authorized, how contractors decide, and how performance seeds the next fight. Reading still does not clear the pie — check yourself when the map feels steadier.",
+			"You now have a shelf, not a single anthology card: need versus contract, who may bind, where rules live, how money moves, how solicitations form, how competition decides, what awards are, what value is authorized, how contractors decide, and how performance seeds the next fight. Check yourself when the map feels steadier.",
 	}),
 ];

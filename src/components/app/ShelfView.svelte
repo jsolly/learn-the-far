@@ -90,9 +90,7 @@
 		</ul>
 
 		<div class="mt-10 border-t pt-6 sm:mt-12">
-			<p class="mb-3 text-sm text-muted-foreground">
-				Ready to prove it? Reading does not clear the pie.
-			</p>
+			<p class="mb-3 text-sm text-muted-foreground">Ready to prove it?</p>
 			<Button
 				size="lg"
 				class="w-full sm:h-11 sm:w-auto sm:text-base"

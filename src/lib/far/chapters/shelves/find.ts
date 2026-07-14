@@ -482,6 +482,6 @@ export const FIND_SHELF_CHAPTERS: Chapter[] = [
 			},
 		],
 		closing:
-			"Find work ends when the opportunity is classified, timed, funded enough to matter, reachable through an eligible path, and promoted only on evidence. Reading this shelf does not clear quiz progress. When the picture feels steadier, check yourself — or open the next Find chapter.",
+			"Find work ends when the opportunity is classified, timed, funded enough to matter, reachable through an eligible path, and promoted only on evidence. When the picture feels steadier, check yourself — or open the next Find chapter.",
 	}),
 ];

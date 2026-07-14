@@ -69,7 +69,6 @@
 			<p class="mt-1 text-xs leading-5 text-muted-foreground sm:mt-2 sm:text-sm sm:leading-6">
 				Read the Basics shelf for the map, then score {Math.round(TESTOUT_PASS * 100)}% on a
 				quiz or the short {TESTOUT_LENGTH}-question test to unlock every lifecycle slice.
-				Reading alone won’t clear the pie.
 			</p>
 			{#if game.hasFundamentalsAttempt}
 				<p class="mt-2 text-[0.65rem] tabular-nums text-muted-foreground sm:mt-3 sm:text-xs">

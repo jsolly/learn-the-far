@@ -59,7 +59,8 @@ export type Chapter = {
 	/** Suggested browse order within the unit shelf (1-based). */
 	suggestedOrder: number;
 	pieces: ChapterPiece[];
-	closing: string;
+	/** Optional wrap-up line above the end-of-chapter CTAs. */
+	closing?: string;
 	furtherReading?: FurtherReading[];
 	quizCta: { label: string; action: ChapterQuizAction };
 };

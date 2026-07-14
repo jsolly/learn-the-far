@@ -37,8 +37,7 @@ export function chapter(draft: ChapterDraft): Chapter {
 		readingMinutes: draft.readingMinutes,
 		suggestedOrder: draft.suggestedOrder,
 		pieces: draft.pieces,
-		closing:
-			draft.closing ?? "Reading does not clear quiz progress.",
+		closing: draft.closing,
 		furtherReading: draft.furtherReading,
 		quizCta: draft.quizCta ?? defaultQuizCta(draft.id),
 	};
