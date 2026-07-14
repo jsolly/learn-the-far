@@ -1,5 +1,7 @@
 import type { QuizQuestion, UnitId } from "../types";
+import { QUESTIONS } from "../deck";
 import { chapter } from "./helpers";
+import { CHAPTER_QUESTION_IDS, META_CHAPTER_TAGS } from "./question-map";
 import { BID_NO_BID_SHELF_CHAPTERS } from "./shelves/bid-no-bid";
 import { FIND_SHELF_CHAPTERS } from "./shelves/find";
 import { FUNDAMENTALS_SHELF_CHAPTERS } from "./shelves/fundamentals";
@@ -24,10 +26,9 @@ const SHELF_CHAPTERS: Record<UnitId, Chapter[]> = {
 
 const SHELF_META: Record<UnitId, { title: string; subtitle: string; intro: string }> = {
 	fundamentals: {
-		title: "Basics shelf",
-		subtitle: "Desk reference for the knowledge floor",
-		intro:
-			"Browse freely. One chapter is marked Start here for newcomers; nothing is locked. Reading never clears the pie — quizzes remain how you prove it.",
+		title: "Master the Basics",
+		subtitle: "",
+		intro: "",
 	},
 	find: {
 		title: "Find shelf",
@@ -39,7 +40,7 @@ const SHELF_META: Record<UnitId, { title: string; subtitle: string; intro: strin
 		title: "Shape shelf",
 		subtitle: "From customer need to fair competition",
 		intro:
-			"Lawful early exchange, usable comments, and OCI hygiene — without taking the Government’s pen. Start here is optional guidance, not a gate.",
+			"Lawful early exchange, usable comments, and OCI hygiene — without taking the Government’s pen. Suggested order is guidance, not a gate.",
 	},
 	"bid-no-bid": {
 		title: "Bid / No-Bid shelf",
@@ -69,7 +70,7 @@ const SHELF_META: Record<UnitId, { title: string; subtitle: string; intro: strin
 		title: "Win & Protest shelf",
 		subtitle: "Notice, debrief, protest lanes, and corrective action",
 		intro:
-			"Post-award clocks move fast. Start here opens the three-day debrief window; earlier chapters cover solicitation defects you may already have missed.",
+			"Post-award clocks move fast. The debrief chapter opens the three-day window; earlier chapters cover solicitation defects you may already have missed.",
 	},
 };
 
@@ -94,6 +95,64 @@ export function chapterById(chapterId: string): Chapter | undefined {
 		if (found) return found;
 	}
 	return undefined;
+}
+
+/** Next chapter on the same shelf in suggested order, or null at the end. */
+export function nextChapterOnShelf(chapterId: string): Chapter | undefined {
+	const current = chapterById(chapterId);
+	if (!current) return undefined;
+	const chapters = sortShelf(SHELF_CHAPTERS[current.unitId]);
+	const index = chapters.findIndex((c) => c.id === chapterId);
+	if (index < 0 || index >= chapters.length - 1) return undefined;
+	return chapters[index + 1];
+}
+
+/** Questions for an end-of-chapter check — explicit map first, then same-unit tag overlap. */
+export function questionsForChapter(chapterId: string): QuizQuestion[] {
+	const mapped = CHAPTER_QUESTION_IDS[chapterId];
+	if (mapped && mapped.length > 0) {
+		const idSet = new Set(mapped);
+		return QUESTIONS.filter((q) => idSet.has(q.id));
+	}
+
+	const chapter = chapterById(chapterId);
+	if (!chapter) return [];
+
+	const tags = chapter.tags
+		.filter((t) => !META_CHAPTER_TAGS.has(t))
+		.map((t) => t.toLowerCase());
+	if (tags.length === 0) return [];
+
+	return QUESTIONS.filter(
+		(q) =>
+			q.unitId === chapter.unitId &&
+			q.tags.some((t) => tags.includes(t.toLowerCase())),
+	);
+}
+
+/** Study chapters that cover a quiz question (for miss → study links). */
+export function chaptersForQuestion(questionId: string): Chapter[] {
+	const mappedIds: string[] = [];
+	for (const [chapterId, questionIds] of Object.entries(CHAPTER_QUESTION_IDS)) {
+		if (questionIds.includes(questionId)) mappedIds.push(chapterId);
+	}
+	if (mappedIds.length > 0) {
+		return mappedIds
+			.map((id) => chapterById(id))
+			.filter((c): c is Chapter => Boolean(c));
+	}
+
+	const question = QUESTIONS.find((q) => q.id === questionId);
+	if (!question) return [];
+
+	const qTags = question.tags.map((t) => t.toLowerCase());
+	const shelf = sortShelf(SHELF_CHAPTERS[question.unitId] ?? []);
+	return shelf.filter((chapter) => {
+		const tags = chapter.tags
+			.filter((t) => !META_CHAPTER_TAGS.has(t))
+			.map((t) => t.toLowerCase());
+		return tags.some((t) => qTags.includes(t));
+	});
 }
 
 function trapLine(q: QuizQuestion): string {

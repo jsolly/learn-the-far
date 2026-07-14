@@ -3,10 +3,16 @@
 
 	import { game } from "$lib/quiz-state.svelte.js";
 	import { Button } from "$lib/components/ui/button";
+	import { nextChapterOnShelf } from "$lib/far/chapters";
 	import type { SourceKind } from "$lib/far/chapters/types";
 
 	let chapter = $derived(game.chapter);
 	let headingEl: HTMLHeadingElement | null = $state(null);
+	let hasNextChapter = $derived(
+		chapter && game.chapterKind === "shelf-chapter"
+			? Boolean(nextChapterOnShelf(chapter.id))
+			: false,
+	);
 
 	$effect(() => {
 		const current = chapter;
@@ -213,18 +219,10 @@
 					<Button
 						size="lg"
 						variant="outline"
-						class="w-full sm:h-11 sm:w-auto sm:text-base"
-						onclick={() => game.markCurrentChapterRead()}
+						class="w-full sm:h-11 sm:flex-1 sm:text-base"
+						onclick={() => game.openNextChapter()}
 					>
-						{game.isChapterRead(chapter.id) ? "Marked read" : "Mark as read"}
-					</Button>
-					<Button
-						size="lg"
-						variant="ghost"
-						class="w-full sm:h-11 sm:w-auto sm:text-base"
-						onclick={() => game.openShelf(chapter.unitId)}
-					>
-						Back to shelf
+						{hasNextChapter ? "Go to next chapter" : "Back to shelf"}
 					</Button>
 				{:else}
 					<Button

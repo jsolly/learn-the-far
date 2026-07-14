@@ -16,7 +16,6 @@ export const VEHICLE_SHELF_CHAPTERS: Chapter[] = [
 		tags: ["acquisition-path", "open-market", "vehicle-access", "channel-strategy"],
 		readingMinutes: 7,
 		suggestedOrder: 1,
-		startHere: true,
 		pieces: [
 			{
 				id: "path-first",

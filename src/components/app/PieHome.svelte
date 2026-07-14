@@ -67,9 +67,9 @@
 		<section class="mt-4 rounded-2xl border-2 border-primary/30 bg-card p-4 sm:mt-6 sm:p-6">
 			<h2 class="text-sm font-semibold leading-snug sm:text-lg">Unlock the deal lifecycle</h2>
 			<p class="mt-1 text-xs leading-5 text-muted-foreground sm:mt-2 sm:text-sm sm:leading-6">
-				Read the Basics shelf for the map, then check yourself with a quiz or the short
-				{TESTOUT_LENGTH}-question test. Score {Math.round(TESTOUT_PASS * 100)}% or better to unlock
-				every lifecycle slice. Reading never clears the pie on its own.
+				Read the Basics shelf for the map, then score {Math.round(TESTOUT_PASS * 100)}% on a
+				quiz or the short {TESTOUT_LENGTH}-question test to unlock every lifecycle slice.
+				Reading alone won’t clear the pie.
 			</p>
 			{#if game.hasFundamentalsAttempt}
 				<p class="mt-2 text-[0.65rem] tabular-nums text-muted-foreground sm:mt-3 sm:text-xs">
@@ -82,7 +82,7 @@
 					class="sm:h-11 sm:text-base"
 					onclick={() => game.openShelf("fundamentals")}
 				>
-					Read Basics shelf
+					Start Learning
 				</Button>
 				<Button
 					size="lg"
@@ -90,7 +90,7 @@
 					class="sm:h-11 sm:text-base"
 					onclick={() => game.startUnit("fundamentals")}
 				>
-					Quiz Basics
+					Quiz me
 				</Button>
 			</div>
 			<div class="mt-2 flex flex-col gap-2 sm:mt-3 sm:gap-3">
@@ -100,7 +100,7 @@
 					class="w-full sm:h-11 sm:text-base"
 					onclick={() => game.startTestOut()}
 				>
-					Take the Basics test
+					Test out of basics
 				</Button>
 				{#if game.hasFundamentalsAttempt && game.fundamentalsGaps.length > 0}
 					<Button

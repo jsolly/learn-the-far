@@ -9,6 +9,7 @@ import type {
 import { QUESTIONS, UNITS } from "$lib/far/deck";
 import {
 	CLEAR_THRESHOLD,
+	CHAPTER_SESSION_LENGTH,
 	DAILY_LENGTH,
 	DIFFICULTY_ORDER,
 	LEVELS,
@@ -30,7 +31,7 @@ import {
 	rememberOpen,
 	saveReadingProgress,
 } from "$lib/reading-storage";
-import { buildMissManuscript, chapterById, shelfForUnit } from "$lib/far/chapters";
+import { buildMissManuscript, chapterById, nextChapterOnShelf, questionsForChapter, shelfForUnit } from "$lib/far/chapters";
 import type {
 	Chapter,
 	ChapterKind,
@@ -320,6 +321,23 @@ export class QuizGame {
 		this.beginSession("unit", unitId, ordered.length ? ordered : shuffle(qs).slice(0, SESSION_LENGTH));
 	}
 
+	/** End-of-chapter check — only questions mapped (or tagged) to that chapter. */
+	startChapterQuiz(chapterId: string) {
+		const chapter = chapterById(chapterId);
+		if (!chapter || !this.canStartUnit(chapter.unitId)) return;
+		const pool = questionsForChapter(chapterId);
+		if (pool.length === 0) {
+			// Tag maps are incomplete outside Basics — fall back to the unit quiz
+			// rather than silently bouncing to the shelf.
+			this.startUnit(chapter.unitId);
+			return;
+		}
+		const fresh = shuffle(pool.filter((q) => !this.isCleared(q.id)));
+		const review = shuffle(pool.filter((q) => this.isCleared(q.id)));
+		const ordered = [...fresh, ...review].slice(0, CHAPTER_SESSION_LENGTH);
+		this.beginSession("unit", chapter.unitId, ordered);
+	}
+
 	startDaily() {
 		if (!this.fundamentalsUnlocked) return;
 		const rng = mulberry32(hashSeed(`daily-${today()}`));
@@ -342,7 +360,10 @@ export class QuizGame {
 		this.summary = null;
 		this.view = "chapter";
 		if (kind === "shelf-chapter") {
-			this.reading = rememberOpen(this.reading, chapter.unitId, chapter.id);
+			this.reading = markChapterRead(
+				rememberOpen(this.reading, chapter.unitId, chapter.id),
+				chapter.id,
+			);
 			saveReadingProgress(this.reading);
 		}
 	}
@@ -362,17 +383,29 @@ export class QuizGame {
 		const found = chapterById(chapterId);
 		if (!found) return;
 		if (!this.canStartUnit(found.unitId)) return;
+		// Leave any in-progress quiz so study navigation is a clean handoff.
+		this.queue = [];
+		this.outcomes = [];
+		this.requeued = new SvelteSet();
+		this.answeredOptionId = null;
+		this.pendingStake = null;
+		this.summary = null;
 		this.openChapter(found, "shelf-chapter");
+	}
+
+	/** Advance to the next shelf chapter, or return to the shelf when finished. */
+	openNextChapter() {
+		if (!this.chapter || this.chapterKind !== "shelf-chapter") return;
+		const next = nextChapterOnShelf(this.chapter.id);
+		if (next) {
+			this.openChapter(next, "shelf-chapter");
+			return;
+		}
+		this.openShelf(this.chapter.unitId);
 	}
 
 	isChapterRead(chapterId: string): boolean {
 		return Boolean(this.reading.read[chapterId]);
-	}
-
-	markCurrentChapterRead() {
-		if (!this.chapter || this.chapterKind !== "shelf-chapter") return;
-		this.reading = markChapterRead(this.reading, this.chapter.id);
-		saveReadingProgress(this.reading);
 	}
 
 	/** Shame-free manuscript for uncleared fundamentals (no progress writes). */
@@ -389,7 +422,7 @@ export class QuizGame {
 		if (misses.length === 0) return;
 		const chapter = buildMissManuscript(shuffle(misses).slice(0, SESSION_LENGTH));
 		chapter.quizCta = {
-			label: "Back to the chart",
+			label: "Back to home",
 			action: { kind: "home" },
 		};
 		this.openChapter(chapter, "miss-manuscript");
@@ -397,8 +430,8 @@ export class QuizGame {
 
 	runChapterQuizAction(action: ChapterQuizAction) {
 		switch (action.kind) {
-			case "quiz-fundamentals":
-				this.startUnit("fundamentals");
+			case "quiz-chapter":
+				this.startChapterQuiz(action.chapterId);
 				return;
 			case "testout":
 				this.startTestOut();
