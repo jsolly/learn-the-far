@@ -16,7 +16,6 @@ export const FIND_SHELF_CHAPTERS: Chapter[] = [
 		tags: ["sources-sought", "notice-types", "market-research", "sam-gov"],
 		readingMinutes: 7,
 		suggestedOrder: 1,
-		startHere: true,
 		pieces: [
 			{
 				id: "notice-type-before-spend",

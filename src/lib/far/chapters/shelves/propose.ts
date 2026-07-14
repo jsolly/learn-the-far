@@ -13,10 +13,9 @@ export const PROPOSE_SHELF_CHAPTERS: Chapter[] = [
 		summary: "Sections L and M together; LPTA vs tradeoff; weakness and deficiency vocabulary.",
 		intro:
 			"A proposal is written for evaluators who must follow the solicitation’s machine: instructions that get you evaluated, factors that get you scored, and a source-selection method that decides whether extras help or hurt. Start here before anyone opens a volume template.",
-		tags: ["start-here", "definition", "field-guide", "section-l-m"],
+		tags: ["definition", "field-guide", "section-l", "section-m"],
 		readingMinutes: 7,
 		suggestedOrder: 1,
-		startHere: true,
 		pieces: [
 			{
 				id: "l-and-m-together",

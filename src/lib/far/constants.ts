@@ -78,6 +78,9 @@ export const READING_PROGRESS_KEY = "learn-the-far:reading-progress:v1";
 // Questions per session before the summary screen (wrong answers requeue within).
 export const SESSION_LENGTH = 8;
 
+/** Shorter end-of-chapter check — pools are often smaller than a full unit session. */
+export const CHAPTER_SESSION_LENGTH = 5;
+
 // Streak milestones that unlock achievements.
 export const STREAK_MILESTONES = [3, 7, 14, 30];
 

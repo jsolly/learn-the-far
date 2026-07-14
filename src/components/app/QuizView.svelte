@@ -5,6 +5,7 @@
 	import type { OptionTier, QuizOption, Tone } from "$lib/far/types";
 	import { CONFIDENCE_STAKES, DIFFICULTY_LABEL, SCORING_LABEL, TIER_VERDICT } from "$lib/far/constants";
 	import { UNITS } from "$lib/far/deck";
+	import { chaptersForQuestion } from "$lib/far/chapters";
 	import { Badge } from "$lib/components/ui/badge";
 	import { Button } from "$lib/components/ui/button";
 	import { Progress } from "$lib/components/ui/progress";
@@ -15,6 +16,11 @@
 	let counts = $derived(game.progressCount);
 	let pct = $derived(counts.total === 0 ? 0 : Math.round((counts.done / counts.total) * 100));
 	let feedbackStatusEl: HTMLParagraphElement | null = null;
+	let lastOutcome = $derived(game.outcomes[game.outcomes.length - 1]);
+	let missed = $derived(
+		Boolean(answered && lastOutcome && !lastOutcome.cleared && game.mode !== "testout"),
+	);
+	let studyChapters = $derived(q && missed ? chaptersForQuestion(q.id) : []);
 
 	function focusQuestionHeading(questionId: string) {
 		return (element: HTMLHeadingElement) => {
@@ -195,14 +201,30 @@
 					>
 				{/if}
 				<p class="mt-1 text-sm leading-6 text-foreground/90">{q.explanation}</p>
-				<a
-					href={q.sourceUrl}
-					target="_blank"
-					rel="noreferrer"
-					class="mt-2 inline-block text-xs font-medium text-primary underline underline-offset-2"
-				>
-					{q.citation} ↗
-				</a>
+				<div class="mt-3 flex flex-col gap-2">
+					<a
+						href={q.sourceUrl}
+						target="_blank"
+						rel="noreferrer"
+						class="inline-block text-xs font-medium text-primary underline underline-offset-2"
+					>
+						{q.citation} ↗
+					</a>
+					{#if missed && studyChapters.length > 0}
+						<div class="flex flex-col gap-1.5">
+							<p class="text-xs font-medium text-muted-foreground">Review in study</p>
+							{#each studyChapters as chapter (chapter.id)}
+								<button
+									type="button"
+									class="rounded-sm text-left text-xs font-medium text-primary underline underline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+									onclick={() => game.openShelfChapter(chapter.id)}
+								>
+									{chapter.title}
+								</button>
+							{/each}
+						</div>
+					{/if}
+				</div>
 			</div>
 		{/if}
 

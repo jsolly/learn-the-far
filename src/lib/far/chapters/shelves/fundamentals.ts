@@ -10,15 +10,14 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "need-not-yet-contract",
 		unitId: "fundamentals",
-		title: "A need is not yet a contract",
+		title: "Name the acquisition station you’re actually in",
 		summary:
-			"Opens the lifecycle: forecasts, market research, solicitations, awards, orders, and performance are different stations — not one blob called “the deal.”",
+			"Learn to separate need, market research, solicitation, award, order, and performance — so a forecast or hallway conversation never gets booked as a deal.",
 		intro:
 			"Capture teams collapse language. A forecast line, a sources-sought reply, a draft RFP, an award notice, and a funded order all get called “the opportunity.” This chapter separates those stations so later chapters — who may bind, how money moves, what an award actually is — have somewhere to sit.",
-		tags: ["start-here", "lifecycle", "definition", "field-guide"],
+		tags: ["lifecycle", "definition", "field-guide"],
 		readingMinutes: 6,
 		suggestedOrder: 1,
-		startHere: true,
 		pieces: [
 			{
 				id: "lifecycle-stations",
@@ -71,9 +70,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "who-may-speak-who-may-bind",
 		unitId: "fundamentals",
-		title: "Who may speak, and who may bind",
+		title: "Know who can speak — and who can bind the Government",
 		summary:
-			"One scope-change story: the Government PM shapes need, the COR monitors performance, and only written contracting authority can change the deal.",
+			"Learn the CO warrant, COR limits, and Government PM role so scope-change asks land with the people who actually have authority.",
 		intro:
 			"Titles fill the room — PM, COR, branch chief, “the customer.” Only some of them can speak for the Government on technical performance. Fewer can bind it. Capture and contracts both fail when those roles blur.",
 		tags: ["authority", "contracting-officer", "cor", "government-pm", "definition"],
@@ -153,9 +152,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "where-the-rules-live",
 		unitId: "fundamentals",
-		title: "Where the rules live",
+		title: "Read the FAR stack: citations, supplements, and the solicitation",
 		summary:
-			"FAR citation anatomy, agency supplements, deviations, and the solicitation’s own provisions and clauses — plus when UCF Sections L and M apply.",
+			"Learn citation anatomy, agency supplements and deviations, and where provisions vs clauses live — including when UCF Sections L and M control.",
 		intro:
 			"Teams argue about “the FAR” while reading the wrong layer. Citations, supplements, deviations, and solicitation text are a stack. Proposal instructions live in one place; evaluation factors in another — when the Uniform Contract Format is in play.",
 		tags: ["far-navigation", "supplements", "solicitation", "ucf", "definition"],
@@ -226,9 +225,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "how-money-becomes-authority",
 		unitId: "fundamentals",
-		title: "How money becomes authority",
+		title: "Follow the money from appropriation to obligation",
 		summary:
-			"Appropriation → obligation → outlay, purpose/time/amount discipline, and why an IGCE or ceiling is not funding.",
+			"Learn appropriation vs obligation vs outlay, purpose/time/amount discipline, and why an IGCE or vehicle ceiling is not funding you can spend.",
 		intro:
 			"Capture slides love the word “funded.” Budget language is more precise — and mixing the words is how teams misread whether an agency can actually buy, and how much work a contractor may safely perform.",
 		tags: ["funding", "appropriation", "obligation", "igce", "fiscal-law"],
@@ -291,9 +290,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "market-signal-to-solicitation",
 		unitId: "fundamentals",
-		title: "From market signal to operative solicitation",
+		title: "Turn market signals into the right solicitation instrument",
 		summary:
-			"Notice types, quotation versus offer, UCF L/M when it applies, and SOW / PWS / SOO as different requirements shapes.",
+			"Learn to classify sources sought, RFI, RFQ, RFP, and IFB; use UCF L/M when they apply; and choose SOW, PWS, or SOO for the requirements shape.",
 		intro:
 			"The path from market research to an operative solicitation is where capture either builds a clean baseline — or invents one from webinars and hallway talk. Instrument vocabulary matters before a single page of proposal is written.",
 		tags: ["notices", "solicitation", "ucf", "sow", "pws", "field-guide"],
@@ -358,9 +357,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "competition-becomes-decision",
 		unitId: "fundamentals",
-		title: "How competition becomes a decision",
+		title: "See how competition becomes a source-selection decision",
 		summary:
-			"SSA versus evaluation team, evaluation against stated factors, and the paths of full-and-open, set-aside, and sole-source.",
+			"Learn SSA vs evaluation-team roles and the paths of full-and-open, set-aside, and sole-source before anyone scores a proposal.",
 		intro:
 			"Color teams and “the board picked the winner” dominate folklore. The FAR assigns decision responsibility more carefully — and acquisition strategy chooses who may compete before anyone scores a volume.",
 		tags: ["source-selection", "ssa", "competition", "set-aside", "decision"],
@@ -413,9 +412,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "what-government-awards",
 		unitId: "fundamentals",
-		title: "What the Government actually awards",
+		title: "Recognize what the Government actually awards",
 		summary:
-			"What a contract is (with room for pre-award protest), FFP risk without false binaries, and MAS versus GWAC as different vehicles.",
+			"Learn what counts as a FAR contract, place FFP risk without false binaries, and contrast MAS vs GWAC so “we won the vehicle” stops being fuzzy.",
 		intro:
 			"Award language gets loose: “we won the vehicle,” “it’s FFP so we’re safe,” “MAS and GWAC are the same GSA thing.” This chapter tightens the instrument vocabulary capture and contracts share.",
 		tags: ["contract", "ffp", "mas", "gwac", "definition", "contrast"],
@@ -479,9 +478,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "potential-value-not-authorized-work",
 		unitId: "fundamentals",
-		title: "Potential value is not authorized work",
+		title: "Treat ceilings and options as potential — not authorized work",
 		summary:
-			"IDIQ minimums and ceilings, base versus options, and CLIN/SLIN funding limits — potential value is not a hunting license for unfunded performance.",
+			"Learn IDIQ minimums and ceilings, base vs options, and CLIN funding limits so you never perform or book work the Government hasn’t authorized.",
 		intro:
 			"Pipeline loves ceilings, option years, and CLIN totals. Delivery lives on allotted funding and written exercise. Confusing those numbers is how teams book backlog they cannot bill — or perform work they cannot get paid for.",
 		tags: ["idiq", "options", "funding", "clin", "contrast", "failure-mode"],
@@ -548,9 +547,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "contractor-decision-system",
 		unitId: "fundamentals",
-		title: "The contractor’s decision system",
+		title: "Run capture decisions with Pwin, price-to-win, and gates",
 		summary:
-			"This course’s working definition of Pwin, price-to-win versus cost, and gates/reviews as labeled capture practice — not FAR mandates.",
+			"Learn this course’s working Pwin definition, separate price-to-win from cost, and run gates and color reviews as house practice — not FAR mandates.",
 		intro:
 			"Not every Basics concept lives in the FAR. Capture still needs shared language for investment decisions. This chapter marks where regulation ends and disciplined house practice begins.",
 		tags: ["pwin", "price-to-win", "gates", "capture-practice", "decision"],
@@ -615,9 +614,9 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "performance-becomes-next-proposal",
 		unitId: "fundamentals",
-		title: "Performance becomes the next proposal",
+		title: "Build the next proposal from today’s performance record",
 		summary:
-			"Delivery evidence, CPARS, option exercise, and recompete readiness close the loop that opened with a need that was not yet a contract.",
+			"Learn to treat CPARS and delivery evidence as capture currency, and connect option exercise to recompete readiness before the next competition.",
 		intro:
 			"The opening chapter’s stations do not end at award. Performance creates the past-performance currency, customer trust, and option story the next competition will score — or the next protest will ignore if you waited until year four to care.",
 		tags: ["cpars", "options", "recompete", "past-performance", "field-guide"],

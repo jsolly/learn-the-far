@@ -16,7 +16,6 @@ export const BID_NO_BID_SHELF_CHAPTERS: Chapter[] = [
 		tags: ["gate-discipline", "investment-decision", "bp", "portfolio"],
 		readingMinutes: 7,
 		suggestedOrder: 1,
-		startHere: true,
 		pieces: [
 			{
 				id: "gate-purpose",

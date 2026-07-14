@@ -13,10 +13,9 @@ export const TEAM_SHELF_CHAPTERS: Chapter[] = [
 		summary: "FAR 9.601 JV vs prime-sub vs MAS CTA — privity and governance.",
 		intro:
 			"Capture slides love the word “team.” The FAR and GSA care about the legal form you actually built: who submits the offer, who signs, who holds privity with the Government, and who remains fully responsible for performance. Start here so every later chapter — workshare, past performance, flowdowns — attaches to the right structure.",
-		tags: ["start-here", "definition", "contrast", "far-9-6"],
+		tags: ["definition", "contrast", "far-9-6"],
 		readingMinutes: 7,
 		suggestedOrder: 1,
-		startHere: true,
 		pieces: [
 			{
 				id: "far-9601-two-forms",
