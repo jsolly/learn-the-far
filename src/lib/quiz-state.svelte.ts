@@ -128,6 +128,8 @@ export class QuizGame {
 	// active session
 	mode = $state<SessionMode>("unit");
 	activeUnit = $state<UnitId | null>(null);
+	/** Source chapter for end-of-chapter quizzes (cleared for other session modes). */
+	activeChapterId = $state<string | null>(null);
 	queue = $state<string[]>([]);
 	outcomes = $state<AnswerOutcome[]>([]);
 	requeued = new SvelteSet<string>();
@@ -202,6 +204,7 @@ export class QuizGame {
 		this.requeued = new SvelteSet();
 		this.answeredOptionId = null;
 		this.summary = null;
+		this.activeChapterId = null;
 
 		this.routeLocked = this.isUnitLocked(route.unitId);
 
@@ -449,16 +452,11 @@ export class QuizGame {
 		const chapter = chapterById(chapterId);
 		if (!chapter || !this.canStartUnit(chapter.unitId)) return;
 		const pool = questionsForChapter(chapterId);
-		if (pool.length === 0) {
-			// Tag maps are incomplete outside Basics — fall back to the unit quiz
-			// rather than silently bouncing to the shelf.
-			this.startUnit(chapter.unitId);
-			return;
-		}
+		if (pool.length === 0) return;
 		const fresh = shuffle(pool.filter((q) => !this.isCleared(q.id)));
 		const review = shuffle(pool.filter((q) => this.isCleared(q.id)));
 		const ordered = [...fresh, ...review].slice(0, CHAPTER_SESSION_LENGTH);
-		this.beginSession("unit", chapter.unitId, ordered);
+		this.beginSession("chapter", chapter.unitId, ordered, { chapterId });
 	}
 
 	startDaily() {
@@ -499,6 +497,7 @@ export class QuizGame {
 		this.chapter = null;
 		this.chapterKind = null;
 		this.summary = null;
+		this.activeChapterId = null;
 		this.view = "shelf";
 		this.reading = { ...this.reading, lastUnitId: unitId };
 		saveReadingProgress(this.reading);
@@ -548,9 +547,15 @@ export class QuizGame {
 		}
 	}
 
-	private beginSession(mode: SessionMode, unitId: UnitId | null, questions: QuizQuestion[]) {
+	private beginSession(
+		mode: SessionMode,
+		unitId: UnitId | null,
+		questions: QuizQuestion[],
+		opts?: { chapterId?: string },
+	) {
 		this.mode = mode;
 		this.activeUnit = unitId;
+		this.activeChapterId = opts?.chapterId ?? null;
 		this.queue = questions.map((q) => q.id);
 		this.outcomes = [];
 		this.requeued = new SvelteSet();
@@ -743,9 +748,16 @@ export class QuizGame {
 		this.deriveAchievements(newAchievements);
 		saveProgress(this.progress);
 
+		const chapter =
+			this.mode === "chapter" && this.activeChapterId
+				? chapterById(this.activeChapterId)
+				: undefined;
+
 		this.summary = {
 			mode: this.mode,
 			unit: unit ?? undefined,
+			chapterId: chapter?.id,
+			chapterTitle: chapter?.title,
 			answered,
 			scoreSum,
 			scorePct,
@@ -755,6 +767,33 @@ export class QuizGame {
 			newAchievements,
 		};
 		this.view = "summary";
+	}
+
+	/** Leave a quiz session — chapter quizzes return to the chapter page. */
+	exitSession() {
+		if (this.mode === "chapter" && this.activeChapterId) {
+			this.returnToChapter(this.activeChapterId);
+			return;
+		}
+		this.goHome();
+	}
+
+	/** Re-open a shelf chapter after an end-of-chapter quiz (or exit). */
+	returnToChapter(chapterId: string) {
+		const chapter = chapterById(chapterId);
+		if (!chapter) {
+			this.goHome();
+			return;
+		}
+		this.queue = [];
+		this.outcomes = [];
+		this.requeued = new SvelteSet();
+		this.answeredOptionId = null;
+		this.summary = null;
+		this.activeChapterId = null;
+		this.routeLocked = this.isUnitLocked(chapter.unitId);
+		this.openChapter(chapter, "shelf-chapter", { recordRead: !this.routeLocked });
+		this.syncLearnUrl({ replace: true });
 	}
 
 	private markActive() {
@@ -802,6 +841,7 @@ export class QuizGame {
 		this.requeued = new SvelteSet();
 		this.answeredOptionId = null;
 		this.summary = null;
+		this.activeChapterId = null;
 		this.chapter = null;
 		this.chapterKind = null;
 		this.shelf = null;
@@ -814,6 +854,7 @@ export class QuizGame {
 		saveProgress(this.progress);
 		this.view = "home";
 		this.summary = null;
+		this.activeChapterId = null;
 		this.chapter = null;
 		this.chapterKind = null;
 		this.shelf = null;

@@ -32,6 +32,12 @@
 		if (pct >= 50) return "Room to sharpen.";
 		return "Keep drilling.";
 	}
+
+	function sessionLabel(summary: NonNullable<typeof s>): string {
+		if (summary.mode === "daily") return "Daily challenge";
+		if (summary.mode === "chapter" && summary.chapterTitle) return summary.chapterTitle;
+		return summary.unit?.title ?? "Quiz";
+	}
 </script>
 
 {#if s}
@@ -64,7 +70,7 @@
 			</p>
 		{:else}
 			<div class="text-sm font-medium uppercase tracking-wide text-muted-foreground">
-				{s.mode === "daily" ? "Daily challenge" : s.unit?.title}
+				{sessionLabel(s)}
 			</div>
 			<div class="relative flex size-36 items-center justify-center">
 				<div
@@ -111,7 +117,11 @@
 		{/if}
 
 		<div class="flex w-full flex-col gap-2">
-			{#if s.mode === "testout" && unlockedByMastery}
+			{#if s.mode === "chapter" && s.chapterId}
+				<Button size="lg" onclick={() => s?.chapterId && game.returnToChapter(s.chapterId)}>
+					Back to chapter
+				</Button>
+			{:else if s.mode === "testout" && unlockedByMastery}
 				<Button size="lg" href="/">Back to home</Button>
 			{:else if s.mode === "testout" && !s.passedTestOut}
 				<Button size="lg" href="/learn/fundamentals">Browse Basics shelf</Button>

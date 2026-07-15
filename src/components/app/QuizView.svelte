@@ -103,7 +103,7 @@
 	<div class="mx-auto flex min-h-[100dvh] w-full max-w-2xl flex-col px-4 pb-28 pt-4 sm:pt-6">
 		<!-- header -->
 		<div class="flex items-center gap-3">
-			<Button variant="ghost" size="sm" class="shrink-0 px-2" aria-label="Exit session" onclick={() => game.goHome()}>
+			<Button variant="ghost" size="sm" class="shrink-0 px-2" aria-label="Exit session" onclick={() => game.exitSession()}>
 				<span aria-hidden="true">✕</span>
 			</Button>
 			<div class="flex-1">

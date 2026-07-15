@@ -3,7 +3,7 @@
 
 	import { game } from "$lib/quiz-state.svelte.js";
 	import { Button } from "$lib/components/ui/button";
-	import { nextChapterOnShelf } from "$lib/far/chapters";
+	import { nextChapterOnShelf, questionsForChapter } from "$lib/far/chapters";
 	import type { SourceKind } from "$lib/far/chapters/types";
 	import { learnChapterPath, learnShelfPath } from "$lib/learn-routes";
 	import { segmentGlossaryText } from "$lib/far/link-glossary-terms";
@@ -17,6 +17,14 @@
 			? nextChapterOnShelf(chapter.id)
 			: undefined,
 	);
+	/** End-of-chapter quiz only when this chapter has mapped/tagged questions. */
+	let showChapterQuiz = $derived.by(() => {
+		const current = chapter;
+		if (!current) return false;
+		const action = current.quizCta.action;
+		if (action.kind !== "quiz-chapter") return true;
+		return questionsForChapter(action.chapterId).length > 0;
+	});
 
 	/** One pass per chapter so each glossary term links at most once. */
 	let linkedCopy = $derived.by(() => {
@@ -249,13 +257,15 @@
 				<div
 					class={`${chapter.closing ? "mt-6" : ""} flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center`}
 				>
-					<Button
-						size="lg"
-						class="w-full sm:h-11 sm:min-w-[12rem] sm:flex-1 sm:text-base"
-						onclick={() => game.runChapterQuizAction(chapter.quizCta.action)}
-					>
-						{chapter.quizCta.label}
-					</Button>
+					{#if showChapterQuiz}
+						<Button
+							size="lg"
+							class="w-full sm:h-11 sm:min-w-[12rem] sm:flex-1 sm:text-base"
+							onclick={() => game.runChapterQuizAction(chapter.quizCta.action)}
+						>
+							{chapter.quizCta.label}
+						</Button>
+					{/if}
 					{#if game.chapterKind === "shelf-chapter"}
 						{#if nextChapter}
 							<Button

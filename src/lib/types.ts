@@ -31,7 +31,8 @@ export type QuizProgress = {
 // ---- Engine + views (owned by quiz-state.svelte.ts, consumed by components) ----
 
 export type View = "home" | "session" | "summary" | "chapter" | "shelf" | "glossary";
-export type SessionMode = "unit" | "daily" | "testout";
+/** `chapter` = end-of-chapter check (chapter-scoped). `unit` / `testout` = homepage-style practice. */
+export type SessionMode = "unit" | "daily" | "testout" | "chapter";
 
 export type UnitStats = {
 	unit: LifecycleUnit;
@@ -51,6 +52,9 @@ export type UnitStats = {
 export type SessionSummary = {
 	mode: SessionMode;
 	unit?: LifecycleUnit;
+	/** Set when mode is `chapter` — used to return to the chapter page. */
+	chapterId?: string;
+	chapterTitle?: string;
 	answered: number;
 	scoreSum: number;
 	scorePct: number;
