@@ -175,7 +175,6 @@ function pieceFromQuestion(q: QuizQuestion): ChapterPiece {
 	return {
 		id: q.id,
 		title,
-		story: q.situation,
 		teach: tagsHint
 			? `${q.explanation} You’ll meet this idea again under tags like ${tagsHint}.`
 			: q.explanation,
