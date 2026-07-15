@@ -476,14 +476,21 @@ function normalizeKey(value: string): string {
 
 const byTagKey = new Map<string, GlossaryTerm>();
 for (const term of GLOSSARY_TERMS) {
-	byTagKey.set(normalizeKey(term.id), term);
-	byTagKey.set(normalizeKey(term.term), term);
-	// topic-<slug> also resolves from bare <slug>
-	if (term.id.startsWith("topic-")) {
-		byTagKey.set(normalizeKey(term.id.slice("topic-".length)), term);
-	}
-	for (const alias of term.aliases ?? []) {
-		byTagKey.set(normalizeKey(alias), term);
+	const keys = [
+		normalizeKey(term.id),
+		normalizeKey(term.term),
+		...(term.id.startsWith("topic-") ? [normalizeKey(term.id.slice("topic-".length))] : []),
+		...(term.aliases ?? []).map(normalizeKey),
+	];
+	for (const key of keys) {
+		const existing = byTagKey.get(key);
+		// Prefer core FAR terms over topic-tag entries on key collisions.
+		if (existing && !existing.id.startsWith("topic-") && term.id.startsWith("topic-")) {
+			continue;
+		}
+		if (!existing || existing.id.startsWith("topic-")) {
+			byTagKey.set(key, term);
+		}
 	}
 }
 
@@ -509,8 +516,8 @@ export type GlossaryMatchPattern = {
 /** Flat list of match labels → term id, longest label first (for regex alternation). */
 export function allMatchPatterns(): GlossaryMatchPattern[] {
 	const out: GlossaryMatchPattern[] = [];
-	for (const term of GLOSSARY_TERMS) {
-		if (term.autoLink === false) continue;
+	// Only core FAR/capture terms auto-link in chapter body — topic tags are browse/pill only.
+	for (const term of CORE_GLOSSARY_TERMS) {
 		for (const label of matchStringsForTerm(term)) {
 			out.push({ termId: term.id, label });
 		}

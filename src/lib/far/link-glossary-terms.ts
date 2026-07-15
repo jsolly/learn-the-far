@@ -13,28 +13,101 @@ function boundaryClass(): string {
 	return "[^A-Za-z0-9]";
 }
 
-let cachedRegex: RegExp | null = null;
-let cachedLookup: Map<string, string> | null = null;
+/** Short all-caps labels (CO, KO, COR…) must match case-sensitively to avoid “Co.” false hits. */
+function isAcronymLabel(label: string): boolean {
+	return /^[A-Z0-9]{1,4}$/.test(label);
+}
 
-function matchEngine(): { regex: RegExp; lookup: Map<string, string> } {
-	if (cachedRegex && cachedLookup) {
-		return { regex: cachedRegex, lookup: cachedLookup };
+type MatchHit = { index: number; text: string; termId: string };
+
+let cachedInsensitive: RegExp | null = null;
+let cachedSensitive: RegExp | null = null;
+let cachedInsensitiveLookup: Map<string, string> | null = null;
+let cachedSensitiveLookup: Map<string, string> | null = null;
+
+function matchEngine(): {
+	insensitive: RegExp | null;
+	sensitive: RegExp | null;
+	insensitiveLookup: Map<string, string>;
+	sensitiveLookup: Map<string, string>;
+} {
+	if (
+		cachedInsensitiveLookup &&
+		cachedSensitiveLookup &&
+		(cachedInsensitive || cachedSensitive)
+	) {
+		return {
+			insensitive: cachedInsensitive,
+			sensitive: cachedSensitive,
+			insensitiveLookup: cachedInsensitiveLookup,
+			sensitiveLookup: cachedSensitiveLookup,
+		};
 	}
 
 	const patterns = allMatchPatterns();
-	const lookup = new Map<string, string>();
+	const insensitiveLookup = new Map<string, string>();
+	const sensitiveLookup = new Map<string, string>();
+	const insensitiveLabels: string[] = [];
+	const sensitiveLabels: string[] = [];
+
 	for (const p of patterns) {
-		const key = p.label.toLowerCase();
-		// Longest-first list: first write wins for duplicate labels.
-		if (!lookup.has(key)) lookup.set(key, p.termId);
+		if (isAcronymLabel(p.label)) {
+			if (!sensitiveLookup.has(p.label)) {
+				sensitiveLookup.set(p.label, p.termId);
+				sensitiveLabels.push(p.label);
+			}
+		} else {
+			const key = p.label.toLowerCase();
+			if (!insensitiveLookup.has(key)) {
+				insensitiveLookup.set(key, p.termId);
+				insensitiveLabels.push(p.label);
+			}
+		}
 	}
 
-	const alternation = patterns.map((p) => escapeRegExp(p.label)).join("|");
 	const b = boundaryClass();
-	// Lookbehind/lookahead keep punctuation out of the match while still matching at string edges.
-	cachedRegex = new RegExp(`(?<=^|${b})(${alternation})(?=$|${b})`, "gi");
-	cachedLookup = lookup;
-	return { regex: cachedRegex, lookup: cachedLookup };
+	cachedInsensitive =
+		insensitiveLabels.length > 0
+			? new RegExp(
+					`(?<=^|${b})(${insensitiveLabels.map(escapeRegExp).join("|")})(?=$|${b})`,
+					"gi",
+				)
+			: null;
+	cachedSensitive =
+		sensitiveLabels.length > 0
+			? new RegExp(
+					`(?<=^|${b})(${sensitiveLabels.map(escapeRegExp).join("|")})(?=$|${b})`,
+					"g",
+				)
+			: null;
+	cachedInsensitiveLookup = insensitiveLookup;
+	cachedSensitiveLookup = sensitiveLookup;
+
+	return {
+		insensitive: cachedInsensitive,
+		sensitive: cachedSensitive,
+		insensitiveLookup,
+		sensitiveLookup,
+	};
+}
+
+function collectHits(
+	text: string,
+	regex: RegExp | null,
+	lookup: Map<string, string>,
+	normalize: (matched: string) => string,
+): MatchHit[] {
+	if (!regex) return [];
+	regex.lastIndex = 0;
+	const hits: MatchHit[] = [];
+	let match: RegExpExecArray | null;
+	while ((match = regex.exec(text)) !== null) {
+		const matched = match[1] ?? match[0];
+		const termId = lookup.get(normalize(matched));
+		if (!termId) continue;
+		hits.push({ index: match.index, text: matched, termId });
+	}
+	return hits;
 }
 
 /**
@@ -44,27 +117,26 @@ function matchEngine(): { regex: RegExp; lookup: Map<string, string> } {
 export function segmentGlossaryText(text: string, linkedIds: Set<string>): TextSegment[] {
 	if (!text) return [];
 
-	const { regex, lookup } = matchEngine();
-	regex.lastIndex = 0;
+	const { insensitive, sensitive, insensitiveLookup, sensitiveLookup } = matchEngine();
+	const hits = [
+		...collectHits(text, insensitive, insensitiveLookup, (m) => m.toLowerCase()),
+		...collectHits(text, sensitive, sensitiveLookup, (m) => m),
+	].sort((a, b) => a.index - b.index || b.text.length - a.text.length);
 
 	const segments: TextSegment[] = [];
 	let lastIndex = 0;
-	let match: RegExpExecArray | null;
 
-	while ((match = regex.exec(text)) !== null) {
-		const matched = match[1] ?? match[0];
-		const termId = lookup.get(matched.toLowerCase());
-		if (!termId || linkedIds.has(termId)) {
-			continue;
+	for (const hit of hits) {
+		if (hit.index < lastIndex) continue;
+		if (linkedIds.has(hit.termId)) continue;
+
+		if (hit.index > lastIndex) {
+			segments.push({ kind: "text", text: text.slice(lastIndex, hit.index) });
 		}
 
-		if (match.index > lastIndex) {
-			segments.push({ kind: "text", text: text.slice(lastIndex, match.index) });
-		}
-
-		linkedIds.add(termId);
-		segments.push({ kind: "term", text: matched, termId });
-		lastIndex = match.index + matched.length;
+		linkedIds.add(hit.termId);
+		segments.push({ kind: "term", text: hit.text, termId: hit.termId });
+		lastIndex = hit.index + hit.text.length;
 	}
 
 	if (lastIndex < text.length) {
