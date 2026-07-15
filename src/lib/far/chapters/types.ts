@@ -23,16 +23,10 @@ export type FurtherReading = {
 export type ChapterPiece = {
 	id: string;
 	title: string;
-	/** Optional concrete scene that makes the concept stick. */
-	story?: string;
-	/** Primary teaching prose — explains the concept/term the quiz will test. */
+	/** Expanded glossary-style definition — what the term is, then why it matters. */
 	teach: string;
-	/** Common mix-up or near-miss the quiz distractors exploit. */
+	/** Optional lookalike or common misunderstanding — only when it earns space. */
 	watchFor?: string;
-	/** Optional judgment / field-use cue after the teaching. */
-	judgment?: string;
-	/** Short field checklist items. */
-	checklist?: string[];
 	quote?: PublicDomainQuote;
 	/** Source link when there is no long public-domain excerpt. */
 	citation?: string;

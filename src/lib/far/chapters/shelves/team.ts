@@ -4,42 +4,37 @@ import type { Chapter } from "../types";
 /**
  * Team & Subcontract shelf — structure → bind/screen → allocate → credibility → performance.
  * Paraphrase only; cite FAR/SBA/GSA/court anchors without inventing quote text.
+ *
+ * Reading shape: each piece is a definition card (term title + expanded glossary
+ * teach + optional Watch for + citation/quote).
  */
 export const TEAM_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "name-team-you-built",
 		unitId: "team",
-		title: "Name the Team You Actually Built",
-		summary: "FAR 9.601 JV vs prime-sub vs MAS CTA — privity and governance.",
+		title: "Contractor team arrangements, joint ventures, and prime–sub structures",
+		summary:
+			"Defines FAR 9.601 team forms and who owns performance and privity under each structure.",
 		intro:
-			"Capture slides love the word “team.” The FAR and GSA care about the legal form you actually built: who submits the offer, who signs, who holds privity with the Government, and who remains fully responsible for performance. Start here so every later chapter — workshare, past performance, flowdowns — attaches to the right structure.",
+			"Terms for the legal structures behind “the team”: who submits, who signs, who holds privity with the Government, and who remains responsible for performance.",
 		tags: ["definition", "contrast", "far-9-6"],
 		readingMinutes: 7,
 		suggestedOrder: 1,
 		pieces: [
 			{
 				id: "far-9601-two-forms",
-				title: "Two FAR team forms — and a third MAS path",
-				story:
-					"The capture slide says “joint venture,” but only one company will submit the offer, sign the contract, and issue the other company a subcontract after award.",
-				teach: "FAR 9.601 recognizes two contractor team arrangements: (1) a partnership or joint venture that itself acts as the potential prime, or (2) a potential prime that teams with companies that will act as its subcontractors for a specified contract or acquisition program. A GSA Multiple Award Schedule Contractor Team Arrangement is a different model: each CTA member holds its own Schedule contract and acts as a prime for the portion it performs; the CTA lead does not turn the other members into its subcontractors. Open every pursuit by naming the structure out loud — JV as offeror, prime with named subs, or MAS CTA — before you assign workshare, proposal access, or eligibility claims.",
+				title: "Contractor team arrangement (FAR 9.601)",
+				teach: "A contractor team arrangement under FAR 9.601 is one of two forms: (1) a partnership or joint venture that itself acts as the potential prime, or (2) a potential prime that teams with companies that will act as its subcontractors for a specified contract or acquisition program. A GSA Multiple Award Schedule Contractor Team Arrangement is a different model: each CTA member holds its own Schedule contract and acts as a prime for the portion it performs; the CTA lead does not turn the other members into its subcontractors. Name the structure — JV as offeror, prime with named subs, or MAS CTA — before assigning workshare, proposal access, or eligibility claims. Identify who submits the offer and who signs the award instrument, and map privity: Government↔prime (or each MAS CTA member) versus prime↔sub only.",
 				watchFor:
-					"Don’t treat “team” as a branding choice. A lead that alone submits, signs, and bears prime risk is not a JV because the slide says so. An SBA mentor-protégé agreement is not itself one of the FAR 9.601 forms, and a MAS CTA is not a FAR 9.6 prime/sub team.",
-				judgment:
-					"If shared prime-level governance, liability, accounting, and proposal responsibilities are missing, document a prime/sub team and disclose it that way.",
-				checklist: [
-					"Identify who submits the offer and who signs the award instrument",
-					"Map privity: Government↔prime (or each MAS CTA member) vs prime↔sub only",
-					"Confirm the label matches legal and operational reality before proposal text freezes",
-				],
+					"Don’t treat “team” as a branding choice. A lead that alone submits, signs, and bears prime risk is not a JV because the slide says so. An SBA mentor-protégé agreement is not itself one of the FAR 9.601 forms, and a MAS CTA is not a FAR 9.6 prime/sub team. If shared prime-level governance, liability, accounting, and proposal responsibilities are missing, the structure is prime/sub — not a JV.",
 				citation: "FAR 9.601",
 				sourceUrl: "https://www.acquisition.gov/far/9.601",
 				sourceKind: "controlling-authority",
 			},
 			{
 				id: "prime-owns-performance",
-				title: "The prime still owns performance",
-				teach: "In a FAR 9.6 prime/sub team, the Government’s right to hold the prime fully responsible for performance is preserved regardless of the team arrangement. Naming or evaluating a subcontractor does not create a Government–subcontractor contract; the prime manages that relationship through its subcontract. Keep this accountability frame on the wall when someone treats a named specialist as a second prime or assumes the agency will “manage the sub directly.”",
+				title: "Prime contractor performance responsibility",
+				teach: "In a FAR 9.6 prime/sub team, the Government’s right to hold the prime fully responsible for performance is preserved regardless of the team arrangement. Naming or evaluating a subcontractor does not create a Government–subcontractor contract; the prime manages that relationship through its subcontract. Accountability stays with the prime even when a named specialist performs the largest share of the work.",
 				watchFor:
 					"Responsibility does not shift to whichever teammate performs the largest labor percentage, and agency evaluation of a sub does not create shared contractual accountability with the Government.",
 				citation: "FAR 9.604(e)",
@@ -69,27 +64,21 @@ export const TEAM_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "before-data-room",
 		unitId: "team",
-		title: "Before the Data Room Opens",
-		summary: "NDA → controlled disclosure → definite teaming, workshare, and exclusivity.",
+		title: "NDAs, controlled disclosure, and definite teaming terms",
+		summary:
+			"Defines the pre-data-room sequence: purpose-limited NDA, controlled disclosure, then locked workshare and exclusivity.",
 		intro:
-			"Most teaming failures begin before the proposal outline exists: proprietary information moves without controls, workshare stays “approximately,” and exclusivity sprawls across an agency. Fix the paper and the process before the data room opens.",
+			"Terms for protecting proprietary information and binding private teaming terms before proposal reliance.",
 		tags: ["field-guide", "decision", "teaming-agreement", "nda"],
 		readingMinutes: 8,
 		suggestedOrder: 2,
 		pieces: [
 			{
 				id: "nda-then-disclose",
-				title: "Purpose-limited NDA, then controlled disclosure",
-				story:
-					"A prospective teammate asks for your solution architecture, labor build, and customer strategy before selection. The parties have only exchanged a generic one-line confidentiality email.",
-				teach: "An ordinary teammate exchange is not automatically protected by the FAR. Practical secrecy measures include a purpose-limited NDA, marking, need-to-know access, controlled sub-tier disclosure, and return or destruction terms. Federal trade-secret status under 18 U.S.C. § 1839(3) still requires the owner to take reasonable measures to keep qualifying information secret. Gate proprietary solution and pricing detail behind signed NDAs and a disclosure log before any data-room upload.",
+				title: "Purpose-limited NDA and controlled disclosure",
+				teach: "A purpose-limited NDA is a confidentiality agreement that restricts use and disclosure of proprietary information to defined teaming purposes. An ordinary teammate exchange is not automatically protected by the FAR. Practical secrecy measures include marking, need-to-know access, controlled sub-tier disclosure, and return or destruction terms. Federal trade-secret status under 18 U.S.C. § 1839(3) still requires the owner to take reasonable measures to keep qualifying information secret. Execute the NDA before architecture, pricing, or customer strategy leave the building; mark, compartment, and log what each teammate receives.",
 				watchFor:
 					"A one-line “keep this confidential” email is not a substitute for reasonable measures, and the FAR does not create a blanket private NDA between teammates.",
-				checklist: [
-					"Execute a purpose-limited NDA before architecture, pricing, or customer strategy leave the building",
-					"Mark, compartment, and log what each teammate receives",
-					"Define sub-tier disclosure rules and return/destruction on pursuit end",
-				],
 				citation: "18 U.S.C. § 1839(3)",
 				sourceUrl:
 					"https://uscode.house.gov/view.xhtml?edition=prelim&num=0&req=granuleid%3AUSC-prelim-title18-section1839",
@@ -97,12 +86,10 @@ export const TEAM_SHELF_CHAPTERS: Chapter[] = [
 			},
 			{
 				id: "definite-teaming-terms",
-				title: "Definite teaming terms beat “agree to agree”",
-				teach: "FAR 9.603 recognizes identified, fully disclosed contractor teams; it does not supply missing private terms or decide enforceability. Whether a teaming agreement or a particular promise is enforceable depends on governing state law and the agreement’s language. Material workshare, price, statement of work, duration, and termination left for later “good-faith negotiation” often leave you with an agreement to agree — not a subcontract you can rely on in the proposal. Before proposal reliance, push for definite scope, workshare, exclusivity bounds, release triggers, and a counsel-reviewed governing-law clause.",
+				title: "Definite teaming terms",
+				teach: "Definite teaming terms are concrete, enforceable commitments in a teaming agreement or subcontract — scope, workshare, price, duration, termination, and exclusivity bounds — rather than promises to negotiate later. FAR 9.603 recognizes identified, fully disclosed contractor teams; it does not supply missing private terms or decide enforceability. Whether a teaming agreement or a particular promise is enforceable depends on governing state law and the agreement’s language. Material terms left for later “good-faith negotiation” often leave an agreement to agree, not a subcontract you can rely on in the proposal.",
 				watchFor:
-					"FAR recognition of a team does not fill in missing subcontract terms, and naming a teammate in the proposal does not make the contracting officer the enforcer of your private workshare percentage.",
-				judgment:
-					"Broad exclusivity across an entire agency in exchange for undefined workshare is a capture tax, not a deal — narrow exclusivity to the pursuit and make workshare measurable.",
+					"FAR recognition of a team does not fill in missing subcontract terms, and naming a teammate in the proposal does not make the contracting officer the enforcer of your private workshare percentage. Broad exclusivity across an entire agency in exchange for undefined workshare is not a deal — narrow exclusivity to the pursuit and make workshare measurable.",
 				citation: "FAR 9.603",
 				sourceUrl: "https://www.acquisition.gov/far/9.603",
 				sourceKind: "controlling-authority",
@@ -130,20 +117,19 @@ export const TEAM_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "can-team-bid",
 		unitId: "team",
-		title: "Can This Team Bid This Work?",
-		summary: "Size/status, set-aside structure, JV readiness, and affiliate OCI.",
+		title: "Team eligibility, set-aside paths, and affiliate OCI",
+		summary:
+			"Defines size/status, set-aside offeror structure, and affiliate organizational conflicts that can kill a team before bid.",
 		intro:
-			"A teammate can be excellent and still be the wrong vehicle for this solicitation. Run eligibility as a gate — acquisition-specific size and status, lawful set-aside path, JV readiness, and affiliate-aware OCI — before you lock proposal access or represent the offeror.",
+			"Terms for whether the proposed offeror and teammates may bid this acquisition — size and status, set-aside path, JV readiness, and affiliate-aware OCI.",
 		tags: ["decision", "failure-mode", "set-aside", "oci"],
 		readingMinutes: 9,
 		suggestedOrder: 3,
 		pieces: [
 			{
 				id: "set-aside-path",
-				title: "Pick a lawful path for the actual offeror",
-				story:
-					"The teammate is described as “small,” has an approved mentor-protégé agreement, and the large company wants on the set-aside somehow.",
-				teach: "On a small-business set-aside, the offeror itself must be eligible for that acquisition. Practical large-company paths usually include subcontracting to an eligible small prime or forming a qualifying joint venture that is separately identified with its own UEI and CAGE in SAM. An approved mentor-protégé relationship may enable a qualifying JV; it is not a pursuit-ready JV by itself. Decide the offeror identity and set-aside theory before solution architecture freezes around the wrong prime.",
+				title: "Small-business set-aside offeror path",
+				teach: "A small-business set-aside offeror path is the lawful structure through which an eligible small business (or qualifying joint venture) submits the offer on a set-aside acquisition. On a small-business set-aside, the offeror itself must be eligible for that acquisition. Practical large-company paths usually include subcontracting to an eligible small prime or forming a qualifying joint venture that is separately identified with its own UEI and CAGE in SAM. An approved mentor-protégé relationship may enable a qualifying JV; it is not a pursuit-ready JV by itself.",
 				watchFor:
 					"Don’t bid in the large company’s name while using a small teammate’s status to represent the offeror as small. Small-business labels are not interchangeable across NAICS and programs, and “we have an MPA” is not “we have a JV that can submit.”",
 				citation: "FAR 19.703",
@@ -152,15 +138,10 @@ export const TEAM_SHELF_CHAPTERS: Chapter[] = [
 			},
 			{
 				id: "affiliate-oci-gate",
-				title: "Screen the corporate family, not just the logo",
-				teach: "Before locking a teammate, complete a documented organizational-conflict-of-interest review that reaches affiliates with advisory, requirements-development, or competitor-information roles at the target agency. Hold proposal access until counsel can determine whether disclosure, mitigation, firewall, or replacement is required. Under FAR 9.504, the contracting officer determines whether a significant potential conflict exists and must resolve it before award. Run OCI as a precommitment gate alongside size/status, not as a last-week proposal appendix.",
+				title: "Affiliate-aware organizational conflict of interest (OCI)",
+				teach: "An affiliate-aware OCI review examines whether a teammate or its corporate affiliates hold advisory, requirements-development, or competitor-information roles at the target agency that could impair fair competition or contract performance. Under FAR 9.504, the contracting officer determines whether a significant potential conflict exists and must resolve it before award. Map affiliates with advisory or requirements work at the customer; document conflict theory, mitigation, and disclosure plan before proposal access. OCI screening is a precommitment gate alongside size and status — not a last-week proposal appendix.",
 				watchFor:
 					"Entity separation inside a corporate family is not an automatic OCI safe harbor — and assuming every affiliate relationship is automatically disqualifying, then concealing the teammate, is not diligence.",
-				checklist: [
-					"Map affiliates with advisory or requirements work at the customer",
-					"Document conflict theory, mitigation, and disclosure plan before proposal access",
-					"Keep make-or-buy, consent, and OCI as separate gates — one approval does not waive another",
-				],
 				citation: "FAR 9.504",
 				sourceUrl: "https://www.acquisition.gov/far/9.504",
 				sourceKind: "controlling-authority",
@@ -188,20 +169,19 @@ export const TEAM_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "workshare-compliance",
 		unitId: "team",
-		title: "Workshare Is Compliance Architecture",
-		summary: "Limitation on subcontracting math plus ostensible-subcontractor risk.",
+		title: "Limitation on subcontracting and ostensible subcontractors",
+		summary:
+			"Defines LOS math and ostensible-subcontractor risk on set-aside teams.",
 		intro:
-			"Workshare is not a pie chart for the capture review. On set-asides it is compliance architecture: limitation-on-subcontracting math through lower tiers, and a separate ostensible-subcontractor test about who truly controls primary and vital performance.",
+			"Terms for workshare as compliance architecture on set-asides — limitation-on-subcontracting math and ostensible-subcontractor affiliation.",
 		tags: ["advanced", "contrast", "los", "ostensible-subcontractor"],
 		readingMinutes: 10,
 		suggestedOrder: 4,
 		pieces: [
 			{
 				id: "los-math",
-				title: "Model payments, not just first-tier percentages",
-				story:
-					"The percentages on the slide total 100%, but some work flows through a similarly situated entity and then back to the large teammate.",
-				teach: "Where FAR 52.219-14 (Limitation on Subcontracting) applies, compliance is measured against the applicable percentage of the amount paid by the Government for contract performance — including how work and payments move through similarly situated entities and lower tiers. Services and general construction are not identical regimes; model the rule that actually appears in the solicitation. Build LOS into solution design, pricing, and subcontract negotiations before the proposal promises a workshare the math cannot support.",
+				title: "Limitation on subcontracting (LOS)",
+				teach: "Limitation on subcontracting (LOS) is the compliance rule in FAR 52.219-14 that caps how much of contract performance a small-business concern may subcontract, measured against the applicable percentage of the amount paid by the Government for contract performance — including how work and payments move through similarly situated entities and lower tiers. Services and general construction are not identical regimes; model the rule that actually appears in the solicitation. Build LOS into solution design, pricing, and subcontract negotiations before the proposal promises a workshare the math cannot support.",
 				watchFor:
 					"A simple “prime self-performance %” on a first-tier chart is not the whole test. Routing work through a similarly situated entity does not automatically sanitize a large teammate’s downstream share.",
 				citation: "FAR 52.219-14",
@@ -210,12 +190,10 @@ export const TEAM_SHELF_CHAPTERS: Chapter[] = [
 			},
 			{
 				id: "ostensible-sub",
-				title: "Ostensible subcontractor is about control, not labels",
-				teach: "On covered small-business set-asides, SBA’s ostensible-subcontractor affiliation analysis asks whether a subcontractor is performing primary and vital requirements or the small prime is unusually reliant on the sub — looking at the totality of the circumstances (key managers, solution ownership, transition knowledge, staffing, and payment flows), not the contract label alone. Pressure-test set-aside teams for both LOS arithmetic and ostensible-sub risk before you freeze the org chart.",
+				title: "Ostensible subcontractor",
+				teach: "An ostensible subcontractor is a subcontractor that SBA treats as affiliated with the small prime because it performs primary and vital requirements or the small prime is unusually reliant on the sub — looking at the totality of the circumstances (key managers, solution ownership, transition knowledge, staffing, and payment flows), not the contract label alone. On covered small-business set-asides, pressure-test teams for both LOS arithmetic and ostensible-sub risk before freezing the org chart. If the small prime cannot explain how it will manage, staff, and perform primary work without the large teammate, the structure needs redesign.",
 				watchFor:
 					"Calling a large incumbent a “subcontractor” does not insulate a team that leaves the small prime unable to perform independently. Paying the large firm most of the contract dollars while it supplies nearly all key managers and technical staff is a warning pattern, not a footnote.",
-				judgment:
-					"If the small prime cannot explain how it will manage, staff, and perform primary work without the large teammate, redesign before proposal submission.",
 				citation: "13 CFR 121.103",
 				sourceUrl: "https://www.ecfr.gov/current/title-13/section-121.103",
 				sourceKind: "controlling-authority",
@@ -238,20 +216,19 @@ export const TEAM_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "teammate-evaluatable",
 		unitId: "team",
-		title: "Make the Teammate Evaluatable",
-		summary: "Past performance and personnel tied to actual work — plus required commitments.",
+		title: "Teammate past performance and key-personnel commitments",
+		summary:
+			"Defines when teammate credentials are evaluable — tied to proposed work and backed by required commitment letters.",
 		intro:
-			"A specialist on the slide is not yet an evaluated resource. Connect teammate past performance and key people to the work they will actually perform, and obtain every solicitation-required commitment document — a teaming agreement is not a substitute.",
+			"Terms for making teammate past performance and key personnel evaluatable under the solicitation — and obtaining required commitment documents.",
 		tags: ["field-guide", "past-performance", "key-personnel"],
 		readingMinutes: 7,
 		suggestedOrder: 5,
 		pieces: [
 			{
 				id: "pp-tied-to-scope",
-				title: "Past performance follows the work, not the logo",
-				story:
-					"Your large prime lacks one highly relevant reference. A proposed major subcontractor has excellent performance on nearly identical work, and capture wants to present it as the prime’s own record.",
-				teach: "Agencies evaluate past performance under the solicitation’s stated rules and may consider relevant information about the offeror, major subcontractors, predecessors, and key personnel when permitted. Strong teammate evidence belongs in the proposal when it is accurately attributed and clearly connected to that entity’s proposed share of the work. After workshare settles, build the past-performance volume as a map from entity → prior role → proposed role.",
+				title: "Teammate past performance attribution",
+				teach: "Teammate past performance attribution is the practice of connecting a subcontractor’s or partner’s prior contracts to the work that entity will actually perform under the proposal — accurately labeled and scoped — rather than presenting it as the prime’s own record. Agencies evaluate past performance under the solicitation’s stated rules and may consider relevant information about the offeror, major subcontractors, predecessors, and key personnel when permitted. After workshare settles, build the past-performance volume as a map from entity → prior role → proposed role.",
 				watchFor:
 					"A teammate’s contracts do not merge into the prime’s record under FAR 9.6. Listing a specialist’s reference as the prime’s own contract — or claiming relevance from a logo with no meaningful assigned scope — invents evaluatable history the record does not support.",
 				citation: "FAR 15.305",
@@ -260,10 +237,10 @@ export const TEAM_SHELF_CHAPTERS: Chapter[] = [
 			},
 			{
 				id: "commitment-letters",
-				title: "Required commitments beat teaming language",
-				teach: "When Section L requires resumes and signed availability commitments for named key personnel — including people employed by a subcontractor — obtain and accurately document those commitments. Separately bind the teammate to availability, notice, and replacement duties in the subcontract or teaming vehicle. Treat missing teammate commitment letters as a compliance stop, not a “we’ll clean it up in Red Team.”",
+				title: "Key-personnel commitment letters",
+				teach: "A key-personnel commitment letter is a signed document confirming that named individuals — including those employed by a subcontractor — are available to perform the proposed roles when Section L requires it. When the solicitation demands resumes and signed availability commitments, obtain and accurately document them. Separately bind the teammate to availability, notice, and replacement duties in the subcontract or teaming vehicle. A teaming agreement that contains no commitment is not a substitute for a solicitation-required commitment letter.",
 				watchFor:
-					"There is no general exemption for subcontractor key personnel. A teaming agreement that contains no commitment is not a substitute for a solicitation-required commitment letter.",
+					"There is no general exemption for subcontractor key personnel.",
 				citation: "IT Objects, LLC, B-418012, B-418012.2",
 				sourceUrl: "https://www.gao.gov/products/b-418012%2Cb-418012.2",
 				sourceKind: "decision",
@@ -286,20 +263,19 @@ export const TEAM_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "subcontracting-plan-promise",
 		unitId: "team",
-		title: "The Subcontracting Plan Is a Performance Promise",
-		summary: "Goals, administration, reporting, and good faith — including commercial-plan FY scope.",
+		title: "Individual and commercial small-business subcontracting plans",
+		summary:
+			"Defines plan contents, administration, reporting, and good-faith duties for individual and commercial plans.",
 		intro:
-			"On unrestricted awards that require a small-business subcontracting plan, the plan is not a marketing appendix. It commits the company to goals, methods, administration, records, and reporting — and proposed small businesses are not disposable after award.",
+			"Terms for what a small-business subcontracting plan commits the prime to — goals, administration, records, reporting, and good-faith treatment of proposed small businesses.",
 		tags: ["field-guide", "decision", "subcontracting-plan"],
 		readingMinutes: 8,
 		suggestedOrder: 6,
 		pieces: [
 			{
 				id: "plan-contents",
-				title: "What the plan actually commits",
-				story:
-					"Capture treats the individual subcontracting plan as an aspirational percentage table that disappears after award.",
-				teach: "When an individual small-business subcontracting plan is required, FAR 19.704 expects goals by category, a description of the method used to develop those goals and to identify potential sources, efforts to ensure equitable opportunity, the name of an administrator, a description of records, and assurances on reporting and good-faith treatment of small businesses used in preparing the bid or proposal — among other required contents. Negotiate the plan as an operational promise owned by contracts and supplier diversity, not as a capture artifact.",
+				title: "Individual subcontracting plan contents",
+				teach: "An individual small-business subcontracting plan is the contract-specific document required under FAR 19.704 when an unrestricted award triggers the plan requirement. It commits the company to goals by category, a description of the method used to develop those goals and to identify potential sources, efforts to ensure equitable opportunity, the name of an administrator, a description of records, and assurances on reporting and good-faith treatment of small businesses used in preparing the bid or proposal — among other required contents. It is an operational promise, not a capture artifact.",
 				watchFor:
 					"One undifferentiated “small” goal is not a plan. A percentage table without administration, records, or reporting is not compliance. Proposed small businesses are not free options the prime may discard without consequence.",
 				citation: "FAR 19.704",
@@ -308,7 +284,7 @@ export const TEAM_SHELF_CHAPTERS: Chapter[] = [
 			},
 			{
 				id: "commercial-plan-scope",
-				title: "Commercial plans have a different clock",
+				title: "Commercial subcontracting plan",
 				teach: "A commercial subcontracting plan covers the company’s fiscal year commercial sales rather than a single contract’s life. Know which plan type the solicitation and your purchasing system actually require, and keep reporting aligned to that scope. Confirm plan type at bid/no-bid and again at award kickoff before eSRS and supplier commitments diverge.",
 				watchFor:
 					"Don’t treat every plan as interchangeable — or assume commercial-plan FY metrics satisfy an individual contract plan’s deal-specific goals without checking. That mix-up invites reporting failure.",
@@ -334,20 +310,19 @@ export const TEAM_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "award-changes-paper",
 		unitId: "team",
-		title: "Award Changes the Paper, Not the Responsibility",
-		summary: "Flowdowns, consent, CPSR, and member changes — the prime still owns performance.",
+		title: "Subcontract flowdowns, consent, and post-award teammate changes",
+		summary:
+			"Defines clause flowdowns, consent/CPSR constraints, and how member changes still leave the prime responsible.",
 		intro:
-			"Winning converts proposal promises into subcontract paper. Clause flowdowns, make-or-buy, consent, and purchasing-system controls are deliberate decisions — none of them create Government–sub privity or relieve the prime of performance responsibility.",
+			"Terms for converting proposal promises into subcontract paper after award — clause flowdowns, consent, and teammate changes — without creating Government–sub privity.",
 		tags: ["advanced", "field-guide", "flowdowns", "consent"],
 		readingMinutes: 9,
 		suggestedOrder: 7,
 		pieces: [
 			{
 				id: "flowdowns-consent",
-				title: "Deliberate flowdowns and required consent",
-				story:
-					"The team wins. Someone suggests copying every prime clause into the subcontract because “our approved purchasing system covers consent anyway.”",
-				teach: "Build the subcontract clause by clause: flow down what the prime contract and law require for that subcontract type, support make-or-buy decisions when required, and obtain subcontract consent when FAR 52.244-2 or the contract demands it. An approved purchasing system may reduce consent events; it does not waive OCI diligence, make-or-buy duties, or the need to read the prime’s actual consent clause. Run post-award subcontract negotiation as a contracts workstream with a clause matrix, not as a cut-and-paste from the prime.",
+				title: "Subcontract clause flowdowns and consent",
+				teach: "Subcontract clause flowdowns are the deliberate transfer of prime-contract and statutory terms to a subcontract, clause by clause, for that subcontract type. Subcontract consent under FAR 52.244-2 is the contracting officer’s approval of certain subcontracts when the prime contract or law requires it. Build the subcontract with a clause matrix: flow down what the prime contract and law require, support make-or-buy decisions when required, and obtain consent when demanded. An approved purchasing system may reduce consent events; it does not waive OCI diligence, make-or-buy duties, or the need to read the prime’s actual consent clause.",
 				watchFor:
 					"Blanket copy-paste of every prime clause is not thoughtful flowdown. Purchasing-system approval is not Government endorsement of every subcontract term. Consent is not privity between the Government and the sub.",
 				citation: "FAR 52.244-2; FAR 44.402; FAR 15.407-2",
@@ -356,15 +331,10 @@ export const TEAM_SHELF_CHAPTERS: Chapter[] = [
 			},
 			{
 				id: "member-changes",
-				title: "Changing members still leaves the promise intact",
-				teach: "Post-award teammate replacement, MAS CTA member changes, and workshare shifts must follow the solicitation, contract, and vehicle rules that govern disclosure and consent. The performance promise the Government bought — and the prime’s responsibility for it — remains unless the contract is properly modified. Treat team changes as acquisition events with the same seriousness as the original proposal disclosure.",
+				title: "Post-award teammate changes",
+				teach: "A post-award teammate change is a substitution, addition, or workshare shift among team members after contract award. Such changes must follow the solicitation, contract, and vehicle rules that govern disclosure and consent. The performance promise the Government bought — and the prime’s responsibility for it — remains unless the contract is properly modified. Map required flowdowns before first subcontract draft; identify consent and notification triggers in the prime and ordering vehicle; document teammate changes with the same disclosure discipline used pre-award.",
 				watchFor:
 					"Award does not license silent substitution of the evaluated team, and vehicle logos do not authorize member swaps without reading the ordering contract and CTA paperwork.",
-				checklist: [
-					"Map required flowdowns before first subcontract draft",
-					"Identify consent and notification triggers in the prime and ordering vehicle",
-					"Document teammate changes with the same disclosure discipline used pre-award",
-				],
 				citation: "GSA MAS CTA guidance; FAR 9.604(e)",
 				sourceUrl:
 					"https://www.gsa.gov/buy-through-us/purchasing-programs/multiple-award-schedule/schedule-features/contractor-team-arrangements",

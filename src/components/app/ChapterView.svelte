@@ -100,13 +100,7 @@
 						{piece.title}
 					</h2>
 
-					{#if piece.story}
-						<p class="mt-3 text-sm leading-6 text-foreground/90 sm:text-base sm:leading-7">
-							{piece.story}
-						</p>
-					{/if}
-
-					<p class="mt-5 text-sm leading-6 sm:text-base sm:leading-7">{piece.teach}</p>
+					<p class="mt-4 text-sm leading-6 sm:text-base sm:leading-7">{piece.teach}</p>
 
 					{#if piece.watchFor}
 						<div class="mt-4 rounded-md border border-border/80 bg-muted/30 px-4 py-3">
@@ -114,25 +108,6 @@
 								Watch for
 							</p>
 							<p class="mt-1 text-sm leading-6 sm:text-base sm:leading-7">{piece.watchFor}</p>
-						</div>
-					{/if}
-
-					{#if piece.judgment}
-						<p class="mt-4 text-sm leading-6 sm:text-base sm:leading-7">
-							<span class="font-semibold">Judgment: </span>{piece.judgment}
-						</p>
-					{/if}
-
-					{#if piece.checklist && piece.checklist.length > 0}
-						<div class="mt-4">
-							<p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-								Field checklist
-							</p>
-							<ul class="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 sm:text-base sm:leading-7">
-								{#each piece.checklist as item (item)}
-									<li>{item}</li>
-								{/each}
-							</ul>
 						</div>
 					{/if}
 

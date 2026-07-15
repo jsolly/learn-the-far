@@ -4,55 +4,39 @@ import type { Chapter } from "../types";
 /**
  * Shape shelf — desk-reference chapters for lawful early exchange, usable market
  * evidence, outcome-focused requirements help, and OCI / integrity boundaries.
+ *
+ * Reading shape: each piece is a definition card (term title + expanded glossary
+ * teach + optional Watch for + citation/quote).
  */
 export const SHAPE_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "early-exchange-lawful-limited",
 		unitId: "shape",
-		title: "Early Exchange Is Lawful—and Limited",
-		summary: "Talk early with the right people — without confusing conversation with warrant authority.",
+		title: "RFIs, one-on-one meetings, and early-exchange roles",
+		summary:
+			"Defines lawful pre-solicitation exchanges and the split between program-office need dialogue and contracting-officer acquisition constraints.",
 		intro:
-			"FAR encourages exchanges from the earliest identification of a requirement through receipt of proposals, including one-on-ones, RFIs, and other market-research techniques. That permission is not a blank check: program stakeholders illuminate mission need, while only contracting officers acting within delegated authority can bind the Government. Citations in this shelf teach the codified FAR FAC 2026-01 baseline; an adopting agency’s RFO deviation may renumber or supersede individual sections — always check the solicitation and agency coverage you are actually under.",
+			"Terms for lawful pre-solicitation exchange: RFIs, one-on-ones, and who may bind the Government. Citations reflect the codified FAR FAC 2026-01 baseline; an adopting agency’s RFO deviation may renumber or supersede individual sections — verify the solicitation and agency coverage you are under.",
 		tags: ["early-exchange", "rfi", "one-on-one", "warrant", "call-plan"],
 		readingMinutes: 8,
 		suggestedOrder: 1,
 		pieces: [
 			{
 				id: "rfi-and-one-on-ones",
-				title: "RFIs and one-on-ones are tools, not awards",
-				story:
-					"An RFI asks for capabilities, rough-order pricing, and delivery assumptions. The account lead worries that answering “commits” the company. Separately, a teammate claims private pre-solicitation meetings are prohibited.",
-				teach:
-					"FAR 15.201(e) uses an RFI when the Government does not presently intend to award a contract and wants planning or market information. Responses are not offers, cannot be accepted to form a binding contract, and have no required FAR format. FAR 15.201(a)–(c) encourages early exchanges and expressly lists one-on-one meetings; a contracting officer should participate when the discussion substantially involves potential contract terms and conditions. Use RFIs to put decision-ready evidence in the market-research file, and use one-on-ones for mutual understanding — bring the CO when terms are on the table.",
+				title: "Request for information (RFI) and one-on-one meetings",
+				teach: "An RFI under FAR 15.201(e) is used when the Government does not presently intend to award a contract and wants planning or market information. Responses are not offers, cannot be accepted to form a binding contract, and have no required FAR format. FAR 15.201(a)–(c) encourages early exchanges with industry and expressly lists one-on-one meetings; a contracting officer should participate when the discussion substantially involves potential contract terms and conditions. RFIs put decision-ready evidence in the market-research file; one-on-ones build mutual understanding — with the CO in the lane when terms are on the table.",
 				watchFor:
-					"Don’t treat pricing in an RFI reply as a binding offer, or answering as a guaranteed seat in the later competition. One-on-ones are not reserved for incumbents, not limited to post-proposal timing, and not unlawful merely because every competitor is not in the room.",
-				judgment:
-					"Treat early exchange as permitted engagement with clear nonbinding status, not as informal award negotiation.",
-				checklist: [
-					"Answer RFI questions with evidence; label assumptions.",
-					"Invite or route to the CO when contract terms dominate the talk.",
-					"Keep call notes distinct from “commitments” language.",
-				],
+					"Don't treat pricing in an RFI reply as a binding offer, or answering as a guaranteed seat in the later competition. One-on-ones are not reserved for incumbents, not limited to post-proposal timing, and not unlawful merely because every competitor is not in the room.",
 				citation: "FAR 15.201(a), (c)(4), (e) (FAC 2026-01 baseline)",
 				sourceUrl: "https://www.acquisition.gov/far/15.201",
 				sourceKind: "controlling-authority",
 			},
 			{
 				id: "program-vs-co-tracks",
-				title: "Coordinate program mission tracks with contracting authority",
-				story:
-					"The program office knows the mission pain. The contracting office owns the acquisition process. Someone wants a single favorite program contact to “promise the deal.”",
-				teach:
-					"FAR 15.201(c) contemplates early exchange among industry, the program manager, the contracting officer, and other acquisition participants. Program stakeholders illuminate need and outcomes. Under FAR 1.602-1, contracting officers may bind the Government only to the extent of authority delegated in writing. Design the call plan as coordinated tracks: mission and outcomes with program; strategy and contractual matters through the CO.",
+				title: "Program office versus contracting officer in early exchange",
+				teach: "FAR 15.201(c) contemplates early exchange among industry, the program manager, the contracting officer, and other acquisition participants. Program stakeholders illuminate mission need and outcomes; under FAR 1.602-1, contracting officers may bind the Government only to the extent of authority delegated in writing. A coordinated call plan runs mission and outcomes with program and routes strategy and contractual matters through the CO. If the conversation turns into binding terms without a CO in the lane, stop and re-route.",
 				watchFor:
-					"Don’t confuse a program preference with a warrant, skip end users because “mission does not matter before RFP,” or treat a program promise of award terms as contractual authority.",
-				judgment:
-					"If the conversation turns into binding terms without a CO in the lane, stop and re-route.",
-				checklist: [
-					"Name program and contracting owners on the call plan.",
-					"Separate mission discovery from contractual asks.",
-					"Never treat a non-CO assurance as award authority.",
-				],
+					"Don't confuse a program preference with a warrant, skip end users because “mission does not matter before RFP,” or treat a program promise of award terms as contractual authority.",
 				citation: "FAR 15.201(c); FAR 1.602-1 (FAC 2026-01 baseline)",
 				sourceUrl: "https://www.acquisition.gov/far/1.602-1",
 				sourceKind: "controlling-authority",
@@ -75,50 +59,31 @@ export const SHAPE_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "decision-ready-market-evidence",
 		unitId: "shape",
-		title: "Give the Government Decision-Ready Market Evidence",
-		summary: "Shape with comparable facts, tradeoffs, and honest capacity — not brochure pressure.",
+		title: "Sources-sought evidence and decision-ready RFI replies",
+		summary:
+			"Defines what makes market-research input usable to the agency: comparable facts, tradeoffs, and honest capacity — not brochure pressure.",
 		intro:
-			"Market research and early exchange work when industry returns something planners can use: evidence of capable sources, feasible approaches, transition risk, commercial practices, and measurable alternatives. Sales claims without support waste the opening. This chapter is how a large prime informs strategy without pretending to dictate it.",
+			"Vocabulary for market-research replies that planners can actually use: capable sources, feasible approaches, transition risk, and measurable alternatives.",
 		tags: ["market-research", "sources-sought", "rfi", "evidence", "large-prime"],
 		readingMinutes: 8,
 		suggestedOrder: 2,
 		pieces: [
 			{
 				id: "sources-sought-honest-evidence",
-				title: "Supply honest evidence the agency can actually use",
-				story:
-					"A sources-sought notice asks about end-to-end capability, transition, and subcontracting. Capable small businesses are active. The eventual competition strategy is uncertain. Advocacy wants an unrestricted sermon.",
-				teach:
-					"FAR 10.001 requires agencies to use market research to identify capable sources and determine whether small-business programs should be used. A large prime should submit specific, supportable evidence on scope integration, transition, capacity, commercial practices, and likely teaming — then plan for either prime or partner positioning. The response informs; it does not decide. Treat sources-sought and similar market-research replies as contributions to the agency’s decision file, not as lobbying memos.",
+				title: "Sources-sought and market-research evidence",
+				teach: "FAR 10.001 requires agencies to use market research to identify capable sources and determine whether small-business programs should be used. A sources-sought or similar market-research reply should supply specific, supportable evidence on scope integration, transition, capacity, commercial practices, and likely teaming — then plan for either prime or partner positioning. The response informs the agency’s decision file; it does not decide strategy. Answer each posted question with dated, supportable facts; address transition and subcontracting honestly; plan capture for set-aside and unrestricted outcomes.",
 				watchFor:
 					"Company-size labels and insistence that the agency “must” run unrestricted competition are weak evidence. Understating small-business capability to skew the record is an integrity and relationship failure. Silence can be process humility — and it still forfeits shaping value.",
-				judgment:
-					"If a sentence cannot be supported, cut it. If strategy is uncertain, keep both prime and partner paths alive.",
-				checklist: [
-					"Answer each posted question with dated, supportable facts.",
-					"Address transition and subcontracting honestly.",
-					"Plan capture for set-aside and unrestricted outcomes.",
-				],
 				citation: "FAR 10.001(a)(3) (FAC 2026-01 baseline)",
 				sourceUrl: "https://www.acquisition.gov/far/10.001",
 				sourceKind: "controlling-authority",
 			},
 			{
 				id: "rfi-architecture",
-				title: "Architect RFI replies around questions, tradeoffs, and assumptions",
-				story:
-					"Color review on a civilian RFI: feasibility of a nationwide model, acquisition choices that drive risk, and performance measures the market can support. Someone wants to lead with corporate credentials and skip the hard questions.",
-				teach:
-					"FAR 15.201(b) frames exchanges as improving mutual understanding of requirements and capabilities. FAR 10.001 uses market research to test sources, practices, and whether needs could be reasonably modified. The strongest reply answers each question with evidence, quantifies tradeoffs, distinguishes firm capabilities from assumptions, offers feasible alternatives, and marks proprietary material narrowly. Use this architecture whenever the Government asks the market to help design a buyable requirement.",
+				title: "Decision-ready RFI reply",
+				teach: "A decision-ready RFI reply answers each agency question with evidence the planner can compare to another offeror’s without decoding marketing fog. FAR 15.201(b) frames exchanges as improving mutual understanding of requirements and capabilities; FAR 10.001 uses market research to test sources, practices, and whether needs could be reasonably modified. The strongest reply quantifies tradeoffs, distinguishes firm capabilities from assumptions, offers feasible alternatives, and marks proprietary material narrowly. Map each agency question to an evidence answer; state assumptions and gaps explicitly.",
 				watchFor:
 					"Broad credentials without feasibility limits do not shape requirements. Unsupported “only our architecture works” claims undermine credibility. Skipping every hard question preserves accuracy but misses the chance to propose testable alternatives.",
-				judgment:
-					"Decision-ready means a planner can compare your answer to another offeror’s without decoding marketing fog.",
-				checklist: [
-					"Map each agency question to an evidence answer.",
-					"State assumptions and gaps explicitly.",
-					"Protect genuine proprietary content narrowly — not the whole reply.",
-				],
 				citation: "FAR 15.201(b), (e); FAR 10.001(a)(3) (FAC 2026-01 baseline)",
 				sourceUrl: "https://www.acquisition.gov/far/15.201",
 				sourceKind: "controlling-authority",
@@ -136,50 +101,31 @@ export const SHAPE_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "shape-outcomes-not-staffing",
 		unitId: "shape",
-		title: "Shape Outcomes, Not a Staffing Recipe",
-		summary: "SOO, PWS, and SOW choices decide whether methods compete or headcount wins.",
+		title: "Statements of objectives, performance work statements, and offeror-developed PWS",
+		summary:
+			"Defines SOO, PWS, and related shapes so capture knows whether methods, staffing, or outcomes are what compete.",
 		intro:
-			"When the agency wants innovation on results, a prescriptive staffing SOW is the wrong instrument. Performance-based paths favor required results and measurable standards; a Government SOO can invite offerors to propose the PWS. This chapter is the vocabulary and the contractual handoff so shaping advice matches what the FAR actually structures.",
+			"Requirements instruments when the agency wants competing methods and measurable results rather than a prescriptive staffing recipe.",
 		tags: ["sow", "pws", "soo", "performance-based-acquisition", "outcomes"],
 		readingMinutes: 7,
 		suggestedOrder: 3,
 		pieces: [
 			{
 				id: "soo-pws-when-innovation",
-				title: "Prefer SOO-to-PWS when methods should compete",
-				story:
-					"A civilian program wants vendors to propose better claims-processing outcomes — not follow a prescribed staffing recipe. The draft still looks like a labor matrix with weak measures.",
-				teach:
-					"FAR 37.602 favors required results and measurable performance standards. A Government SOO, from which each offeror develops a proposed PWS, must include purpose, scope or mission, period and place of performance, background, performance objectives, and operating constraints. A detailed SOW that prescribes each labor step is a poorer fit when the agency wants competing methods. Reach for this when advising requirements teams before the solicitation hardens: outcomes and measures first, methods second.",
+				title: "Statement of objectives (SOO) to performance work statement (PWS)",
+				teach: "FAR 37.602 favors required results and measurable performance standards. A Government statement of objectives (SOO), from which each offeror develops a proposed PWS, must include purpose, scope or mission, period and place of performance, background, performance objectives, and operating constraints. A detailed statement of work that prescribes each labor step is a poorer fit when the agency wants competing methods. Reach for SOO-to-PWS when advising requirements teams before the solicitation hardens: outcomes and measures first, methods second.",
 				watchFor:
 					"A SOO is not the complete contract work statement by itself. Omitting performance standards does not create useful flexibility. “Staffing volume” as the primary reward is not outcome shaping.",
-				judgment:
-					"If evaluators will score headcount more than results, the instrument and factors are fighting the stated goal.",
-				checklist: [
-					"Check for purpose, objectives, constraints, and measurable standards.",
-					"Ask whether offerors should propose the how (PWS) from a SOO.",
-					"Flag staffing recipes that crowd out outcome competition.",
-				],
 				citation: "FAR 37.602(a)–(c) (FAC 2026-01 baseline)",
 				sourceUrl: "https://www.acquisition.gov/far/37.602",
 				sourceKind: "controlling-authority",
 			},
 			{
 				id: "soo-does-not-become-contract",
-				title: "The offeror’s PWS becomes the performance baseline — not the SOO",
-				story:
-					"The solicitation is built around a Government SOO. The solution lead asks which document carries promised method, standards, and measurable results into the contract.",
-				teach:
-					"Under FAR 37.602, offerors use the SOO to develop a proposed PWS. The SOO does not become part of the contract. The PWS should express required results and measurable performance standards. Teach proposal teams this handoff early so volumes and pricing speak to the contractual baseline they will actually live under.",
+				title: "Offeror-developed performance work statement",
+				teach: "Under FAR 37.602, offerors use the Government SOO to develop a proposed PWS. The SOO does not become part of the contract. The PWS should express required results and measurable performance standards — the contractual baseline the offeror will live under after award. Write and price to the PWS you are proposing; trace it to the SOO’s objectives without treating the SOO as already contractual.",
 				watchFor:
-					"Don’t assume the SOO automatically becomes the complete contract work statement, replace it with a staffing SOW that omits standards, or expect the CO to convert the SOO into each offeror’s technical proposal after award as a substitute for a PWS.",
-				judgment:
-					"Write and price to the PWS you are proposing — trace it to the SOO’s objectives without treating the SOO as already contractual.",
-				checklist: [
-					"Trace proposed PWS results to SOO objectives.",
-					"Include measurable standards the Government can administer.",
-					"Do not assume SOO text rides into the award unchanged.",
-				],
+					"Don't assume the SOO automatically becomes the complete contract work statement, replace it with a staffing SOW that omits standards, or expect the CO to convert the SOO into each offeror’s technical proposal after award as a substitute for a PWS.",
 				citation: "FAR 37.602(a), (c) (FAC 2026-01 baseline)",
 				sourceUrl: "https://www.acquisition.gov/far/37.602",
 				sourceKind: "controlling-authority",
@@ -197,70 +143,41 @@ export const SHAPE_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "comments-usable-questions-fair",
 		unitId: "shape",
-		title: "Make Comments Usable and Questions Fair",
-		summary: "Draft-RFP comments and industry-day Q&A should help the buy — without private advantage.",
+		title: "Draft RFP comments, leveled Q&A, and post-release communications",
+		summary:
+			"Defines how industry comments and questions should improve the buy without creating private advantage after release.",
 		intro:
-			"Draft RFPs and industry days are authorized early-exchange techniques. They work when industry comments are precise, mission-based, and usable — and when questions that unlock proposal-necessary facts go through channels that can level the field. This chapter is the craft of helpful pressure without lock-in or secret answers.",
+			"Terms for draft-RFP comment craft and the contracting-officer channel that levels proposal-necessary facts after release.",
 		tags: ["draft-rfp", "comments", "industry-day", "information-leveling", "fairness"],
 		readingMinutes: 9,
 		suggestedOrder: 4,
 		pieces: [
 			{
 				id: "draft-rfp-comment-craft",
-				title: "Write comments the acquisition team can act on",
-				story:
-					"The draft RFP rewards staffing volume and barely measures migration quality, continuity, or open interfaces. Capture wants change — without asking the agency to paste proprietary architecture into the PWS.",
-				teach:
-					"Draft RFPs are an authorized technique under FAR 15.201(c). Effective comments identify mission risk, propose measurable outcome-focused language, and explain how each change improves competition or evaluation. They improve requirements without demanding vendor-specific lock-in or surrender of Government authorship. Use a comment matrix on every draft RFP review: cite the draft location, state the mission harm, propose usable alternate language, explain evaluation benefit.",
+				title: "Draft RFP comments",
+				teach: "Draft RFPs are an authorized early-exchange technique under FAR 15.201(c). Effective comments identify mission risk, propose measurable outcome-focused language, and explain how each change improves competition or evaluation — tied to a draft section or factor, with mission-linked alternate text. They improve requirements without demanding vendor-specific lock-in or surrender of Government authorship. If the Government cannot paste or adapt your comment without adopting your product, rewrite the comment around measurable need.",
 				watchFor:
 					"Vague outcome wishes with no section mapping are weak. Asking the agency to copy your proprietary solution into final requirements is lock-in pressure. Offering to privately rewrite the final PWS to match your delivery model crosses into ghostwriting risk.",
-				judgment:
-					"If the Government cannot paste or adapt your comment without adopting your product, rewrite the comment around measurable need.",
-				checklist: [
-					"Tie each comment to a draft section or factor.",
-					"Propose measurable, mission-linked alternate text.",
-					"Avoid proprietary lock-in and private authorship offers.",
-				],
 				citation: "FAR 15.201(c)(6) (FAC 2026-01 baseline)",
 				sourceUrl: "https://www.acquisition.gov/far/15.201",
 				sourceKind: "controlling-authority",
 			},
 			{
 				id: "level-necessary-facts",
-				title: "Route proposal-necessary facts for public leveling",
-				story:
-					"At industry day, a detailed question would reveal a data-retention constraint every bidder needs — but the ask also risks exposing confidential approach. Elsewhere, a program employee shares a nonpublic interface constraint and asks the team to keep it quiet.",
-				teach:
-					"Under FAR 15.201(f), proposal-necessary acquisition information disclosed to a potential offeror must be made public as soon as practicable. Use the announced contracting-officer channel. Request context may be withheld only when disclosure would reveal confidential business strategy that is also protected under FAR 3.104 or subpart 24.2 — marking alone does not guarantee protection. The CO is the leveling channel; do not exploit or privately redistribute the edge. Apply this from first industry day through post-release Q&A: necessary acquisition facts get leveled; protectable strategy stays narrowly framed.",
+				title: "Proposal-necessary acquisition information",
+				teach: "Under FAR 15.201(f), proposal-necessary acquisition information disclosed to a potential offeror must be made public as soon as practicable. Use the announced contracting-officer channel. Request context may be withheld only when disclosure would reveal confidential business strategy that is also protected under FAR 3.104 or subpart 24.2 — marking alone does not guarantee protection. The CO is the leveling channel; necessary acquisition facts get leveled from first industry day through post-release Q&A.",
 				watchFor:
 					"Private promises to keep proposal-necessary facts secret are not a fair process. Dumping your full solution logic in plenary to get an answer is unnecessary exposure. Staying silent forever can be conservative — and it still leaves price and solution quality weaker when a leveling channel exists.",
-				judgment:
-					"If you would not want a competitor to lack the fact, do not treat private custody of it as a win.",
-				checklist: [
-					"Use the CO / published Q&A channel for material ambiguities.",
-					"Give only necessary context; identify protection basis precisely.",
-					"Ask the CO to release proposal-necessary facts publicly.",
-				],
 				citation: "FAR 15.201(f), FAR 3.104, FAR subpart 24.2 (FAC 2026-01 baseline)",
 				sourceUrl: "https://www.acquisition.gov/far/15.201",
 				sourceKind: "controlling-authority",
 			},
 			{
 				id: "no-universal-blackout",
-				title: "After RFP release, follow the CO channel — not a mythic blackout",
-				story:
-					"The RFP is out. A program employee invites a private call on a material ambiguity. A teammate insists FAR imposes an absolute communications blackout once the solicitation posts.",
-				teach:
-					"FAR does not establish a universal solicitation-release blackout. FAR 15.201(f) makes the contracting officer the focal point after release and requires proposal-necessary acquisition information disclosed to potential offerors to be made public. Follow the RFP’s communication instructions and the CO’s Q&A process. Post-release shaping is mostly clarifying through the solicitation channel — still engagement, newly constrained.",
+				title: "Post-release solicitation communications",
+				teach: "FAR does not establish a universal solicitation-release blackout. FAR 15.201(f) makes the contracting officer the focal point after release and requires proposal-necessary acquisition information disclosed to potential offerors to be made public. Post-release shaping is mostly clarifying through the solicitation’s communication instructions and the CO’s Q&A process — still engagement, newly constrained. Submit ambiguities through the named CO process; expect material answers to be leveled to the field.",
 				watchFor:
-					"Don’t take a private substantive program call because “leveling ended at release,” refuse all contact of every kind because of a supposed universal blackout, or rely on promises to hide the call from the CO.",
-				judgment:
-					"Decline private material discussions; put the ambiguity on the official Q&A record.",
-				checklist: [
-					"Open the RFP communications instructions first.",
-					"Submit ambiguities through the named CO process.",
-					"Expect material answers to be leveled to the field.",
-				],
+					"Don't take a private substantive program call because “leveling ended at release,” refuse all contact of every kind because of a supposed universal blackout, or rely on promises to hide the call from the CO.",
 				citation: "FAR 15.201(f) (FAC 2026-01 baseline)",
 				sourceUrl: "https://www.acquisition.gov/far/15.201",
 				sourceKind: "controlling-authority",
@@ -278,70 +195,41 @@ export const SHAPE_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "help-without-governments-pen",
 		unitId: "shape",
-		title: "Help Without Taking the Government’s Pen",
-		summary: "Offer evidence and alternatives — not ready-to-paste PWS, J&A, or lock-in specs.",
+		title: "Requirements support, J&A assistance, and brand-name-or-equal descriptions",
+		summary:
+			"Defines the line between helpful industry input and writing the Government’s PWS, justification, or lock-in specifications.",
 		intro:
-			"Industry may explain capabilities, feasibility, outcomes, and alternatives. The line is crossed when contractor material leads directly and predictably to the competitive work statement, or when a prospective contractor authors the agency’s justification and approval. This chapter is helpful shaping with Government ownership intact.",
+			"Boundaries for industry help: evidence and alternatives stay with the Government; competitive work statements and J&As stay with authorized officials.",
 		tags: ["ghostwriting", "biased-ground-rules", "ja", "brand-name-or-equal", "ownership"],
 		readingMinutes: 9,
 		suggestedOrder: 5,
 		pieces: [
 			{
 				id: "bounded-requirements-help",
-				title: "Give bounded evidence — not ready-to-paste requirements",
-				story:
-					"A deputy program manager asks for “ready-to-paste” requirements for a competition your company intends to bid. No Government team has framed outcomes or alternatives yet.",
-				teach:
-					"FAR 15.201 encourages substantive early exchanges. Industry may provide documented mission data, benchmarks, alternative outcome measures, assumptions, and tradeoffs while stating that the Government must develop and control final requirements. Multiple inputs and Government ownership reduce biased-ground-rules risk under FAR 9.505-2. Use this whenever a customer asks you to write their competition for them: inform the authors; do not become the author of the competitive work statement you plan to bid.",
+				title: "Bounded requirements support",
+				teach: "FAR 15.201 encourages substantive early exchanges. Industry may provide documented mission data, benchmarks, alternative outcome measures, assumptions, and tradeoffs while the Government develops and controls final requirements. Multiple inputs and Government ownership reduce biased-ground-rules risk under FAR 9.505-2. Deliver facts, alternatives, and tradeoffs under Government control; refuse paste-ready competitive work statements you intend to bid. If the file would show your company as the primary drafter of the competitive PWS, restructure the support.",
 				watchFor:
 					"Silence is not required for every substantive exchange. Sending a complete PWS and evaluation scheme optimized for your solution with “paste unchanged” instructions is the wrong help. Capability briefings that avoid vendor-specific final language can be a safer middle path.",
-				judgment:
-					"If the file would show your company as the primary drafter of the competitive PWS, stop and restructure the support.",
-				checklist: [
-					"Deliver facts, alternatives, and tradeoffs under Government control.",
-					"State ownership of final requirements explicitly.",
-					"Refuse paste-ready competitive work statements you intend to bid.",
-				],
 				citation: "FAR 15.201(c); FAR 9.505-2(b) (FAC 2026-01 baseline)",
 				sourceUrl: "https://www.acquisition.gov/far/9.505-2",
 				sourceKind: "controlling-authority",
 			},
 			{
 				id: "ja-facts-not-authorship",
-				title: "Support J&A facts; do not develop, certify, or approve the J&A",
-				story:
-					"The customer believes only your prime can finish a time-sensitive migration and asks the account team to write the agency’s justification and approval for other than full and open competition.",
-				teach:
-					"Under FAR 6.303-1(c), Government technical and requirements personnel provide and certify supporting data. FAR 6.303-2 specifies the J&A’s required content; FAR 6.304 requires approval at the authorized Government level. A prospective contractor may supply complete, supportable technical, schedule, market, and transition facts — and must stop there. Keep a bright line in sole-source conversations: facts from industry, judgment and certification from the Government.",
+				title: "Justification and approval (J&A) support",
+				teach: "Under FAR 6.303-1(c), Government technical and requirements personnel provide and certify supporting data. FAR 6.303-2 specifies the J&A’s required content; FAR 6.304 requires approval at the authorized Government level. A prospective contractor may supply complete, supportable technical, schedule, market, and transition facts — and must stop there. Facts from industry; judgment, development, certification, and approval from the Government.",
 				watchFor:
 					"Writing and approving the J&A because “you know your uniqueness” is not industry’s role. Asking the program to omit market research or interested sources is not helpful shaping. Your factual packet does not legally compel a sole-source decision.",
-				judgment:
-					"If you are drafting the rationale narrative or signature blocks, you have taken the Government’s pen.",
-				checklist: [
-					"Provide supportable facts the Government can verify.",
-					"Leave J&A development, certification, and approval to authorized officials.",
-					"Do not promise that your packet forces the strategy.",
-				],
 				citation: "FAR 6.303-1(c), 6.303-2, 6.304 (FAC 2026-01 baseline)",
 				sourceUrl: "https://www.acquisition.gov/far/6.303-2",
 				sourceKind: "controlling-authority",
 			},
 			{
 				id: "salient-characteristics-not-preference",
-				title: "Describe measurable need for brand-name-or-equal — not preference",
-				story:
-					"A civilian customer likes your platform and asks what to put in a future brand-name-or-equal description without excluding legitimate equivalents.",
-				teach:
-					"FAR 11.104 says brand-name-or-equal descriptions must state the salient physical, functional, or performance characteristics an equal item must meet. Performance specifications are preferred where suitable. Industry can explain measurable mission needs without turning preference into lock-in. (Agencies adopting an RFO Part 11 model deviation may remove or reserve related baseline coverage — verify the vehicle you are under.) Use this when product teams are invited into requirements talks: mission-linked measures any equal can demonstrate.",
+				title: "Brand-name-or-equal description",
+				teach: "FAR 11.104 says brand-name-or-equal descriptions must state the salient physical, functional, or performance characteristics an equal item must meet. Performance specifications are preferred where suitable. Industry can explain measurable mission needs without turning preference into lock-in. (Agencies adopting an RFO Part 11 model deviation may remove or reserve related baseline coverage — verify the vehicle you are under.) List measurable physical, functional, or performance traits tied to mission need; drop vendor-only implementation trivia.",
 				watchFor:
 					"Model number alone with no equal criteria is not enough. Proprietary implementation details unrelated to minimum need are not salient characteristics. “Only our product is acceptable because the program prefers it” is preference, not specification craft.",
-				judgment:
-					"If an equal competitor could not know what to meet, the description is not ready.",
-				checklist: [
-					"List measurable physical, functional, or performance traits.",
-					"Tie each trait to mission need.",
-					"Drop vendor-only implementation trivia.",
-				],
 				citation: "FAR 11.104 and 52.211-6 (FAC 2026-01 baseline)",
 				sourceUrl: "https://www.acquisition.gov/far/11.104",
 				sourceKind: "controlling-authority",
@@ -364,50 +252,31 @@ export const SHAPE_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "diagnose-oci-before-remedy",
 		unitId: "shape",
-		title: "Diagnose the Conflict Before Choosing the Remedy",
-		summary: "Name the OCI archetype first — then match avoidance, neutralization, or mitigation.",
+		title: "Organizational conflict of interest types, remedies, and waivers",
+		summary:
+			"Defines OCI archetypes and the matching toolkit of avoidance, neutralization, mitigation, or waiver.",
 		intro:
-			"Organizational conflicts of interest are not one firewall away from cured. Biased ground rules, unequal access, and impaired objectivity present different facts and different remedies. Diagnose early, disclose through counsel, and let the contracting officer resolve significant conflicts — do not shop informal waivers from the program office.",
+			"Three OCI archetypes and the remedies the contracting officer applies — not informal program waivers.",
 		tags: ["oci", "biased-ground-rules", "unequal-access", "impaired-objectivity", "mitigation"],
 		readingMinutes: 10,
 		suggestedOrder: 6,
 		pieces: [
 			{
 				id: "three-archetypes",
-				title: "Separate biased ground rules, unequal access, and impaired objectivity",
-				story:
-					"An advisory contract asks your team to draft the follow-on PWS your delivery business wants to bid. Elsewhere, advisory staff hold competitors’ proprietary roadmaps while capture wants the related competition. Separately, evaluation support would judge a product another division sells.",
-				teach:
-					"FAR 9.505-2(b) addresses contractors whose work leads directly and predictably to a competitive work statement — biased ground rules risk, often resolved by avoidance or declining authorship unless an exception applies. FAR 9.505-4(b) addresses access to other companies’ proprietary information — unequal access, typically needing agreements and controls the CO can accept. FAR 9.505-3 addresses evaluating your own or a competitor’s offers — impaired objectivity, needing safeguards or removal of the conflicted role. Run a short diagnostic whenever advisory work sits near a pursuit: which archetype, which facts, which remedy family.",
+				title: "OCI archetypes",
+				teach: "Organizational conflicts of interest fall into three FAR families. FAR 9.505-2(b) addresses contractors whose work leads directly and predictably to a competitive work statement — biased ground rules risk, often resolved by avoidance or declining authorship unless an exception applies. FAR 9.505-4(b) addresses access to other companies’ proprietary information — unequal access, typically needing agreements and controls the CO can accept. FAR 9.505-3 addresses evaluating your own or a competitor’s offers — impaired objectivity, needing safeguards or removal of the conflicted role. Name the archetype before proposing a fix; escalate early through counsel to the CO.",
 				watchFor:
 					"One corporate firewall does not automatically cure all three. Moving PWS drafting to another internal division without telling the CO does not erase organizational interest. Late disclosure after selection does not undo ground-rules concern. Employee NDAs alone do not bind the agency to accept mitigation.",
-				judgment:
-					"Match remedy to archetype. Avoidance for ground-rules authorship; controlled mitigation for information access; remove or safeguard conflicted evaluation.",
-				checklist: [
-					"Name the archetype before proposing a fix.",
-					"Escalate potential OCI early through counsel to the CO.",
-					"Offer bounded factual input under Government control when authorship is off-limits.",
-				],
 				citation: "FAR 9.505-2(b); FAR 9.505-3; FAR 9.505-4(b); FAR 9.504",
 				sourceUrl: "https://www.acquisition.gov/far/9.505-2",
 				sourceKind: "controlling-authority",
 			},
 			{
 				id: "portfolio-remedies-and-waiver",
-				title: "Resolve significant OCIs early — waivers are Government acts",
-				story:
-					"A large prime acquires a consultancy that drafted a follow-on work statement, evaluates a product the prime sells, and holds prospective offerors’ proprietary data. Leadership wants one firewall and a program “waiver email.”",
-				teach:
-					"FAR 9.504 directs contracting officers to identify and resolve significant OCIs early through avoidance, neutralization, or mitigation. Remedies are fact-specific. Under FAR 9.503, only the agency head or an authorized designee — never the contractor or program office — may approve a written waiver in the Government’s interest. Use this in mergers, advisory portfolios, and multi-division pursuits: disclose early, separate analyses, propose matched remedies.",
+				title: "OCI remedies and waiver",
+				teach: "FAR 9.504 directs contracting officers to identify and resolve significant OCIs early through avoidance, neutralization, or mitigation. Remedies are fact-specific. Under FAR 9.503, only the agency head or an authorized designee — never the contractor or program office — may approve a written waiver in the Government’s interest. Disclose early, separate analyses, and propose matched remedies in mergers, advisory portfolios, and multi-division pursuits.",
 				watchFor:
 					"Informal program assurance is not a waiver. Corporate restructuring does not erase prior access, work, or incentives. Declaring all conflicts cured with a single control set outruns the facts.",
-				judgment:
-					"If you need a waiver narrative, you need the Government’s authorized process — not a hallway blessing.",
-				checklist: [
-					"Disclose early and separate the OCI analyses.",
-					"Propose avoidance, neutralization, or mitigation matched to facts.",
-					"Never treat program informal assent as a FAR 9.503 waiver.",
-				],
 				citation: "FAR 9.504; FAR 9.503",
 				sourceUrl: "https://www.acquisition.gov/far/9.504",
 				sourceKind: "controlling-authority",
@@ -430,70 +299,41 @@ export const SHAPE_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "shaping-integrity-incident",
 		unitId: "shape",
-		title: "When Shaping Becomes an Integrity Incident",
-		summary: "Stop, preserve, escalate — leaks, improper hiring, and protected information end shaping.",
+		title: "Protected procurement information, former officials, and unsolicited proposals",
+		summary:
+			"Defines integrity stop-points during shaping: protected information, compensation restrictions, and mishandled unsolicited proposals.",
 		intro:
-			"Most shaping is lawful exchange. Some moments are not: anonymous competitor proposal packets, protected source-selection notes, or hiring a former official into restricted capture duties without screening. This chapter is the stop-work discipline when integrity rules take the pen out of capture’s hand.",
+			"Terms for protected procurement information, former-official restrictions, and the unsolicited-proposal instrument.",
 		tags: ["procurement-integrity", "escalation", "revolving-door", "ethics", "leak"],
 		readingMinutes: 8,
 		suggestedOrder: 7,
 		pieces: [
 			{
 				id: "accidental-protected-receipt",
-				title: "Stop review the moment protected material is recognized",
-				story:
-					"Before award, a capture mailbox receives an anonymous attachment labeled with a competitor’s name. A reviewer opens the first page and sees proposal pricing and evaluation notes.",
-				teach:
-					"41 U.S.C. § 2102(b) and FAR 3.104-3 prohibit knowingly obtaining protected bid, proposal, or source-selection information before award. Accidental receipt and a brief unintentional opening differ from knowingly continuing to review, copy, or disseminate after recognition. Stop review and distribution, preserve evidence, isolate recipients, and immediately notify company legal or ethics for coordinated disclosure to the contracting officer. FAR 3.104-7 requires the agency to assess possible impact and act. Post this as the team’s immediate response card for any suspected protected packet during shaping or propose.",
+				title: "Protected procurement information",
+				teach: "41 U.S.C. § 2102(b) and FAR 3.104-3 prohibit knowingly obtaining protected bid, proposal, or source-selection information before award. Accidental receipt and a brief unintentional opening differ from knowingly continuing to review, copy, or disseminate after recognition. On recognition: stop review and distribution, preserve the message and access list, isolate recipients, and immediately notify company legal or ethics for coordinated disclosure to the contracting officer. FAR 3.104-7 requires the agency to assess possible impact and act.",
 				watchFor:
 					"Reading the file fully “to see if it is useful” before reporting is knowing continued review. Deleting files and logs to avoid possession accusations destroys evidence. Forwarding to pricing with the name stripped is still misuse.",
-				judgment:
-					"Speed of stop and escalate matters more than curiosity. Counsel drives notice; capture does not freelance remediation.",
-				checklist: [
-					"Stop reading and stop forwarding immediately.",
-					"Preserve the message, metadata, and access list.",
-					"Notify legal/ethics for CO-coordinated next steps.",
-				],
 				citation: "41 U.S.C. § 2102(b); FAR 3.104-3(b), 3.104-7; S&K Aerospace, LLC, B-411648 (Sept. 18, 2015)",
 				sourceUrl: "https://www.gao.gov/products/b-411648",
 				sourceKind: "decision",
 			},
 			{
 				id: "former-official-screening",
-				title: "Screen former officials before capture duties or compensation",
-				story:
-					"Recruiting wants to hire a recently departed civilian official who held senior acquisition duties involving contracts awarded to your company. The business unit wants immediate customer-facing capture work.",
-				teach:
-					"FAR 3.104-3(d) imposes a one-year compensation restriction for certain former officials based on specified procurement roles and decisions. FAR 3.104-2 also flags separate 18 U.S.C. 207 post-employment representational restrictions. Applicability is fact-specific: obtain a documented legal and ethics review of roles, decisions, dates, contracts, and proposed duties, then impose any compensation or representational limits before committing. Gate every former-official hire touching pursuit work through counsel before titles, comps, and call plans are set.",
+				title: "Former official compensation restriction",
+				teach: "FAR 3.104-3(d) imposes a one-year compensation restriction for certain former officials based on specified procurement roles and decisions. FAR 3.104-2 also flags separate 18 U.S.C. 207 post-employment representational restrictions. Applicability is fact-specific: obtain a documented legal and ethics review of roles, decisions, dates, contracts, and proposed duties, then impose any compensation or representational limits before committing. Gate every former-official hire touching pursuit work through counsel before titles, comps, and call plans are set.",
 				watchFor:
 					"Restrictions do not all end the day Federal service ends. A hiring manager’s gut check about “what they remember” is not a screen. Parking the same work in a staffing affiliate does not avoid review.",
-				judgment:
-					"If duties or pay are already promised, you may already be late — freeze activity and get counsel in.",
-				checklist: [
-					"Document prior roles, decisions, dates, and contracts.",
-					"Compare proposed duties to compensation and representational limits.",
-					"Impose written restrictions before customer-facing capture starts.",
-				],
 				citation: "FAR 3.104-3(d); FAR 3.104-2(b)(3)",
 				sourceUrl: "https://www.acquisition.gov/far/3.104-3",
 				sourceKind: "controlling-authority",
 			},
 			{
 				id: "unsolicited-not-a-shortcut",
-				title: "Do not launder marketing as an unsolicited proposal",
-				story:
-					"Growth wants to stamp a standard cloud brochure “unsolicited proposal” for a civilian requirement already described in a published presolicitation.",
-				teach:
-					"FAR 15.603 requires a valid unsolicited proposal to be innovative and unique, independently originated, prepared without Government direction, sufficiently detailed, and not an advance proposal for a known competitively acquirable or previously published requirement. Advertising and routine commercial offers are excluded. Use the agency’s market-research channel instead. Keep shaping inside lawful exchange and market research when the requirement is already on the street.",
+				title: "Unsolicited proposal",
+				teach: "FAR 15.603 requires a valid unsolicited proposal to be innovative and unique, independently originated, prepared without Government direction, sufficiently detailed, and not an advance proposal for a known competitively acquirable or previously published requirement. Advertising and routine commercial offers are excluded. Use the agency’s market-research channel when the requirement is already on the street. Reserve true unsolicited proposals for unique, independently originated ideas.",
 				watchFor:
 					"“The Government did not request this exact PDF” is not enough. Binding firm-fixed pricing alone does not qualify a routine offer. Calling a brochure innovative does not make it so.",
-				judgment:
-					"If the need is already published or competitively acquirable, you are in the wrong instrument.",
-				checklist: [
-					"Check whether the requirement is already published or forecast as competitive.",
-					"Reserve true unsolicited proposals for unique, independently originated ideas.",
-					"Route routine offers through market-research or solicitation channels.",
-				],
 				citation: "FAR 15.603 (FAC 2026-01 baseline)",
 				sourceUrl: "https://www.acquisition.gov/far/15.603",
 				sourceKind: "controlling-authority",
@@ -517,6 +357,6 @@ export const SHAPE_SHELF_CHAPTERS: Chapter[] = [
 			},
 		],
 		closing:
-			"Shape work succeeds when early exchange stays lawful, evidence stays usable, ownership stays with the Government, and integrity incidents get stopped cold. When the picture feels steadier, check yourself — or return to the shelf for another chapter.",
+			"Shape work succeeds when early exchange stays lawful, evidence stays usable, ownership stays with the Government, and integrity incidents get stopped cold.",
 	}),
 ];
