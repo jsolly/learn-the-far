@@ -112,18 +112,18 @@
 
 		<div class="flex w-full flex-col gap-2">
 			{#if s.mode === "testout" && unlockedByMastery}
-				<Button size="lg" onclick={() => game.goHome()}>Back to home</Button>
+				<Button size="lg" href="/">Back to home</Button>
 			{:else if s.mode === "testout" && !s.passedTestOut}
-				<Button size="lg" onclick={() => game.openShelf("fundamentals")}>Browse Basics shelf</Button>
+				<Button size="lg" href="/learn/fundamentals">Browse Basics shelf</Button>
 				<Button size="lg" variant="outline" onclick={() => game.startTestOut()}>Try the test again</Button>
-				<Button size="lg" variant="ghost" onclick={() => game.goHome()}>Back to home</Button>
+				<Button size="lg" variant="ghost" href="/">Back to home</Button>
 			{:else if s.mode === "testout"}
-				<Button size="lg" onclick={() => game.goHome()}>Back to home</Button>
+				<Button size="lg" href="/">Back to home</Button>
 			{:else if s.mode === "unit" && s.unit && unitNotPrime}
 				<Button size="lg" onclick={() => s?.unit && game.startUnit(s.unit.id)}>Keep going</Button>
-				<Button size="lg" variant="outline" onclick={() => game.goHome()}>Back to home</Button>
+				<Button size="lg" variant="outline" href="/">Back to home</Button>
 			{:else}
-				<Button size="lg" onclick={() => game.goHome()}>Back to home</Button>
+				<Button size="lg" href="/">Back to home</Button>
 			{/if}
 		</div>
 	</div>

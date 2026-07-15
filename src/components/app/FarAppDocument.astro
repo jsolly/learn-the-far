@@ -1,0 +1,47 @@
+---
+import FarQuizApp from "./FarQuizApp.svelte";
+import "../../styles/global.css";
+
+type Props = {
+	title: string;
+	description: string;
+	initialUnit?: string | null;
+	initialChapter?: string | null;
+};
+
+const {
+	title,
+	description,
+	initialUnit = null,
+	initialChapter = null,
+} = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonicalUrl} />
+		<link rel="sitemap" href="/sitemap-index.xml" />
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content="Learn The FAR" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonicalUrl} />
+		<meta property="og:image" content={new URL("/og-image.png", Astro.site)} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={new URL("/og-image.png", Astro.site)} />
+		<title>{title}</title>
+	</head>
+	<body class="min-h-[100dvh]">
+		<FarQuizApp client:load {initialUnit} {initialChapter} />
+	</body>
+</html>

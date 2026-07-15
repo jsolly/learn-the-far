@@ -3,6 +3,7 @@
 
 	import { game } from "$lib/quiz-state.svelte.js";
 	import { DIFFICULTY_LABEL } from "$lib/far/constants";
+	import { learnShelfPath } from "$lib/learn-routes";
 	import PieWheel from "./PieWheel.svelte";
 	import { Button } from "$lib/components/ui/button";
 	import { Badge } from "$lib/components/ui/badge";
@@ -204,7 +205,7 @@
 						size="sm"
 						variant="outline"
 						disabled={lifecycleLocked}
-						onclick={() => game.openShelf(s.unit.id)}
+						href={lifecycleLocked ? undefined : learnShelfPath(s.unit.id)}
 					>
 						Start learning
 					</Button>

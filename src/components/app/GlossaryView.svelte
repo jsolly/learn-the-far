@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { tick } from "svelte";
 
-	import { game } from "$lib/quiz-state.svelte.js";
+	import { chapterById } from "$lib/far/chapters";
 	import { glossaryByLetter, type GlossaryTerm } from "$lib/far/glossary";
+	import { learnChapterPath } from "$lib/learn-routes";
 	import { Button } from "$lib/components/ui/button";
 
 	let filter = $state("");
@@ -42,13 +43,9 @@
 
 <div class="mx-auto flex min-h-[100dvh] w-full max-w-2xl flex-col px-4 pb-16 pt-5 sm:px-6 sm:pt-7">
 	<header class="mb-6 sm:mb-8">
-		<button
-			type="button"
-			class="mb-3 text-sm text-muted-foreground underline-offset-4 hover:underline"
-			onclick={() => game.goHome()}
-		>
+		<a href="/" class="mb-3 inline-block text-sm text-muted-foreground underline-offset-4 hover:underline">
 			← Back
-		</button>
+		</a>
 		<h1
 			bind:this={headingEl}
 			tabindex="-1"
@@ -84,6 +81,7 @@
 					</h2>
 					<ul class="mt-3 flex flex-col gap-4">
 						{#each group.terms as term (term.id)}
+							{@const chapter = term.chapterId ? chapterById(term.chapterId) : undefined}
 							<li class="rounded-2xl border-2 bg-card p-4 sm:p-5">
 								<h3 class="font-semibold sm:text-lg">{term.term}</h3>
 								{#if term.aliases && term.aliases.length > 0}
@@ -96,14 +94,12 @@
 								<p class="mt-2 text-sm leading-6 text-foreground/90 sm:text-base sm:leading-7">
 									{term.definition}
 								</p>
-								{#if term.chapterId}
+								{#if chapter}
 									<div class="mt-3">
 										<Button
 											variant="outline"
 											size="sm"
-											onclick={() => {
-												if (term.chapterId) game.openShelfChapter(term.chapterId);
-											}}
+											href={learnChapterPath(chapter.unitId, chapter.id)}
 										>
 											Open chapter
 										</Button>

@@ -1,7 +1,8 @@
 <script lang="ts">
 	import * as Popover from "$lib/components/ui/popover";
+	import { chapterById } from "$lib/far/chapters";
 	import { resolveChapterTag } from "$lib/far/glossary";
-	import { game } from "$lib/quiz-state.svelte.js";
+	import { learnChapterPath } from "$lib/learn-routes";
 
 	let {
 		tag,
@@ -10,6 +11,7 @@
 	} = $props();
 
 	let term = $derived(resolveChapterTag(tag));
+	let chapter = $derived(term?.chapterId ? chapterById(term.chapterId) : undefined);
 </script>
 
 {#if term}
@@ -26,16 +28,13 @@
 					{term.definition}
 				</Popover.Description>
 			</Popover.Header>
-			{#if term.chapterId}
-				<button
-					type="button"
-					class="mt-2 text-sm font-medium text-primary underline-offset-4 hover:underline"
-					onclick={() => {
-						if (term.chapterId) game.openShelfChapter(term.chapterId);
-					}}
+			{#if chapter}
+				<a
+					class="mt-2 inline-block text-sm font-medium text-primary underline-offset-4 hover:underline"
+					href={learnChapterPath(chapter.unitId, chapter.id)}
 				>
 					Open chapter
-				</button>
+				</a>
 			{/if}
 		</Popover.Content>
 	</Popover.Root>

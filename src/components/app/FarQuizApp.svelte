@@ -9,7 +9,21 @@
 	import ShelfView from "./ShelfView.svelte";
 	import GlossaryView from "./GlossaryView.svelte";
 
+	let {
+		initialUnit = null,
+		initialChapter = null,
+	}: {
+		initialUnit?: string | null;
+		initialChapter?: string | null;
+	} = $props();
+
 	let main = $state<HTMLElement | null>(null);
+
+	// Boot on the client before first paint (not during SSG — module singleton).
+	if (typeof window !== "undefined") {
+		game.bootFromLocation({ initialUnit, initialChapter });
+	}
+
 	// Child views focus their own descriptive headings. On the home transition,
 	// focus its persistent heading instead of announcing an unnamed container.
 	$effect(() => {
