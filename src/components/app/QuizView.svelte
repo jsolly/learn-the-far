@@ -6,6 +6,7 @@
 	import { DIFFICULTY_LABEL, SCORING_LABEL, TIER_VERDICT } from "$lib/far/constants";
 	import { UNITS } from "$lib/far/deck";
 	import { chaptersForQuestion } from "$lib/far/chapters";
+	import { learnChapterPath } from "$lib/learn-routes";
 	import { Badge } from "$lib/components/ui/badge";
 	import { Button } from "$lib/components/ui/button";
 	import { Progress } from "$lib/components/ui/progress";
@@ -186,13 +187,12 @@
 						<div class="flex flex-col gap-1.5">
 							<p class="text-xs font-medium text-muted-foreground">Review in study</p>
 							{#each studyChapters as chapter (chapter.id)}
-								<button
-									type="button"
+								<a
 									class="rounded-sm text-left text-xs font-medium text-primary underline underline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-									onclick={() => game.openShelfChapter(chapter.id)}
+									href={learnChapterPath(chapter.unitId, chapter.id)}
 								>
 									{chapter.title}
-								</button>
+								</a>
 							{/each}
 						</div>
 					{/if}

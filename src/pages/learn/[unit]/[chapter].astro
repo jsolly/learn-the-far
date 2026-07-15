@@ -1,0 +1,33 @@
+---
+import FarAppDocument from "../../../components/app/FarAppDocument.astro";
+import { chapterById } from "../../../lib/far/chapters";
+import {
+	isUnitId,
+	learnChapterStaticPaths,
+} from "../../../lib/learn-routes";
+
+export function getStaticPaths() {
+	return learnChapterStaticPaths();
+}
+
+const unitParam = Astro.params.unit;
+const chapterParam = Astro.params.chapter;
+if (!isUnitId(unitParam) || !chapterParam) {
+	return Astro.redirect("/");
+}
+
+const chapter = chapterById(chapterParam);
+if (!chapter || chapter.unitId !== unitParam) {
+	return Astro.redirect(`/learn/${unitParam}`);
+}
+
+const title = `${chapter.title} — Learn The FAR`;
+const description = chapter.summary || chapter.intro;
+---
+
+<FarAppDocument
+	{title}
+	{description}
+	initialUnit={unitParam}
+	initialChapter={chapterParam}
+/>

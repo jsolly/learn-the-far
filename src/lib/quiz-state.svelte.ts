@@ -30,7 +30,7 @@ import {
 	rememberOpen,
 	saveReadingProgress,
 } from "$lib/reading-storage";
-import { buildMissManuscript, chapterById, nextChapterOnShelf, questionsForChapter, shelfForUnit } from "$lib/far/chapters";
+import { buildMissManuscript, chapterById, questionsForChapter, shelfForUnit } from "$lib/far/chapters";
 import type {
 	Chapter,
 	ChapterKind,
@@ -38,6 +38,13 @@ import type {
 	ChapterShelf,
 	ReadingProgress,
 } from "$lib/far/chapters/types";
+import {
+	isUnitId,
+	learnChapterPath,
+	learnShelfPath,
+	parseLearnPath,
+	type LearnRoute,
+} from "$lib/learn-routes";
 import type {
 	QuestionRecord,
 	QuizProgress,
@@ -131,15 +138,132 @@ export class QuizGame {
 	/** Unit reference shelf (multi-chapter hub). */
 	shelf = $state<ChapterShelf | null>(null);
 	reading = $state<ReadingProgress>(emptyReadingProgress());
+	/** Deep-linked to a lifecycle unit that is still gated behind Basics. */
+	routeLocked = $state(false);
 
 	// current question interaction
 	answeredOptionId = $state<string | null>(null);
 
 	summary = $state<SessionSummary | null>(null);
 
+	private historyBound = false;
+
 	constructor() {
 		this.progress = loadProgress();
 		this.reading = loadReadingProgress();
+	}
+
+	/** Hydrate from Astro props and/or the current pathname; bind back/forward. */
+	bootFromLocation(opts?: {
+		initialUnit?: string | null;
+		initialChapter?: string | null;
+	}) {
+		if (typeof window === "undefined") return;
+
+		const fromPath = parseLearnPath(window.location.pathname);
+		if (fromPath.kind === "shelf" || fromPath.kind === "chapter") {
+			this.applyLearnRoute(fromPath, { syncUrl: false });
+		} else if (opts?.initialChapter && isUnitId(opts.initialUnit)) {
+			this.applyLearnRoute(
+				{
+					kind: "chapter",
+					unitId: opts.initialUnit,
+					chapterId: opts.initialChapter,
+				},
+				{ syncUrl: false },
+			);
+		} else if (isUnitId(opts?.initialUnit)) {
+			this.applyLearnRoute(
+				{ kind: "shelf", unitId: opts.initialUnit },
+				{ syncUrl: false },
+			);
+		}
+
+		if (!this.historyBound) {
+			this.historyBound = true;
+			window.addEventListener("popstate", () => {
+				const route = parseLearnPath(window.location.pathname);
+				if (route.kind === "home") {
+					this.goHome({ syncUrl: false });
+					return;
+				}
+				this.applyLearnRoute(route, { syncUrl: false });
+			});
+		}
+	}
+
+	/** Open a shelf/chapter from a URL (including locked deep links). */
+	applyLearnRoute(
+		route: Exclude<LearnRoute, { kind: "home" }>,
+		opts?: { syncUrl?: boolean },
+	) {
+		this.queue = [];
+		this.outcomes = [];
+		this.requeued = new SvelteSet();
+		this.answeredOptionId = null;
+		this.summary = null;
+
+		this.routeLocked = this.isUnitLocked(route.unitId);
+
+		if (route.kind === "shelf") {
+			this.shelf = shelfForUnit(route.unitId);
+			this.chapter = null;
+			this.chapterKind = null;
+			this.view = "shelf";
+			if (!this.routeLocked) {
+				this.reading = { ...this.reading, lastUnitId: route.unitId };
+				saveReadingProgress(this.reading);
+			}
+		} else {
+			const found = chapterById(route.chapterId);
+			if (!found || found.unitId !== route.unitId) {
+				this.goHome({ syncUrl: opts?.syncUrl !== false });
+				return;
+			}
+			this.openChapter(found, "shelf-chapter", { recordRead: !this.routeLocked });
+		}
+
+		if (opts?.syncUrl !== false) {
+			this.syncLearnUrl();
+		}
+	}
+
+	private syncLearnUrl(opts?: { replace?: boolean }) {
+		if (typeof window === "undefined") return;
+
+		// Ephemeral views keep the current address bar (usually the chapter/shelf).
+		if (
+			this.view === "session" ||
+			this.view === "summary" ||
+			(this.view === "chapter" && this.chapterKind === "miss-manuscript")
+		) {
+			return;
+		}
+
+		let path = "/";
+		let title = "Learn The FAR — federal contracting, one scenario at a time";
+		if (this.view === "shelf" && this.shelf) {
+			path = learnShelfPath(this.shelf.unitId);
+			title = `${this.shelf.title} — Learn The FAR`;
+		} else if (
+			this.view === "chapter" &&
+			this.chapter &&
+			this.chapterKind === "shelf-chapter"
+		) {
+			path = learnChapterPath(this.chapter.unitId, this.chapter.id);
+			title = `${this.chapter.title} — Learn The FAR`;
+		}
+
+		if (window.location.pathname !== path) {
+			if (opts?.replace) {
+				history.replaceState({ learn: true }, "", path);
+			} else {
+				history.pushState({ learn: true }, "", path);
+			}
+		}
+		if (document.title !== title) {
+			document.title = title;
+		}
 	}
 
 	private questionsIn(unitId: UnitId): QuizQuestion[] {
@@ -351,13 +475,14 @@ export class QuizGame {
 		this.beginSession("testout", null, [...uncleared, ...cleared].slice(0, TESTOUT_LENGTH));
 	}
 
-	private openChapter(chapter: Chapter, kind: ChapterKind) {
+	private openChapter(chapter: Chapter, kind: ChapterKind, opts?: { recordRead?: boolean }) {
 		this.chapter = chapter;
 		this.chapterKind = kind;
 		this.shelf = null;
 		this.summary = null;
 		this.view = "chapter";
-		if (kind === "shelf-chapter") {
+		const recordRead = opts?.recordRead !== false;
+		if (kind === "shelf-chapter" && recordRead) {
 			this.reading = markChapterRead(
 				rememberOpen(this.reading, chapter.unitId, chapter.id),
 				chapter.id,
@@ -368,6 +493,7 @@ export class QuizGame {
 
 	openShelf(unitId: UnitId) {
 		if (!this.canStartUnit(unitId)) return;
+		this.routeLocked = false;
 		this.shelf = shelfForUnit(unitId);
 		this.chapter = null;
 		this.chapterKind = null;
@@ -375,30 +501,7 @@ export class QuizGame {
 		this.view = "shelf";
 		this.reading = { ...this.reading, lastUnitId: unitId };
 		saveReadingProgress(this.reading);
-	}
-
-	openShelfChapter(chapterId: string) {
-		const found = chapterById(chapterId);
-		if (!found) return;
-		if (!this.canStartUnit(found.unitId)) return;
-		// Leave any in-progress quiz so study navigation is a clean handoff.
-		this.queue = [];
-		this.outcomes = [];
-		this.requeued = new SvelteSet();
-		this.answeredOptionId = null;
-		this.summary = null;
-		this.openChapter(found, "shelf-chapter");
-	}
-
-	/** Advance to the next shelf chapter, or return to the shelf when finished. */
-	openNextChapter() {
-		if (!this.chapter || this.chapterKind !== "shelf-chapter") return;
-		const next = nextChapterOnShelf(this.chapter.id);
-		if (next) {
-			this.openChapter(next, "shelf-chapter");
-			return;
-		}
-		this.openShelf(this.chapter.unitId);
+		this.syncLearnUrl();
 	}
 
 	isChapterRead(chapterId: string): boolean {
@@ -692,7 +795,7 @@ export class QuizGame {
 		return new SvelteSet(Object.keys(this.progress.achievements));
 	}
 
-	goHome() {
+	goHome(opts?: { syncUrl?: boolean }) {
 		this.maybeUnlockFundamentals();
 		saveProgress(this.progress);
 		this.view = "home";
@@ -700,6 +803,10 @@ export class QuizGame {
 		this.chapter = null;
 		this.chapterKind = null;
 		this.shelf = null;
+		this.routeLocked = false;
+		if (opts?.syncUrl !== false) {
+			this.syncLearnUrl();
+		}
 	}
 
 	resetProgress() {
