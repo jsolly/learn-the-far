@@ -117,9 +117,9 @@
 		{/if}
 
 		<div class="flex w-full flex-col gap-2">
-			{#if s.mode === "chapter" && s.chapterId}
-				<Button size="lg" onclick={() => s?.chapterId && game.returnToChapter(s.chapterId)}>
-					Back to chapter
+			{#if s.mode === "chapter" && s.unit}
+				<Button size="lg" onclick={() => s?.unit && game.openShelf(s.unit.id)}>
+					Back to chapters
 				</Button>
 			{:else if s.mode === "testout" && unlockedByMastery}
 				<Button size="lg" href="/">Back to home</Button>

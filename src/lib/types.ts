@@ -52,7 +52,7 @@ export type UnitStats = {
 export type SessionSummary = {
 	mode: SessionMode;
 	unit?: LifecycleUnit;
-	/** Set when mode is `chapter` — used to return to the chapter page. */
+	/** Set when mode is `chapter` — labels the summary; shelf return uses `unit`. */
 	chapterId?: string;
 	chapterTitle?: string;
 	answered: number;
