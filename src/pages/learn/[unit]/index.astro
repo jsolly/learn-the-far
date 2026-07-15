@@ -1,0 +1,25 @@
+---
+import FarAppDocument from "../../../components/app/FarAppDocument.astro";
+import { shelfForUnit } from "../../../lib/far/chapters";
+import { UNITS } from "../../../lib/far/deck";
+import { isUnitId, learnShelfStaticPaths } from "../../../lib/learn-routes";
+
+export function getStaticPaths() {
+	return learnShelfStaticPaths();
+}
+
+const unitParam = Astro.params.unit;
+if (!isUnitId(unitParam)) {
+	return Astro.redirect("/");
+}
+
+const unit = UNITS.find((u) => u.id === unitParam)!;
+const shelf = shelfForUnit(unitParam);
+const title = `${shelf.title} — Learn The FAR`;
+const description =
+	shelf.intro ||
+	shelf.subtitle ||
+	`Browse the ${unit.label} learning shelf on Learn The FAR.`;
+---
+
+<FarAppDocument {title} {description} initialUnit={unitParam} />
