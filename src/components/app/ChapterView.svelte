@@ -5,6 +5,8 @@
 	import { Button } from "$lib/components/ui/button";
 	import { nextChapterOnShelf } from "$lib/far/chapters";
 	import type { SourceKind } from "$lib/far/chapters/types";
+	import { segmentGlossaryText } from "$lib/far/link-glossary-terms";
+	import TermRichText from "./TermRichText.svelte";
 
 	let chapter = $derived(game.chapter);
 	let headingEl: HTMLHeadingElement | null = $state(null);
@@ -13,6 +15,26 @@
 			? Boolean(nextChapterOnShelf(chapter.id))
 			: false,
 	);
+
+	/** One pass per chapter so each glossary term links at most once. */
+	let linkedCopy = $derived.by(() => {
+		const current = chapter;
+		if (!current) return null;
+		const linkedIds = new Set<string>();
+		return {
+			intro: segmentGlossaryText(current.intro, linkedIds),
+			pieces: current.pieces.map((piece) => ({
+				id: piece.id,
+				teach: segmentGlossaryText(piece.teach, linkedIds),
+				watchFor: piece.watchFor
+					? segmentGlossaryText(piece.watchFor, linkedIds)
+					: null,
+			})),
+			closing: current.closing
+				? segmentGlossaryText(current.closing, linkedIds)
+				: null,
+		};
+	});
 
 	$effect(() => {
 		const current = chapter;
@@ -42,9 +64,13 @@
 		}
 		game.goHome();
 	}
+
+	function pieceLinked(pieceId: string) {
+		return linkedCopy?.pieces.find((p) => p.id === pieceId);
+	}
 </script>
 
-{#if chapter}
+{#if chapter && linkedCopy}
 	<div class="mx-auto flex min-h-[100dvh] w-full max-w-2xl flex-col px-4 pb-16 pt-5 sm:px-6 sm:pt-7">
 		<header class="mb-6 sm:mb-8">
 			<button
@@ -65,7 +91,7 @@
 				{chapter.title}
 			</h1>
 			<p class="mt-3 text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
-				{chapter.intro}
+				<TermRichText segments={linkedCopy.intro} />
 			</p>
 			{#if chapter.pieces.length > 1}
 				<nav class="mt-5" aria-label="On this page">
@@ -88,6 +114,7 @@
 
 		<div class="flex flex-col gap-10 sm:gap-12">
 			{#each chapter.pieces as piece, index (piece.id)}
+				{@const linked = pieceLinked(piece.id)}
 				<article class="scroll-mt-6">
 					<p class="text-xs font-semibold tabular-nums text-muted-foreground">
 						{index + 1} / {chapter.pieces.length}
@@ -100,14 +127,26 @@
 						{piece.title}
 					</h2>
 
-					<p class="mt-4 text-sm leading-6 sm:text-base sm:leading-7">{piece.teach}</p>
+					<p class="mt-4 text-sm leading-6 sm:text-base sm:leading-7">
+						{#if linked}
+							<TermRichText segments={linked.teach} />
+						{:else}
+							{piece.teach}
+						{/if}
+					</p>
 
 					{#if piece.watchFor}
 						<div class="mt-4 rounded-md border border-border/80 bg-muted/30 px-4 py-3">
 							<p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
 								Watch for
 							</p>
-							<p class="mt-1 text-sm leading-6 sm:text-base sm:leading-7">{piece.watchFor}</p>
+							<p class="mt-1 text-sm leading-6 sm:text-base sm:leading-7">
+								{#if linked?.watchFor}
+									<TermRichText segments={linked.watchFor} />
+								{:else}
+									{piece.watchFor}
+								{/if}
+							</p>
 						</div>
 					{/if}
 
@@ -170,10 +209,14 @@
 		{/if}
 
 		<section class="mt-10 border-t pt-8 sm:mt-12">
-			{#if chapter.closing}
-				<p class="text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">{chapter.closing}</p>
+			{#if chapter.closing && linkedCopy.closing}
+				<p class="text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
+					<TermRichText segments={linkedCopy.closing} />
+				</p>
 			{/if}
-			<div class={`${chapter.closing ? "mt-6" : ""} flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center`}>
+			<div
+				class={`${chapter.closing ? "mt-6" : ""} flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center`}
+			>
 				<Button
 					size="lg"
 					class="w-full sm:h-11 sm:min-w-[12rem] sm:flex-1 sm:text-base"

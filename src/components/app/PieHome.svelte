@@ -103,6 +103,20 @@
 		</div>
 	{/if}
 
+	<button
+		type="button"
+		onclick={() => game.openGlossary()}
+		class="mt-4 flex w-full items-center gap-3 rounded-2xl border-2 p-4 text-left transition-all hover:border-primary/50 hover:bg-muted/40 sm:mt-6 sm:gap-4 sm:p-5 lg:p-6"
+	>
+		<div class="min-w-0 flex-1">
+			<p class="font-semibold leading-tight sm:text-lg">Glossary</p>
+			<p class="text-xs text-muted-foreground sm:text-sm">
+				Key FAR terms and topics covered on study cards
+			</p>
+		</div>
+		<span class="shrink-0 text-lg text-muted-foreground sm:text-xl" aria-hidden="true">›</span>
+	</button>
+
 	<h2
 		class="mb-2 mt-6 text-xs font-semibold uppercase tracking-wide text-muted-foreground sm:mb-3 sm:mt-8 sm:text-sm"
 	>

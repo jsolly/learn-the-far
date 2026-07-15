@@ -692,6 +692,18 @@ export class QuizGame {
 		return new SvelteSet(Object.keys(this.progress.achievements));
 	}
 
+	openGlossary() {
+		this.queue = [];
+		this.outcomes = [];
+		this.requeued = new SvelteSet();
+		this.answeredOptionId = null;
+		this.summary = null;
+		this.chapter = null;
+		this.chapterKind = null;
+		this.shelf = null;
+		this.view = "glossary";
+	}
+
 	goHome() {
 		this.maybeUnlockFundamentals();
 		saveProgress(this.progress);

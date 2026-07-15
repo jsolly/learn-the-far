@@ -6,6 +6,7 @@
 	import { game } from "$lib/quiz-state.svelte.js";
 	import { Button } from "$lib/components/ui/button";
 	import { Badge } from "$lib/components/ui/badge";
+	import TopicPill from "./TopicPill.svelte";
 
 	let shelf = $derived(game.shelf);
 	let headingEl: HTMLHeadingElement | null = $state(null);
@@ -55,10 +56,12 @@
 		<ul class="flex flex-col gap-3 sm:gap-4" aria-label="Chapters on this shelf">
 			{#each shelf.chapters as ch (ch.id)}
 				{@const read = game.isChapterRead(ch.id)}
-				<li>
+				<li
+					class="rounded-2xl border-2 border-border bg-card transition-colors hover:border-primary/50 hover:bg-muted/30"
+				>
 					<button
 						type="button"
-						class="flex w-full flex-col gap-2 rounded-2xl border-2 border-border bg-card p-4 text-left transition-colors hover:border-primary/50 hover:bg-muted/30 sm:p-5"
+						class="flex w-full flex-col gap-2 p-4 text-left sm:p-5"
 						onclick={() => game.openShelfChapter(ch.id)}
 					>
 						<div class="flex flex-wrap items-center gap-2">
@@ -73,18 +76,19 @@
 						<p class="text-xs leading-5 text-muted-foreground sm:text-sm sm:leading-6">
 							{ch.summary}
 						</p>
-						{#if ch.tags.length > 0}
+					</button>
+					{#if ch.tags.length > 0}
+						<div class="flex flex-col gap-1.5 px-4 pb-4 sm:px-5 sm:pb-5">
+							<p class="text-[0.65rem] font-semibold uppercase tracking-wide text-muted-foreground sm:text-xs">
+								Topics covered
+							</p>
 							<div class="flex flex-wrap gap-1.5">
 								{#each ch.tags.slice(0, 4) as tag (tag)}
-									<span
-										class="rounded-md bg-muted px-1.5 py-0.5 text-[0.65rem] text-muted-foreground sm:text-xs"
-									>
-										{tag}
-									</span>
+									<TopicPill {tag} />
 								{/each}
 							</div>
-						{/if}
-					</button>
+						</div>
+					{/if}
 				</li>
 			{/each}
 		</ul>
