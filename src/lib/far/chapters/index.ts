@@ -197,7 +197,7 @@ export function buildMissManuscript(questions: QuizQuestion[]): Chapter {
 		summary: "Shame-free repair reading for concepts that are still shaky on the quiz.",
 		intro:
 			"This is not a review of wrong answers as punishment. It is a short teach-up of the concepts those questions were testing — plus the mix-ups that usually trip people — so the next quiz attempt has something solid to latch onto.",
-		tags: ["repair", "misses"],
+		tags: [],
 		readingMinutes: Math.max(5, pieces.length * 2),
 		suggestedOrder: 0,
 		pieces,

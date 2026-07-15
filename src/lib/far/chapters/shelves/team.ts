@@ -17,7 +17,7 @@ export const TEAM_SHELF_CHAPTERS: Chapter[] = [
 			"Defines FAR 9.601 team forms and who owns performance and privity under each structure.",
 		intro:
 			"Terms for the legal structures behind “the team”: who submits, who signs, who holds privity with the Government, and who remains responsible for performance.",
-		tags: ["definition", "contrast", "far-9-6"],
+		tags: ["far-9-6"],
 		readingMinutes: 7,
 		suggestedOrder: 1,
 		pieces: [
@@ -69,7 +69,7 @@ export const TEAM_SHELF_CHAPTERS: Chapter[] = [
 			"Defines the pre-data-room sequence: purpose-limited NDA, controlled disclosure, then locked workshare and exclusivity.",
 		intro:
 			"Terms for protecting proprietary information and binding private teaming terms before proposal reliance.",
-		tags: ["field-guide", "decision", "teaming-agreement", "nda"],
+		tags: ["teaming-agreement", "nda"],
 		readingMinutes: 8,
 		suggestedOrder: 2,
 		pieces: [
@@ -122,7 +122,7 @@ export const TEAM_SHELF_CHAPTERS: Chapter[] = [
 			"Defines size/status, set-aside offeror structure, and affiliate organizational conflicts that can kill a team before bid.",
 		intro:
 			"Terms for whether the proposed offeror and teammates may bid this acquisition — size and status, set-aside path, JV readiness, and affiliate-aware OCI.",
-		tags: ["decision", "failure-mode", "set-aside", "oci"],
+		tags: ["set-aside", "oci"],
 		readingMinutes: 9,
 		suggestedOrder: 3,
 		pieces: [
@@ -174,7 +174,7 @@ export const TEAM_SHELF_CHAPTERS: Chapter[] = [
 			"Defines LOS math and ostensible-subcontractor risk on set-aside teams.",
 		intro:
 			"Terms for workshare as compliance architecture on set-asides — limitation-on-subcontracting math and ostensible-subcontractor affiliation.",
-		tags: ["advanced", "contrast", "los", "ostensible-subcontractor"],
+		tags: ["los", "ostensible-subcontractor"],
 		readingMinutes: 10,
 		suggestedOrder: 4,
 		pieces: [
@@ -221,7 +221,7 @@ export const TEAM_SHELF_CHAPTERS: Chapter[] = [
 			"Defines when teammate credentials are evaluable — tied to proposed work and backed by required commitment letters.",
 		intro:
 			"Terms for making teammate past performance and key personnel evaluatable under the solicitation — and obtaining required commitment documents.",
-		tags: ["field-guide", "past-performance", "key-personnel"],
+		tags: ["past-performance", "key-personnel"],
 		readingMinutes: 7,
 		suggestedOrder: 5,
 		pieces: [
@@ -268,7 +268,7 @@ export const TEAM_SHELF_CHAPTERS: Chapter[] = [
 			"Defines plan contents, administration, reporting, and good-faith duties for individual and commercial plans.",
 		intro:
 			"Terms for what a small-business subcontracting plan commits the prime to — goals, administration, records, reporting, and good-faith treatment of proposed small businesses.",
-		tags: ["field-guide", "decision", "subcontracting-plan"],
+		tags: ["subcontracting-plan"],
 		readingMinutes: 8,
 		suggestedOrder: 6,
 		pieces: [
@@ -315,7 +315,7 @@ export const TEAM_SHELF_CHAPTERS: Chapter[] = [
 			"Defines clause flowdowns, consent/CPSR constraints, and how member changes still leave the prime responsible.",
 		intro:
 			"Terms for converting proposal promises into subcontract paper after award — clause flowdowns, consent, and teammate changes — without creating Government–sub privity.",
-		tags: ["advanced", "field-guide", "flowdowns", "consent"],
+		tags: ["flowdowns", "consent"],
 		readingMinutes: 9,
 		suggestedOrder: 7,
 		pieces: [

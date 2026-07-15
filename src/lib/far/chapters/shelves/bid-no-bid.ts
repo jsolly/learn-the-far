@@ -15,7 +15,7 @@ export const BID_NO_BID_SHELF_CHAPTERS: Chapter[] = [
 			"Defines the bid gate: evidence, hard gates, and expected return before committing capture spend.",
 		intro:
 			"Terms for the first formal gate: what the board decides, and the customer-value triad that must map to evaluation.",
-		tags: ["gate-discipline", "investment-decision", "bp", "portfolio"],
+		tags: ["gate-discipline", "bp"],
 		readingMinutes: 7,
 		suggestedOrder: 1,
 		pieces: [
@@ -176,7 +176,7 @@ export const BID_NO_BID_SHELF_CHAPTERS: Chapter[] = [
 			"Defines Pwin as a living, evidence-weighted judgment — not a CRM folklore number.",
 		intro:
 			"Capture-practice vocabulary for Pwin as a living forecast aligned to Section M — not a frozen CRM number.",
-		tags: ["pwin", "evidence", "capture-craft", "section-m"],
+		tags: ["pwin", "capture-craft", "section-m"],
 		readingMinutes: 7,
 		suggestedOrder: 4,
 		pieces: [
@@ -218,7 +218,7 @@ export const BID_NO_BID_SHELF_CHAPTERS: Chapter[] = [
 			"Defines competitive price-to-win versus the company’s economic floor, including set-aside subcontract math.",
 		intro:
 			"Terms for two different price numbers — competitive award zone versus the seller's minimum acceptable economics.",
-		tags: ["price-to-win", "walk-away", "margin", "economics"],
+		tags: ["price-to-win", "walk-away"],
 		readingMinutes: 6,
 		suggestedOrder: 5,
 		pieces: [

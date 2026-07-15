@@ -3,6 +3,7 @@
 
 	import { UNITS } from "$lib/far/deck";
 	import type { UnitId } from "$lib/far/types";
+	import { resolveChapterTag } from "$lib/far/glossary";
 	import { learnChapterPath } from "$lib/learn-routes";
 	import { game } from "$lib/quiz-state.svelte.js";
 	import { Button } from "$lib/components/ui/button";
@@ -12,6 +13,11 @@
 	let shelf = $derived(game.shelf);
 	let headingEl: HTMLHeadingElement | null = $state(null);
 	let unlockHeadingEl: HTMLHeadingElement | null = $state(null);
+
+	/** Only glossary-backed jargon — not pedagogical or everyday-English tags. */
+	function loadBearingTags(tags: string[]): string[] {
+		return tags.filter((tag) => Boolean(resolveChapterTag(tag))).slice(0, 4);
+	}
 
 	$effect(() => {
 		const current = shelf;
@@ -87,6 +93,7 @@
 		<ul class="flex flex-col gap-3 sm:gap-4" aria-label="Chapters on this shelf">
 			{#each shelf.chapters as ch (ch.id)}
 				{@const read = game.isChapterRead(ch.id)}
+				{@const pills = loadBearingTags(ch.tags)}
 				<li
 					class="rounded-2xl border-2 border-border bg-card transition-colors hover:border-primary/50 hover:bg-muted/30"
 				>
@@ -107,7 +114,7 @@
 							{ch.summary}
 						</p>
 					</a>
-					{#if ch.tags.length > 0}
+					{#if pills.length > 0}
 						<div class="flex flex-col gap-1.5 px-4 pb-4 sm:px-5 sm:pb-5">
 							<p
 								class="text-[0.65rem] font-semibold uppercase tracking-wide text-muted-foreground sm:text-xs"
@@ -115,7 +122,7 @@
 								Topics covered
 							</p>
 							<div class="flex flex-wrap gap-1.5">
-								{#each ch.tags.slice(0, 4) as tag (tag)}
+								{#each pills as tag (tag)}
 									<TopicPill {tag} />
 								{/each}
 							</div>
