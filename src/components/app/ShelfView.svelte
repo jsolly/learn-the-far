@@ -4,7 +4,7 @@
 	import { UNITS } from "$lib/far/deck";
 	import type { UnitId } from "$lib/far/types";
 	import { resolveChapterTag } from "$lib/far/glossary";
-	import { learnChapterPath } from "$lib/learn-routes";
+	import { learnChapterPath, learnShelfPath } from "$lib/learn-routes";
 	import { game } from "$lib/quiz-state.svelte.js";
 	import { Button } from "$lib/components/ui/button";
 	import { Badge } from "$lib/components/ui/badge";
@@ -13,6 +13,9 @@
 	let shelf = $derived(game.shelf);
 	let headingEl: HTMLHeadingElement | null = $state(null);
 	let unlockHeadingEl: HTMLHeadingElement | null = $state(null);
+	let unlockStatusId = $derived(
+		shelf ? `shelf-unlock-status-${shelf.unitId}` : "shelf-unlock-status",
+	);
 
 	/** Only glossary-backed jargon — not pedagogical or everyday-English tags. */
 	function loadBearingTags(tags: string[]): string[] {
@@ -75,12 +78,16 @@
 				>
 					Quiz unlocks after Basics
 				</h2>
-				<p class="mt-2 text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7" role="status">
+				<p
+					id={unlockStatusId}
+					class="mt-2 text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7"
+					role="status"
+				>
 					You can read every chapter on this shelf now. Lifecycle quizzes open after you
 					clear Master the Basics (or test out).
 				</p>
 				<div class="mt-5 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-					<Button size="lg" class="w-full sm:w-auto" href="/learn/fundamentals/">
+					<Button size="lg" class="w-full sm:w-auto" href={learnShelfPath("fundamentals")}>
 						Open Basics shelf
 					</Button>
 					<Button size="lg" variant="outline" class="w-full sm:w-auto" href="/">
@@ -133,11 +140,14 @@
 		</ul>
 
 		<div class="mt-10 border-t pt-6 sm:mt-12">
-			<p class="mb-3 text-sm text-muted-foreground">Ready to prove it?</p>
+			<p class="mb-3 text-sm text-muted-foreground">
+				{game.routeLocked ? "Quizzes unlock after Basics" : "Ready to prove it?"}
+			</p>
 			<Button
 				size="lg"
 				class="w-full sm:h-11 sm:w-auto sm:text-base"
 				disabled={game.routeLocked}
+				aria-describedby={game.routeLocked ? unlockStatusId : undefined}
 				onclick={() => game.startUnit(shelf.unitId)}
 			>
 				Check yourself — Quiz {unitLabel(shelf.unitId)}

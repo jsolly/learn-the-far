@@ -12,6 +12,9 @@
 	let chapter = $derived(game.chapter);
 	let headingEl: HTMLHeadingElement | null = $state(null);
 	let unlockHeadingEl: HTMLHeadingElement | null = $state(null);
+	let unlockStatusId = $derived(
+		chapter ? `chapter-unlock-status-${chapter.id}` : "chapter-unlock-status",
+	);
 	let nextChapter = $derived(
 		chapter && game.chapterKind === "shelf-chapter"
 			? nextChapterOnShelf(chapter.id)
@@ -112,12 +115,16 @@
 				>
 					Quiz unlocks after Basics
 				</h2>
-				<p class="mt-2 text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7" role="status">
+				<p
+					id={unlockStatusId}
+					class="mt-2 text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7"
+					role="status"
+				>
 					You can read this chapter now. Lifecycle quizzes open after you clear Master the
 					Basics (or test out).
 				</p>
 				<div class="mt-5 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-					<Button size="lg" class="w-full sm:w-auto" href="/learn/fundamentals/">
+					<Button size="lg" class="w-full sm:w-auto" href={learnShelfPath("fundamentals")}>
 						Open Basics shelf
 					</Button>
 					<Button size="lg" variant="outline" class="w-full sm:w-auto" href="/">
@@ -254,6 +261,7 @@
 					size="lg"
 					class="w-full sm:h-11 sm:min-w-[12rem] sm:flex-1 sm:text-base"
 					disabled={game.routeLocked}
+					aria-describedby={game.routeLocked ? unlockStatusId : undefined}
 					onclick={() => game.runChapterQuizAction(chapter.quizCta.action)}
 				>
 					{chapter.quizCta.label}

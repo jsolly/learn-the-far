@@ -137,7 +137,6 @@
 						? "border-border/50 bg-muted/40"
 						: "border-border bg-card"
 				}`}
-				aria-disabled={lifecycleLocked ? "true" : undefined}
 			>
 				<div class="flex items-start gap-3 sm:gap-4">
 					<span

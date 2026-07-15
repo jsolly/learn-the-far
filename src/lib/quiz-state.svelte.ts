@@ -157,6 +157,8 @@ export class QuizGame {
 	 * Hydrate from Astro props and/or the current pathname; bind back/forward.
 	 * Must run during SSG/SSR too — otherwise every prerendered HTML page is the
 	 * home shell and crawlers never see shelf/chapter links or body copy.
+	 * SSG uses hydrate-only APIs so reading/progress side effects do not leak
+	 * across prerendered pages via the module singleton.
 	 */
 	bootFromLocation(opts?: {
 		initialUnit?: string | null;
@@ -164,29 +166,30 @@ export class QuizGame {
 	}) {
 		const fromPath =
 			typeof window !== "undefined" ? parseLearnPath(window.location.pathname) : null;
+		const onClient = typeof window !== "undefined";
 
 		if (fromPath && (fromPath.kind === "shelf" || fromPath.kind === "chapter")) {
-			this.applyLearnRoute(fromPath, { syncUrl: false });
+			if (onClient) this.applyLearnRoute(fromPath, { syncUrl: false });
+			else this.hydrateLearnRoute(fromPath);
 		} else if (opts?.initialChapter && isUnitId(opts.initialUnit)) {
-			this.applyLearnRoute(
-				{
-					kind: "chapter",
-					unitId: opts.initialUnit,
-					chapterId: opts.initialChapter,
-				},
-				{ syncUrl: false },
-			);
+			const route = {
+				kind: "chapter" as const,
+				unitId: opts.initialUnit,
+				chapterId: opts.initialChapter,
+			};
+			if (onClient) this.applyLearnRoute(route, { syncUrl: false });
+			else this.hydrateLearnRoute(route);
 		} else if (isUnitId(opts?.initialUnit)) {
-			this.applyLearnRoute(
-				{ kind: "shelf", unitId: opts.initialUnit },
-				{ syncUrl: false },
-			);
-		} else {
-			// Reset the module singleton between prerendered pages.
+			const route = { kind: "shelf" as const, unitId: opts.initialUnit };
+			if (onClient) this.applyLearnRoute(route, { syncUrl: false });
+			else this.hydrateLearnRoute(route);
+		} else if (onClient) {
 			this.goHome({ syncUrl: false });
+		} else {
+			this.clearLearnSurface();
 		}
 
-		if (typeof window !== "undefined" && !this.historyBound) {
+		if (onClient && !this.historyBound) {
 			this.historyBound = true;
 			window.addEventListener("popstate", () => {
 				const route = parseLearnPath(window.location.pathname);
@@ -197,6 +200,41 @@ export class QuizGame {
 				this.applyLearnRoute(route, { syncUrl: false });
 			});
 		}
+	}
+
+	/** SSG/SSR-only: set the visible learn surface without writing progress. */
+	private hydrateLearnRoute(route: Exclude<LearnRoute, { kind: "home" }>) {
+		this.clearLearnSurface();
+		this.routeLocked = this.isUnitLocked(route.unitId);
+
+		if (route.kind === "shelf") {
+			this.shelf = shelfForUnit(route.unitId);
+			this.view = "shelf";
+			return;
+		}
+
+		const found = chapterById(route.chapterId);
+		if (!found || found.unitId !== route.unitId) {
+			this.clearLearnSurface();
+			return;
+		}
+		this.chapter = found;
+		this.chapterKind = "shelf-chapter";
+		this.view = "chapter";
+	}
+
+	/** Reset ephemeral learn UI without unlock/save side effects (SSG-safe). */
+	private clearLearnSurface() {
+		this.queue = [];
+		this.outcomes = [];
+		this.requeued = new SvelteSet();
+		this.answeredOptionId = null;
+		this.summary = null;
+		this.chapter = null;
+		this.chapterKind = null;
+		this.shelf = null;
+		this.routeLocked = false;
+		this.view = "home";
 	}
 
 	/** Open a shelf/chapter from a URL (including locked deep links). */
