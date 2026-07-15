@@ -16,7 +16,6 @@ import {
 	MASTERED_CORRECT_COUNT,
 	SESSION_LENGTH,
 	STREAK_MILESTONES,
-	TESTOUT_LENGTH,
 	TESTOUT_PASS,
 	TIER_SCORE,
 	TIER_UNLOCK_RATIO,
@@ -466,12 +465,12 @@ export class QuizGame {
 		this.beginSession("daily", null, picks);
 	}
 
-	/** One-pass Fundamentals test, prioritizing questions not yet cleared. */
+	/** One-pass Fundamentals placement — full Basics deck, prioritizing uncleared. */
 	startTestOut() {
 		const fundamentals = fundamentalsQuestions();
 		const uncleared = shuffle(fundamentals.filter((q) => !this.isCleared(q.id)));
 		const cleared = shuffle(fundamentals.filter((q) => this.isCleared(q.id)));
-		this.beginSession("testout", null, [...uncleared, ...cleared].slice(0, TESTOUT_LENGTH));
+		this.beginSession("testout", null, [...uncleared, ...cleared]);
 	}
 
 	private openChapter(chapter: Chapter, kind: ChapterKind, opts?: { recordRead?: boolean }) {
