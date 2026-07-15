@@ -153,15 +153,19 @@ export class QuizGame {
 		this.reading = loadReadingProgress();
 	}
 
-	/** Hydrate from Astro props and/or the current pathname; bind back/forward. */
+	/**
+	 * Hydrate from Astro props and/or the current pathname; bind back/forward.
+	 * Must run during SSG/SSR too — otherwise every prerendered HTML page is the
+	 * home shell and crawlers never see shelf/chapter links or body copy.
+	 */
 	bootFromLocation(opts?: {
 		initialUnit?: string | null;
 		initialChapter?: string | null;
 	}) {
-		if (typeof window === "undefined") return;
+		const fromPath =
+			typeof window !== "undefined" ? parseLearnPath(window.location.pathname) : null;
 
-		const fromPath = parseLearnPath(window.location.pathname);
-		if (fromPath.kind === "shelf" || fromPath.kind === "chapter") {
+		if (fromPath && (fromPath.kind === "shelf" || fromPath.kind === "chapter")) {
 			this.applyLearnRoute(fromPath, { syncUrl: false });
 		} else if (opts?.initialChapter && isUnitId(opts.initialUnit)) {
 			this.applyLearnRoute(
@@ -177,9 +181,12 @@ export class QuizGame {
 				{ kind: "shelf", unitId: opts.initialUnit },
 				{ syncUrl: false },
 			);
+		} else {
+			// Reset the module singleton between prerendered pages.
+			this.goHome({ syncUrl: false });
 		}
 
-		if (!this.historyBound) {
+		if (typeof window !== "undefined" && !this.historyBound) {
 			this.historyBound = true;
 			window.addEventListener("popstate", () => {
 				const route = parseLearnPath(window.location.pathname);

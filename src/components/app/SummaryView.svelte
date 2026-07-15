@@ -114,7 +114,7 @@
 			{#if s.mode === "testout" && unlockedByMastery}
 				<Button size="lg" href="/">Back to home</Button>
 			{:else if s.mode === "testout" && !s.passedTestOut}
-				<Button size="lg" href="/learn/fundamentals">Browse Basics shelf</Button>
+				<Button size="lg" href="/learn/fundamentals/">Browse Basics shelf</Button>
 				<Button size="lg" variant="outline" onclick={() => game.startTestOut()}>Try the test again</Button>
 				<Button size="lg" variant="ghost" href="/">Back to home</Button>
 			{:else if s.mode === "testout"}

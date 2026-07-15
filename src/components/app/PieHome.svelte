@@ -204,8 +204,7 @@
 						class="flex-1"
 						size="sm"
 						variant="outline"
-						disabled={lifecycleLocked}
-						href={lifecycleLocked ? undefined : learnShelfPath(s.unit.id)}
+						href={learnShelfPath(s.unit.id)}
 					>
 						Start learning
 					</Button>

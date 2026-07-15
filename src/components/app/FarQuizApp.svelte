@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { tick } from "svelte";
+	import { tick, untrack } from "svelte";
 
 	import { game } from "$lib/quiz-state.svelte.js";
 	import PieHome from "./PieHome.svelte";
@@ -19,10 +19,11 @@
 
 	let main = $state<HTMLElement | null>(null);
 
-	// Boot on the client before first paint (not during SSG — module singleton).
-	if (typeof window !== "undefined") {
-		game.bootFromLocation({ initialUnit, initialChapter });
-	}
+	// Boot once from Astro route props (SSG/SSR + client). untrack: intentional
+	// one-shot read — props don't change after mount for these pages.
+	game.bootFromLocation(
+		untrack(() => ({ initialUnit, initialChapter })),
+	);
 
 	// Child views focus their own descriptive headings. On the home transition,
 	// focus its persistent heading instead of announcing an unnamed container.

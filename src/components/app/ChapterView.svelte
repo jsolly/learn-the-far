@@ -104,20 +104,20 @@
 		</header>
 
 		{#if game.routeLocked}
-			<div class="rounded-2xl border-2 border-border bg-card p-5 sm:p-6">
+			<div class="mb-6 rounded-2xl border-2 border-border bg-card p-5 sm:mb-8 sm:p-6">
 				<h2
 					bind:this={unlockHeadingEl}
 					tabindex="-1"
 					class="font-semibold outline-none focus-visible:ring-2 focus-visible:ring-ring sm:text-lg"
 				>
-					Unlock this chapter first
+					Quiz unlocks after Basics
 				</h2>
 				<p class="mt-2 text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7" role="status">
-					Lifecycle reading opens after you clear Master the Basics. Finish the Basics
-					placement (or test out), then return to this link.
+					You can read this chapter now. Lifecycle quizzes open after you clear Master the
+					Basics (or test out).
 				</p>
 				<div class="mt-5 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-					<Button size="lg" class="w-full sm:w-auto" href="/learn/fundamentals">
+					<Button size="lg" class="w-full sm:w-auto" href="/learn/fundamentals/">
 						Open Basics shelf
 					</Button>
 					<Button size="lg" variant="outline" class="w-full sm:w-auto" href="/">
@@ -125,168 +125,169 @@
 					</Button>
 				</div>
 			</div>
-		{:else}
-			{#if chapter.pieces.length > 1}
-				<nav class="mb-6 sm:mb-8" aria-label="On this page">
-					<p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-						On this page
-					</p>
-					<ol class="mt-2 list-decimal space-y-1 pl-5 text-sm">
-						{#each chapter.pieces as piece (piece.id)}
-							<li>
-								<a
-									class="text-primary underline-offset-4 hover:underline"
-									href={`#piece-${piece.id}`}>{piece.title}</a
-								>
-							</li>
-						{/each}
-					</ol>
-				</nav>
-			{/if}
+		{/if}
 
-			<div class="flex flex-col gap-10 sm:gap-12">
-				{#each chapter.pieces as piece, index (piece.id)}
-					{@const linked = pieceLinked(piece.id)}
-					<article class="scroll-mt-6">
-						<p class="text-xs font-semibold tabular-nums text-muted-foreground">
-							{index + 1} / {chapter.pieces.length}
-						</p>
-						<h2
-							id={`piece-${piece.id}`}
-							tabindex="-1"
-							class="mt-1 scroll-mt-6 text-xl font-semibold tracking-tight outline-none sm:text-2xl"
-						>
-							{piece.title}
-						</h2>
-
-						<p class="mt-4 text-sm leading-6 sm:text-base sm:leading-7">
-							{#if linked}
-								<TermRichText segments={linked.teach} />
-							{:else}
-								{piece.teach}
-							{/if}
-						</p>
-
-						{#if piece.watchFor}
-							<div class="mt-4 rounded-md border border-border/80 bg-muted/30 px-4 py-3">
-								<p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-									Watch for
-								</p>
-								<p class="mt-1 text-sm leading-6 sm:text-base sm:leading-7">
-									{#if linked?.watchFor}
-										<TermRichText segments={linked.watchFor} />
-									{:else}
-										{piece.watchFor}
-									{/if}
-								</p>
-							</div>
-						{/if}
-
-						{#if piece.quote}
-							<blockquote
-								class="mt-5 border-l-4 border-primary/40 bg-muted/40 px-4 py-3 text-sm leading-6 sm:text-[0.95rem] sm:leading-7"
+		{#if chapter.pieces.length > 1}
+			<nav class="mb-6 sm:mb-8" aria-label="On this page">
+				<p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+					On this page
+				</p>
+				<ol class="mt-2 list-decimal space-y-1 pl-5 text-sm">
+					{#each chapter.pieces as piece (piece.id)}
+						<li>
+							<a
+								class="text-primary underline-offset-4 hover:underline"
+								href={`#piece-${piece.id}`}>{piece.title}</a
 							>
-								<p class="italic text-foreground/95">“{piece.quote.text}”</p>
-								<footer class="mt-2 not-italic">
-									<a
-										class="text-xs font-medium text-primary underline underline-offset-2 sm:text-sm"
-										href={piece.quote.sourceUrl}
-										target="_blank"
-										rel="noopener noreferrer"
-									>
-										{piece.quote.citation} ↗
-									</a>
-								</footer>
-							</blockquote>
-						{:else if piece.sourceUrl && piece.citation}
-							<p class="mt-4 text-xs sm:text-sm">
-								<a
-									class="font-medium text-primary underline underline-offset-2"
-									href={piece.sourceUrl}
-									target="_blank"
-									rel="noopener noreferrer"
-								>
-									{piece.citation} ↗
-								</a>
-								{#if piece.sourceKind}
-									<span class="text-muted-foreground">
-										· {sourceKindLabel(piece.sourceKind)}</span
-									>
+						</li>
+					{/each}
+				</ol>
+			</nav>
+		{/if}
+
+		<div class="flex flex-col gap-10 sm:gap-12">
+			{#each chapter.pieces as piece, index (piece.id)}
+				{@const linked = pieceLinked(piece.id)}
+				<article class="scroll-mt-6">
+					<p class="text-xs font-semibold tabular-nums text-muted-foreground">
+						{index + 1} / {chapter.pieces.length}
+					</p>
+					<h2
+						id={`piece-${piece.id}`}
+						tabindex="-1"
+						class="mt-1 scroll-mt-6 text-xl font-semibold tracking-tight outline-none sm:text-2xl"
+					>
+						{piece.title}
+					</h2>
+
+					<p class="mt-4 text-sm leading-6 sm:text-base sm:leading-7">
+						{#if linked}
+							<TermRichText segments={linked.teach} />
+						{:else}
+							{piece.teach}
+						{/if}
+					</p>
+
+					{#if piece.watchFor}
+						<div class="mt-4 rounded-md border border-border/80 bg-muted/30 px-4 py-3">
+							<p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+								Watch for
+							</p>
+							<p class="mt-1 text-sm leading-6 sm:text-base sm:leading-7">
+								{#if linked?.watchFor}
+									<TermRichText segments={linked.watchFor} />
+								{:else}
+									{piece.watchFor}
 								{/if}
 							</p>
-						{/if}
-					</article>
-				{/each}
-			</div>
+						</div>
+					{/if}
 
-			{#if chapter.furtherReading && chapter.furtherReading.length > 0}
-				<section class="mt-10 border-t pt-6 sm:mt-12">
-					<h2 class="text-sm font-semibold sm:text-base">Further reading</h2>
-					<ul class="mt-3 space-y-2 text-sm">
-						{#each chapter.furtherReading as link (link.url + link.label)}
-							<li>
+					{#if piece.quote}
+						<blockquote
+							class="mt-5 border-l-4 border-primary/40 bg-muted/40 px-4 py-3 text-sm leading-6 sm:text-[0.95rem] sm:leading-7"
+						>
+							<p class="italic text-foreground/95">“{piece.quote.text}”</p>
+							<footer class="mt-2 not-italic">
 								<a
-									class="font-medium text-primary underline underline-offset-2"
-									href={link.url}
+									class="text-xs font-medium text-primary underline underline-offset-2 sm:text-sm"
+									href={piece.quote.sourceUrl}
 									target="_blank"
 									rel="noopener noreferrer"
 								>
-									{link.label} ↗
+									{piece.quote.citation} ↗
 								</a>
-								<span class="text-muted-foreground"> · {sourceKindLabel(link.kind)}</span>
-							</li>
-						{/each}
-					</ul>
-				</section>
-			{/if}
-
-			<section class="mt-10 border-t pt-8 sm:mt-12">
-				{#if chapter.closing && linkedCopy.closing}
-					<p class="text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
-						<TermRichText segments={linkedCopy.closing} />
-					</p>
-				{/if}
-				<div
-					class={`${chapter.closing ? "mt-6" : ""} flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center`}
-				>
-					<Button
-						size="lg"
-						class="w-full sm:h-11 sm:min-w-[12rem] sm:flex-1 sm:text-base"
-						onclick={() => game.runChapterQuizAction(chapter.quizCta.action)}
-					>
-						{chapter.quizCta.label}
-					</Button>
-					{#if game.chapterKind === "shelf-chapter"}
-						{#if nextChapter}
-							<Button
-								size="lg"
-								variant="outline"
-								class="w-full sm:h-11 sm:min-w-[12rem] sm:flex-1 sm:text-base"
-								href={learnChapterPath(nextChapter.unitId, nextChapter.id)}
+							</footer>
+						</blockquote>
+					{:else if piece.sourceUrl && piece.citation}
+						<p class="mt-4 text-xs sm:text-sm">
+							<a
+								class="font-medium text-primary underline underline-offset-2"
+								href={piece.sourceUrl}
+								target="_blank"
+								rel="noopener noreferrer"
 							>
-								Next chapter
-							</Button>
-						{/if}
+								{piece.citation} ↗
+							</a>
+							{#if piece.sourceKind}
+								<span class="text-muted-foreground">
+									· {sourceKindLabel(piece.sourceKind)}</span
+								>
+							{/if}
+						</p>
+					{/if}
+				</article>
+			{/each}
+		</div>
+
+		{#if chapter.furtherReading && chapter.furtherReading.length > 0}
+			<section class="mt-10 border-t pt-6 sm:mt-12">
+				<h2 class="text-sm font-semibold sm:text-base">Further reading</h2>
+				<ul class="mt-3 space-y-2 text-sm">
+					{#each chapter.furtherReading as link (link.url + link.label)}
+						<li>
+							<a
+								class="font-medium text-primary underline underline-offset-2"
+								href={link.url}
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								{link.label} ↗
+							</a>
+							<span class="text-muted-foreground"> · {sourceKindLabel(link.kind)}</span>
+						</li>
+					{/each}
+				</ul>
+			</section>
+		{/if}
+
+		<section class="mt-10 border-t pt-8 sm:mt-12">
+			{#if chapter.closing && linkedCopy.closing}
+				<p class="text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
+					<TermRichText segments={linkedCopy.closing} />
+				</p>
+			{/if}
+			<div
+				class={`${chapter.closing ? "mt-6" : ""} flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center`}
+			>
+				<Button
+					size="lg"
+					class="w-full sm:h-11 sm:min-w-[12rem] sm:flex-1 sm:text-base"
+					disabled={game.routeLocked}
+					onclick={() => game.runChapterQuizAction(chapter.quizCta.action)}
+				>
+					{chapter.quizCta.label}
+				</Button>
+				{#if game.chapterKind === "shelf-chapter"}
+					{#if nextChapter}
 						<Button
 							size="lg"
 							variant="outline"
 							class="w-full sm:h-11 sm:min-w-[12rem] sm:flex-1 sm:text-base"
-							href={learnShelfPath(chapter.unitId)}
+							href={learnChapterPath(nextChapter.unitId, nextChapter.id)}
 						>
-							Browse chapters
-						</Button>
-					{:else}
-						<Button
-							size="lg"
-							variant="outline"
-							class="w-full sm:h-11 sm:w-auto sm:text-base"
-							href="/"
-						>
-							Done reading
+							Next chapter
 						</Button>
 					{/if}
-				</div>
-			</section>
-		{/if}
+					<Button
+						size="lg"
+						variant="outline"
+						class="w-full sm:h-11 sm:min-w-[12rem] sm:flex-1 sm:text-base"
+						href={learnShelfPath(chapter.unitId)}
+					>
+						Browse chapters
+					</Button>
+				{:else}
+					<Button
+						size="lg"
+						variant="outline"
+						class="w-full sm:h-11 sm:w-auto sm:text-base"
+						href="/"
+					>
+						Done reading
+					</Button>
+				{/if}
+			</div>
+		</section>
 	</div>
 {/if}
