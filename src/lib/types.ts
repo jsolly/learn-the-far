@@ -30,7 +30,7 @@ export type QuizProgress = {
 
 // ---- Engine + views (owned by quiz-state.svelte.ts, consumed by components) ----
 
-export type View = "home" | "session" | "summary" | "chapter" | "shelf";
+export type View = "home" | "session" | "summary" | "chapter" | "shelf" | "glossary";
 export type SessionMode = "unit" | "daily" | "testout";
 
 export type UnitStats = {

@@ -235,6 +235,7 @@ export class QuizGame {
 		if (
 			this.view === "session" ||
 			this.view === "summary" ||
+			this.view === "glossary" ||
 			(this.view === "chapter" && this.chapterKind === "miss-manuscript")
 		) {
 			return;
@@ -793,6 +794,19 @@ export class QuizGame {
 
 	get earnedAchievements(): Set<string> {
 		return new SvelteSet(Object.keys(this.progress.achievements));
+	}
+
+	openGlossary() {
+		this.queue = [];
+		this.outcomes = [];
+		this.requeued = new SvelteSet();
+		this.answeredOptionId = null;
+		this.summary = null;
+		this.chapter = null;
+		this.chapterKind = null;
+		this.shelf = null;
+		this.routeLocked = false;
+		this.view = "glossary";
 	}
 
 	goHome(opts?: { syncUrl?: boolean }) {

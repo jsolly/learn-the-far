@@ -7,6 +7,7 @@
 	import SummaryView from "./SummaryView.svelte";
 	import ChapterView from "./ChapterView.svelte";
 	import ShelfView from "./ShelfView.svelte";
+	import GlossaryView from "./GlossaryView.svelte";
 
 	let {
 		initialUnit = null,
@@ -46,6 +47,8 @@
 		<ShelfView />
 	{:else if game.view === "chapter"}
 		<ChapterView />
+	{:else if game.view === "glossary"}
+		<GlossaryView />
 	{:else}
 		<PieHome />
 	{/if}
