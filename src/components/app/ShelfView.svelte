@@ -153,5 +153,21 @@
 				Check yourself — Quiz {unitLabel(shelf.unitId)}
 			</Button>
 		</div>
+
+		<nav class="mt-10 border-t pt-6" aria-label="Other capture shelves">
+			<p class="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+				Other shelves
+			</p>
+			<ul class="flex flex-col gap-2 text-sm sm:flex-row sm:flex-wrap sm:gap-x-4 sm:gap-y-2">
+				{#each UNITS.filter((u) => u.id !== shelf.unitId) as unit (unit.id)}
+					<li>
+						<a
+							href={learnShelfPath(unit.id)}
+							class="text-foreground underline-offset-4 hover:underline"
+						>{unit.title}</a>
+					</li>
+				{/each}
+			</ul>
+		</nav>
 	</div>
 {/if}

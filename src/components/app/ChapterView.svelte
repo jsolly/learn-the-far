@@ -3,7 +3,7 @@
 
 	import { game } from "$lib/quiz-state.svelte.js";
 	import { Button } from "$lib/components/ui/button";
-	import { nextChapterOnShelf } from "$lib/far/chapters";
+	import { nextChapterOnShelf, prevChapterOnShelf } from "$lib/far/chapters";
 	import type { SourceKind } from "$lib/far/chapters/types";
 	import { learnChapterPath, learnShelfPath } from "$lib/learn-routes";
 	import { segmentGlossaryText } from "$lib/far/link-glossary-terms";
@@ -18,6 +18,11 @@
 	let nextChapter = $derived(
 		chapter && game.chapterKind === "shelf-chapter"
 			? nextChapterOnShelf(chapter.id)
+			: undefined,
+	);
+	let prevChapter = $derived(
+		chapter && game.chapterKind === "shelf-chapter"
+			? prevChapterOnShelf(chapter.id)
 			: undefined,
 	);
 
@@ -267,6 +272,16 @@
 					{chapter.quizCta.label}
 				</Button>
 				{#if game.chapterKind === "shelf-chapter"}
+					{#if prevChapter}
+						<Button
+							size="lg"
+							variant="outline"
+							class="w-full sm:h-11 sm:min-w-[12rem] sm:flex-1 sm:text-base"
+							href={learnChapterPath(prevChapter.unitId, prevChapter.id)}
+						>
+							Previous chapter
+						</Button>
+					{/if}
 					{#if nextChapter}
 						<Button
 							size="lg"

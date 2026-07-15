@@ -5,6 +5,7 @@ import {
 	isUnitId,
 	learnChapterStaticPaths,
 } from "../../../lib/learn-routes";
+import { formatDocumentTitle, formatMetaDescription } from "../../../lib/seo";
 
 export function getStaticPaths() {
 	return learnChapterStaticPaths();
@@ -21,8 +22,8 @@ if (!chapter || chapter.unitId !== unitParam) {
 	return Astro.redirect(`/learn/${unitParam}`);
 }
 
-const title = `${chapter.title} — Learn The FAR`;
-const description = chapter.summary || chapter.intro;
+const title = formatDocumentTitle(chapter.title);
+const description = formatMetaDescription(chapter.summary || chapter.intro);
 ---
 
 <FarAppDocument
