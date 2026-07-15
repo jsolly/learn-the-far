@@ -1,6 +1,6 @@
 import type { GlossaryTerm } from "./glossary-types";
 
-/** Topic tags from study chapter cards — shown under “Topics covered” and in the glossary. */
+/** Topic tags from study chapter cards that need a short definition (not everyday English). */
 export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 	{
 		id: "topic-alliant",
@@ -68,22 +68,10 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 			"The chosen buying method (Schedule, GWAC, open market, etc.) that shapes competition and timeline.",
 	},
 	{
-		id: "topic-advanced",
-		term: "Advanced",
-		definition:
-			"An advanced study topic — assumes the basics and goes deeper into edge cases, strategy, or nuance.",
-	},
-	{
 		id: "topic-amendments",
 		term: "Amendments",
 		definition:
 			"Changes to a solicitation issued before award — can alter instructions, evaluation, or requirements.",
-	},
-	{
-		id: "topic-authority",
-		term: "Authority",
-		definition:
-			"Who may bind the Government or the contractor — warrants, designations, and internal approval lanes.",
 	},
 	{
 		id: "topic-biased-ground-rules",
@@ -126,13 +114,6 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 			"The contractor’s internal process for positioning, bidding, and winning — gates, themes, and evidence.",
 	},
 	{
-		id: "topic-capture-practice",
-		term: "Capture Practice",
-		aliases: ["capture-practice"],
-		definition:
-			"Field practice for capture teams — how policy shows up in real pursuit decisions.",
-	},
-	{
 		id: "topic-cardinal-change",
 		term: "Cardinal Change",
 		aliases: ["cardinal-change"],
@@ -168,24 +149,6 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 			"Structured color-team proposal reviews (pink, red, gold, etc.) before submission.",
 	},
 	{
-		id: "topic-comments",
-		term: "Comments",
-		definition:
-			"Industry feedback on draft solicitations or RFIs that can still shape the final RFP.",
-	},
-	{
-		id: "topic-competition",
-		term: "Competition",
-		definition:
-			"Full and open or limited competition rules that govern who may bid and how awards are made.",
-	},
-	{
-		id: "topic-compliance",
-		term: "Compliance",
-		definition:
-			"Meeting solicitation instructions and mandatory requirements — often scored pass/fail before quality.",
-	},
-	{
 		id: "topic-compliance-matrix",
 		term: "Compliance Matrix",
 		aliases: ["compliance-matrix"],
@@ -206,18 +169,6 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 			"Temporary funding that generally continues existing operations and restricts new starts.",
 	},
 	{
-		id: "topic-contract",
-		term: "Contract",
-		definition:
-			"A mutually binding legal relationship obligating the seller to furnish supplies/services and the buyer to pay.",
-	},
-	{
-		id: "topic-contrast",
-		term: "Contrast",
-		definition:
-			"A contrast topic — clarifies two lookalike ideas by showing how they differ in practice.",
-	},
-	{
 		id: "topic-corrective-action",
 		term: "Corrective Action",
 		aliases: ["corrective-action"],
@@ -230,18 +181,6 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 		aliases: ["cost-realism"],
 		definition:
 			"Evaluation of whether proposed costs are realistic for the work under cost-reimbursement awards.",
-	},
-	{
-		id: "topic-decision",
-		term: "Decision",
-		definition:
-			"A decision topic — frames a choice capture teams make and the criteria that should drive it.",
-	},
-	{
-		id: "topic-definition",
-		term: "Definition",
-		definition:
-			"A definition topic — introduces a core FAR or capture term and what it means in the field.",
 	},
 	{
 		id: "topic-discussions",
@@ -277,67 +216,6 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 			"GSA eBuy — the electronic RFQ tool commonly used for Schedule competitions.",
 	},
 	{
-		id: "topic-economics",
-		term: "Economics",
-		definition:
-			"Price, cost, and margin realities that affect bid/no-bid and solution strategy.",
-	},
-	{
-		id: "topic-eligibility",
-		term: "Eligibility",
-		definition:
-			"Whether a firm may compete — size status, vehicle holding, responsibility, and solicitation filters.",
-	},
-	{
-		id: "topic-escalation",
-		term: "Escalation",
-		definition:
-			"Raising an issue to higher authority when local guidance or direction is unclear or improper.",
-	},
-	{
-		id: "topic-ethics",
-		term: "Ethics",
-		definition:
-			"Procurement integrity and conflict rules that constrain contacts, gifts, and revolving-door moves.",
-	},
-	{
-		id: "topic-evaluation",
-		term: "Evaluation",
-		definition:
-			"How the agency scores or rates offers against stated factors and subfactors.",
-	},
-	{
-		id: "topic-evidence",
-		term: "Evidence",
-		definition:
-			"Proof in the proposal — past performance, resumes, data, and artifacts that support claims.",
-	},
-	{
-		id: "topic-exceptions",
-		term: "Exceptions",
-		definition:
-			"Stated departures from solicitation terms — risky unless the solicitation allows them.",
-	},
-	{
-		id: "topic-expiration",
-		term: "Expiration",
-		definition:
-			"End of a contract, option, or vehicle ordering period — leftover ceiling does not extend access.",
-	},
-	{
-		id: "topic-failure-mode",
-		term: "Failure Mode",
-		aliases: ["failure-mode"],
-		definition:
-			"A failure-mode topic — names a common mistake and how to spot or avoid it.",
-	},
-	{
-		id: "topic-fairness",
-		term: "Fairness",
-		definition:
-			"Equal treatment of offerors — information leveling, consistent evaluation, and protest risk.",
-	},
-	{
 		id: "topic-far-9-6",
 		term: "FAR 9.6",
 		aliases: ["far-9-6"],
@@ -356,19 +234,6 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 		term: "FFP",
 		definition:
 			"Firm-fixed-price — the contractor bears cost risk for delivering the stated work at the agreed price.",
-	},
-	{
-		id: "topic-field-guide",
-		term: "Field Guide",
-		aliases: ["field-guide"],
-		definition:
-			"A field-guide topic — practical how-to framing for applying the idea in day-to-day capture work.",
-	},
-	{
-		id: "topic-filters",
-		term: "Filters",
-		definition:
-			"Solicitation or vehicle constraints that shrink the competitive field (NAICS, set-aside, clearance).",
 	},
 	{
 		id: "topic-final-rfp",
@@ -424,12 +289,6 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 			"Running bid/no-bid and color-team gates with real kill criteria, not rubber stamps.",
 	},
 	{
-		id: "topic-gates",
-		term: "Gates",
-		definition:
-			"Formal capture decision points (pursue, bid, price-to-win) with exit criteria.",
-	},
-	{
 		id: "topic-ghostwriting",
 		term: "Ghostwriting",
 		definition:
@@ -482,13 +341,6 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 			"A successful offeror joining a protest to defend the award.",
 	},
 	{
-		id: "topic-investment-decision",
-		term: "Investment Decision",
-		aliases: ["investment-decision"],
-		definition:
-			"Whether the expected value of a pursuit justifies bid cost and opportunity cost.",
-	},
-	{
 		id: "topic-key-personnel",
 		term: "Key Personnel",
 		aliases: ["key-personnel"],
@@ -501,18 +353,6 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 		aliases: ["large-prime"],
 		definition:
 			"A large-business prime role — shapes subcontracting plan, teaming, and set-aside strategy.",
-	},
-	{
-		id: "topic-leak",
-		term: "Leak",
-		definition:
-			"Unauthorized disclosure of procurement-sensitive information — integrity and competition risk.",
-	},
-	{
-		id: "topic-lifecycle",
-		term: "Lifecycle",
-		definition:
-			"The acquisition path from need through market research, solicitation, award, order, and performance.",
 	},
 	{
 		id: "topic-limited-sources",
@@ -528,23 +368,11 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 			"Level of supply / related logistics shorthand in some vehicle contexts — confirm local usage.",
 	},
 	{
-		id: "topic-margin",
-		term: "Margin",
-		definition:
-			"Profit left after cost — priced into FFP strategy and monitored on cost-type burn.",
-	},
-	{
 		id: "topic-market-research",
 		term: "Market Research",
 		aliases: ["market-research"],
 		definition:
 			"The Government’s process to understand industry capability before choosing an acquisition path.",
-	},
-	{
-		id: "topic-mitigation",
-		term: "Mitigation",
-		definition:
-			"Actions to reduce OCI, risk, or proposal weakness to an acceptable level.",
 	},
 	{
 		id: "topic-nda",
@@ -565,12 +393,6 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 		aliases: ["notice-types"],
 		definition:
 			"Categories of SAM.gov notices (sources sought, presolicitation, solicitation, award, etc.).",
-	},
-	{
-		id: "topic-notices",
-		term: "Notices",
-		definition:
-			"Public procurement announcements that signal upcoming or active buying activity.",
 	},
 	{
 		id: "topic-on-ramp",
@@ -647,12 +469,6 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 			"Mission results the agency cares about — distinct from contract outputs or activity metrics.",
 	},
 	{
-		id: "topic-ownership",
-		term: "Ownership",
-		definition:
-			"Internal accountability for capture, proposal, pricing, and delivery decisions.",
-	},
-	{
 		id: "topic-palt",
 		term: "PALT",
 		definition:
@@ -693,12 +509,6 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 			"Keeping pursuit data current — dates, amounts, stage, and kill status.",
 	},
 	{
-		id: "topic-portfolio",
-		term: "Portfolio",
-		definition:
-			"The set of vehicles, bids, and contracts a firm manages as a whole.",
-	},
-	{
 		id: "topic-prejudice",
 		term: "Prejudice",
 		definition:
@@ -710,12 +520,6 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 		aliases: ["price-to-win"],
 		definition:
 			"The competitive price target reverse-engineered from customer budget and rival positioning.",
-	},
-	{
-		id: "topic-pricing",
-		term: "Pricing",
-		definition:
-			"How the offer is priced — structure, realism, and alignment to evaluation and cost risk.",
 	},
 	{
 		id: "topic-procurement-integrity",
@@ -730,12 +534,6 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 		aliases: ["protest-timing"],
 		definition:
 			"Strict deadlines for filing protests at GAO, the agency, or COFC.",
-	},
-	{
-		id: "topic-qualification",
-		term: "Qualification",
-		definition:
-			"Meeting mandatory experience, clearance, or certification thresholds to be eligible.",
 	},
 	{
 		id: "topic-recompete",
@@ -824,12 +622,6 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 			"Required plan for large businesses on certain contracts describing small business participation.",
 	},
 	{
-		id: "topic-submission",
-		term: "Submission",
-		definition:
-			"Delivering the proposal by the stated time, place, and format rules.",
-	},
-	{
 		id: "topic-sunk-cost",
 		term: "Sunk Cost",
 		aliases: ["sunk-cost"],
@@ -850,23 +642,11 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 			"An order for services under an IDIQ or similar vehicle.",
 	},
 	{
-		id: "topic-teaming",
-		term: "Teaming",
-		definition:
-			"Structuring primes, subs, and teammates for capability, past performance, and compliance.",
-	},
-	{
 		id: "topic-teaming-agreement",
 		term: "Teaming Agreement",
 		aliases: ["teaming-agreement"],
 		definition:
 			"A pre-award agreement among teammates on roles, exclusivity, and proposal duties.",
-	},
-	{
-		id: "topic-timeliness",
-		term: "Timeliness",
-		definition:
-			"Meeting filing, proposal, or debriefing deadlines — late is usually out.",
 	},
 	{
 		id: "topic-ucf",

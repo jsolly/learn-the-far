@@ -207,7 +207,7 @@
 			>
 				{#if answered}
 					<Button size="lg" class="w-full max-w-xs sm:w-auto sm:px-10" onclick={() => game.next()}>
-						{game.willFinishAfterNext ? "Finish" : "Continue"}
+						{game.willFinishAfterNext ? "Finish" : "Next Question"}
 					</Button>
 				{:else}
 					<span class="text-xs text-muted-foreground">Pick your answer</span>

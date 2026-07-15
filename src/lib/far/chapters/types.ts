@@ -49,6 +49,11 @@ export type Chapter = {
 	/** One-line shelf card promise. */
 	summary: string;
 	intro: string;
+	/**
+	 * Glossary jargon for shelf “Topics covered” pills (must resolve via resolveChapterTag).
+	 * Prefer CHAPTER_QUESTION_IDS for end-of-chapter / miss→study linking — do not assume
+	 * these strings match quiz question tags.
+	 */
 	tags: string[];
 	readingMinutes: number;
 	/** Suggested browse order within the unit shelf (1-based). */

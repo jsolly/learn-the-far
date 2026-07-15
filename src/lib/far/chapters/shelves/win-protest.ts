@@ -16,7 +16,7 @@ export const WIN_PROTEST_SHELF_CHAPTERS: Chapter[] = [
 			"Defines solicitation defects that must be protested before offers are due — waiting until after award usually forfeits the ground.",
 		intro:
 			"Timeliness rules that determine which objections remain live after award — patent solicitation defects versus later-known grounds.",
-		tags: ["advanced", "failure-mode", "decision", "timeliness"],
+		tags: ["protest-timing", "gao-protest", "solicitation"],
 		readingMinutes: 8,
 		suggestedOrder: 1,
 		pieces: [
@@ -53,7 +53,7 @@ export const WIN_PROTEST_SHELF_CHAPTERS: Chapter[] = [
 			"Defines the difference between award notice and debriefing, and the written three-day request that preserves protest timing.",
 		intro:
 			"The unsuccessful-offeror notice and the three-day window to request a required postaward debriefing under FAR Part 15.",
-		tags: ["definition", "decision", "debriefing"],
+		tags: ["debriefing"],
 		readingMinutes: 5,
 		suggestedOrder: 2,
 		pieces: [
@@ -90,7 +90,7 @@ export const WIN_PROTEST_SHELF_CHAPTERS: Chapter[] = [
 			"Defines what FAR 15.506(d) requires in a debriefing, why completion date matters, and what not to import from DoD-only rules.",
 		intro:
 			"What a civilian Part 15 debriefing must cover, what it cannot disclose, and why follow-up questions are not automatic clock extenders.",
-		tags: ["field-guide", "contrast", "debriefing"],
+		tags: ["debriefing"],
 		readingMinutes: 7,
 		suggestedOrder: 3,
 		pieces: [
@@ -132,7 +132,7 @@ export const WIN_PROTEST_SHELF_CHAPTERS: Chapter[] = [
 			"Defines the three elements of a viable protest theory — disappointment alone is not enough.",
 		intro:
 			"The three-part structure of a credible bid protest — rule, record evidence, and competitive prejudice.",
-		tags: ["decision", "field-guide", "prejudice", "evaluation"],
+		tags: ["prejudice"],
 		readingMinutes: 8,
 		suggestedOrder: 4,
 		pieces: [
@@ -179,7 +179,7 @@ export const WIN_PROTEST_SHELF_CHAPTERS: Chapter[] = [
 			"Defines which protest forum has jurisdiction and remedies for the dispute you actually have.",
 		intro:
 			"Forums for bid protests — agency, GAO, Court of Federal Claims, SBA size/status, and task-order limits.",
-		tags: ["contrast", "decision", "advanced", "forum-selection"],
+		tags: ["forum-selection"],
 		readingMinutes: 9,
 		suggestedOrder: 5,
 		pieces: [
@@ -231,7 +231,7 @@ export const WIN_PROTEST_SHELF_CHAPTERS: Chapter[] = [
 			"Defines the separate clocks for a timely protest on the merits and for triggering the CICA stay of performance.",
 		intro:
 			"Why filing inside the GAO merits window does not automatically trigger a CICA performance stay.",
-		tags: ["failure-mode", "advanced", "cica-stay", "timeliness"],
+		tags: ["cica-stay"],
 		readingMinutes: 8,
 		suggestedOrder: 6,
 		pieces: [
@@ -268,7 +268,7 @@ export const WIN_PROTEST_SHELF_CHAPTERS: Chapter[] = [
 			"Defines awardee defense steps: intervene, preserve the record, and follow CO direction under FAR 52.233-3 stop-work.",
 		intro:
 			"Terms for the awardee side — GAO intervention, record preservation, stop-work, and continuity of services.",
-		tags: ["field-guide", "advanced", "intervention", "stop-work"],
+		tags: ["intervention", "stop-work"],
 		readingMinutes: 9,
 		suggestedOrder: 7,
 		pieces: [
@@ -320,7 +320,7 @@ export const WIN_PROTEST_SHELF_CHAPTERS: Chapter[] = [
 			"Defines how corrective action can reset evaluation and award clocks, and why CPARS rebuttals are not a protest substitute.",
 		intro:
 			"Corrective action as a fresh acquisition event, and why CPARS belongs in a separate lane from bid protest.",
-		tags: ["advanced", "decision", "corrective-action", "cpars"],
+		tags: ["corrective-action", "cpars"],
 		readingMinutes: 8,
 		suggestedOrder: 8,
 		pieces: [
