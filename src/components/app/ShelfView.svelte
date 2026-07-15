@@ -4,7 +4,7 @@
 	import { UNITS } from "$lib/far/deck";
 	import type { UnitId } from "$lib/far/types";
 	import { resolveChapterTag } from "$lib/far/glossary";
-	import { learnChapterPath } from "$lib/learn-routes";
+	import { learnChapterPath, learnShelfPath } from "$lib/learn-routes";
 	import { game } from "$lib/quiz-state.svelte.js";
 	import { Button } from "$lib/components/ui/button";
 	import { Badge } from "$lib/components/ui/badge";
@@ -13,6 +13,9 @@
 	let shelf = $derived(game.shelf);
 	let headingEl: HTMLHeadingElement | null = $state(null);
 	let unlockHeadingEl: HTMLHeadingElement | null = $state(null);
+	let unlockStatusId = $derived(
+		shelf ? `shelf-unlock-status-${shelf.unitId}` : "shelf-unlock-status",
+	);
 
 	/** Only glossary-backed jargon — not pedagogical or everyday-English tags. */
 	function loadBearingTags(tags: string[]): string[] {
@@ -67,20 +70,24 @@
 		</header>
 
 		{#if game.routeLocked}
-			<div class="rounded-2xl border-2 border-border bg-card p-5 sm:p-6">
+			<div class="mb-6 rounded-2xl border-2 border-border bg-card p-5 sm:mb-8 sm:p-6">
 				<h2
 					bind:this={unlockHeadingEl}
 					tabindex="-1"
 					class="font-semibold outline-none focus-visible:ring-2 focus-visible:ring-ring sm:text-lg"
 				>
-					Unlock this shelf first
+					Quiz unlocks after Basics
 				</h2>
-				<p class="mt-2 text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7" role="status">
-					Lifecycle shelves open after you clear Master the Basics. Finish the Basics
-					placement (or test out), then come back to this link.
+				<p
+					id={unlockStatusId}
+					class="mt-2 text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7"
+					role="status"
+				>
+					You can read every chapter on this shelf now. Lifecycle quizzes open after you
+					clear Master the Basics (or test out).
 				</p>
 				<div class="mt-5 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-					<Button size="lg" class="w-full sm:w-auto" href="/learn/fundamentals">
+					<Button size="lg" class="w-full sm:w-auto" href={learnShelfPath("fundamentals")}>
 						Open Basics shelf
 					</Button>
 					<Button size="lg" variant="outline" class="w-full sm:w-auto" href="/">
@@ -88,59 +95,63 @@
 					</Button>
 				</div>
 			</div>
-		{:else}
-			<ul class="flex flex-col gap-3 sm:gap-4" aria-label="Chapters on this shelf">
-				{#each shelf.chapters as ch (ch.id)}
-					{@const read = game.isChapterRead(ch.id)}
-					{@const pills = loadBearingTags(ch.tags)}
-					<li
-						class="rounded-2xl border-2 border-border bg-card transition-colors hover:border-primary/50 hover:bg-muted/30"
-					>
-						<a
-							href={learnChapterPath(shelf.unitId, ch.id)}
-							class="flex w-full flex-col gap-2 p-4 text-left sm:p-5"
-						>
-							<div class="flex flex-wrap items-center gap-2">
-								{#if read}
-									<Badge variant="secondary" class="text-[0.65rem] sm:text-xs">Read</Badge>
-								{/if}
-								<span class="text-xs tabular-nums text-muted-foreground sm:text-sm">
-									~{ch.readingMinutes} min
-								</span>
-							</div>
-							<p class="font-semibold leading-snug sm:text-lg">{ch.title}</p>
-							<p class="text-xs leading-5 text-muted-foreground sm:text-sm sm:leading-6">
-								{ch.summary}
-							</p>
-						</a>
-						{#if pills.length > 0}
-							<div class="flex flex-col gap-1.5 px-4 pb-4 sm:px-5 sm:pb-5">
-								<p
-									class="text-[0.65rem] font-semibold uppercase tracking-wide text-muted-foreground sm:text-xs"
-								>
-									Topics covered
-								</p>
-								<div class="flex flex-wrap gap-1.5">
-									{#each pills as tag (tag)}
-										<TopicPill {tag} />
-									{/each}
-								</div>
-							</div>
-						{/if}
-					</li>
-				{/each}
-			</ul>
-
-			<div class="mt-10 border-t pt-6 sm:mt-12">
-				<p class="mb-3 text-sm text-muted-foreground">Ready to prove it?</p>
-				<Button
-					size="lg"
-					class="w-full sm:h-11 sm:w-auto sm:text-base"
-					onclick={() => game.startUnit(shelf.unitId)}
-				>
-					Check yourself — Quiz {unitLabel(shelf.unitId)}
-				</Button>
-			</div>
 		{/if}
+
+		<ul class="flex flex-col gap-3 sm:gap-4" aria-label="Chapters on this shelf">
+			{#each shelf.chapters as ch (ch.id)}
+				{@const read = game.isChapterRead(ch.id)}
+				{@const pills = loadBearingTags(ch.tags)}
+				<li
+					class="rounded-2xl border-2 border-border bg-card transition-colors hover:border-primary/50 hover:bg-muted/30"
+				>
+					<a
+						href={learnChapterPath(shelf.unitId, ch.id)}
+						class="flex w-full flex-col gap-2 p-4 text-left sm:p-5"
+					>
+						<div class="flex flex-wrap items-center gap-2">
+							{#if read}
+								<Badge variant="secondary" class="text-[0.65rem] sm:text-xs">Read</Badge>
+							{/if}
+							<span class="text-xs tabular-nums text-muted-foreground sm:text-sm">
+								~{ch.readingMinutes} min
+							</span>
+						</div>
+						<p class="font-semibold leading-snug sm:text-lg">{ch.title}</p>
+						<p class="text-xs leading-5 text-muted-foreground sm:text-sm sm:leading-6">
+							{ch.summary}
+						</p>
+					</a>
+					{#if pills.length > 0}
+						<div class="flex flex-col gap-1.5 px-4 pb-4 sm:px-5 sm:pb-5">
+							<p
+								class="text-[0.65rem] font-semibold uppercase tracking-wide text-muted-foreground sm:text-xs"
+							>
+								Topics covered
+							</p>
+							<div class="flex flex-wrap gap-1.5">
+								{#each pills as tag (tag)}
+									<TopicPill {tag} />
+								{/each}
+							</div>
+						</div>
+					{/if}
+				</li>
+			{/each}
+		</ul>
+
+		<div class="mt-10 border-t pt-6 sm:mt-12">
+			<p class="mb-3 text-sm text-muted-foreground">
+				{game.routeLocked ? "Quizzes unlock after Basics" : "Ready to prove it?"}
+			</p>
+			<Button
+				size="lg"
+				class="w-full sm:h-11 sm:w-auto sm:text-base"
+				disabled={game.routeLocked}
+				aria-describedby={game.routeLocked ? unlockStatusId : undefined}
+				onclick={() => game.startUnit(shelf.unitId)}
+			>
+				Check yourself — Quiz {unitLabel(shelf.unitId)}
+			</Button>
+		</div>
 	</div>
 {/if}

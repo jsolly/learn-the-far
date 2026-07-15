@@ -137,7 +137,6 @@
 						? "border-border/50 bg-muted/40"
 						: "border-border bg-card"
 				}`}
-				aria-disabled={lifecycleLocked ? "true" : undefined}
 			>
 				<div class="flex items-start gap-3 sm:gap-4">
 					<span
@@ -209,8 +208,7 @@
 						class="flex-1"
 						size="sm"
 						variant="outline"
-						disabled={lifecycleLocked}
-						href={lifecycleLocked ? undefined : learnShelfPath(s.unit.id)}
+						href={learnShelfPath(s.unit.id)}
 					>
 						Start learning
 					</Button>

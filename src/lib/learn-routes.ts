@@ -9,11 +9,11 @@ export function isUnitId(value: string | null | undefined): value is UnitId {
 }
 
 export function learnShelfPath(unitId: UnitId): string {
-	return `/learn/${unitId}`;
+	return `/learn/${unitId}/`;
 }
 
 export function learnChapterPath(unitId: UnitId, chapterId: string): string {
-	return `/learn/${unitId}/${chapterId}`;
+	return `/learn/${unitId}/${chapterId}/`;
 }
 
 export type LearnRoute =
