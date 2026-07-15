@@ -66,7 +66,7 @@ export const FIND_SHELF_CHAPTERS: Chapter[] = [
 			"Defines a practical discovery setup: filter stacks, forecasts, and vehicle/eBuy channels that surface early demand systematically.",
 		intro:
 			"Vocabulary for coverage design — intersecting filters, saved searches, agency forecasts, and vehicle-only portals.",
-		tags: ["sam-gov", "filters", "forecast", "ebuy", "early-discovery"],
+		tags: ["sam-gov", "forecast", "ebuy", "early-discovery"],
 		readingMinutes: 7,
 		suggestedOrder: 2,
 		pieces: [
@@ -164,7 +164,7 @@ export const FIND_SHELF_CHAPTERS: Chapter[] = [
 			"Defines PALT and bridge justifications so recompete timing is planned backward from award need — not assumed from incumbency.",
 		intro:
 			"Terms for backsolving solicitation timing from a required award date and reading bridge justifications as schedule evidence.",
-		tags: ["palt", "recompete", "bridge", "forecast", "expiration"],
+		tags: ["palt", "recompete", "bridge", "forecast"],
 		readingMinutes: 8,
 		suggestedOrder: 4,
 		pieces: [
@@ -257,7 +257,7 @@ export const FIND_SHELF_CHAPTERS: Chapter[] = [
 			"Defines eligibility factors that decide whether you can prime, must partner, or should pass.",
 		intro:
 			"Terms for triaging size status under assigned NAICS, set-aside signals, and vehicle visibility before capture investment.",
-		tags: ["set-aside", "naics", "eligibility", "ebuy", "partner-discovery"],
+		tags: ["set-aside", "naics", "ebuy", "partner-discovery"],
 		readingMinutes: 7,
 		suggestedOrder: 6,
 		pieces: [
@@ -306,7 +306,7 @@ export const FIND_SHELF_CHAPTERS: Chapter[] = [
 			"Defines when a lead becomes a qualified opportunity, what integrity rules bound usable information, and how to treat incumbent status as a fact.",
 		intro:
 			"Capture-practice vocabulary for pipeline qualification, procurement integrity, and incumbent posture — house method, not FAR stages.",
-		tags: ["pipeline-hygiene", "qualification", "evidence", "procurement-integrity"],
+		tags: ["pipeline-hygiene", "procurement-integrity"],
 		readingMinutes: 8,
 		suggestedOrder: 7,
 		pieces: [

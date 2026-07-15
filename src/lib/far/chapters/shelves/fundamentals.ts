@@ -18,7 +18,7 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 			"Defines need, market research, solicitation, award, order, and performance — and why forecasts and industry days are signals, not awards.",
 		intro:
 			"Terms for the stages of a federal acquisition. A forecast line, a sources-sought reply, a draft RFP, an award notice, and a funded order are not the same thing.",
-		tags: ["lifecycle", "definition", "field-guide"],
+		tags: ["market-research", "solicitation", "forecast"],
 		readingMinutes: 6,
 		suggestedOrder: 1,
 		pieces: [
@@ -67,7 +67,7 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 			"Defines who can bind the Government versus who monitors performance or owns mission need — so scope changes go to the right authority.",
 		intro:
 			"Roles that speak for the Government on technical performance versus roles that can bind it to a contract action.",
-		tags: ["authority", "contracting-officer", "cor", "government-pm", "definition"],
+		tags: ["contracting-officer", "cor", "government-pm"],
 		readingMinutes: 8,
 		suggestedOrder: 2,
 		pieces: [
@@ -133,7 +133,7 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 			"Explains how FAR citations are numbered, how agency supplements and deviations stack on top, and the difference between pre-award provisions and post-award clauses.",
 		intro:
 			"Layers of the acquisition rule stack: FAR citations, agency supplements, deviations, and the operative solicitation.",
-		tags: ["far-navigation", "supplements", "solicitation", "ucf", "definition"],
+		tags: ["far-navigation", "supplements", "solicitation", "ucf"],
 		readingMinutes: 7,
 		suggestedOrder: 3,
 		pieces: [
@@ -256,7 +256,7 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 			"Defines each notice and solicitation type, when UCF Sections L and M apply, and how SOW, PWS, and SOO shape the requirements document.",
 		intro:
 			"Instrument vocabulary from market research through the operative solicitation — before a single page of proposal is written.",
-		tags: ["notices", "solicitation", "ucf", "sow", "pws", "field-guide"],
+		tags: ["solicitation", "ucf", "sow", "pws"],
 		readingMinutes: 9,
 		suggestedOrder: 5,
 		pieces: [
@@ -313,7 +313,7 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 			"Defines the SSA versus the evaluation team, and the differences among full and open competition, set-asides, and sole-source.",
 		intro:
 			"Who decides in source selection, and which competition path was chosen before anyone scores a proposal.",
-		tags: ["source-selection", "ssa", "competition", "set-aside", "decision"],
+		tags: ["source-selection", "ssa", "set-aside"],
 		readingMinutes: 8,
 		suggestedOrder: 6,
 		pieces: [
@@ -362,7 +362,7 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 			"Defines a FAR contract, how firm-fixed-price allocates cost risk, and why Multiple Award Schedule and GWAC are different buying lanes.",
 		intro:
 			"Instrument vocabulary for awards: contract, firm-fixed-price risk, and schedule vs GWAC buying paths.",
-		tags: ["contract", "ffp", "mas", "gwac", "definition", "contrast"],
+		tags: ["ffp", "mas", "gwac"],
 		readingMinutes: 9,
 		suggestedOrder: 7,
 		pieces: [
@@ -423,7 +423,7 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 			"Defines IDIQ minimums and ceilings, base periods versus options, and why allotted CLIN funding — not estimated line value — authorizes performance.",
 		intro:
 			"Numbers that look like backlog — ceilings, option years, CLIN totals — versus allotted funding and written exercise.",
-		tags: ["idiq", "options", "funding", "clin", "contrast", "failure-mode"],
+		tags: ["idiq", "options", "funding", "clin"],
 		readingMinutes: 8,
 		suggestedOrder: 8,
 		pieces: [
@@ -480,7 +480,7 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 			"Defines this course’s Pwin method, price-to-win versus cost estimating, and bid gates / color reviews as house capture practice — not FAR mandates.",
 		intro:
 			"Capture-practice vocabulary for investment decisions — where regulation ends and house method begins.",
-		tags: ["pwin", "price-to-win", "gates", "capture-practice", "decision"],
+		tags: ["pwin", "price-to-win"],
 		readingMinutes: 9,
 		suggestedOrder: 9,
 		pieces: [
@@ -535,7 +535,7 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 			"Defines how contractor performance information becomes past-performance currency, and how options and recompete timing connect this award to the next competition.",
 		intro:
 			"Terms that connect today’s performance to the next competition’s past-performance and option story.",
-		tags: ["cpars", "options", "recompete", "past-performance", "field-guide"],
+		tags: ["cpars", "options", "recompete", "past-performance"],
 		readingMinutes: 7,
 		suggestedOrder: 10,
 		pieces: [

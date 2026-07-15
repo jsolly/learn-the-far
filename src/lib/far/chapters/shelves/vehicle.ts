@@ -64,7 +64,7 @@ export const VEHICLE_SHELF_CHAPTERS: Chapter[] = [
 			"Defines who may submit a prime order response, how on-ramps add holders, and how subcontract paths differ in privity.",
 		intro:
 			"Who may receive an order on a vehicle contract versus who may support as subcontractor or team member.",
-		tags: ["vehicle-access", "holder", "subcontracting", "privity", "teaming"],
+		tags: ["vehicle-access", "holder", "subcontracting", "privity"],
 		readingMinutes: 6,
 		suggestedOrder: 2,
 		pieces: [
@@ -279,7 +279,7 @@ export const VEHICLE_SHELF_CHAPTERS: Chapter[] = [
 			"Defines base-pool award versus order award, IDIQ ceilings, and fair-opportunity exceptions.",
 		intro:
 			"Two competitions on multiple-award IDIQs — base pool placement and order-level fair opportunity — plus ceiling math.",
-		tags: ["IDIQ", "fair-opportunity", "task-order", "ceiling-burn", "exceptions"],
+		tags: ["IDIQ", "fair-opportunity", "task-order", "ceiling-burn"],
 		readingMinutes: 8,
 		suggestedOrder: 6,
 		pieces: [
@@ -336,7 +336,7 @@ export const VEHICLE_SHELF_CHAPTERS: Chapter[] = [
 			"Defines vehicle lifecycle windows and when an order stays within base-contract scope — leftover ceiling does not cure a cardinal change.",
 		intro:
 			"Vehicle generations, ordering periods, and scope limits — ceiling room does not cure a cardinal change.",
-		tags: ["lifecycle", "on-ramp", "scope", "cardinal-change", "ordering-period"],
+		tags: ["on-ramp", "scope", "cardinal-change", "ordering-period"],
 		readingMinutes: 7,
 		suggestedOrder: 7,
 		pieces: [

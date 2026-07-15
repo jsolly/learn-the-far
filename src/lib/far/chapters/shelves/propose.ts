@@ -17,7 +17,7 @@ export const PROPOSE_SHELF_CHAPTERS: Chapter[] = [
 			"Defines how instruction and evaluation sections work together, and the vocabulary of LPTA, tradeoff, weaknesses, and deficiencies.",
 		intro:
 			"Terms for how evaluators read a solicitation: instructions that get you evaluated, factors that get you scored, and the method that decides whether extras help or hurt.",
-		tags: ["definition", "field-guide", "section-l", "section-m"],
+		tags: ["section-l", "section-m"],
 		readingMinutes: 7,
 		suggestedOrder: 1,
 		pieces: [
@@ -69,7 +69,7 @@ export const PROPOSE_SHELF_CHAPTERS: Chapter[] = [
 			"Defines the control system that tracks requirements ownership and review purpose — beyond ritual color-team names.",
 		intro:
 			"Terms for governing a proposal effort: a living compliance matrix, named owners, cross-volume dependencies, and purpose-specific reviews at the right maturity.",
-		tags: ["field-guide", "decision", "compliance-matrix", "color-reviews"],
+		tags: ["compliance-matrix", "color-reviews"],
 		readingMinutes: 7,
 		suggestedOrder: 2,
 		pieces: [
@@ -116,7 +116,7 @@ export const PROPOSE_SHELF_CHAPTERS: Chapter[] = [
 			"Defines evidence-based proposal claims: mechanism and support, attributed past performance, and orals as scored evidence.",
 		intro:
 			"Terms for scoreable proposal content: a feature–mechanism–benefit chain, attributed past performance, personnel commitments, and orals as another evidence channel.",
-		tags: ["field-guide", "evidence", "past-performance", "orals"],
+		tags: ["past-performance", "orals"],
 		readingMinutes: 8,
 		suggestedOrder: 3,
 		pieces: [
@@ -173,7 +173,7 @@ export const PROPOSE_SHELF_CHAPTERS: Chapter[] = [
 			"Defines how solution, staffing, and price must cohere — and why reasonableness is not the same as cost realism.",
 		intro:
 			"Terms for reading technical, staffing, and price volumes as one offer — and for cost realism, unbalanced pricing, and tradeoff value analysis.",
-		tags: ["contrast", "decision", "pricing", "cost-realism"],
+		tags: ["cost-realism"],
 		readingMinutes: 9,
 		suggestedOrder: 4,
 		pieces: [
@@ -225,7 +225,7 @@ export const PROPOSE_SHELF_CHAPTERS: Chapter[] = [
 			"Defines the operative solicitation freeze before upload: amendments, page limits, validity, and cross-volume consistency.",
 		intro:
 			"Terms for final production compliance: the operative solicitation baseline, amendment acknowledgments, page and format rules, and acceptance-period authority.",
-		tags: ["failure-mode", "field-guide", "amendments", "compliance"],
+		tags: ["amendments"],
 		readingMinutes: 8,
 		suggestedOrder: 5,
 		pieces: [
@@ -277,7 +277,7 @@ export const PROPOSE_SHELF_CHAPTERS: Chapter[] = [
 			"Defines when a proposal is timely under FAR receipt rules — and why portal problems rarely excuse lateness.",
 		intro:
 			"Terms for submission discipline: validated receipt, preserved evidence, and the solicitation provision that governs any narrow electronic exception.",
-		tags: ["failure-mode", "decision", "timeliness", "submission"],
+		tags: ["solicitation", "section-l"],
 		readingMinutes: 6,
 		suggestedOrder: 6,
 		pieces: [
@@ -314,7 +314,7 @@ export const PROPOSE_SHELF_CHAPTERS: Chapter[] = [
 			"Defines post-receipt exchanges under FAR 15.306 — clarifications versus discussions versus FPRs.",
 		intro:
 			"Terms for the controlled exchange lifecycle after receipt: clarifications, communications, discussions, and final proposal revisions.",
-		tags: ["advanced", "field-guide", "discussions", "fpr"],
+		tags: ["discussions", "fpr"],
 		readingMinutes: 9,
 		suggestedOrder: 7,
 		pieces: [

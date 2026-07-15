@@ -67,6 +67,12 @@ export const CHAPTER_QUESTION_IDS: Readonly<Record<string, readonly string[]>> =
 		"fund-craft-cpars-kickoff",
 		"fund-contracts-base-options-recompete",
 	],
+	/** Propose / Win & Protest — explicit maps so glossary-only shelf pills don't break quiz linkage. */
+	"submitted-means-received": ["propose-late-is-late", "propose-electronic-late-exception"],
+	"deadline-already-missed": [
+		"win-protest-apparent-solicitation-defect",
+		"win-protest-general-gao-timeliness",
+	],
 };
 
 /** Pedagogical chapter tags that should not drive question matching. */

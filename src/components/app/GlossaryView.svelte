@@ -54,8 +54,8 @@
 			Glossary
 		</h1>
 		<p class="mt-2 text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
-			Key FAR and capture terms, plus the topic pills on study cards. In chapters, the first
-			mention of a core term opens a short definition.
+			Key FAR and capture terms — jargon worth looking up, not everyday English. In chapters,
+			the first mention of a core term opens a short definition.
 		</p>
 		<label class="mt-4 block">
 			<span class="sr-only">Filter glossary</span>

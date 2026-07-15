@@ -64,7 +64,7 @@ export const SHAPE_SHELF_CHAPTERS: Chapter[] = [
 			"Defines what makes market-research input usable to the agency: comparable facts, tradeoffs, and honest capacity — not brochure pressure.",
 		intro:
 			"Vocabulary for market-research replies that planners can actually use: capable sources, feasible approaches, transition risk, and measurable alternatives.",
-		tags: ["market-research", "sources-sought", "rfi", "evidence", "large-prime"],
+		tags: ["market-research", "sources-sought", "rfi", "large-prime"],
 		readingMinutes: 8,
 		suggestedOrder: 2,
 		pieces: [
@@ -148,7 +148,7 @@ export const SHAPE_SHELF_CHAPTERS: Chapter[] = [
 			"Defines how industry comments and questions should improve the buy without creating private advantage after release.",
 		intro:
 			"Terms for draft-RFP comment craft and the contracting-officer channel that levels proposal-necessary facts after release.",
-		tags: ["draft-rfp", "comments", "industry-day", "information-leveling", "fairness"],
+		tags: ["draft-rfp", "industry-day", "information-leveling"],
 		readingMinutes: 9,
 		suggestedOrder: 4,
 		pieces: [
@@ -200,7 +200,7 @@ export const SHAPE_SHELF_CHAPTERS: Chapter[] = [
 			"Defines the line between helpful industry input and writing the Government’s PWS, justification, or lock-in specifications.",
 		intro:
 			"Boundaries for industry help: evidence and alternatives stay with the Government; competitive work statements and J&As stay with authorized officials.",
-		tags: ["ghostwriting", "biased-ground-rules", "ja", "brand-name-or-equal", "ownership"],
+		tags: ["ghostwriting", "biased-ground-rules", "ja", "brand-name-or-equal"],
 		readingMinutes: 9,
 		suggestedOrder: 5,
 		pieces: [
@@ -257,7 +257,7 @@ export const SHAPE_SHELF_CHAPTERS: Chapter[] = [
 			"Defines OCI archetypes and the matching toolkit of avoidance, neutralization, mitigation, or waiver.",
 		intro:
 			"Three OCI archetypes and the remedies the contracting officer applies — not informal program waivers.",
-		tags: ["oci", "biased-ground-rules", "unequal-access", "impaired-objectivity", "mitigation"],
+		tags: ["oci", "biased-ground-rules", "unequal-access", "impaired-objectivity"],
 		readingMinutes: 10,
 		suggestedOrder: 6,
 		pieces: [
@@ -304,7 +304,7 @@ export const SHAPE_SHELF_CHAPTERS: Chapter[] = [
 			"Defines integrity stop-points during shaping: protected information, compensation restrictions, and mishandled unsolicited proposals.",
 		intro:
 			"Terms for protected procurement information, former-official restrictions, and the unsolicited-proposal instrument.",
-		tags: ["procurement-integrity", "escalation", "revolving-door", "ethics", "leak"],
+		tags: ["procurement-integrity", "revolving-door"],
 		readingMinutes: 8,
 		suggestedOrder: 7,
 		pieces: [
