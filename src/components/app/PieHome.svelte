@@ -141,7 +141,7 @@
 				<div class="flex items-start gap-3 sm:gap-4">
 					<span
 						class={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold sm:h-12 sm:w-12 sm:text-base ${
-							lifecycleLocked ? "bg-muted-foreground/35 text-muted-foreground" : "text-white"
+							lifecycleLocked ? "bg-muted text-foreground/80" : "text-white"
 						}`}
 						style={lifecycleLocked ? undefined : `background:hsl(${s.unit.hue} 70% 27%)`}
 					>

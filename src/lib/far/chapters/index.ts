@@ -27,8 +27,9 @@ const SHELF_CHAPTERS: Record<UnitId, Chapter[]> = {
 const SHELF_META: Record<UnitId, { title: string; subtitle: string; intro: string }> = {
 	fundamentals: {
 		title: "Master the Basics",
-		subtitle: "",
-		intro: "",
+		subtitle: "Acronyms, vehicles, and FAR terms",
+		intro:
+			"Acronyms, vehicles, and FAR terms every Prime capture teammate should know cold. Suggested order helps; free browsing is fine.",
 	},
 	find: {
 		title: "Find shelf",
@@ -105,6 +106,16 @@ export function nextChapterOnShelf(chapterId: string): Chapter | undefined {
 	const index = chapters.findIndex((c) => c.id === chapterId);
 	if (index < 0 || index >= chapters.length - 1) return undefined;
 	return chapters[index + 1];
+}
+
+/** Previous chapter on the same shelf in suggested order, or null at the start. */
+export function prevChapterOnShelf(chapterId: string): Chapter | undefined {
+	const current = chapterById(chapterId);
+	if (!current) return undefined;
+	const chapters = sortShelf(SHELF_CHAPTERS[current.unitId]);
+	const index = chapters.findIndex((c) => c.id === chapterId);
+	if (index <= 0) return undefined;
+	return chapters[index - 1];
 }
 
 /** Questions for an end-of-chapter check — explicit map first, then same-unit tag overlap. */

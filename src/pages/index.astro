@@ -1,9 +1,11 @@
 ---
 import FarAppDocument from "../components/app/FarAppDocument.astro";
+import { formatMetaDescription } from "../lib/seo";
 
 const title = "Learn The FAR — federal contracting, one scenario at a time";
-const description =
-	"A local-first mobile quiz game for mastering the Federal Acquisition Regulation (FAR) and U.S. federal contracting from the prime contractor's side.";
+const description = formatMetaDescription(
+	"A local-first mobile quiz game for mastering the Federal Acquisition Regulation (FAR) and U.S. federal contracting from the prime contractor's side.",
+);
 ---
 
 <FarAppDocument {title} {description} />
