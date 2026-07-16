@@ -13,8 +13,8 @@ export const DIFFICULTY_LABEL: Record<Difficulty, string> = {
 // Fraction of a difficulty tier you must clear before the next tier unlocks.
 export const TIER_UNLOCK_RATIO = 0.6;
 
-// Short Basics test: one pass through a fixed-size sample.
-export const TESTOUT_LENGTH = 8;
+// Basics placement: one full pass through the fundamentals deck (no sample cap).
+// Pass threshold still applies to the whole attempt.
 export const TESTOUT_PASS = 0.8;
 
 // Daily challenge: a date-seeded mixed set; completing it feeds the streak.
