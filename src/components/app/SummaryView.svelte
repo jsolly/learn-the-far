@@ -3,6 +3,7 @@
 
 	import { game } from "$lib/quiz-state.svelte.js";
 	import { ACHIEVEMENTS, TESTOUT_PASS } from "$lib/far/constants";
+	import { learnShelfPath } from "$lib/learn-routes";
 	import { Button } from "$lib/components/ui/button";
 
 	const TESTOUT_PASS_PERCENT = Math.round(TESTOUT_PASS * 100);
@@ -124,7 +125,7 @@
 			{:else if s.mode === "testout" && unlockedByMastery}
 				<Button size="lg" href="/">Back to home</Button>
 			{:else if s.mode === "testout" && !s.passedTestOut}
-				<Button size="lg" href="/learn/fundamentals">Browse Basics shelf</Button>
+				<Button size="lg" href={learnShelfPath("fundamentals")}>Browse Basics shelf</Button>
 				<Button size="lg" variant="outline" onclick={() => game.startTestOut()}>Try the test again</Button>
 				<Button size="lg" variant="ghost" href="/">Back to home</Button>
 			{:else if s.mode === "testout"}
