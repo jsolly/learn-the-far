@@ -9,7 +9,6 @@
 	import { Badge } from "$lib/components/ui/badge";
 
 	let stats = $derived(game.allStats);
-	let gated = $derived(game.needsFundamentalsPlacement);
 	let confirmReset = $state(false);
 	let confirmYesEl: HTMLElement | null = $state(null);
 	let resetButtonEl: HTMLElement | null = $state(null);
@@ -47,11 +46,9 @@
 			>
 				Learn The FAR
 			</h1>
-			{#if !gated}
-				<p class="text-xs text-muted-foreground sm:text-sm">
-					A fun way to learn the FAR, one scenario at a time.
-				</p>
-			{/if}
+			<p class="text-xs text-muted-foreground sm:text-sm">
+				A fun way to learn the FAR, one scenario at a time.
+			</p>
 		</div>
 		<div
 			class="flex items-center gap-1.5 rounded-full border bg-card px-3 py-1.5 text-sm font-semibold sm:gap-2 sm:px-4 sm:py-2 sm:text-base"
@@ -64,48 +61,46 @@
 	</header>
 
 	<div class="mt-4 sm:mt-6">
-		<PieWheel {stats} hubPercent={game.masteryPercent} locked={gated} />
+		<PieWheel {stats} hubPercent={game.masteryPercent} />
 	</div>
 
-	{#if !gated}
-		<div
-			class={`mt-4 grid gap-2 sm:mt-6 sm:gap-3 ${game.shakyQuestions.length > 0 ? "sm:grid-cols-2" : ""}`}
+	<div
+		class={`mt-4 grid gap-2 sm:mt-6 sm:gap-3 ${game.shakyQuestions.length > 0 ? "sm:grid-cols-2" : ""}`}
+	>
+		<button
+			type="button"
+			disabled={game.dailyDoneToday}
+			onclick={() => game.startDaily()}
+			class="flex items-center gap-3 rounded-2xl border-2 p-4 text-left transition-all enabled:hover:border-primary/50 enabled:hover:bg-muted/40 disabled:opacity-60 sm:gap-4 sm:p-5 lg:p-6"
 		>
+			<span class="text-2xl sm:text-3xl" aria-hidden="true">{game.dailyDoneToday ? "✅" : "📰"}</span>
+			<div class="min-w-0 flex-1">
+				<p class="font-semibold leading-tight sm:text-lg">Daily challenge</p>
+				<p class="text-xs text-muted-foreground sm:text-sm">
+					{game.dailyDoneToday ? "Done today — back tomorrow" : "5 mixed questions, feeds your streak"}
+				</p>
+			</div>
+			<span class="shrink-0 text-lg text-muted-foreground sm:text-xl" aria-hidden="true">›</span>
+		</button>
+
+		{#if game.shakyQuestions.length > 0}
 			<button
 				type="button"
-				disabled={game.dailyDoneToday}
-				onclick={() => game.startDaily()}
-				class="flex items-center gap-3 rounded-2xl border-2 p-4 text-left transition-all enabled:hover:border-primary/50 enabled:hover:bg-muted/40 disabled:opacity-60 sm:gap-4 sm:p-5 lg:p-6"
+				onclick={() => game.startStudyMisses()}
+				class="flex items-center gap-3 rounded-2xl border-2 p-4 text-left transition-all hover:border-primary/50 hover:bg-muted/40 sm:gap-4 sm:p-5 lg:p-6"
 			>
-				<span class="text-2xl sm:text-3xl" aria-hidden="true">{game.dailyDoneToday ? "✅" : "📰"}</span>
+				<span class="text-2xl sm:text-3xl" aria-hidden="true">📖</span>
 				<div class="min-w-0 flex-1">
-					<p class="font-semibold leading-tight sm:text-lg">Daily challenge</p>
+					<p class="font-semibold leading-tight sm:text-lg">Here's the missing picture</p>
 					<p class="text-xs text-muted-foreground sm:text-sm">
-						{game.dailyDoneToday ? "Done today — back tomorrow" : "5 mixed questions, feeds your streak"}
+						{game.shakyQuestions.length} concept{game.shakyQuestions.length === 1 ? "" : "s"} to
+						re-read — not a soft quiz
 					</p>
 				</div>
 				<span class="shrink-0 text-lg text-muted-foreground sm:text-xl" aria-hidden="true">›</span>
 			</button>
-
-			{#if game.shakyQuestions.length > 0}
-				<button
-					type="button"
-					onclick={() => game.startStudyMisses()}
-					class="flex items-center gap-3 rounded-2xl border-2 p-4 text-left transition-all hover:border-primary/50 hover:bg-muted/40 sm:gap-4 sm:p-5 lg:p-6"
-				>
-					<span class="text-2xl sm:text-3xl" aria-hidden="true">📖</span>
-					<div class="min-w-0 flex-1">
-						<p class="font-semibold leading-tight sm:text-lg">Here’s the missing picture</p>
-						<p class="text-xs text-muted-foreground sm:text-sm">
-							{game.shakyQuestions.length} concept{game.shakyQuestions.length === 1 ? "" : "s"} to
-							re-read — not a soft quiz
-						</p>
-					</div>
-					<span class="shrink-0 text-lg text-muted-foreground sm:text-xl" aria-hidden="true">›</span>
-				</button>
-			{/if}
-		</div>
-	{/if}
+		{/if}
+	</div>
 
 	{#if showGlossaryOnHome}
 		<button
@@ -130,44 +125,25 @@
 	</h2>
 	<div class="flex flex-col gap-2 sm:gap-3">
 		{#each stats as s (s.unit.id)}
-			{@const lifecycleLocked = game.isUnitLocked(s.unit.id)}
-			<div
-				class={`rounded-2xl border-2 p-3 sm:p-4 lg:p-5 ${
-					lifecycleLocked
-						? "border-border/50 bg-muted/40"
-						: "border-border bg-card"
-				}`}
-			>
+			<div class="rounded-2xl border-2 border-border bg-card p-3 sm:p-4 lg:p-5">
 				<div class="flex items-start gap-3 sm:gap-4">
 					<span
-						class={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold sm:h-12 sm:w-12 sm:text-base ${
-							lifecycleLocked ? "bg-muted text-foreground/80" : "text-white"
-						}`}
-						style={lifecycleLocked ? undefined : `background:hsl(${s.unit.hue} 70% 27%)`}
+						class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white sm:h-12 sm:w-12 sm:text-base"
+						style={`background:hsl(${s.unit.hue} 70% 27%)`}
 					>
 						{Math.round(s.ratio * 100)}%
 					</span>
 					<div class="min-w-0 flex-1">
 						<div class="flex flex-wrap items-center gap-2 sm:gap-x-3">
-							<h3
-								class={`font-semibold leading-tight sm:text-lg ${
-									lifecycleLocked ? "text-muted-foreground" : ""
-								}`}
-							>
+							<h3 class="font-semibold leading-tight sm:text-lg">
 								{s.unit.title}
 							</h3>
-							{#if lifecycleLocked}
-								<Badge variant="secondary" class="shrink-0 text-[0.65rem] sm:text-xs">Locked</Badge>
-							{:else if s.level !== "new"}
+							{#if s.level !== "new"}
 								<Badge variant="secondary" class="shrink-0 text-[0.65rem] sm:text-xs"
 									>{s.levelLabel}</Badge
 								>
 							{/if}
-							{#if lifecycleLocked}
-								<span class="text-[0.65rem] text-muted-foreground sm:text-xs">
-									Complete Basics to unlock
-								</span>
-							{:else if game.workingTier(s.unit.id) === "advanced"}
+							{#if game.workingTier(s.unit.id) === "advanced"}
 								<span class="text-[0.65rem] text-muted-foreground sm:text-xs">
 									{DIFFICULTY_LABEL.advanced}
 								</span>
@@ -176,7 +152,6 @@
 						<p class="mt-0.5 text-xs text-muted-foreground sm:text-sm">{s.unit.blurb}</p>
 						<div
 							class="mt-1.5 flex h-1.5 w-full overflow-hidden rounded-full bg-muted sm:mt-2 sm:h-2"
-							class:opacity-50={lifecycleLocked}
 						>
 							{#if s.masteredRatio > 0}
 								<div
@@ -199,7 +174,6 @@
 					<Button
 						class="flex-1"
 						size="sm"
-						disabled={lifecycleLocked}
 						onclick={() => game.startUnit(s.unit.id)}
 					>
 						Quiz me
@@ -213,28 +187,6 @@
 						Start learning
 					</Button>
 				</div>
-				{#if gated && s.unit.id === "fundamentals"}
-					<div class="mt-2 flex flex-col gap-2 sm:mt-3 sm:gap-3">
-						<Button
-							size="sm"
-							variant="secondary"
-							class="w-full"
-							onclick={() => game.startTestOut()}
-						>
-							Test out of basics
-						</Button>
-						{#if game.hasFundamentalsAttempt && game.fundamentalsGaps.length > 0}
-							<Button
-								size="sm"
-								variant="outline"
-								class="w-full"
-								onclick={() => game.startStudyFundamentalsGaps()}
-							>
-								Here’s the missing picture
-							</Button>
-						{/if}
-					</div>
-				{/if}
 			</div>
 		{/each}
 	</div>

@@ -18,9 +18,7 @@
 	let pct = $derived(counts.total === 0 ? 0 : Math.round((counts.done / counts.total) * 100));
 	let feedbackStatusEl: HTMLParagraphElement | null = null;
 	let lastOutcome = $derived(game.outcomes[game.outcomes.length - 1]);
-	let missed = $derived(
-		Boolean(answered && lastOutcome && !lastOutcome.cleared && game.mode !== "testout"),
-	);
+	let missed = $derived(Boolean(answered && lastOutcome && !lastOutcome.cleared));
 	let studyChapters = $derived(q && missed ? chaptersForQuestion(q.id) : []);
 
 	function focusQuestionHeading(questionId: string) {
