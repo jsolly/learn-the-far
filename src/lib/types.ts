@@ -22,17 +22,14 @@ export type QuizProgress = {
 	questions: Record<string, QuestionRecord>;
 	streak: StreakRecord;
 	dailyDone: string[]; // yyyy-mm-dd dates a daily challenge was completed
-	testedOut: boolean;
-	/** Hard gate: lifecycle pie unlocks only after fundamentals placement/retest. */
-	fundamentalsUnlocked: boolean;
 	achievements: Record<string, string>; // achievementId -> earnedAt ISO
 };
 
 // ---- Engine + views (owned by quiz-state.svelte.ts, consumed by components) ----
 
 export type View = "home" | "session" | "summary" | "chapter" | "shelf" | "glossary";
-/** `chapter` = end-of-chapter check (chapter-scoped). `unit` / `testout` = homepage-style practice. */
-export type SessionMode = "unit" | "daily" | "testout" | "chapter";
+/** `chapter` = end-of-chapter check (chapter-scoped). `unit` / `daily` = homepage-style practice. */
+export type SessionMode = "unit" | "daily" | "chapter";
 
 export type UnitStats = {
 	unit: LifecycleUnit;
@@ -59,8 +56,5 @@ export type SessionSummary = {
 	scoreSum: number;
 	scorePct: number;
 	perfect: boolean;
-	passedTestOut?: boolean;
-	/** True when this testout session just lifted the fundamentals hard gate. */
-	unlockedNow?: boolean;
 	newAchievements: string[];
 };

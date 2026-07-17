@@ -36,7 +36,6 @@ export type ChapterPiece = {
 
 export type ChapterQuizAction =
 	| { kind: "quiz-chapter"; chapterId: string }
-	| { kind: "testout" }
 	| { kind: "quiz-unit"; unitId: UnitId }
 	| { kind: "shelf"; unitId: UnitId }
 	| { kind: "home" };

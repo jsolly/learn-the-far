@@ -20,7 +20,7 @@ export type LifecycleUnit = {
 export type QuestionFormat = "recall" | "scenario";
 
 // Difficulty drives progression: sessions serve fundamentals first and unlock
-// harder tiers as a unit is mastered. Also the unit of the "test out" placement.
+// harder tiers as a unit is mastered.
 export type Difficulty = "fundamentals" | "core" | "advanced";
 
 // How a single question is graded. Rotated for variety across the deck.
