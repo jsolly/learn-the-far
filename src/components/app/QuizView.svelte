@@ -17,6 +17,7 @@
 	let counts = $derived(game.progressCount);
 	let pct = $derived(counts.total === 0 ? 0 : Math.round((counts.done / counts.total) * 100));
 	let feedbackStatusEl: HTMLParagraphElement | null = null;
+	let pickedOptionEl: HTMLButtonElement | null = null;
 	let lastOutcome = $derived(game.outcomes[game.outcomes.length - 1]);
 	let missed = $derived(Boolean(answered && lastOutcome && !lastOutcome.cleared));
 	let studyChapters = $derived(q && missed ? chaptersForQuestion(q.id) : []);
@@ -37,6 +38,13 @@
 		feedbackStatusEl = element;
 		return () => {
 			if (feedbackStatusEl === element) feedbackStatusEl = null;
+		};
+	}
+
+	function capturePickedOption(element: HTMLButtonElement) {
+		pickedOptionEl = element;
+		return () => {
+			if (pickedOptionEl === element) pickedOptionEl = null;
 		};
 	}
 
@@ -62,8 +70,10 @@
 
 	// Visual state for one option once the question is answered (quiz mode).
 	// Avoid font-weight changes — semibold shifts glyph widths and reflows the line.
+	// scroll-mb keeps nearest scrollIntoView clear of the taller sticky feedback bar.
 	function optionClass(opt: QuizOption): string {
-		const base = "w-full rounded-2xl border-2 p-4 text-left transition-[transform,opacity] duration-150";
+		const base =
+			"w-full scroll-mb-40 rounded-2xl border-2 p-4 text-left transition-[transform,opacity] duration-150";
 		if (!answered) {
 			return `${base} border-border bg-card hover:border-primary/50 hover:bg-muted/50 active:scale-[0.99]`;
 		}
@@ -83,7 +93,11 @@
 		const questionId = q?.id;
 		game.answer(optionId);
 		await tick();
-		if (questionId && game.currentQuestion?.id === questionId) feedbackStatusEl?.focus();
+		if (questionId && game.currentQuestion?.id === questionId) {
+			// Keep the option list in view — announce via sticky-bar status, never jump to explanation.
+			feedbackStatusEl?.focus({ preventScroll: true });
+			pickedOptionEl?.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "smooth" });
+		}
 	}
 
 	function verdict(): { label: string; tone: Tone } | undefined {
@@ -98,7 +112,9 @@
 </script>
 
 {#if q && unit}
-	<div class="mx-auto flex min-h-[100dvh] w-full max-w-2xl flex-col px-4 pb-28 pt-4 sm:pt-6">
+	<div
+		class={`mx-auto flex min-h-[100dvh] w-full max-w-2xl flex-col px-4 pt-4 sm:pt-6 ${answered ? "pb-40" : "pb-28"}`}
+	>
 		<!-- header -->
 		<div class="flex items-center gap-3">
 			<Button variant="ghost" size="sm" class="shrink-0 px-2" aria-label="Exit session" onclick={() => game.exitSession()}>
@@ -143,10 +159,17 @@
 					class={optionClass(opt)}
 					disabled={answered}
 					onclick={() => answer(opt.id)}
+					{@attach answered && opt.id === game.answeredOptionId && capturePickedOption}
 				>
 					<span class="flex items-start gap-3">
 						<span class="text-base leading-6">{opt.text}</span>
 					</span>
+					{#if answered && opt.id === game.answeredOptionId}
+						<span class="mt-2 flex items-center gap-1.5 text-xs text-foreground/80">
+							<span aria-hidden="true">✓</span>
+							Your answer
+						</span>
+					{/if}
 					{#if answered && (q.scoring === "tiered" || q.scoring === "reveal-tradeoff") && opt.tier}
 						<span class={`mt-2 block text-xs font-semibold ${TONE_CLASS[TIER_VERDICT[opt.tier].tone]}`}>
 							{TIER_VERDICT[opt.tier].label}
@@ -161,17 +184,7 @@
 
 		{#if answered}
 			<div class="mt-5 rounded-2xl border bg-card p-4">
-				{#if v}
-					<p
-						{@attach captureFeedbackStatus}
-						role="status"
-						aria-live="polite"
-						aria-atomic="true"
-						tabindex="-1"
-						class={`text-lg font-bold ${TONE_CLASS[v.tone]}`}>{v.label}</p
-					>
-				{/if}
-				<p class="mt-1 text-sm leading-6 text-foreground/90">{q.explanation}</p>
+				<p class="text-sm leading-6 text-foreground/90">{q.explanation}</p>
 				<div class="mt-3 flex flex-col gap-2">
 					<a
 						href={q.sourceUrl}
@@ -198,13 +211,25 @@
 			</div>
 		{/if}
 
-		<!-- sticky action bar -->
+		<!-- sticky action bar — primary feedback lives here after answering -->
 		<div class="fixed inset-x-0 bottom-0 border-t bg-background/95 backdrop-blur">
 			<div
-				class={`mx-auto flex w-full max-w-2xl items-center gap-3 px-4 py-3 ${answered ? "justify-center" : ""}`}
+				class={`mx-auto flex w-full max-w-2xl px-4 py-3 ${answered ? "flex-col items-stretch gap-2" : "items-center gap-3"}`}
 			>
 				{#if answered}
-					<Button size="lg" class="w-full max-w-xs sm:w-auto sm:px-10" onclick={() => game.next()}>
+					{#if v}
+						<p
+							{@attach captureFeedbackStatus}
+							role="status"
+							aria-live="polite"
+							aria-atomic="true"
+							tabindex="-1"
+							class={`text-center text-base font-bold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:text-lg ${TONE_CLASS[v.tone]}`}
+						>
+							{v.label}
+						</p>
+					{/if}
+					<Button size="lg" class="w-full max-w-xs self-center sm:w-auto sm:px-10" onclick={() => game.next()}>
 						{game.willFinishAfterNext ? "Finish" : "Next Question"}
 					</Button>
 				{:else}
