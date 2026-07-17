@@ -5,8 +5,11 @@
 
 	let {
 		segments,
+		currentChapterId,
 	}: {
 		segments: TextSegment[];
+		/** Chapter the reader is currently viewing, if any. */
+		currentChapterId?: string;
 	} = $props();
 </script>
 
@@ -18,6 +21,7 @@
 		{#if term}
 			<TermDefinitionPopover
 				{term}
+				{currentChapterId}
 				triggerClass="cursor-pointer rounded-sm text-primary underline decoration-dotted decoration-primary/70 underline-offset-2 outline-none hover:decoration-solid focus-visible:ring-2 focus-visible:ring-ring"
 			>
 				{segment.text}

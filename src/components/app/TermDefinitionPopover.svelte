@@ -8,10 +8,13 @@
 	let {
 		term,
 		triggerClass,
+		currentChapterId,
 		children,
 	}: {
 		term: GlossaryTerm;
 		triggerClass: string;
+		/** When set, hide "Open chapter" if the term is defined in this chapter. */
+		currentChapterId?: string;
 		children: Snippet;
 	} = $props();
 
@@ -21,6 +24,9 @@
 	let titleEl: HTMLElement | null = $state(null);
 
 	let chapter = $derived(term.chapterId ? chapterById(term.chapterId) : undefined);
+	let showOpenChapter = $derived(
+		Boolean(chapter && term.chapterId && term.chapterId !== currentChapterId),
+	);
 
 	function onOpenAutoFocus(event: Event) {
 		event.preventDefault();
@@ -54,7 +60,7 @@
 				{term.definition}
 			</Popover.Description>
 		</Popover.Header>
-		{#if chapter}
+		{#if showOpenChapter && chapter}
 			<a
 				class="mt-2 inline-block text-sm font-medium text-primary underline-offset-4 hover:underline"
 				href={learnChapterPath(chapter.unitId, chapter.id)}

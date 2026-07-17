@@ -113,7 +113,7 @@
 				{chapter.title}
 			</h1>
 			<p class="mt-3 text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
-				<TermRichText segments={linkedCopy.intro} />
+				<TermRichText segments={linkedCopy.intro} currentChapterId={chapter.id} />
 			</p>
 		</header>
 
@@ -152,7 +152,7 @@
 
 					<p class="mt-4 text-sm leading-6 sm:text-base sm:leading-7">
 						{#if linked}
-							<TermRichText segments={linked.teach} />
+							<TermRichText segments={linked.teach} currentChapterId={chapter.id} />
 						{:else}
 							{piece.teach}
 						{/if}
@@ -165,7 +165,10 @@
 							</p>
 							<p class="mt-1 text-sm leading-6 sm:text-base sm:leading-7">
 								{#if linked?.watchFor}
-									<TermRichText segments={linked.watchFor} />
+									<TermRichText
+										segments={linked.watchFor}
+										currentChapterId={chapter.id}
+									/>
 								{:else}
 									{piece.watchFor}
 								{/if}
@@ -234,7 +237,10 @@
 		<section class="mt-10 border-t pt-8 sm:mt-12">
 			{#if chapter.closing && linkedCopy.closing}
 				<p class="text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
-					<TermRichText segments={linkedCopy.closing} />
+					<TermRichText
+						segments={linkedCopy.closing}
+						currentChapterId={chapter.id}
+					/>
 				</p>
 			{/if}
 			<div
