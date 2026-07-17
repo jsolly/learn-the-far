@@ -16,7 +16,6 @@ import {
 	MASTERED_CORRECT_COUNT,
 	SESSION_LENGTH,
 	STREAK_MILESTONES,
-	TESTOUT_PASS,
 	TIER_SCORE,
 	TIER_UNLOCK_RATIO,
 } from "$lib/far/constants";
@@ -116,10 +115,6 @@ function levelFor(ratio: number): LevelId {
 	return level;
 }
 
-function fundamentalsQuestions(): QuizQuestion[] {
-	return QUESTIONS.filter((q) => q.unitId === "fundamentals");
-}
-
 export class QuizGame {
 	progress = $state<QuizProgress>(emptyProgress());
 	view = $state<View>("home");
@@ -139,8 +134,6 @@ export class QuizGame {
 	/** Unit reference shelf (multi-chapter hub). */
 	shelf = $state<ChapterShelf | null>(null);
 	reading = $state<ReadingProgress>(emptyReadingProgress());
-	/** Deep-linked to a lifecycle unit that is still gated behind Basics. */
-	routeLocked = $state(false);
 
 	// current question interaction
 	answeredOptionId = $state<string | null>(null);
@@ -206,7 +199,6 @@ export class QuizGame {
 	/** SSG/SSR-only: set the visible learn surface without writing progress. */
 	private hydrateLearnRoute(route: Exclude<LearnRoute, { kind: "home" }>) {
 		this.clearLearnSurface();
-		this.routeLocked = this.isUnitLocked(route.unitId);
 
 		if (route.kind === "shelf") {
 			this.shelf = shelfForUnit(route.unitId);
@@ -234,11 +226,10 @@ export class QuizGame {
 		this.chapter = null;
 		this.chapterKind = null;
 		this.shelf = null;
-		this.routeLocked = false;
 		this.view = "home";
 	}
 
-	/** Open a shelf/chapter from a URL (including locked deep links). */
+	/** Open a shelf/chapter from a URL. */
 	applyLearnRoute(
 		route: Exclude<LearnRoute, { kind: "home" }>,
 		opts?: { syncUrl?: boolean },
@@ -250,24 +241,20 @@ export class QuizGame {
 		this.summary = null;
 		this.activeChapterId = null;
 
-		this.routeLocked = this.isUnitLocked(route.unitId);
-
 		if (route.kind === "shelf") {
 			this.shelf = shelfForUnit(route.unitId);
 			this.chapter = null;
 			this.chapterKind = null;
 			this.view = "shelf";
-			if (!this.routeLocked) {
-				this.reading = { ...this.reading, lastUnitId: route.unitId };
-				saveReadingProgress(this.reading);
-			}
+			this.reading = { ...this.reading, lastUnitId: route.unitId };
+			saveReadingProgress(this.reading);
 		} else {
 			const found = chapterById(route.chapterId);
 			if (!found || found.unitId !== route.unitId) {
 				this.goHome({ syncUrl: opts?.syncUrl !== false });
 				return;
 			}
-			this.openChapter(found, "shelf-chapter", { recordRead: !this.routeLocked });
+			this.openChapter(found, "shelf-chapter");
 		}
 
 		if (opts?.syncUrl !== false) {
@@ -379,46 +366,16 @@ export class QuizGame {
 		return Math.round((cleared / total) * 100);
 	}
 
-	get fundamentalsClearRatio(): number {
-		const qs = fundamentalsQuestions();
-		if (qs.length === 0) return 1;
-		const cleared = qs.filter((q) => this.isCleared(q.id)).length;
-		return cleared / qs.length;
-	}
-
-	get fundamentalsPercent(): number {
-		return Math.round(this.fundamentalsClearRatio * 100);
-	}
-
-	get fundamentalsUnlocked(): boolean {
-		return this.progress.fundamentalsUnlocked;
-	}
-
 	/** Whether the learner has any persisted progress worth resetting. */
 	get hasProgress(): boolean {
-		const { questions, dailyDone, testedOut, fundamentalsUnlocked, achievements, streak } =
-			this.progress;
+		const { questions, dailyDone, achievements, streak } = this.progress;
 		return (
 			Object.keys(questions ?? {}).length > 0 ||
 			(dailyDone?.length ?? 0) > 0 ||
-			Boolean(testedOut) ||
-			Boolean(fundamentalsUnlocked) ||
 			Object.keys(achievements ?? {}).length > 0 ||
 			Boolean(streak?.current || streak?.longest || streak?.lastDay) ||
 			Object.keys(this.reading.read).length > 0
 		);
-	}
-
-	/** Any fundamentals quiz attempt on record (enables gap study after first placement). */
-	get hasFundamentalsAttempt(): boolean {
-		return fundamentalsQuestions().some((q) => !!this.recordFor(q.id));
-	}
-
-	get fundamentalsGaps(): QuizQuestion[] {
-		return fundamentalsQuestions().filter((q) => {
-			const r = this.recordFor(q.id);
-			return !!r && !r.cleared;
-		});
 	}
 
 	get shakyQuestions(): QuizQuestion[] {
@@ -434,20 +391,6 @@ export class QuizGame {
 
 	get dailyDoneToday(): boolean {
 		return this.progress.dailyDone.includes(today());
-	}
-
-	/** Placement / retest CTA while the hard gate is closed. */
-	get needsFundamentalsPlacement(): boolean {
-		return !this.fundamentalsUnlocked;
-	}
-
-	/** Lifecycle slices stay locked until Fundamentals unlocks; Basics stays open. */
-	isUnitLocked(unitId: UnitId): boolean {
-		return !this.fundamentalsUnlocked && unitId !== "fundamentals";
-	}
-
-	canStartUnit(unitId: UnitId): boolean {
-		return !this.isUnitLocked(unitId);
 	}
 
 	// Fundamentals and Core are open from the start (so no unit ever serves a
@@ -479,7 +422,6 @@ export class QuizGame {
 	// ---- session lifecycle ----
 
 	startUnit(unitId: UnitId) {
-		if (!this.canStartUnit(unitId)) return;
 		const unlocked = this.unlockedTiers(unitId);
 		const qs = this.questionsIn(unitId).filter((q) => unlocked.has(q.difficulty));
 		// uncleared first, ordered by difficulty ramp; fall back to a review shuffle
@@ -494,7 +436,7 @@ export class QuizGame {
 	/** End-of-chapter check — only questions mapped (or tagged) to that chapter. */
 	startChapterQuiz(chapterId: string) {
 		const chapter = chapterById(chapterId);
-		if (!chapter || !this.canStartUnit(chapter.unitId)) return;
+		if (!chapter) return;
 		const pool = questionsForChapter(chapterId);
 		if (pool.length === 0) return;
 		const fresh = shuffle(pool.filter((q) => !this.isCleared(q.id)));
@@ -504,18 +446,9 @@ export class QuizGame {
 	}
 
 	startDaily() {
-		if (!this.fundamentalsUnlocked) return;
 		const rng = mulberry32(hashSeed(`daily-${today()}`));
 		const picks = shuffle(QUESTIONS, rng).slice(0, DAILY_LENGTH);
 		this.beginSession("daily", null, picks);
-	}
-
-	/** One-pass Fundamentals placement — full Basics deck, prioritizing uncleared. */
-	startTestOut() {
-		const fundamentals = fundamentalsQuestions();
-		const uncleared = shuffle(fundamentals.filter((q) => !this.isCleared(q.id)));
-		const cleared = shuffle(fundamentals.filter((q) => this.isCleared(q.id)));
-		this.beginSession("testout", null, [...uncleared, ...cleared]);
 	}
 
 	private openChapter(chapter: Chapter, kind: ChapterKind, opts?: { recordRead?: boolean }) {
@@ -535,8 +468,6 @@ export class QuizGame {
 	}
 
 	openShelf(unitId: UnitId) {
-		if (!this.canStartUnit(unitId)) return;
-		this.routeLocked = false;
 		this.shelf = shelfForUnit(unitId);
 		this.chapter = null;
 		this.chapterKind = null;
@@ -552,16 +483,8 @@ export class QuizGame {
 		return Boolean(this.reading.read[chapterId]);
 	}
 
-	/** Shame-free manuscript for uncleared fundamentals (no progress writes). */
-	startStudyFundamentalsGaps() {
-		const gaps = this.fundamentalsGaps;
-		if (gaps.length === 0) return;
-		this.openChapter(buildMissManuscript(gaps), "miss-manuscript");
-	}
-
 	/** Shame-free manuscript of quiz misses (no progress writes). */
 	startStudyMisses() {
-		if (!this.fundamentalsUnlocked) return;
 		const misses = this.shakyQuestions;
 		if (misses.length === 0) return;
 		const chapter = buildMissManuscript(shuffle(misses).slice(0, SESSION_LENGTH));
@@ -576,9 +499,6 @@ export class QuizGame {
 		switch (action.kind) {
 			case "quiz-chapter":
 				this.startChapterQuiz(action.chapterId);
-				return;
-			case "testout":
-				this.startTestOut();
 				return;
 			case "quiz-unit":
 				this.startUnit(action.unitId);
@@ -632,7 +552,6 @@ export class QuizGame {
 	// it's the last queued item AND it won't be requeued for a miss. Drives the
 	// Continue/Finish label so "Finish" never lies on a wrong final answer.
 	get willFinishAfterNext(): boolean {
-		if (this.mode === "testout") return this.queue.length <= 1;
 		if (this.queue.length > 1) return false;
 		const q = this.currentQuestion;
 		const last = this.outcomes[this.outcomes.length - 1];
@@ -675,13 +594,8 @@ export class QuizGame {
 			cleared,
 		};
 		this.outcomes = [...this.outcomes, outcome];
-
-		// Placement unlocks only when the diagnostic finishes — not mid-session via ratio.
-		if (this.mode !== "testout") {
-			this.persistOutcome(outcome);
-			this.maybeUnlockFundamentals();
-			saveProgress(this.progress);
-		}
+		this.persistOutcome(outcome);
+		saveProgress(this.progress);
 	}
 
 	next() {
@@ -692,15 +606,6 @@ export class QuizGame {
 		// never paints one frame as already-answered (shared a/b/c/d option ids
 		// would otherwise flash the new correct option green).
 		this.answeredOptionId = null;
-
-		if (this.mode === "testout") {
-			this.queue = this.queue.slice(1);
-
-			if (this.queue.length === 0) {
-				this.finishSession();
-			}
-			return;
-		}
 
 		const last = this.outcomes[this.outcomes.length - 1];
 		this.queue = this.queue.slice(1);
@@ -716,16 +621,6 @@ export class QuizGame {
 		}
 	}
 
-	/** Unlock after clearing 80% of the Fundamentals slice. */
-	private maybeUnlockFundamentals(): boolean {
-		if (this.progress.fundamentalsUnlocked) return false;
-		if (this.progress.testedOut || this.fundamentalsClearRatio >= TESTOUT_PASS) {
-			this.progress.fundamentalsUnlocked = true;
-			return true;
-		}
-		return false;
-	}
-
 	private grant(id: string, into: string[]) {
 		if (!this.progress.achievements[id]) {
 			this.progress.achievements[id] = new SvelteDate().toISOString();
@@ -733,25 +628,11 @@ export class QuizGame {
 		}
 	}
 
-	private creditAllFundamentals() {
-		for (const q of fundamentalsQuestions()) {
-			const prev = this.progress.questions[q.id];
-			this.progress.questions[q.id] = {
-				attempts: (prev?.attempts ?? 0) + 1,
-				bestScore: Math.max(prev?.bestScore ?? 0, 1),
-				cleared: true,
-				correctCount: Math.max((prev?.correctCount ?? 0) + 1, MASTERED_CORRECT_COUNT),
-				lastAt: new SvelteDate().toISOString(),
-			};
-		}
-	}
-
 	private finishSession() {
 		const newAchievements: string[] = [];
 		const unit = this.activeUnit ? UNITS.find((u) => u.id === this.activeUnit) : undefined;
 
-		// Keep the best outcome per question. Normal quizzes can requeue a miss,
-		// while the fixed testout contains each sampled question only once.
+		// Keep the best outcome per question. Normal quizzes can requeue a miss.
 		const bestByQuestion = new SvelteMap<string, AnswerOutcome>();
 		for (const o of this.outcomes) {
 			const prior = bestByQuestion.get(o.questionId);
@@ -765,24 +646,6 @@ export class QuizGame {
 
 		// streak: any completed quiz session marks today active
 		this.markActive();
-
-		let passedTestOut: boolean | undefined;
-		let unlockedNow = false;
-		if (this.mode === "testout") {
-			passedTestOut = answered > 0 && scoreSum / answered >= TESTOUT_PASS;
-			const wasLocked = !this.progress.fundamentalsUnlocked;
-			if (passedTestOut) {
-				this.progress.testedOut = true;
-				this.creditAllFundamentals();
-				this.progress.fundamentalsUnlocked = true;
-			} else {
-				for (const outcome of uniqueOutcomes) {
-					this.persistOutcome(outcome);
-				}
-				this.maybeUnlockFundamentals();
-			}
-			unlockedNow = wasLocked && this.progress.fundamentalsUnlocked;
-		}
 
 		if (this.mode === "daily" && !this.progress.dailyDone.includes(today())) {
 			this.progress.dailyDone = [...this.progress.dailyDone, today()];
@@ -806,8 +669,6 @@ export class QuizGame {
 			scoreSum,
 			scorePct,
 			perfect,
-			passedTestOut,
-			unlockedNow: unlockedNow || undefined,
 			newAchievements,
 		};
 		this.view = "summary";
@@ -835,8 +696,7 @@ export class QuizGame {
 		this.answeredOptionId = null;
 		this.summary = null;
 		this.activeChapterId = null;
-		this.routeLocked = this.isUnitLocked(chapter.unitId);
-		this.openChapter(chapter, "shelf-chapter", { recordRead: !this.routeLocked });
+		this.openChapter(chapter, "shelf-chapter");
 		this.syncLearnUrl({ replace: true });
 	}
 
@@ -858,7 +718,6 @@ export class QuizGame {
 			(r: QuestionRecord) => r.cleared,
 		);
 		if (anyCleared) this.grant("first-clear", into);
-		if (this.progress.testedOut) this.grant("tested-out", into);
 
 		for (const m of STREAK_MILESTONES) {
 			if (this.progress.streak.current >= m) this.grant(`streak-${m}`, into);
@@ -889,12 +748,10 @@ export class QuizGame {
 		this.chapter = null;
 		this.chapterKind = null;
 		this.shelf = null;
-		this.routeLocked = false;
 		this.view = "glossary";
 	}
 
 	goHome(opts?: { syncUrl?: boolean }) {
-		this.maybeUnlockFundamentals();
 		saveProgress(this.progress);
 		this.view = "home";
 		this.summary = null;
@@ -902,7 +759,6 @@ export class QuizGame {
 		this.chapter = null;
 		this.chapterKind = null;
 		this.shelf = null;
-		this.routeLocked = false;
 		if (opts?.syncUrl !== false) {
 			this.syncLearnUrl();
 		}

@@ -5,15 +5,12 @@
 	import { SVGRenderer } from "echarts/renderers";
 	import type { Attachment } from "svelte/attachments";
 
-	import type { UnitId } from "$lib/far/types";
 	import type { UnitStats } from "$lib/types";
 
 	type Props = {
 		stats: UnitStats[];
 		/** Overall mastery shown in the ALEKS-style center hub. */
 		hubPercent: number;
-		/** When true, lifecycle slices are dimmed. */
-		locked?: boolean;
 	};
 
 	type WheelOption = ComposeOption<PieSeriesOption>;
@@ -26,14 +23,10 @@
 
 	use([PieChart, LabelLayout, SVGRenderer]);
 
-	let { stats, hubPercent, locked = false }: Props = $props();
+	let { stats, hubPercent }: Props = $props();
 
 	function clampRatio(ratio: number): number {
 		return Math.min(1, Math.max(0, ratio));
-	}
-
-	function sliceIsLocked(unitId: UnitId, isLocked = locked): boolean {
-		return isLocked && unitId !== "fundamentals";
 	}
 
 	function chartLabelFontSize(chartWidth: number): number {
@@ -45,10 +38,7 @@
 		return INNER_RADIUS + band * clampRatio(ratio);
 	}
 
-	function sliceSummary(stat: UnitStats, isLocked = locked): string {
-		if (sliceIsLocked(stat.unit.id, isLocked)) {
-			return `${stat.unit.label}: locked`;
-		}
+	function sliceSummary(stat: UnitStats): string {
 		const masteredPct = Math.round(clampRatio(stat.masteredRatio) * 100);
 		const learningPct = Math.round(clampRatio(stat.learningRatio) * 100);
 		const capturedPct = Math.round(clampRatio(stat.ratio) * 100);
@@ -60,7 +50,6 @@
 		stat: UnitStats,
 		progressIndex: number,
 		kind: "learning" | "mastered",
-		isLocked: boolean,
 	): PieSeriesOption | null {
 		const masteredRatio = clampRatio(stat.masteredRatio);
 		const learningRatio = clampRatio(stat.learningRatio);
@@ -72,11 +61,10 @@
 			kind === "learning"
 				? progressOuterRadius(capturedRatio)
 				: progressOuterRadius(masteredRatio);
-		const dimmed = sliceIsLocked(stat.unit.id, isLocked);
 		const color =
 			kind === "mastered"
-				? `hsla(${stat.unit.hue}, 72%, 48%, ${dimmed ? 0.22 : 1})`
-				: `hsla(${stat.unit.hue}, 55%, 68%, ${dimmed ? 0.14 : 0.85})`;
+				? `hsla(${stat.unit.hue}, 72%, 48%, 1)`
+				: `hsla(${stat.unit.hue}, 55%, 68%, 0.85)`;
 
 		return {
 			type: "pie",
@@ -101,11 +89,7 @@
 		};
 	}
 
-	function createOption(
-		currentStats: UnitStats[],
-		isLocked: boolean,
-		chartWidth: number,
-	): WheelOption {
+	function createOption(currentStats: UnitStats[], chartWidth: number): WheelOption {
 		const pieGeometry = {
 			type: "pie" as const,
 			center: ["50%", "50%"],
@@ -125,22 +109,19 @@
 			label: { show: false },
 			labelLine: { show: false },
 			emphasis: { disabled: true },
-			data: currentStats.map((stat) => {
-				const dimmed = sliceIsLocked(stat.unit.id, isLocked);
-				return {
-					value: 1,
-					name: stat.unit.label,
-					itemStyle: {
-						color: `hsla(${stat.unit.hue}, 45%, 50%, ${dimmed ? 0.08 : 0.14})`,
-					},
-				};
-			}),
+			data: currentStats.map((stat) => ({
+				value: 1,
+				name: stat.unit.label,
+				itemStyle: {
+					color: `hsla(${stat.unit.hue}, 45%, 50%, 0.14)`,
+				},
+			})),
 		};
 
 		const progress = currentStats.flatMap((stat, progressIndex): PieSeriesOption[] => {
 			const layers = [
-				sliceFill(currentStats, stat, progressIndex, "learning", isLocked),
-				sliceFill(currentStats, stat, progressIndex, "mastered", isLocked),
+				sliceFill(currentStats, stat, progressIndex, "learning"),
+				sliceFill(currentStats, stat, progressIndex, "mastered"),
 			];
 			return layers.filter((layer): layer is PieSeriesOption => layer !== null);
 		});
@@ -187,7 +168,7 @@
 		const chart = init(element, undefined, { renderer: "svg" });
 		let chartWidth = element.clientWidth;
 		const updateChart = () => {
-			chart.setOption(createOption(stats, locked, chartWidth), {
+			chart.setOption(createOption(stats, chartWidth), {
 				lazyUpdate: true,
 				notMerge: true,
 			});
@@ -214,9 +195,7 @@
 
 	let wheelDescription = $derived(
 		[
-			locked
-				? `Mastery wheel — ${hubPercent}% captured. Basics is available; clear 80% or pass the test to unlock lifecycle slices.`
-				: `Mastery wheel — ${hubPercent}% captured.`,
+			`Mastery wheel — ${hubPercent}% captured.`,
 			...stats.map((stat) => sliceSummary(stat)),
 		].join(" "),
 	);

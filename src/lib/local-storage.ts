@@ -6,8 +6,6 @@ export function emptyProgress(): QuizProgress {
 		questions: {},
 		streak: { current: 0, longest: 0, lastDay: "" },
 		dailyDone: [],
-		testedOut: false,
-		fundamentalsUnlocked: false,
 		achievements: {},
 	};
 }
@@ -29,10 +27,17 @@ export function loadProgress(): QuizProgress {
 
 		const parsed = JSON.parse(raw) as Partial<QuizProgress>;
 		// Merge onto a fresh shape so older/partial records stay valid.
-		const progress = { ...emptyProgress(), ...parsed };
+		// Legacy unlock/testout fields are dropped — every slice is always open.
+		const progress = emptyProgress();
+		progress.streak = { ...progress.streak, ...(parsed.streak ?? {}) };
+		progress.dailyDone = Array.isArray(parsed.dailyDone) ? parsed.dailyDone : [];
+		progress.achievements =
+			parsed.achievements && typeof parsed.achievements === "object"
+				? parsed.achievements
+				: {};
 		// Stamp correctCount on legacy records (cleared once → learning, not attempts-based).
 		const questions: QuizProgress["questions"] = {};
-		for (const [id, record] of Object.entries(progress.questions ?? {})) {
+		for (const [id, record] of Object.entries(parsed.questions ?? {})) {
 			if (!record) continue;
 			const correctCount =
 				typeof record.correctCount === "number"

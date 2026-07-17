@@ -215,8 +215,8 @@ export function buildMissManuscript(questions: QuizQuestion[]): Chapter {
 		closing:
 			"When the picture feels steadier, check yourself again — or return to the shelf for the wider map.",
 		quizCta: {
-			label: "Check yourself — take the Basics test",
-			action: { kind: "testout" },
+			label: "Check yourself — quiz this slice",
+			action: { kind: "quiz-unit", unitId: firstUnit },
 		},
 	});
 }

@@ -10,11 +10,7 @@
 	import TermRichText from "./TermRichText.svelte";
 
 	let chapter = $derived(game.chapter);
-	let headingEl: HTMLHeadingElement | null = $state(null);
-	let unlockHeadingEl: HTMLHeadingElement | null = $state(null);
-	let unlockStatusId = $derived(
-		chapter ? `chapter-unlock-status-${chapter.id}` : "chapter-unlock-status",
-	);
+	let headingEl: HTMLHeadingElement | null = null;
 	let nextChapter = $derived(
 		chapter && game.chapterKind === "shelf-chapter"
 			? nextChapterOnShelf(chapter.id)
@@ -54,17 +50,19 @@
 		};
 	});
 
+	function captureHeading(element: HTMLHeadingElement) {
+		headingEl = element;
+		return () => {
+			if (headingEl === element) headingEl = null;
+		};
+	}
+
 	$effect(() => {
 		const current = chapter;
 		if (!current) return;
-		const locked = game.routeLocked;
 		void tick().then(() => {
 			if (game.chapter !== current) return;
-			if (locked) {
-				unlockHeadingEl?.focus();
-			} else {
-				headingEl?.focus();
-			}
+			headingEl?.focus();
 		});
 	});
 
@@ -108,7 +106,7 @@
 				{chapter.subtitle}
 			</p>
 			<h1
-				bind:this={headingEl}
+				{@attach captureHeading}
 				tabindex="-1"
 				class="mt-1 text-2xl font-bold tracking-tight outline-none sm:text-3xl"
 			>
@@ -118,34 +116,6 @@
 				<TermRichText segments={linkedCopy.intro} />
 			</p>
 		</header>
-
-		{#if game.routeLocked}
-			<div class="mb-6 rounded-2xl border-2 border-border bg-card p-5 sm:mb-8 sm:p-6">
-				<h2
-					bind:this={unlockHeadingEl}
-					tabindex="-1"
-					class="font-semibold outline-none focus-visible:ring-2 focus-visible:ring-ring sm:text-lg"
-				>
-					Quiz unlocks after Basics
-				</h2>
-				<p
-					id={unlockStatusId}
-					class="mt-2 text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7"
-					role="status"
-				>
-					You can read this chapter now. Lifecycle quizzes open after you clear Master the
-					Basics (or test out).
-				</p>
-				<div class="mt-5 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-					<Button size="lg" class="w-full sm:w-auto" href={learnShelfPath("fundamentals")}>
-						Open Basics shelf
-					</Button>
-					<Button size="lg" variant="outline" class="w-full sm:w-auto" href="/">
-						Back to home
-					</Button>
-				</div>
-			</div>
-		{/if}
 
 		{#if chapter.pieces.length > 1}
 			<nav class="mb-6 sm:mb-8" aria-label="On this page">
@@ -207,7 +177,7 @@
 						<blockquote
 							class="mt-5 border-l-4 border-primary/40 bg-muted/40 px-4 py-3 text-sm leading-6 sm:text-[0.95rem] sm:leading-7"
 						>
-							<p class="italic text-foreground/95">“{piece.quote.text}”</p>
+							<p class="italic text-foreground/95">"{piece.quote.text}"</p>
 							<footer class="mt-2 not-italic">
 								<a
 									class="text-xs font-medium text-primary underline underline-offset-2 sm:text-sm"
@@ -274,8 +244,6 @@
 					<Button
 						size="lg"
 						class="w-full sm:h-11 sm:min-w-[12rem] sm:flex-1 sm:text-base"
-						disabled={game.routeLocked}
-						aria-describedby={game.routeLocked ? unlockStatusId : undefined}
 						onclick={() => game.runChapterQuizAction(chapter.quizCta.action)}
 					>
 						{chapter.quizCta.label}

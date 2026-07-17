@@ -13,10 +13,6 @@ export const DIFFICULTY_LABEL: Record<Difficulty, string> = {
 // Fraction of a difficulty tier you must clear before the next tier unlocks.
 export const TIER_UNLOCK_RATIO = 0.6;
 
-// Basics placement: one full pass through the fundamentals deck (no sample cap).
-// Pass threshold still applies to the whole attempt.
-export const TESTOUT_PASS = 0.8;
-
 // Daily challenge: a date-seeded mixed set; completing it feeds the streak.
 export const DAILY_LENGTH = 5;
 
@@ -77,12 +73,6 @@ export const STREAK_MILESTONES = [3, 7, 14, 30];
 // few ids are computed (per-unit "prime-<unitId>", "streak-<n>").
 export const ACHIEVEMENTS: Achievement[] = [
 	{ id: "first-clear", label: "First Blood", description: "Clear your first question.", icon: "🎯" },
-	{
-		id: "tested-out",
-		label: "Initial Assessment",
-		description: "Complete the initial knowledge assessment.",
-		icon: "🧭",
-	},
 	{ id: "flawless", label: "Clean Audit", description: "Finish a session with a perfect score.", icon: "✨" },
 	{ id: "daily-1", label: "Daily Briefing", description: "Complete a daily challenge.", icon: "📰" },
 	{ id: "daily-7", label: "Beltway Regular", description: "Complete 7 daily challenges.", icon: "🗞️" },
