@@ -1,21 +1,49 @@
 #!/usr/bin/env bash
 # Pre-commit GATE for learn-the-far (gate-only — this hook does NOT deploy).
+#
+# Prefer the shared dotagents gate-lib when present (authoring machine).
+# Otherwise run the same checks directly so forks and contributors can commit
+# without installing private tooling.
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"; cd "$ROOT"
-# shellcheck source=/dev/null
-source "${DOTAGENTS_GATE_LIB:-$HOME/code/dotagents/gate/gate-lib.sh}" || {
-  echo "✗ dotagents gate-lib not found (expected ~/code/dotagents/gate/gate-lib.sh) — re-run install-local-agent-runtime.sh." >&2
-  exit 1
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
+
+GATE_LIB="${DOTAGENTS_GATE_LIB:-${HOME:-}/code/dotagents/gate/gate-lib.sh}"
+
+run_public_gate() {
+  echo "→ pre-commit: using built-in gate (dotagents gate-lib not found)"
+
+  # Match gate-lib: message-only amend / empty index should not run the suite.
+  if git diff --cached --quiet 2>/dev/null; then
+    echo "▶ no staged changes vs HEAD — skipping the gate (message-only amend / empty commit)"
+    exit 0
+  fi
+
+  if [[ ! -d node_modules ]] \
+    || [[ ! -f node_modules/.package-lock.json ]] \
+    || [[ package-lock.json -nt node_modules/.package-lock.json ]]; then
+    echo "→ npm ci (node_modules missing or lockfile newer than install)"
+    npm ci
+  fi
+
+  npm run check:actions
+  npm run check:ts
+  npm run build
+  echo "✓ pre-commit gate passed — commit will land; push to a PR, Vercel deploys via GitHub integration on merge."
 }
 
-gate_begin_commit "learn-the-far"
-gate_require_node
-gate_npm_ci --if-stale
-
-run_step "dep grounding" gate_check_dep_grounding .git-hooks/pre-commit
-run_step "actionlint"             npm run check:actions
-run_step "astro check (types)" npm run check:ts
-run_step "build" npm run build
-
-echo "✓ pre-commit gate passed — commit will land; push to a PR, Vercel deploys via GitHub integration on merge."
+if [[ -n "$GATE_LIB" && -f "$GATE_LIB" ]]; then
+  # shellcheck source=/dev/null
+  source "$GATE_LIB"
+  gate_begin_commit "learn-the-far"
+  gate_require_node
+  gate_npm_ci --if-stale
+  run_step "dep grounding" gate_check_dep_grounding .git-hooks/pre-commit
+  run_step "actionlint" npm run check:actions
+  run_step "astro check (types)" npm run check:ts
+  run_step "build" npm run build
+  echo "✓ pre-commit gate passed — commit will land; push to a PR, Vercel deploys via GitHub integration on merge."
+else
+  run_public_gate
+fi

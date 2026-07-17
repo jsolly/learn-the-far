@@ -10,34 +10,49 @@ Production URL: <https://learnthefar.com>
 
 ## Development
 
-When starting the dev server, use background mode:
+```bash
+npm ci
+npm run dev
+```
+
+When starting the Astro CLI in background mode:
 
 ```bash
 astro dev --background
 ```
 
-Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
+Manage with `astro dev stop`, `astro dev status`, and `astro dev logs`. Default local URL is typically <http://localhost:4321>.
+
+No `.env` is required to run or build the app. `.env.example` is only for the optional ECharts MCP helper.
 
 ## Worktrees
 
-Fresh worktrees run `npm run worktree:init` through Cursor's setup command or the manual Git `post-checkout` hook. This is required because staged Markdown lint runs before the gate's lazy dependency check. The app has no required gitignored local configuration or state, so `.worktreeinclude` is intentionally absent.
+Fresh worktrees run `npm run worktree:init` (`npm ci`) via Cursor’s setup command or the optional Git `post-checkout` hook. The app has no required gitignored local configuration, so `.worktreeinclude` is intentionally absent.
+
+## Pre-commit gate
+
+`.git-hooks/pre-commit` runs actionlint, `astro check`, and `astro build`. If the optional shared `dotagents` gate-lib is present on the machine, it is used; otherwise the same checks run directly. Never weaken or skip the gate with `--no-verify`.
+
+## Deploy / fork
+
+Static Vercel deploy only — see README **Deploy your own copy**. For a different domain, update `astro.config.mjs` `site`, `public/robots.txt`, and `vercel.json` host redirects. No production secrets or server env vars.
 
 ## Documentation
 
-Full documentation: <https://docs.astro.build>
+- Project README: [README.md](./README.md)
+- Astro docs: <https://docs.astro.build>
 
-Consult these guides before working on related tasks:
+Useful Astro guides:
 
-- [Adding pages, dynamic routes, or middleware](https://docs.astro.build/en/guides/routing/)
-- [Working with Astro components](https://docs.astro.build/en/basics/astro-components/)
-- [Using React, Vue, Svelte, or other framework components](https://docs.astro.build/en/guides/framework-components/)
-- [Adding or managing content](https://docs.astro.build/en/guides/content-collections/)
-- [Adding styles or using Tailwind](https://docs.astro.build/en/guides/styling/)
-- [Supporting multiple languages](https://docs.astro.build/en/guides/internationalization/)
+- [Routing](https://docs.astro.build/en/guides/routing/)
+- [Astro components](https://docs.astro.build/en/basics/astro-components/)
+- [Framework components](https://docs.astro.build/en/guides/framework-components/)
+- [Content collections](https://docs.astro.build/en/guides/content-collections/)
+- [Styling](https://docs.astro.build/en/guides/styling/)
 
 ## Local UI verification
 
-No auth — public UI only. Follow `rules/frontend-verification.md` (fleet smoke: desktop + mobile screenshots, console clean).
+No auth — public UI only. Smoke the changed routes on desktop and mobile widths; confirm the browser console is clean.
 
-- **Dev server:** `astro dev --background` (manage with `astro dev status` / `astro dev logs` / `astro dev stop`). Default local URL is the Astro dev host printed on start (typically <http://localhost:4321>).
-- **Auth:** none — public pages only. No `DEFAULT_USER` / `DEFAULT_PASSWORD`.
+- **Dev server:** `astro dev --background` (or `npm run dev`).
+- **Auth:** none — public pages only.
