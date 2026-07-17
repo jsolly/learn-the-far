@@ -3,8 +3,7 @@ name: Auto Merge
 # Only PRs labeled ship-auto-merge (added by /ship) get auto-merge — not every open PR.
 # Create the label in GitHub (Settings → Labels) before first use.
 # Job-level label gate: unlabeled PRs skip with ZERO billed runner minutes (label is in
-# the webhook payload — no gh API round-trip). StockTextAlerts uses the same if: on a
-# Blacksmith ARM runner; fleet default is ubuntu-latest.
+# the webhook payload — no gh API round-trip).
 
 on:
   pull_request:
