@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { tick } from "svelte";
+	import CheckIcon from "@lucide/svelte/icons/check";
 
 	import { UNITS } from "$lib/far/deck";
 	import type { UnitId } from "$lib/far/types";
@@ -7,7 +8,6 @@
 	import { learnChapterPath, learnShelfPath } from "$lib/learn-routes";
 	import { game } from "$lib/quiz-state.svelte.js";
 	import { Button } from "$lib/components/ui/button";
-	import { Badge } from "$lib/components/ui/badge";
 	import TopicPill from "./TopicPill.svelte";
 
 	let shelf = $derived(game.shelf);
@@ -78,13 +78,19 @@
 						href={learnChapterPath(shelf.unitId, ch.id)}
 						class="flex w-full flex-col gap-2 p-4 text-left sm:p-5"
 					>
-						<div class="flex flex-wrap items-center gap-2">
-							{#if read}
-								<Badge variant="secondary" class="text-[0.65rem] sm:text-xs">Read</Badge>
-							{/if}
+						<div class="flex items-center justify-between gap-2">
 							<span class="text-xs tabular-nums text-muted-foreground sm:text-sm">
 								~{ch.readingMinutes} min
 							</span>
+							{#if read}
+								<span
+									class="inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white sm:size-6 dark:bg-emerald-500"
+									title="Read"
+								>
+									<span class="sr-only">Read</span>
+									<CheckIcon class="size-3 sm:size-3.5" strokeWidth={3} aria-hidden="true" />
+								</span>
+							{/if}
 						</div>
 						<p class="font-semibold leading-snug sm:text-lg">{ch.title}</p>
 						<p class="text-xs leading-5 text-muted-foreground sm:text-sm sm:leading-6">
