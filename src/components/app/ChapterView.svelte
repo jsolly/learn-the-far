@@ -82,6 +82,17 @@
 	function pieceLinked(pieceId: string) {
 		return linkedCopy?.pieces.find((p) => p.id === pieceId);
 	}
+
+	function returnToShelf(event: MouseEvent) {
+		if (!chapter || game.chapterKind !== "shelf-chapter") return;
+		// Keep href for open-in-new-tab / middle-click; primary click stays in-app
+		// so we can restore the shelf scroll captured when the chapter was opened.
+		if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) {
+			return;
+		}
+		event.preventDefault();
+		game.openShelf(chapter.unitId, { focusChapterId: chapter.id });
+	}
 </script>
 
 {#if chapter && linkedCopy}
@@ -91,6 +102,7 @@
 				<a
 					href={learnShelfPath(chapter.unitId)}
 					class="mb-3 inline-block text-sm text-muted-foreground underline-offset-4 hover:underline"
+					onclick={returnToShelf}
 				>
 					← Back to shelf
 				</a>
@@ -281,6 +293,7 @@
 						variant="outline"
 						class="w-full sm:h-11 sm:min-w-[12rem] sm:flex-1 sm:text-base"
 						href={learnShelfPath(chapter.unitId)}
+						onclick={returnToShelf}
 					>
 						Browse chapters
 					</Button>
