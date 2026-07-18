@@ -201,3 +201,14 @@ export function pickSummaryHeadline(scorePct: number, rng: () => number = Math.r
 	const index = Math.floor(rng() * phrases.length);
 	return phrases[index] ?? "Keep drilling.";
 }
+
+/**
+ * CSS color for the summary score ring.
+ * Traffic-light hue: 0% red → 50% yellow → 100% green (orange in between).
+ */
+export function scoreRingColor(scorePct: number): string {
+	const pct = Math.min(100, Math.max(0, scorePct));
+	const t = pct / 100;
+	const hue = t <= 0.5 ? (t / 0.5) * 55 : 55 + ((t - 0.5) / 0.5) * 90;
+	return `hsl(${Math.round(hue)} 70% 45%)`;
+}
