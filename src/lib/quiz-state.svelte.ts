@@ -2,6 +2,7 @@ import type {
 	AnswerOutcome,
 	Difficulty,
 	LifecycleUnit,
+	QuizOption,
 	QuizQuestion,
 	UnitId,
 } from "$lib/far/types";
@@ -137,6 +138,8 @@ export class QuizGame {
 
 	// current question interaction
 	answeredOptionId = $state<string | null>(null);
+	/** Shuffled option order for the current question; stable until the next question. */
+	displayedOptions = $state<QuizOption[]>([]);
 
 	summary = $state<SessionSummary | null>(null);
 
@@ -222,6 +225,7 @@ export class QuizGame {
 		this.outcomes = [];
 		this.requeued = new SvelteSet();
 		this.answeredOptionId = null;
+		this.displayedOptions = [];
 		this.summary = null;
 		this.chapter = null;
 		this.chapterKind = null;
@@ -238,6 +242,7 @@ export class QuizGame {
 		this.outcomes = [];
 		this.requeued = new SvelteSet();
 		this.answeredOptionId = null;
+		this.displayedOptions = [];
 		this.summary = null;
 		this.activeChapterId = null;
 
@@ -529,6 +534,12 @@ export class QuizGame {
 		this.chapterKind = null;
 		this.shelf = null;
 		this.view = questions.length > 0 ? "session" : "home";
+		this.syncDisplayedOptions();
+	}
+
+	private syncDisplayedOptions() {
+		const q = this.currentQuestion;
+		this.displayedOptions = q ? shuffle(q.options) : [];
 	}
 
 	get currentQuestion(): QuizQuestion | undefined {
@@ -617,7 +628,10 @@ export class QuizGame {
 		}
 
 		if (this.queue.length === 0) {
+			this.displayedOptions = [];
 			this.finishSession();
+		} else {
+			this.syncDisplayedOptions();
 		}
 	}
 
@@ -694,6 +708,7 @@ export class QuizGame {
 		this.outcomes = [];
 		this.requeued = new SvelteSet();
 		this.answeredOptionId = null;
+		this.displayedOptions = [];
 		this.summary = null;
 		this.activeChapterId = null;
 		this.openChapter(chapter, "shelf-chapter");
@@ -743,6 +758,7 @@ export class QuizGame {
 		this.outcomes = [];
 		this.requeued = new SvelteSet();
 		this.answeredOptionId = null;
+		this.displayedOptions = [];
 		this.summary = null;
 		this.activeChapterId = null;
 		this.chapter = null;
