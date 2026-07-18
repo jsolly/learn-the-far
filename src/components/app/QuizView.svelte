@@ -147,7 +147,7 @@
 		<h1
 			{@attach focusQuestionHeading(q.id)}
 			tabindex="-1"
-			class="mt-4 rounded-sm text-xl font-semibold leading-snug focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 sm:text-2xl"
+			class="mt-4 text-xl font-semibold leading-snug outline-none sm:text-2xl"
 		>
 			{q.prompt}
 		</h1>
