@@ -14,6 +14,7 @@ import {
 	LEVELS,
 	type LevelId,
 	MASTERED_CORRECT_COUNT,
+	pickSummaryHeadline,
 	SESSION_LENGTH,
 	STREAK_MILESTONES,
 	TIER_SCORE,
@@ -669,6 +670,7 @@ export class QuizGame {
 			scoreSum,
 			scorePct,
 			perfect,
+			headline: pickSummaryHeadline(scorePct),
 			newAchievements,
 		};
 		this.view = "summary";

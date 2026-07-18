@@ -84,3 +84,120 @@ export const ACHIEVEMENTS: Achievement[] = [
 	{ id: "prime-shape", label: "Requirement Whisperer", description: "Reach Prime on Shape the Requirement.", icon: "✍️" },
 	{ id: "capstone", label: "Full Capture", description: "Reach Prime on every unit.", icon: "👑" },
 ];
+
+// End-of-session summary headlines by score band (finest / highest min first).
+export const SUMMARY_HEADLINES: { min: number; phrases: string[] }[] = [
+	{
+		min: 100,
+		phrases: [
+			"Clean audit.",
+			"Award without discussion.",
+			"Full and open excellence.",
+			"Past performance: exceptional.",
+			"Warrant-worthy.",
+			"Green across the board.",
+			"Cleared for award.",
+			"Source selection: you.",
+		],
+	},
+	{
+		min: 90,
+		phrases: [
+			"Competitive range — and then some.",
+			"Strong evaluation record.",
+			"Debrief-ready.",
+			"Technically acceptable with distinction.",
+			"Holding the high ground.",
+			"Ready for award.",
+			"Solid proposal delivery.",
+			"Few findings.",
+		],
+	},
+	{
+		min: 80,
+		phrases: [
+			"Inside the competitive range.",
+			"Defensible position.",
+			"Good faith and good work.",
+			"Technically acceptable.",
+			"Capture discipline paid off.",
+			"On the right CLIN.",
+			"Competitive, not corrective.",
+			"Strong draft.",
+		],
+	},
+	{
+		min: 70,
+		phrases: [
+			"Solid capture.",
+			"Within consideration.",
+			"Acceptable with notes.",
+			"Holding the line.",
+			"Room to polish.",
+			"Viable offer.",
+			"Stay in the hunt.",
+			"Credible showing.",
+		],
+	},
+	{
+		min: 60,
+		phrases: [
+			"Clarification requested.",
+			"Weakness noted — fixable.",
+			"Evaluation notice: improve.",
+			"Needs a revised volume.",
+			"Yellow at the gate.",
+			"Address the deficiency.",
+			"Not out yet.",
+			"One more scrub.",
+		],
+	},
+	{
+		min: 50,
+		phrases: [
+			"Room to sharpen.",
+			"Below the zone — for now.",
+			"Recompete prep starts now.",
+			"Corrective action plan.",
+			"Findings to close.",
+			"Back to the red team.",
+			"Salvageable pursuit.",
+			"Tighten the volumes.",
+		],
+	},
+	{
+		min: 30,
+		phrases: [
+			"Costly miss.",
+			"Protest risk: elevated.",
+			"Outside the competitive range.",
+			"Returned for rewrite.",
+			"Capture plan needs work.",
+			"Discouraging debrief.",
+			"Major weakness.",
+			"Rebuild the approach.",
+		],
+	},
+	{
+		min: 0,
+		phrases: [
+			"Keep drilling.",
+			"Nonresponsive — for now.",
+			"Disqualifying as written.",
+			"Curtains for this pursuit.",
+			"Back to market research.",
+			"Start over at the RFI.",
+			"Red across the board.",
+			"No award path yet.",
+		],
+	},
+];
+
+/** Pick a score-band headline once per finished session (do not re-roll on render). */
+export function pickSummaryHeadline(scorePct: number, rng: () => number = Math.random): string {
+	const band = SUMMARY_HEADLINES.find((entry) => scorePct >= entry.min);
+	const phrases = band?.phrases ?? [];
+	if (phrases.length === 0) return "Keep drilling.";
+	const index = Math.floor(rng() * phrases.length);
+	return phrases[index] ?? "Keep drilling.";
+}

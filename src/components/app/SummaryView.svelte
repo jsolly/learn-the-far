@@ -28,13 +28,6 @@
 		});
 	});
 
-	function headline(pct: number): string {
-		if (pct >= 90) return "Clean audit.";
-		if (pct >= 70) return "Solid capture.";
-		if (pct >= 50) return "Room to sharpen.";
-		return "Keep drilling.";
-	}
-
 	function sessionLabel(summary: NonNullable<typeof s>): string {
 		if (summary.mode === "daily") return "Daily challenge";
 		if (summary.mode === "chapter" && summary.chapterTitle) return summary.chapterTitle;
@@ -67,7 +60,7 @@
 			tabindex="-1"
 			class="rounded-sm text-2xl font-bold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
 		>
-			{headline(s.scorePct)}
+			{s.headline}
 		</h1>
 		<p class="text-muted-foreground">
 			{s.answered} question{s.answered === 1 ? "" : "s"} · {game.streak.current}-day streak 🔥
