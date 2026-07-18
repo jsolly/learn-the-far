@@ -59,6 +59,8 @@ export const TIER_VERDICT: Record<OptionTier, { label: string; tone: Tone }> = {
 export const PROGRESS_KEY = "learn-the-far:quiz-progress:v2";
 /** Separate from quiz mastery — reading never clears the pie. */
 export const READING_PROGRESS_KEY = "learn-the-far:reading-progress:v1";
+/** Shelf preference: hide chapters already marked read. */
+export const SHELF_HIDE_READ_KEY = "learn-the-far:shelf-hide-read:v1";
 
 // Questions per session before the summary screen (wrong answers requeue within).
 export const SESSION_LENGTH = 8;
