@@ -13,7 +13,7 @@ export const CORE_GLOSSARY_TERMS: GlossaryTerm[] = [
 		term: "Contracting Officer",
 		aliases: ["contracting officer", "Contracting Officers", "CO", "KO", "COs", "KOs"],
 		definition:
-			"A Government official who may enter into, administer, or terminate contracts only to the extent of written delegated authority. Seniority or budget control alone does not create contracting authority.",
+			"A Government official who may enter into, administer, or terminate contracts only to the extent of written delegated authority. Often abbreviated CO or KO — KO is especially common in DoD and other military settings to avoid confusion with Commanding Officer, using the legal shorthand “K” for contract. Seniority or budget control alone does not create contracting authority.",
 		chapterId: "who-may-speak-who-may-bind",
 	},
 	{

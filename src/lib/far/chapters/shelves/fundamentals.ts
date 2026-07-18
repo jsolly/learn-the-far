@@ -74,7 +74,7 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 			{
 				id: "warranted-co",
 				title: "Contracting officer (warrant / written authority)",
-				teach: "A contracting officer (KO) may enter into, administer, or terminate contracts only to the extent of authority delegated in writing — industry often calls that a warrant; the FAR speaks of appointment and written limits. The check that matters is the written delegation and its limits, not seniority or budget control. When direction would change price, quantity, delivery, or other terms, route it to an official whose written delegation covers the change — do not treat verbal urgency as a substitute for a mod or order.",
+				teach: "A contracting officer — often abbreviated CO or KO — may enter into, administer, or terminate contracts only to the extent of authority delegated in writing — industry often calls that a warrant; the FAR speaks of appointment and written limits. KO is especially common in DoD and other military settings: “CO” already means Commanding Officer, so acquisition uses KO, drawing on the legal shorthand “K” for contract. The check that matters is the written delegation and its limits, not seniority or budget control. When direction would change price, quantity, delivery, or other terms, route it to an official whose written delegation covers the change — do not treat verbal urgency as a substitute for a mod or order.",
 				watchFor:
 					"Don’t confuse seniority, a PM title, a COR email, or a warm customer relationship with contracting authority. None of those bind the Government.",
 				quote: {
