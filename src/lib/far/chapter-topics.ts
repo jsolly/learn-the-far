@@ -41,12 +41,6 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 			"NASA’s Solutions for Enterprise-Wide Procurement GWAC for IT products and services.",
 	},
 	{
-		id: "topic-sin",
-		term: "SIN",
-		definition:
-			"Special Item Number — a MAS catalog category that defines what products or services a Schedule holder can sell.",
-	},
-	{
 		id: "topic-schedule-bpa",
 		term: "Schedule BPA",
 		aliases: ["Schedule-BPA"],

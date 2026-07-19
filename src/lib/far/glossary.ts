@@ -287,6 +287,34 @@ export const CORE_GLOSSARY_TERMS: GlossaryTerm[] = [
 		chapterId: "competition-becomes-decision",
 	},
 	{
+		id: "gsa",
+		term: "GSA",
+		aliases: ["General Services Administration"],
+		definition:
+			"The General Services Administration — the federal agency that runs Multiple Award Schedules, several governmentwide vehicles, and related buying tools such as eBuy.",
+		chapterId: "mas-contract-coverage-order",
+	},
+	{
+		id: "sin",
+		term: "SIN",
+		aliases: ["Special Item Number", "Special Item Numbers", "SINs"],
+		definition:
+			"A Special Item Number is a MAS catalog category that defines what products or services a Schedule holder can sell under its awarded Schedule coverage.",
+		chapterId: "mas-contract-coverage-order",
+	},
+	{
+		id: "osdbu",
+		term: "OSDBU",
+		aliases: [
+			"Office of Small and Disadvantaged Business Utilization",
+			"Office of Small & Disadvantaged Business Utilization",
+			"OSDBUs",
+		],
+		definition:
+			"An agency Office of Small and Disadvantaged Business Utilization (or a similarly named small-business office) advocates for small-business participation, can recommend set-asides, review subcontracting plans, and challenge unnecessary consolidation or bundling — without awarding the contract.",
+		chapterId: "radar-not-keyword",
+	},
+	{
 		id: "mas",
 		term: "MAS",
 		aliases: [
