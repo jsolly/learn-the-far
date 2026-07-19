@@ -19,7 +19,7 @@ type ChapterDraft = {
 
 function defaultQuizCta(chapterId: string): { label: string; action: ChapterQuizAction } {
 	return {
-		label: "Check your knowledge",
+		label: "Check my knowledge",
 		action: { kind: "quiz-chapter", chapterId },
 	};
 }
