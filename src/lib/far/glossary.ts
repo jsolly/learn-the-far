@@ -321,6 +321,14 @@ const CURATED_GLOSSARY_TERMS: GlossaryTerm[] = [
 		chapterId: "mas-contract-coverage-order",
 	},
 	{
+		id: "dcaa",
+		term: "DCAA",
+		aliases: ["Defense Contract Audit Agency"],
+		definition:
+			"The Defense Contract Audit Agency — the DoD organization that performs contract audits and related financial advisory services for DoD and, as appropriate, other federal agencies. A past DCAA review is not a permanent “DCAA compliant” badge that transfers across entities or systems.",
+		chapterId: "actual-offeror-ready",
+	},
+	{
 		id: "sin",
 		term: "SIN",
 		aliases: ["Special Item Number", "Special Item Numbers", "SINs"],
