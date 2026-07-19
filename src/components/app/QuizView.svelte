@@ -158,6 +158,7 @@
 					type="button"
 					class={optionClass(opt)}
 					disabled={answered}
+					aria-current={answered && opt.id === game.answeredOptionId ? "true" : undefined}
 					onclick={() => answer(opt.id)}
 					{@attach answered && opt.id === game.answeredOptionId && capturePickedOption}
 				>
@@ -165,10 +166,7 @@
 						<span class="text-base leading-6">{opt.text}</span>
 					</span>
 					{#if answered && opt.id === game.answeredOptionId}
-						<span class="mt-2 flex items-center gap-1.5 text-xs text-foreground/80">
-							<span aria-hidden="true">✓</span>
-							Your answer
-						</span>
+						<span class="sr-only">Your answer</span>
 					{/if}
 					{#if answered && (q.scoring === "tiered" || q.scoring === "reveal-tradeoff") && opt.tier}
 						<span class={`mt-2 block text-xs font-semibold ${TONE_CLASS[TIER_VERDICT[opt.tier].tone]}`}>
