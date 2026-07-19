@@ -259,33 +259,33 @@
 				{#if game.chapterKind === "shelf-chapter"}
 					{#if prevChapter || nextChapter}
 						<nav
-							class="grid grid-cols-2 gap-4"
+							class="grid grid-cols-2 gap-4 [&_[data-slot=button]]:w-full [&_[data-slot=button]]:min-w-0"
 							aria-label="Adjacent chapters"
 						>
-							<div class="min-w-0">
-								{#if prevChapter}
-									<Button
-										size="sm"
-										variant="outline"
-										class="w-full px-3"
-										href={learnChapterPath(prevChapter.unitId, prevChapter.id)}
-									>
-										← Previous
-									</Button>
-								{/if}
-							</div>
-							<div class="min-w-0">
-								{#if nextChapter}
-									<Button
-										size="sm"
-										variant="outline"
-										class="w-full px-3"
-										href={learnChapterPath(nextChapter.unitId, nextChapter.id)}
-									>
-										Next →
-									</Button>
-								{/if}
-							</div>
+							{#if prevChapter}
+								<Button
+									size="sm"
+									variant="outline"
+									class="px-3"
+									href={learnChapterPath(prevChapter.unitId, prevChapter.id)}
+								>
+									← Previous
+								</Button>
+							{:else}
+								<span class="min-w-0" aria-hidden="true"></span>
+							{/if}
+							{#if nextChapter}
+								<Button
+									size="sm"
+									variant="outline"
+									class="px-3"
+									href={learnChapterPath(nextChapter.unitId, nextChapter.id)}
+								>
+									Next →
+								</Button>
+							{:else}
+								<span class="min-w-0" aria-hidden="true"></span>
+							{/if}
 						</nav>
 					{/if}
 				{/if}
