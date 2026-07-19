@@ -255,43 +255,52 @@
 					/>
 				</p>
 			{/if}
-			<div
-				class={`${chapter.closing ? "mt-6" : ""} flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center`}
-			>
+			<div class={`${chapter.closing ? "mt-6" : ""} flex flex-col gap-3`}>
 				{#if showChapterQuiz}
 					<Button
 						size="lg"
-						class="w-full sm:h-11 sm:min-w-[12rem] sm:flex-1 sm:text-base"
+						class="w-full sm:h-11 sm:text-base"
 						onclick={() => game.runChapterQuizAction(chapter.quizCta.action)}
 					>
 						{chapter.quizCta.label}
 					</Button>
 				{/if}
 				{#if game.chapterKind === "shelf-chapter"}
-					{#if prevChapter}
-						<Button
-							size="lg"
-							variant="outline"
-							class="w-full sm:h-11 sm:min-w-[12rem] sm:flex-1 sm:text-base"
-							href={learnChapterPath(prevChapter.unitId, prevChapter.id)}
+					{#if prevChapter || nextChapter}
+						<nav
+							class="flex items-center gap-4"
+							aria-label="Adjacent chapters"
 						>
-							Previous chapter
-						</Button>
-					{/if}
-					{#if nextChapter}
-						<Button
-							size="lg"
-							variant="outline"
-							class="w-full sm:h-11 sm:min-w-[12rem] sm:flex-1 sm:text-base"
-							href={learnChapterPath(nextChapter.unitId, nextChapter.id)}
-						>
-							Next chapter
-						</Button>
+							<div class="flex min-w-0 flex-1 justify-start">
+								{#if prevChapter}
+									<Button
+										size="sm"
+										variant="outline"
+										class="px-3"
+										href={learnChapterPath(prevChapter.unitId, prevChapter.id)}
+									>
+										← Previous
+									</Button>
+								{/if}
+							</div>
+							<div class="flex min-w-0 flex-1 justify-end">
+								{#if nextChapter}
+									<Button
+										size="sm"
+										variant="outline"
+										class="px-3"
+										href={learnChapterPath(nextChapter.unitId, nextChapter.id)}
+									>
+										Next →
+									</Button>
+								{/if}
+							</div>
+						</nav>
 					{/if}
 					<Button
 						size="lg"
 						variant="outline"
-						class="w-full sm:h-11 sm:min-w-[12rem] sm:flex-1 sm:text-base"
+						class="w-full sm:h-11 sm:text-base"
 						href={learnShelfPath(chapter.unitId)}
 						onclick={returnToShelf}
 					>

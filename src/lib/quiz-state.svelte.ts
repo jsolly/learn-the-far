@@ -2,6 +2,7 @@ import type {
 	AnswerOutcome,
 	Difficulty,
 	LifecycleUnit,
+	QuizOption,
 	QuizQuestion,
 	UnitId,
 } from "$lib/far/types";
@@ -14,6 +15,7 @@ import {
 	LEVELS,
 	type LevelId,
 	MASTERED_CORRECT_COUNT,
+	pickSummaryHeadline,
 	SESSION_LENGTH,
 	STREAK_MILESTONES,
 	TIER_SCORE,
@@ -43,6 +45,7 @@ import {
 	parseLearnPath,
 	type LearnRoute,
 } from "$lib/learn-routes";
+import { hubCapturedPercent } from "$lib/pie-progress";
 import type {
 	QuestionRecord,
 	QuizProgress,
@@ -142,6 +145,8 @@ export class QuizGame {
 
 	// current question interaction
 	answeredOptionId = $state<string | null>(null);
+	/** Shuffled option order for the current question; stable until the next question. */
+	displayedOptions = $state<QuizOption[]>([]);
 
 	summary = $state<SessionSummary | null>(null);
 
@@ -227,6 +232,7 @@ export class QuizGame {
 		this.outcomes = [];
 		this.requeued = new SvelteSet();
 		this.answeredOptionId = null;
+		this.displayedOptions = [];
 		this.summary = null;
 		this.chapter = null;
 		this.chapterKind = null;
@@ -243,6 +249,7 @@ export class QuizGame {
 		this.outcomes = [];
 		this.requeued = new SvelteSet();
 		this.answeredOptionId = null;
+		this.displayedOptions = [];
 		this.summary = null;
 		this.activeChapterId = null;
 
@@ -365,10 +372,8 @@ export class QuizGame {
 	}
 
 	get masteryPercent(): number {
-		const total = QUESTIONS.length;
-		if (total === 0) return 0;
-		const cleared = QUESTIONS.filter((q) => this.isCleared(q.id)).length;
-		return Math.round((cleared / total) * 100);
+		// Same cleared/total as the pie hub — weighted by each unit's deck size.
+		return hubCapturedPercent(this.allStats);
 	}
 
 	/** Whether the learner has any persisted progress worth resetting. */
@@ -535,6 +540,12 @@ export class QuizGame {
 		this.chapterKind = null;
 		this.shelf = null;
 		this.view = questions.length > 0 ? "session" : "home";
+		this.syncDisplayedOptions();
+	}
+
+	private syncDisplayedOptions() {
+		const q = this.currentQuestion;
+		this.displayedOptions = q ? shuffle(q.options) : [];
 	}
 
 	get currentQuestion(): QuizQuestion | undefined {
@@ -623,7 +634,10 @@ export class QuizGame {
 		}
 
 		if (this.queue.length === 0) {
+			this.displayedOptions = [];
 			this.finishSession();
+		} else {
+			this.syncDisplayedOptions();
 		}
 	}
 
@@ -675,6 +689,7 @@ export class QuizGame {
 			scoreSum,
 			scorePct,
 			perfect,
+			headline: pickSummaryHeadline(scorePct),
 			newAchievements,
 		};
 		this.view = "summary";
@@ -700,6 +715,7 @@ export class QuizGame {
 		this.outcomes = [];
 		this.requeued = new SvelteSet();
 		this.answeredOptionId = null;
+		this.displayedOptions = [];
 		this.summary = null;
 		this.activeChapterId = null;
 		this.openChapter(chapter, "shelf-chapter");
@@ -749,6 +765,7 @@ export class QuizGame {
 		this.outcomes = [];
 		this.requeued = new SvelteSet();
 		this.answeredOptionId = null;
+		this.displayedOptions = [];
 		this.summary = null;
 		this.activeChapterId = null;
 		this.chapter = null;

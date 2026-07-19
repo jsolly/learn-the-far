@@ -147,17 +147,18 @@
 		<h1
 			{@attach focusQuestionHeading(q.id)}
 			tabindex="-1"
-			class="mt-4 rounded-sm text-xl font-semibold leading-snug focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 sm:text-2xl"
+			class="mt-4 text-xl font-semibold leading-snug outline-none sm:text-2xl"
 		>
 			{q.prompt}
 		</h1>
 
 		<div class="mt-4 flex flex-col gap-3">
-			{#each q.options as opt (`${q.id}:${opt.id}`)}
+			{#each game.displayedOptions as opt (`${q.id}:${opt.id}`)}
 				<button
 					type="button"
 					class={optionClass(opt)}
 					disabled={answered}
+					aria-current={answered && opt.id === game.answeredOptionId ? "true" : undefined}
 					onclick={() => answer(opt.id)}
 					{@attach answered && opt.id === game.answeredOptionId && capturePickedOption}
 				>
@@ -165,10 +166,7 @@
 						<span class="text-base leading-6">{opt.text}</span>
 					</span>
 					{#if answered && opt.id === game.answeredOptionId}
-						<span class="mt-2 flex items-center gap-1.5 text-xs text-foreground/80">
-							<span aria-hidden="true">✓</span>
-							Your answer
-						</span>
+						<span class="sr-only">Your answer</span>
 					{/if}
 					{#if answered && (q.scoring === "tiered" || q.scoring === "reveal-tradeoff") && opt.tier}
 						<span class={`mt-2 block text-xs font-semibold ${TONE_CLASS[TIER_VERDICT[opt.tier].tone]}`}>

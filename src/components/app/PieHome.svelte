@@ -61,7 +61,7 @@
 	</header>
 
 	<div class="mt-4 sm:mt-6">
-		<PieWheel {stats} hubPercent={game.masteryPercent} />
+		<PieWheel {stats} />
 	</div>
 
 	<div

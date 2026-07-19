@@ -2,7 +2,7 @@
 	import { tick } from "svelte";
 
 	import { game } from "$lib/quiz-state.svelte.js";
-	import { ACHIEVEMENTS } from "$lib/far/constants";
+	import { ACHIEVEMENTS, scoreRingColor } from "$lib/far/constants";
 	import { Button } from "$lib/components/ui/button";
 
 	let s = $derived(game.summary);
@@ -28,13 +28,6 @@
 		});
 	});
 
-	function headline(pct: number): string {
-		if (pct >= 90) return "Clean audit.";
-		if (pct >= 70) return "Solid capture.";
-		if (pct >= 50) return "Room to sharpen.";
-		return "Keep drilling.";
-	}
-
 	function sessionLabel(summary: NonNullable<typeof s>): string {
 		if (summary.mode === "daily") return "Daily challenge";
 		if (summary.mode === "chapter" && summary.chapterTitle) return summary.chapterTitle;
@@ -52,7 +45,7 @@
 		<div class="relative flex size-36 items-center justify-center">
 			<div
 				class="absolute inset-0 rounded-full p-3"
-				style={`background: conic-gradient(hsl(${s.unit?.hue ?? 210} 70% 52%) ${s.scorePct}%, var(--color-muted) 0);`}
+				style={`background: conic-gradient(${scoreRingColor(s.scorePct)} ${s.scorePct}%, var(--color-muted) 0);`}
 				aria-hidden="true"
 			>
 				<span class="block size-full rounded-full bg-background"></span>
@@ -67,7 +60,7 @@
 			tabindex="-1"
 			class="rounded-sm text-2xl font-bold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
 		>
-			{headline(s.scorePct)}
+			{s.headline}
 		</h1>
 		<p class="text-muted-foreground">
 			{s.answered} question{s.answered === 1 ? "" : "s"} · {game.streak.current}-day streak 🔥
