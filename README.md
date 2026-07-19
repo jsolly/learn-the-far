@@ -82,3 +82,4 @@ UI is public-only (no login). Prefer small, focused PRs.
 ## License
 
 MIT — see [LICENSE](./LICENSE).
+<!-- cloud-skills smoke 20260719T010550Z -->
