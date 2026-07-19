@@ -153,7 +153,7 @@
 		</h1>
 
 		<div class="mt-4 flex flex-col gap-3">
-			{#each q.options as opt (`${q.id}:${opt.id}`)}
+			{#each game.displayedOptions as opt (`${q.id}:${opt.id}`)}
 				<button
 					type="button"
 					class={optionClass(opt)}
