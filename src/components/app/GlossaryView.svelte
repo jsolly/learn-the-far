@@ -43,7 +43,7 @@
 
 <div class="mx-auto flex min-h-[100dvh] w-full max-w-2xl flex-col px-4 pb-16 pt-5 sm:px-6 sm:pt-7">
 	<header class="mb-6 sm:mb-8">
-		<a href="/" class="mb-3 inline-block text-sm text-muted-foreground underline-offset-4 hover:underline">
+		<a href="/" class="mb-3 inline-block text-sm text-muted-foreground transition-colors hover:text-link">
 			← Back
 		</a>
 		<h1

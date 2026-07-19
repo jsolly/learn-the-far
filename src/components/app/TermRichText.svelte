@@ -22,7 +22,7 @@
 			<TermDefinitionPopover
 				{term}
 				{currentChapterId}
-				triggerClass="cursor-pointer rounded-sm text-primary underline decoration-dotted decoration-primary/70 underline-offset-4 outline-none hover:decoration-solid focus-visible:ring-2 focus-visible:ring-ring"
+				triggerClass="app-link cursor-pointer rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
 			>
 				{segment.text}
 			</TermDefinitionPopover>

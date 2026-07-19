@@ -12,7 +12,7 @@
 				secondary: "bg-secondary text-secondary-foreground enabled:hover:bg-secondary/80 aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
 				ghost: "enabled:hover:bg-muted enabled:hover:text-foreground dark:enabled:hover:bg-muted/50 aria-expanded:bg-muted aria-expanded:text-foreground",
 				destructive: "bg-destructive/10 enabled:hover:bg-destructive/20 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/20 text-destructive focus-visible:border-destructive/40 dark:enabled:hover:bg-destructive/30",
-				link: "text-primary underline-offset-4 enabled:hover:underline",
+				link: "app-link",
 			},
 			size: {
 				default: "h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
