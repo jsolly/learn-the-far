@@ -13,21 +13,10 @@
 	} = $props();
 </script>
 
-{#each segments as segment, i (i)}
-	{#if segment.kind === "text"}
-		{segment.text}
-	{:else}
-		{@const term = getTerm(segment.termId)}
-		{#if term}
-			<TermDefinitionPopover
-				{term}
-				{currentChapterId}
-				triggerClass="app-link cursor-pointer rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
-			>
-				{segment.text}
-			</TermDefinitionPopover>
-		{:else}
-			{segment.text}
-		{/if}
-	{/if}
-{/each}
+<!-- Compact markup: whitespace between each/if arms would appear after inline term links. -->
+<!-- prettier-ignore -->
+{#each segments as segment, i (i)}{#if segment.kind === "text"}{segment.text}{:else}{@const term = getTerm(segment.termId)}{#if term}<TermDefinitionPopover
+			{term}
+			{currentChapterId}
+			triggerClass="app-link cursor-pointer rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+		>{segment.text}</TermDefinitionPopover>{:else}{segment.text}{/if}{/if}{/each}

@@ -35,10 +35,9 @@
 </script>
 
 <Popover.Root>
-	<Popover.Trigger class={triggerClass}>
-		{@render children()}
-	</Popover.Trigger>
-	<Popover.Content
+	<!-- prettier-ignore -->
+	<Popover.Trigger class={triggerClass}>{@render children()}</Popover.Trigger><!--
+	--><Popover.Content
 		class="w-72 p-3 sm:w-80"
 		align="start"
 		role="dialog"

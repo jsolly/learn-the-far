@@ -265,7 +265,7 @@ export const BID_NO_BID_SHELF_CHAPTERS: Chapter[] = [
 			"Defines when material RFP change resets the bid case — including disciplined no-bid despite sunk cost.",
 		intro:
 			"Terms for re-gating when the final solicitation changes, ignoring sunk B&P, and the full bid/no-bid stack.",
-		tags: ["regate", "final-rfp", "sunk-cost", "protest-timing", "no-bid"],
+		tags: ["regate", "rfp", "sunk-cost", "protest-timing", "no-bid"],
 		readingMinutes: 8,
 		suggestedOrder: 6,
 		pieces: [

@@ -277,7 +277,7 @@ export const BID_NO_BID_CORE: QuizQuestion[] = [
 			"Capture craft: authorization based on draft terms does not survive material changes by inertia. FAR 15.203 makes the solicitation the Government's request for proposals; the final terms therefore reset the evidence for eligibility, evaluation, execution, price, and expected return.",
 		citation: "Capture craft (final-RFP re-gate); FAR 15.203",
 		sourceUrl: "https://www.acquisition.gov/far/15.203",
-		tags: ["final-rfp", "regate", "change-control", "confidence"],
+		tags: ["rfp", "regate", "change-control", "confidence"],
 	},
 	{
 		id: "bid-no-bid-key-person-availability",

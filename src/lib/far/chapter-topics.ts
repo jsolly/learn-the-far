@@ -230,13 +230,6 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 			"Firm-fixed-price — the contractor bears cost risk for delivering the stated work at the agreed price.",
 	},
 	{
-		id: "topic-final-rfp",
-		term: "Final RFP",
-		aliases: ["final-rfp"],
-		definition:
-			"The official solicitation against which offers are submitted and evaluated.",
-	},
-	{
 		id: "topic-fiscal-law",
 		term: "Fiscal Law",
 		aliases: ["fiscal-law"],
