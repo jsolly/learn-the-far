@@ -179,6 +179,18 @@ export const CORE_GLOSSARY_TERMS: GlossaryTerm[] = [
 		chapterId: "how-money-becomes-authority",
 	},
 	{
+		id: "rom",
+		term: "ROM",
+		aliases: [
+			"Rough Order of Magnitude",
+			"rough order of magnitude",
+			"ROMs",
+		],
+		definition:
+			"A Rough Order of Magnitude is an early, assumption-heavy ballpark cost or price estimate used in capture and market research. It is not a binding offer, and it is not the same as an IGCE or a fully supported proposal price.",
+		chapterId: "lead-not-solicitation",
+	},
+	{
 		id: "clin",
 		term: "CLIN",
 		aliases: [
