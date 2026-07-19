@@ -88,21 +88,30 @@
 		return url.replace(/\/$/, "");
 	}
 
-	let furtherReadingKeys = $derived(
-		new Set((chapter?.furtherReading ?? []).map((link) => sourceKey(link.url))),
-	);
-
-	/** Hide per-piece source rows when the same URL is already under Further reading. */
-	function showPieceSource(piece: {
-		sourceUrl?: string;
-		citation?: string;
-	}): boolean {
-		return Boolean(
-			piece.sourceUrl &&
-				piece.citation &&
-				!furtherReadingKeys.has(sourceKey(piece.sourceUrl)),
-		);
-	}
+	/**
+	 * Chapter further-reading plus any piece source links not already listed.
+	 * Piece sources are shown only here — not under each teach/watch-for block.
+	 * Quote attributions stay under their excerpts.
+	 */
+	let furtherReadingLinks = $derived.by(() => {
+		const current = chapter;
+		if (!current) return [];
+		const listed = current.furtherReading ?? [];
+		const seen = new Set(listed.map((link) => sourceKey(link.url)));
+		const merged = [...listed];
+		for (const piece of current.pieces) {
+			if (piece.quote || !piece.sourceUrl || !piece.citation) continue;
+			const key = sourceKey(piece.sourceUrl);
+			if (seen.has(key)) continue;
+			seen.add(key);
+			merged.push({
+				label: piece.citation,
+				url: piece.sourceUrl,
+				kind: piece.sourceKind ?? "guidance",
+			});
+		}
+		return merged;
+	});
 
 	function returnToShelf(event: MouseEvent) {
 		if (!chapter || game.chapterKind !== "shelf-chapter") return;
@@ -225,32 +234,16 @@
 								</a>
 							</footer>
 						</blockquote>
-					{:else if showPieceSource(piece)}
-						<p class="mt-4 text-xs sm:text-sm">
-							<a
-								class="app-link font-medium"
-								href={piece.sourceUrl}
-								target="_blank"
-								rel="noopener noreferrer"
-							>
-								{piece.citation} ↗
-							</a>
-							{#if piece.sourceKind}
-								<span class="text-muted-foreground">
-									· {sourceKindLabel(piece.sourceKind)}</span
-								>
-							{/if}
-						</p>
 					{/if}
 				</article>
 			{/each}
 		</div>
 
-		{#if chapter.furtherReading && chapter.furtherReading.length > 0}
+		{#if furtherReadingLinks.length > 0}
 			<section class="mt-10 border-t pt-6 sm:mt-12">
 				<h2 class="text-sm font-semibold sm:text-base">Further reading</h2>
 				<ul class="mt-3 space-y-2 text-sm">
-					{#each chapter.furtherReading as link (link.url + link.label)}
+					{#each furtherReadingLinks as link (link.url + link.label)}
 						<li>
 							<a
 								class="app-link font-medium"
