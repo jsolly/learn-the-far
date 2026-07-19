@@ -104,8 +104,8 @@ export const CORE_GLOSSARY_TERMS: GlossaryTerm[] = [
 	},
 	{
 		id: "sources-sought",
-		term: "Sources sought",
-		aliases: ["sources-sought", "Sources Sought", "sources sought notice"],
+		term: "Sources Sought",
+		aliases: ["sources-sought", "Sources sought", "sources sought notice"],
 		definition:
 			"A market-research notice that gathers capability evidence and often informs set-aside and acquisition strategy. It is not a solicitation for binding offers.",
 		chapterId: "market-signal-to-solicitation",
@@ -513,6 +513,26 @@ export function getTerm(id: string): GlossaryTerm | undefined {
 /** Resolve a chapter card tag (pill) to its glossary entry. */
 export function resolveChapterTag(tag: string): GlossaryTerm | undefined {
 	return byTagKey.get(normalizeKey(tag));
+}
+
+/** Fallback when a tag has no glossary entry: `market-research` → `Market Research`. */
+function formatKebabAsTitle(tag: string): string {
+	const parts = tag
+		.trim()
+		.split(/[-_]+/)
+		.filter(Boolean);
+	if (parts.length <= 1) {
+		return tag.trim();
+	}
+	return parts.map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(" ");
+}
+
+/**
+ * Display label for a shelf topic pill.
+ * Prefers the curated glossary `term`; otherwise formats the kebab-case key.
+ */
+export function topicPillLabel(tag: string): string {
+	return resolveChapterTag(tag)?.term ?? formatKebabAsTitle(tag);
 }
 
 /** All match strings for a term (canonical + aliases), longest first. */
