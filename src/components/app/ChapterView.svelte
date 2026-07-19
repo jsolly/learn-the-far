@@ -21,6 +21,10 @@
 			? prevChapterOnShelf(chapter.id)
 			: undefined,
 	);
+	/** Last chapter on the shelf — offer a home exit alongside Browse chapters. */
+	let isLastShelfChapter = $derived(
+		game.chapterKind === "shelf-chapter" && Boolean(chapter) && !nextChapter,
+	);
 	/** End-of-chapter quiz only when this chapter has mapped/tagged questions. */
 	let showChapterQuiz = $derived.by(() => {
 		const current = chapter;
@@ -334,6 +338,16 @@
 					</Button>
 				{/if}
 				{#if game.chapterKind === "shelf-chapter"}
+					{#if isLastShelfChapter}
+						<Button
+							size="lg"
+							variant="outline"
+							class="w-full sm:h-11 sm:text-base"
+							href="/"
+						>
+							Back to home
+						</Button>
+					{/if}
 					<Button
 						size="lg"
 						variant="outline"
