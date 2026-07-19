@@ -89,6 +89,36 @@
 		return linkedCopy?.pieces.find((p) => p.id === pieceId);
 	}
 
+	/** Normalize for comparing piece citations to further-reading entries. */
+	function sourceKey(url: string): string {
+		return url.replace(/\/$/, "");
+	}
+
+	/**
+	 * Chapter further-reading plus any piece source links not already listed.
+	 * Piece sources are shown only here — not under each teach/watch-for block.
+	 * Quote attributions stay under their excerpts.
+	 */
+	let furtherReadingLinks = $derived.by(() => {
+		const current = chapter;
+		if (!current) return [];
+		const listed = current.furtherReading ?? [];
+		const seen = new Set(listed.map((link) => sourceKey(link.url)));
+		const merged = [...listed];
+		for (const piece of current.pieces) {
+			if (piece.quote || !piece.sourceUrl || !piece.citation) continue;
+			const key = sourceKey(piece.sourceUrl);
+			if (seen.has(key)) continue;
+			seen.add(key);
+			merged.push({
+				label: piece.citation,
+				url: piece.sourceUrl,
+				kind: piece.sourceKind ?? "guidance",
+			});
+		}
+		return merged;
+	});
+
 	/** In-page TOC: native hash jumps flash/fail on iOS with tabindex targets. */
 	function jumpToPiece(event: MouseEvent, pieceId: string) {
 		if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) {
@@ -225,32 +255,16 @@
 								</a>
 							</footer>
 						</blockquote>
-					{:else if piece.sourceUrl && piece.citation}
-						<p class="mt-4 text-xs sm:text-sm">
-							<a
-								class="app-link font-medium"
-								href={piece.sourceUrl}
-								target="_blank"
-								rel="noopener noreferrer"
-							>
-								{piece.citation} ↗
-							</a>
-							{#if piece.sourceKind}
-								<span class="text-muted-foreground">
-									· {sourceKindLabel(piece.sourceKind)}</span
-								>
-							{/if}
-						</p>
 					{/if}
 				</article>
 			{/each}
 		</div>
 
-		{#if chapter.furtherReading && chapter.furtherReading.length > 0}
+		{#if furtherReadingLinks.length > 0}
 			<section class="mt-10 border-t pt-6 sm:mt-12">
 				<h2 class="text-sm font-semibold sm:text-base">Further reading</h2>
 				<ul class="mt-3 space-y-2 text-sm">
-					{#each chapter.furtherReading as link (link.url + link.label)}
+					{#each furtherReadingLinks as link (link.url + link.label)}
 						<li>
 							<a
 								class="app-link font-medium"

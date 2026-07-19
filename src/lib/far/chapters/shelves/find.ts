@@ -246,6 +246,11 @@ export const FIND_SHELF_CHAPTERS: Chapter[] = [
 				url: "https://www.acquisition.gov/far/32.702",
 				kind: "controlling-authority",
 			},
+			{
+				label: "GAO-09-879 — Continuing Resolutions",
+				url: "https://www.gao.gov/products/gao-09-879",
+				kind: "guidance",
+			},
 		],
 	}),
 
