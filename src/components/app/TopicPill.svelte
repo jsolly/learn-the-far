@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { resolveChapterTag } from "$lib/far/glossary";
+	import { resolveChapterTag, topicPillLabel } from "$lib/far/glossary";
 	import TermDefinitionPopover from "./TermDefinitionPopover.svelte";
 
 	let {
@@ -9,6 +9,7 @@
 	} = $props();
 
 	let term = $derived(resolveChapterTag(tag));
+	let label = $derived(topicPillLabel(tag));
 </script>
 
 {#if term}
@@ -16,12 +17,12 @@
 		{term}
 		triggerClass="rounded-md bg-muted px-1.5 py-0.5 text-[0.65rem] text-muted-foreground outline-none transition-colors hover:bg-muted/80 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring sm:text-xs"
 	>
-		{tag}
+		{label}
 	</TermDefinitionPopover>
 {:else}
 	<span
 		class="rounded-md bg-muted px-1.5 py-0.5 text-[0.65rem] text-muted-foreground sm:text-xs"
 	>
-		{tag}
+		{label}
 	</span>
 {/if}
