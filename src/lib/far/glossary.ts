@@ -358,6 +358,20 @@ export const CORE_GLOSSARY_TERMS: GlossaryTerm[] = [
 		chapterId: "follow-identifiers",
 	},
 	{
+		id: "data-bank",
+		term: "Data Bank",
+		aliases: [
+			"SAM.gov Data Bank",
+			"SAM Data Bank",
+			"SAM data bank",
+			"sam-data-bank",
+			"Data Bank reports",
+		],
+		definition:
+			"SAM.gov Data Bank is where contract-award reports and related award/modification data live after the public FPDS transition. Use it with SAM.gov Contract Awards for incumbent and spend reconstruction — it is not a forecast-only tool and is not the same as SAM exclusions.",
+		chapterId: "follow-identifiers",
+	},
+	{
 		id: "usaspending",
 		term: "USAspending",
 		aliases: [

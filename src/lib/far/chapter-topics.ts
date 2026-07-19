@@ -569,13 +569,6 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 			"Post-government employment restrictions that limit certain contacts and representations.",
 	},
 	{
-		id: "topic-sam-data-bank",
-		term: "SAM data bank",
-		aliases: ["sam-data-bank"],
-		definition:
-			"SAM exclusions and related responsibility data used in award eligibility checks.",
-	},
-	{
 		id: "topic-sam-gov",
 		term: "SAM.gov",
 		aliases: ["sam-gov"],
