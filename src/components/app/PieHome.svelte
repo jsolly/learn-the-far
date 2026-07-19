@@ -36,7 +36,7 @@
 <div
 	class="mx-auto w-full max-w-xl px-4 pb-16 pt-5 sm:max-w-2xl sm:px-6 sm:pb-20 sm:pt-7 lg:max-w-3xl lg:px-8 lg:pt-8"
 >
-	<header class="flex items-start justify-between gap-3 sm:items-center sm:gap-4">
+	<header class="flex items-center justify-between gap-3 sm:gap-4">
 		<div class="min-w-0 flex-1">
 			<h1
 				{@attach capturePageHeading}
@@ -51,22 +51,19 @@
 			</p>
 		</div>
 		<div
-			class="flex shrink-0 items-center gap-2 rounded-full border bg-card px-2.5 py-1.5 sm:gap-2.5 sm:px-3.5 sm:py-2"
+			class="flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border bg-card px-3 py-2 sm:gap-2.5 sm:px-3.5 sm:py-2.5"
 			title={`${game.streak.current}-day streak${game.streak.longest ? ` · best ${game.streak.longest}` : ""}`}
 			aria-label={`${game.streak.current}-day streak${game.streak.longest ? `, best ${game.streak.longest}` : ""}`}
 		>
-			<span class="text-base leading-none sm:text-lg" aria-hidden="true">🔥</span>
-			<span
-				class="text-lg font-bold leading-none tabular-nums tracking-tight sm:text-xl"
-				aria-hidden="true">{game.streak.current}</span
-			>
-			<span
-				class="flex flex-col text-[0.625rem] font-medium leading-[1.1] text-muted-foreground sm:text-[0.6875rem]"
-				aria-hidden="true"
-			>
-				<span>day</span>
-				<span>streak</span>
+			<span class="inline-flex items-center gap-1 leading-none" aria-hidden="true">
+				<span class="text-sm sm:text-base">🔥</span>
+				<span class="text-sm font-bold tabular-nums tracking-tight sm:text-base"
+					>{game.streak.current}</span
+				>
 			</span>
+			<span class="text-xs font-medium leading-none text-muted-foreground sm:text-sm" aria-hidden="true"
+				>day streak</span
+			>
 		</div>
 	</header>
 
