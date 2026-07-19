@@ -490,12 +490,6 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 			"Structuring work around outcomes and metrics rather than prescribing how-to process.",
 	},
 	{
-		id: "topic-piid",
-		term: "PIID",
-		definition:
-			"Procurement Instrument Identifier — the unique ID for a contract, order, or agreement.",
-	},
-	{
 		id: "topic-pipeline-hygiene",
 		term: "Pipeline Hygiene",
 		aliases: ["pipeline-hygiene"],
@@ -567,13 +561,6 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 		aliases: ["revolving-door"],
 		definition:
 			"Post-government employment restrictions that limit certain contacts and representations.",
-	},
-	{
-		id: "topic-sam-data-bank",
-		term: "SAM data bank",
-		aliases: ["sam-data-bank"],
-		definition:
-			"SAM exclusions and related responsibility data used in award eligibility checks.",
 	},
 	{
 		id: "topic-sam-gov",
@@ -654,12 +641,6 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 		aliases: ["unequal-access"],
 		definition:
 			"An OCI where a firm has nonpublic information that gives an unfair competitive advantage.",
-	},
-	{
-		id: "topic-usaspending",
-		term: "Usaspending",
-		definition:
-			"Public spending data useful for competitor and customer intelligence.",
 	},
 	{
 		id: "topic-vehicle-access",

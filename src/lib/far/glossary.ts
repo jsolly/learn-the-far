@@ -361,6 +361,57 @@ const CURATED_GLOSSARY_TERMS: GlossaryTerm[] = [
 		chapterId: "actual-offeror-ready",
 	},
 	{
+		id: "piid",
+		term: "PIID",
+		aliases: [
+			"PIIDs",
+			"Procurement Instrument Identifier",
+			"procurement instrument identifier",
+			"Procurement Instrument Identifiers",
+		],
+		definition:
+			"A Procurement Instrument Identifier uniquely identifies a contract, order, or agreement in federal award records. Follow the PIID and its modifications — not just a vendor name — when reconstructing an incumbent or spend trail.",
+		chapterId: "follow-identifiers",
+	},
+	{
+		id: "fpds",
+		term: "FPDS",
+		aliases: [
+			"Federal Procurement Data System",
+			"federal procurement data system",
+			"FPDS ezSearch",
+		],
+		definition:
+			"The Federal Procurement Data System is the historical federal contract-reporting stream. Public FPDS search has moved to SAM.gov Contract Awards and Data Bank; treat “FPDS” as data lineage and legacy vocabulary, not the current public destination.",
+		chapterId: "follow-identifiers",
+	},
+	{
+		id: "data-bank",
+		term: "Data Bank",
+		aliases: [
+			"SAM.gov Data Bank",
+			"SAM Data Bank",
+			"SAM data bank",
+			"sam-data-bank",
+			"Data Bank reports",
+		],
+		definition:
+			"SAM.gov Data Bank is where contract-award reports and related award/modification data live after the public FPDS transition. Use it with SAM.gov Contract Awards for incumbent and spend reconstruction — it is not a forecast-only tool and is not the same as SAM exclusions.",
+		chapterId: "follow-identifiers",
+	},
+	{
+		id: "usaspending",
+		term: "USAspending",
+		aliases: [
+			"USASpending",
+			"usaspending.gov",
+			"USAspending.gov",
+		],
+		definition:
+			"USAspending is the official open source for federal spending analysis. It receives procurement data derived from federal contract reporting and is used with SAM.gov award records to follow obligations, transactions, and incumbent spend — not as a grants-only site.",
+		chapterId: "follow-identifiers",
+	},
+	{
 		id: "naics",
 		term: "NAICS",
 		aliases: ["North American Industry Classification System"],
