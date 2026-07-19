@@ -57,7 +57,7 @@ export const BID_NO_BID_FUNDAMENTALS: QuizQuestion[] = [
 		options: [
 			{
 				id: "a",
-				text: "Document adequate financial resources or the ability to obtain them; schedule capacity considering all commercial and Government commitments; satisfactory performance, integrity, and ethics records; necessary organization, experience, accounting and operational controls, and technical skills or the ability to obtain them; necessary production, construction, and technical equipment and facilities or the ability to obtain them; and legal qualification and eligibility",
+				text: "Check the full FAR 9.104-1 standards — resources, schedule, performance and integrity record, organization and controls, facilities, and eligibility — with evidence and owners for each gap",
 				correct: true,
 			},
 			{ id: "b", text: "Check only whether annual revenue exceeds the contract value", correct: false },
