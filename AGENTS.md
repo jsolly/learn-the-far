@@ -56,3 +56,11 @@ No auth — public UI only. Smoke the changed routes on desktop and mobile width
 
 - **Dev server:** `astro dev --background` (or `npm run dev`).
 - **Auth:** none — public pages only.
+
+## Cursor Cloud specific instructions
+
+- **Node version gotcha:** this repo requires Node `24.x`, but the cloud VM's default `node` on `PATH` (`/exec-daemon/node`) is v22 and shadows the nvm-managed Node 24. Node 24 is pinned to the front of `PATH` in `~/.bashrc`, which only login shells source. Run commands in a login shell (`bash -l`, or the tmux sessions started with a login shell) so `node -v` reports v24. Non-login shells silently fall back to v22.
+- **Setup layer:** the startup update script runs `npm ci` (after loading nvm and `nvm use 24`). Deps install via `npm ci` only; no `.env` is needed for the app.
+- **Standard commands** (dev/check/build/preview) are in `README.md` and `package.json`. Dev server serves at <http://localhost:4321>. `npm run check` = typecheck, `npm run build` = static build to `dist/`, `npm run check:actions` = actionlint.
+- **App:** static Astro + Svelte flashcard app; all state is browser `localStorage`, so end-to-end testing is pure public UI (start a unit via "Quiz me" / "Start learning" and answer cards).
+- `npm ci` prints an `allow-scripts` warning that `esbuild`/`sharp`/`canvas` install scripts were skipped; this is harmless — typecheck and build still succeed (esbuild/sharp ship prebuilt binaries).
