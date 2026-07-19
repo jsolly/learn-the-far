@@ -60,9 +60,15 @@
 	$effect(() => {
 		const current = chapter;
 		if (!current) return;
+		const chapterId = current.id;
 		void tick().then(() => {
-			if (game.chapter !== current) return;
-			headingEl?.focus();
+			if (game.chapter?.id !== chapterId) return;
+			// preventScroll: bare focus() scrolls the h1 into view and can fight
+			// later in-page TOC jumps on iOS (flash, then stay at top).
+			headingEl?.focus({ preventScroll: true });
+			// Skip if a piece hash is already set (TOC jump or deep link won the race).
+			if (window.location.hash.startsWith("#piece-")) return;
+			window.scrollTo({ top: 0, left: 0, behavior: "auto" });
 		});
 	});
 
@@ -112,6 +118,20 @@
 		}
 		return merged;
 	});
+
+	/** In-page TOC: native hash jumps flash/fail on iOS with tabindex targets. */
+	function jumpToPiece(event: MouseEvent, pieceId: string) {
+		if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) {
+			return;
+		}
+		event.preventDefault();
+		const target = document.getElementById(`piece-${pieceId}`);
+		if (!target) return;
+		// Focus without scrolling, then scroll — scrollIntoView honors scroll-mt-*.
+		target.focus({ preventScroll: true });
+		target.scrollIntoView({ block: "start", behavior: "auto" });
+		history.replaceState(history.state, "", `#piece-${pieceId}`);
+	}
 
 	function returnToShelf(event: MouseEvent) {
 		if (!chapter || game.chapterKind !== "shelf-chapter") return;
@@ -169,7 +189,8 @@
 						<li>
 							<a
 								class="app-link"
-								href={`#piece-${piece.id}`}>{piece.title}</a
+								href={`#piece-${piece.id}`}
+								onclick={(event) => jumpToPiece(event, piece.id)}>{piece.title}</a
 							>
 						</li>
 					{/each}
@@ -276,30 +297,30 @@
 							class="grid grid-cols-2 gap-4"
 							aria-label="Adjacent chapters"
 						>
-							<div class="min-w-0">
-								{#if prevChapter}
-									<Button
-										size="sm"
-										variant="outline"
-										class="w-full px-3"
-										href={learnChapterPath(prevChapter.unitId, prevChapter.id)}
-									>
-										← Previous
-									</Button>
-								{/if}
-							</div>
-							<div class="min-w-0">
-								{#if nextChapter}
-									<Button
-										size="sm"
-										variant="outline"
-										class="w-full px-3"
-										href={learnChapterPath(nextChapter.unitId, nextChapter.id)}
-									>
-										Next →
-									</Button>
-								{/if}
-							</div>
+							{#if prevChapter}
+								<Button
+									size="sm"
+									variant="outline"
+									class="w-full min-w-0 px-3"
+									href={learnChapterPath(prevChapter.unitId, prevChapter.id)}
+								>
+									← Previous
+								</Button>
+							{:else}
+								<span class="min-w-0" aria-hidden="true"></span>
+							{/if}
+							{#if nextChapter}
+								<Button
+									size="sm"
+									variant="outline"
+									class="w-full min-w-0 px-3"
+									href={learnChapterPath(nextChapter.unitId, nextChapter.id)}
+								>
+									Next →
+								</Button>
+							{:else}
+								<span class="min-w-0" aria-hidden="true"></span>
+							{/if}
 						</nav>
 					{/if}
 				{/if}

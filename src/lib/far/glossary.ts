@@ -159,6 +159,19 @@ const CURATED_GLOSSARY_TERMS: GlossaryTerm[] = [
 		chapterId: "how-money-becomes-authority",
 	},
 	{
+		id: "cbj",
+		term: "CBJ",
+		aliases: [
+			"Congressional Budget Justification",
+			"congressional budget justification",
+			"Congressional budget justification",
+			"CBJs",
+		],
+		definition:
+			"A congressional budget justification is an agency document that signals program priority in a budget request. It is not an appropriation, acquisition strategy, or contract action — keep dollars provisional until you can point to funding authority and a buying path.",
+		chapterId: "mission-vs-funds",
+	},
+	{
 		id: "obligation",
 		term: "Obligation",
 		aliases: ["obligate", "obligated", "obligating", "obligations"],
@@ -426,6 +439,36 @@ const CURATED_GLOSSARY_TERMS: GlossaryTerm[] = [
 		definition:
 			"An organizational conflict of interest arises when a contractor’s other work could bias advice, impair objectivity, or create an unfair competitive advantage. Diagnose the archetype before picking a remedy.",
 		chapterId: "diagnose-oci-before-remedy",
+	},
+	{
+		id: "prime",
+		term: "Prime",
+		aliases: [
+			"prime",
+			"primes",
+			"prime contractor",
+			"prime contractors",
+			"Prime contractor",
+			"Prime Contractor",
+		],
+		definition:
+			"The contractor that holds the contract with the Government and remains fully responsible for performance. Naming or evaluating a subcontractor does not shift that accountability or create Government privity with the sub.",
+		chapterId: "name-team-you-built",
+	},
+	{
+		id: "sub",
+		term: "Sub",
+		aliases: [
+			"sub",
+			"subs",
+			"subcontractor",
+			"subcontractors",
+			"Subcontractor",
+			"Subcontractors",
+		],
+		definition:
+			"A firm performing under a subcontract with the prime, not under a direct contract with the Government. Payment and direction ordinarily run through the prime; flowdowns and consent may apply, but they do not create agency privity with the sub.",
+		chapterId: "name-team-you-built",
 	},
 	{
 		id: "privity",
