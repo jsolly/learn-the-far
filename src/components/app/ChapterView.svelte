@@ -259,27 +259,27 @@
 				{#if game.chapterKind === "shelf-chapter"}
 					{#if prevChapter || nextChapter}
 						<nav
-							class="flex items-center gap-4"
+							class="grid grid-cols-2 gap-4"
 							aria-label="Adjacent chapters"
 						>
-							<div class="flex min-w-0 flex-1 justify-start">
+							<div class="min-w-0">
 								{#if prevChapter}
 									<Button
 										size="sm"
 										variant="outline"
-										class="px-3"
+										class="w-full px-3"
 										href={learnChapterPath(prevChapter.unitId, prevChapter.id)}
 									>
 										← Previous
 									</Button>
 								{/if}
 							</div>
-							<div class="flex min-w-0 flex-1 justify-end">
+							<div class="min-w-0">
 								{#if nextChapter}
 									<Button
 										size="sm"
 										variant="outline"
-										class="px-3"
+										class="w-full px-3"
 										href={learnChapterPath(nextChapter.unitId, nextChapter.id)}
 									>
 										Next →
