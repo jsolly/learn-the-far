@@ -56,5 +56,7 @@ export type SessionSummary = {
 	scoreSum: number;
 	scorePct: number;
 	perfect: boolean;
+	/** Picked once at session finish from SUMMARY_HEADLINES — stable across re-renders. */
+	headline: string;
 	newAchievements: string[];
 };
