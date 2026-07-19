@@ -151,6 +151,19 @@ const CURATED_GLOSSARY_TERMS: GlossaryTerm[] = [
 		chapterId: "where-the-rules-live",
 	},
 	{
+		id: "rfo",
+		term: "RFO",
+		aliases: [
+			"Revolutionary FAR Overhaul",
+			"revolutionary FAR overhaul",
+			"Revolutionary Federal Acquisition Regulation Overhaul",
+			"RFOs",
+		],
+		definition:
+			"The Revolutionary FAR Overhaul is the FAR Council’s initiative to streamline the FAR through model deviation text that agencies adopt by class deviation. Until formal rulemaking lands, an adopting agency’s RFO coverage may renumber or supersede the FAC baseline — verify the solicitation and agency deviation you are under.",
+		chapterId: "where-the-rules-live",
+	},
+	{
 		id: "appropriation",
 		term: "Appropriation",
 		aliases: ["appropriations"],
