@@ -30,22 +30,22 @@
 		return questionsForChapter(action.chapterId).length > 0;
 	});
 
-	/** One pass per chapter so each glossary term links at most once. */
+	/** One pass per chapter: each term links once as a phrase and once as an acronym. */
 	let linkedCopy = $derived.by(() => {
 		const current = chapter;
 		if (!current) return null;
-		const linkedIds = new Set<string>();
+		const linkedKeys = new Set<string>();
 		return {
-			intro: segmentGlossaryText(current.intro, linkedIds),
+			intro: segmentGlossaryText(current.intro, linkedKeys),
 			pieces: current.pieces.map((piece) => ({
 				id: piece.id,
-				teach: segmentGlossaryText(piece.teach, linkedIds),
+				teach: segmentGlossaryText(piece.teach, linkedKeys),
 				watchFor: piece.watchFor
-					? segmentGlossaryText(piece.watchFor, linkedIds)
+					? segmentGlossaryText(piece.watchFor, linkedKeys)
 					: null,
 			})),
 			closing: current.closing
-				? segmentGlossaryText(current.closing, linkedIds)
+				? segmentGlossaryText(current.closing, linkedKeys)
 				: null,
 		};
 	});
