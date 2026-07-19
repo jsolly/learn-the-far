@@ -18,7 +18,17 @@
 	let answered = $derived(game.isAnswered);
 	let unit = $derived(q ? UNITS.find((u) => u.id === q.unitId) : undefined);
 	let counts = $derived(game.progressCount);
-	let pct = $derived(counts.total === 0 ? 0 : Math.round((counts.done / counts.total) * 100));
+	let completedPct = $derived(
+		counts.total === 0 ? 0 : Math.round((counts.done / counts.total) * 100),
+	);
+	/** Preview fill for the question in progress — collapses into completed once answered. */
+	let reservedPct = $derived(
+		counts.total === 0
+			? 0
+			: Math.round(
+					((counts.done + (answered ? 0 : 1)) / counts.total) * 100,
+				),
+	);
 	let feedbackStatusEl: HTMLParagraphElement | null = null;
 	let pickedOptionEl: HTMLButtonElement | null = null;
 	let lastOutcome = $derived(game.outcomes[game.outcomes.length - 1]);
@@ -128,7 +138,13 @@
 				<span aria-hidden="true">✕</span>
 			</Button>
 			<div class="flex-1">
-				<Progress value={pct} max={100} aria-label="Session progress" />
+				<Progress
+					value={completedPct}
+					buffer={reservedPct}
+					max={100}
+					aria-label="Session progress"
+					aria-valuetext={`${counts.done} of ${counts.total} complete${answered || counts.total === 0 ? "" : ", current question reserved"}`}
+				/>
 			</div>
 			<span class="shrink-0 text-xs tabular-nums text-muted-foreground">
 				{counts.done}/{counts.total}
