@@ -441,6 +441,36 @@ const CURATED_GLOSSARY_TERMS: GlossaryTerm[] = [
 		chapterId: "diagnose-oci-before-remedy",
 	},
 	{
+		id: "prime",
+		term: "Prime",
+		aliases: [
+			"prime",
+			"primes",
+			"prime contractor",
+			"prime contractors",
+			"Prime contractor",
+			"Prime Contractor",
+		],
+		definition:
+			"The contractor that holds the contract with the Government and remains fully responsible for performance. Naming or evaluating a subcontractor does not shift that accountability or create Government privity with the sub.",
+		chapterId: "name-team-you-built",
+	},
+	{
+		id: "sub",
+		term: "Sub",
+		aliases: [
+			"sub",
+			"subs",
+			"subcontractor",
+			"subcontractors",
+			"Subcontractor",
+			"Subcontractors",
+		],
+		definition:
+			"A firm performing under a subcontract with the prime, not under a direct contract with the Government. Payment and direction ordinarily run through the prime; flowdowns and consent may apply, but they do not create agency privity with the sub.",
+		chapterId: "name-team-you-built",
+	},
+	{
 		id: "privity",
 		term: "Privity",
 		aliases: ["privity of contract"],
