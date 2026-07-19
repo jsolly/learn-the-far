@@ -111,10 +111,12 @@ function collectHits(
 }
 
 /**
- * Split plain text into text/term segments. Mutates `linkedIds` so each term id
- * is linked at most once across a chapter (pass the same Set to every field).
+ * Split plain text into text/term segments. Mutates `linkedKeys` so each term
+ * is linked at most once per surface class across a chapter (phrase once and
+ * acronym once — e.g. “contracting officer” and later “CO”). Pass the same
+ * Set to every field in a chapter.
  */
-export function segmentGlossaryText(text: string, linkedIds: Set<string>): TextSegment[] {
+export function segmentGlossaryText(text: string, linkedKeys: Set<string>): TextSegment[] {
 	if (!text) return [];
 
 	const { insensitive, sensitive, insensitiveLookup, sensitiveLookup } = matchEngine();
@@ -128,13 +130,14 @@ export function segmentGlossaryText(text: string, linkedIds: Set<string>): TextS
 
 	for (const hit of hits) {
 		if (hit.index < lastIndex) continue;
-		if (linkedIds.has(hit.termId)) continue;
+		const key = `${hit.termId}:${isAcronymLabel(hit.text) ? "acronym" : "phrase"}`;
+		if (linkedKeys.has(key)) continue;
 
 		if (hit.index > lastIndex) {
 			segments.push({ kind: "text", text: text.slice(lastIndex, hit.index) });
 		}
 
-		linkedIds.add(hit.termId);
+		linkedKeys.add(key);
 		segments.push({ kind: "term", text: hit.text, termId: hit.termId });
 		lastIndex = hit.index + hit.text.length;
 	}
