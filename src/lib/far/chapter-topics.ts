@@ -1,6 +1,6 @@
 import type { GlossaryTerm } from "./glossary-types";
 
-/** Topic tags from study chapter cards that need a short definition (not everyday English). */
+/** Topic tags from study chapter cards — full glossary entries (browse, pills, and in-chapter links). */
 export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 	{
 		id: "topic-alliant",
