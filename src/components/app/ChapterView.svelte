@@ -262,30 +262,30 @@
 							class="grid grid-cols-2 gap-4"
 							aria-label="Adjacent chapters"
 						>
-							<div class="min-w-0">
-								{#if prevChapter}
-									<Button
-										size="sm"
-										variant="outline"
-										class="w-full px-3"
-										href={learnChapterPath(prevChapter.unitId, prevChapter.id)}
-									>
-										← Previous
-									</Button>
-								{/if}
-							</div>
-							<div class="min-w-0">
-								{#if nextChapter}
-									<Button
-										size="sm"
-										variant="outline"
-										class="w-full px-3"
-										href={learnChapterPath(nextChapter.unitId, nextChapter.id)}
-									>
-										Next →
-									</Button>
-								{/if}
-							</div>
+							{#if prevChapter}
+								<Button
+									size="sm"
+									variant="outline"
+									class="w-full min-w-0 px-3"
+									href={learnChapterPath(prevChapter.unitId, prevChapter.id)}
+								>
+									← Previous
+								</Button>
+							{:else}
+								<span class="min-w-0" aria-hidden="true"></span>
+							{/if}
+							{#if nextChapter}
+								<Button
+									size="sm"
+									variant="outline"
+									class="w-full min-w-0 px-3"
+									href={learnChapterPath(nextChapter.unitId, nextChapter.id)}
+								>
+									Next →
+								</Button>
+							{:else}
+								<span class="min-w-0" aria-hidden="true"></span>
+							{/if}
 						</nav>
 					{/if}
 				{/if}
