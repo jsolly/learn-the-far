@@ -3,6 +3,7 @@
 
 	import { game } from "$lib/quiz-state.svelte.js";
 	import { ACHIEVEMENTS, scoreRingColor } from "$lib/far/constants";
+	import { celebrateHighScoreOnce, shouldCelebrateScore } from "$lib/celebrate-score";
 	import { Button } from "$lib/components/ui/button";
 
 	let s = $derived(game.summary);
@@ -26,6 +27,21 @@
 		void tick().then(() => {
 			if (game.summary === result) resultHeadingEl?.focus();
 		});
+	});
+
+	$effect(() => {
+		const result = s;
+		if (!result || !shouldCelebrateScore(result.scorePct)) return;
+
+		let cancelled = false;
+		void tick().then(async () => {
+			if (cancelled || game.summary !== result) return;
+			await celebrateHighScoreOnce(result, result.scorePct);
+		});
+
+		return () => {
+			cancelled = true;
+		};
 	});
 
 	function sessionLabel(summary: NonNullable<typeof s>): string {
