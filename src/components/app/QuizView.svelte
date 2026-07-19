@@ -2,6 +2,7 @@
 	import { tick } from "svelte";
 
 	import { game } from "$lib/quiz-state.svelte.js";
+	import { isSoundMuted, playFeedbackSound, toggleSoundMuted } from "$lib/quiz-sounds.svelte.js";
 	import type { OptionTier, QuizOption, Tone } from "$lib/far/types";
 	import { DIFFICULTY_LABEL, SCORING_LABEL, TIER_VERDICT } from "$lib/far/constants";
 	import { UNITS } from "$lib/far/deck";
@@ -10,6 +11,8 @@
 	import { Badge } from "$lib/components/ui/badge";
 	import { Button } from "$lib/components/ui/button";
 	import { Progress } from "$lib/components/ui/progress";
+	import Volume2Icon from "@lucide/svelte/icons/volume-2";
+	import VolumeOffIcon from "@lucide/svelte/icons/volume-off";
 
 	let q = $derived(game.currentQuestion);
 	let answered = $derived(game.isAnswered);
@@ -92,6 +95,10 @@
 	async function answer(optionId: QuizOption["id"]) {
 		const questionId = q?.id;
 		game.answer(optionId);
+		const outcome = game.outcomes[game.outcomes.length - 1];
+		if (outcome && outcome.questionId === questionId) {
+			playFeedbackSound(outcome.cleared ? "correct" : "incorrect");
+		}
 		await tick();
 		if (questionId && game.currentQuestion?.id === questionId) {
 			// Keep the option list in view — announce via sticky-bar status, never jump to explanation.
@@ -126,6 +133,20 @@
 			<span class="shrink-0 text-xs tabular-nums text-muted-foreground">
 				{counts.done}/{counts.total}
 			</span>
+			<Button
+				variant="ghost"
+				size="sm"
+				class="shrink-0 px-2"
+				aria-label={isSoundMuted() ? "Unmute quiz sounds" : "Mute quiz sounds"}
+				aria-pressed={isSoundMuted()}
+				onclick={() => toggleSoundMuted()}
+			>
+				{#if isSoundMuted()}
+					<VolumeOffIcon class="size-4" aria-hidden="true" />
+				{:else}
+					<Volume2Icon class="size-4" aria-hidden="true" />
+				{/if}
+			</Button>
 		</div>
 
 		<div class="mt-5 flex flex-wrap items-center gap-2">
@@ -227,7 +248,15 @@
 							{v.label}
 						</p>
 					{/if}
-					<Button size="lg" class="w-full max-w-xs self-center sm:w-auto sm:px-10" onclick={() => game.next()}>
+					<Button
+						size="lg"
+						class="w-full max-w-xs self-center sm:w-auto sm:px-10"
+						onclick={() => {
+							const finishing = game.willFinishAfterNext;
+							game.next();
+							if (finishing) playFeedbackSound("session-complete");
+						}}
+					>
 						{game.willFinishAfterNext ? "Finish" : "Next Question"}
 					</Button>
 				{:else}

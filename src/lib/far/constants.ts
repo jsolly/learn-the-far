@@ -63,6 +63,8 @@ export const READING_PROGRESS_KEY = "learn-the-far:reading-progress:v1";
 export const SHELF_SCROLL_KEY_PREFIX = "learn-the-far:shelf-scroll:v1:";
 /** Shelf preference: hide chapters already marked read. */
 export const SHELF_HIDE_READ_KEY = "learn-the-far:shelf-hide-read:v1";
+/** Quiz feedback sounds muted (`"1"` = muted). Default: sound on. */
+export const QUIZ_SOUND_MUTED_KEY = "learn-the-far:quiz-sound-muted:v1";
 
 // Questions per session before the summary screen (wrong answers requeue within).
 export const SESSION_LENGTH = 8;

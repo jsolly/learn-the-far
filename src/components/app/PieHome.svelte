@@ -2,11 +2,14 @@
 	import { tick } from "svelte";
 
 	import { game } from "$lib/quiz-state.svelte.js";
+	import { isSoundMuted, toggleSoundMuted } from "$lib/quiz-sounds.svelte.js";
 	import { DIFFICULTY_LABEL } from "$lib/far/constants";
 	import { learnShelfPath } from "$lib/learn-routes";
 	import PieWheel from "./PieWheel.svelte";
 	import { Button } from "$lib/components/ui/button";
 	import { Badge } from "$lib/components/ui/badge";
+	import Volume2Icon from "@lucide/svelte/icons/volume-2";
+	import VolumeOffIcon from "@lucide/svelte/icons/volume-off";
 
 	let stats = $derived(game.allStats);
 	let confirmReset = $state(false);
@@ -191,8 +194,24 @@
 		{/each}
 	</div>
 
-	{#if game.hasProgress}
-		<div class="mt-8 flex justify-center sm:mt-10">
+	<div class="mt-8 flex flex-col items-center gap-3 sm:mt-10">
+		<Button
+			variant="ghost"
+			size="sm"
+			class="text-muted-foreground"
+			aria-label={isSoundMuted() ? "Unmute quiz sounds" : "Mute quiz sounds"}
+			aria-pressed={isSoundMuted()}
+			onclick={() => toggleSoundMuted()}
+		>
+			{#if isSoundMuted()}
+				<VolumeOffIcon class="size-4" aria-hidden="true" />
+				Sound off
+			{:else}
+				<Volume2Icon class="size-4" aria-hidden="true" />
+				Sound on
+			{/if}
+		</Button>
+		{#if game.hasProgress}
 			{#if confirmReset}
 				<div
 					role="group"
@@ -229,6 +248,6 @@
 					Reset progress
 				</Button>
 			{/if}
-		</div>
-	{/if}
+		{/if}
+	</div>
 </div>
