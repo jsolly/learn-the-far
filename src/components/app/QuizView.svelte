@@ -188,7 +188,7 @@
 						href={q.sourceUrl}
 						target="_blank"
 						rel="noreferrer"
-						class="inline-block text-xs font-medium text-primary underline underline-offset-2"
+						class="inline-block text-xs font-medium text-primary underline underline-offset-4"
 					>
 						{q.citation} ↗
 					</a>

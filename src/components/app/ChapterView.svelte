@@ -195,7 +195,7 @@
 							<p class="italic text-foreground/95">"{piece.quote.text}"</p>
 							<footer class="mt-2 not-italic">
 								<a
-									class="text-xs font-medium text-primary underline underline-offset-2 sm:text-sm"
+									class="text-xs font-medium text-primary underline underline-offset-4 sm:text-sm"
 									href={piece.quote.sourceUrl}
 									target="_blank"
 									rel="noopener noreferrer"
@@ -207,7 +207,7 @@
 					{:else if piece.sourceUrl && piece.citation}
 						<p class="mt-4 text-xs sm:text-sm">
 							<a
-								class="font-medium text-primary underline underline-offset-2"
+								class="font-medium text-primary underline underline-offset-4"
 								href={piece.sourceUrl}
 								target="_blank"
 								rel="noopener noreferrer"
@@ -232,7 +232,7 @@
 					{#each chapter.furtherReading as link (link.url + link.label)}
 						<li>
 							<a
-								class="font-medium text-primary underline underline-offset-2"
+								class="font-medium text-primary underline underline-offset-4"
 								href={link.url}
 								target="_blank"
 								rel="noopener noreferrer"
