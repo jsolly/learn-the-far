@@ -8,6 +8,19 @@ const SOUND_URLS: Record<FeedbackSound, string> = {
 	"session-complete": "/sounds/session-complete.mp3",
 };
 
+/** Audio Session API types (Safari; not yet in all TS libs). */
+type AudioSessionType =
+	| "auto"
+	| "playback"
+	| "transient"
+	| "transient-solo"
+	| "ambient"
+	| "play-and-record";
+
+type NavigatorWithAudioSession = Navigator & {
+	audioSession?: { type: AudioSessionType };
+};
+
 function canUseStorage() {
 	return typeof window !== "undefined" && "localStorage" in window;
 }
@@ -27,6 +40,26 @@ function persistMuted(value: boolean) {
 		window.localStorage.setItem(QUIZ_SOUND_MUTED_KEY, value ? "1" : "0");
 	} catch {
 		// Ignore quota / private-mode failures; in-memory toggle still works.
+	}
+}
+
+/**
+ * Prefer a mixable / ducking session so short SFX don't pause Spotify etc.
+ * `transient` may duck other audio; `ambient` mixes without pausing.
+ * No-ops when the Audio Session API is unavailable.
+ */
+function preferMixableAudioSession() {
+	try {
+		const session = (navigator as NavigatorWithAudioSession).audioSession;
+		if (!session) return;
+		// Prefer ducking short SFX; fall back to mix-only if assignment is rejected.
+		try {
+			session.type = "transient";
+		} catch {
+			session.type = "ambient";
+		}
+	} catch {
+		// Unsupported platform — leave UA default.
 	}
 }
 
@@ -69,6 +102,7 @@ export function playFeedbackSound(kind: FeedbackSound) {
 	const player = getPlayer(kind);
 	if (!player) return;
 	try {
+		preferMixableAudioSession();
 		player.pause();
 		player.currentTime = 0;
 		void player.play().catch(() => {
