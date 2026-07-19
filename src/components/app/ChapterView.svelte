@@ -60,9 +60,15 @@
 	$effect(() => {
 		const current = chapter;
 		if (!current) return;
+		const chapterId = current.id;
 		void tick().then(() => {
-			if (game.chapter !== current) return;
-			headingEl?.focus();
+			if (game.chapter?.id !== chapterId) return;
+			// preventScroll: bare focus() scrolls the h1 into view and can fight
+			// later in-page TOC jumps on iOS (flash, then stay at top).
+			headingEl?.focus({ preventScroll: true });
+			// Skip if a piece hash is already set (TOC jump or deep link won the race).
+			if (window.location.hash.startsWith("#piece-")) return;
+			window.scrollTo({ top: 0, left: 0, behavior: "auto" });
 		});
 	});
 
@@ -81,6 +87,20 @@
 
 	function pieceLinked(pieceId: string) {
 		return linkedCopy?.pieces.find((p) => p.id === pieceId);
+	}
+
+	/** In-page TOC: native hash jumps flash/fail on iOS with tabindex targets. */
+	function jumpToPiece(event: MouseEvent, pieceId: string) {
+		if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) {
+			return;
+		}
+		event.preventDefault();
+		const target = document.getElementById(`piece-${pieceId}`);
+		if (!target) return;
+		// Focus without scrolling, then scroll — scrollIntoView honors scroll-mt-*.
+		target.focus({ preventScroll: true });
+		target.scrollIntoView({ block: "start", behavior: "auto" });
+		history.replaceState(history.state, "", `#piece-${pieceId}`);
 	}
 
 	function returnToShelf(event: MouseEvent) {
@@ -139,7 +159,8 @@
 						<li>
 							<a
 								class="app-link"
-								href={`#piece-${piece.id}`}>{piece.title}</a
+								href={`#piece-${piece.id}`}
+								onclick={(event) => jumpToPiece(event, piece.id)}>{piece.title}</a
 							>
 						</li>
 					{/each}
