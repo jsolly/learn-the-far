@@ -159,6 +159,19 @@ const CURATED_GLOSSARY_TERMS: GlossaryTerm[] = [
 		chapterId: "how-money-becomes-authority",
 	},
 	{
+		id: "cbj",
+		term: "CBJ",
+		aliases: [
+			"Congressional Budget Justification",
+			"congressional budget justification",
+			"Congressional budget justification",
+			"CBJs",
+		],
+		definition:
+			"A congressional budget justification is an agency document that signals program priority in a budget request. It is not an appropriation, acquisition strategy, or contract action — keep dollars provisional until you can point to funding authority and a buying path.",
+		chapterId: "mission-vs-funds",
+	},
+	{
 		id: "obligation",
 		term: "Obligation",
 		aliases: ["obligate", "obligated", "obligating", "obligations"],
