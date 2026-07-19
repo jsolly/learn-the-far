@@ -83,6 +83,27 @@
 		return linkedCopy?.pieces.find((p) => p.id === pieceId);
 	}
 
+	/** Normalize for comparing piece citations to further-reading entries. */
+	function sourceKey(url: string): string {
+		return url.replace(/\/$/, "");
+	}
+
+	let furtherReadingKeys = $derived(
+		new Set((chapter?.furtherReading ?? []).map((link) => sourceKey(link.url))),
+	);
+
+	/** Hide per-piece source rows when the same URL is already under Further reading. */
+	function showPieceSource(piece: {
+		sourceUrl?: string;
+		citation?: string;
+	}): boolean {
+		return Boolean(
+			piece.sourceUrl &&
+				piece.citation &&
+				!furtherReadingKeys.has(sourceKey(piece.sourceUrl)),
+		);
+	}
+
 	function returnToShelf(event: MouseEvent) {
 		if (!chapter || game.chapterKind !== "shelf-chapter") return;
 		// Keep href for open-in-new-tab / middle-click; primary click stays in-app
@@ -204,7 +225,7 @@
 								</a>
 							</footer>
 						</blockquote>
-					{:else if piece.sourceUrl && piece.citation}
+					{:else if showPieceSource(piece)}
 						<p class="mt-4 text-xs sm:text-sm">
 							<a
 								class="app-link font-medium"
