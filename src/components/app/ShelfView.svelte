@@ -221,5 +221,16 @@
 				{/each}
 			</ul>
 		</nav>
+
+		<div class="mt-10 border-t pt-6 sm:mt-12">
+			<Button
+				size="lg"
+				variant="outline"
+				class="w-full sm:h-11 sm:text-base"
+				href="/"
+			>
+				Back to home
+			</Button>
+		</div>
 	</div>
 {/if}
