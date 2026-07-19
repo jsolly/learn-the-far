@@ -29,7 +29,7 @@
 					((counts.done + (answered ? 0 : 1)) / counts.total) * 100,
 				),
 	);
-	let feedbackStatusEl: HTMLParagraphElement | null = null;
+	let continueBtnEl: HTMLElement | null = $state(null);
 	let pickedOptionEl: HTMLButtonElement | null = null;
 	let lastOutcome = $derived(game.outcomes[game.outcomes.length - 1]);
 	let missed = $derived(Boolean(answered && lastOutcome && !lastOutcome.cleared));
@@ -44,13 +44,6 @@
 				element.focus({ preventScroll: true });
 				window.scrollTo({ top: 0, left: 0, behavior: "auto" });
 			});
-		};
-	}
-
-	function captureFeedbackStatus(element: HTMLParagraphElement) {
-		feedbackStatusEl = element;
-		return () => {
-			if (feedbackStatusEl === element) feedbackStatusEl = null;
 		};
 	}
 
@@ -83,10 +76,10 @@
 
 	// Visual state for one option once the question is answered (quiz mode).
 	// Avoid font-weight changes — semibold shifts glyph widths and reflows the line.
-	// scroll-mb keeps nearest scrollIntoView clear of the taller sticky feedback bar.
+	// scroll-mb keeps nearest scrollIntoView clear of the sticky continue bar.
 	function optionClass(opt: QuizOption): string {
 		const base =
-			"w-full scroll-mb-40 rounded-2xl border-2 p-4 text-left transition-[transform,opacity] duration-150";
+			"w-full scroll-mb-28 rounded-2xl border-2 p-4 text-left transition-[transform,opacity] duration-150";
 		if (!answered) {
 			return `${base} border-border bg-card hover:border-primary/50 hover:bg-muted/50 active:scale-[0.99]`;
 		}
@@ -111,8 +104,8 @@
 		}
 		await tick();
 		if (questionId && game.currentQuestion?.id === questionId) {
-			// Keep the option list in view — announce via sticky-bar status, never jump to explanation.
-			feedbackStatusEl?.focus({ preventScroll: true });
+			// Keep the option list in view; land keyboard focus on Continue/Finish.
+			continueBtnEl?.focus({ preventScroll: true });
 			pickedOptionEl?.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "smooth" });
 		}
 	}
@@ -130,7 +123,7 @@
 
 {#if q && unit}
 	<div
-		class={`mx-auto flex min-h-[100dvh] w-full max-w-2xl flex-col px-4 pt-4 sm:pt-6 ${answered ? "pb-40" : "pb-28"}`}
+		class={`mx-auto flex min-h-[100dvh] w-full max-w-2xl flex-col px-4 pt-4 sm:pt-6 ${answered ? "pb-28" : "pb-24"}`}
 	>
 		<!-- header -->
 		<div class="flex items-center gap-3">
@@ -246,27 +239,21 @@
 			</div>
 		{/if}
 
-		<!-- sticky action bar — primary feedback lives here after answering -->
+		<!-- sticky action bar — Continue/Finish only; option color carries the verdict -->
 		<div class="fixed inset-x-0 bottom-0 border-t bg-background/95 backdrop-blur">
 			<div
-				class={`mx-auto flex w-full max-w-2xl px-4 py-3 ${answered ? "flex-col items-stretch gap-2" : "items-center gap-3"}`}
+				class={`mx-auto flex w-full max-w-2xl px-4 py-3 ${answered ? "flex-col items-stretch" : "items-center gap-3"}`}
 			>
 				{#if answered}
 					{#if v}
-						<p
-							{@attach captureFeedbackStatus}
-							role="status"
-							aria-live="polite"
-							aria-atomic="true"
-							tabindex="-1"
-							class={`text-center text-base font-bold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:text-lg ${TONE_CLASS[v.tone]}`}
-						>
+						<p class="sr-only" role="status" aria-live="polite" aria-atomic="true">
 							{v.label}
 						</p>
 					{/if}
 					<Button
+						bind:ref={continueBtnEl}
 						size="lg"
-						class="w-full max-w-xs self-center sm:w-auto sm:px-10"
+						class="h-12 w-full text-base sm:h-12"
 						onclick={() => {
 							const finishing = game.willFinishAfterNext;
 							game.next();
