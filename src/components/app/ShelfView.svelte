@@ -96,7 +96,7 @@
 		<header class="mb-6 sm:mb-8">
 			<a
 				href="/"
-				class="mb-3 inline-block text-sm text-muted-foreground underline-offset-4 hover:underline"
+				class="mb-3 inline-block text-sm text-muted-foreground transition-colors hover:text-link"
 			>
 				← Back to home
 			</a>
@@ -215,7 +215,7 @@
 					<li>
 						<a
 							href={learnShelfPath(unit.id)}
-							class="text-foreground underline-offset-4 hover:underline"
+							class="app-link"
 						>{unit.title}</a>
 					</li>
 				{/each}

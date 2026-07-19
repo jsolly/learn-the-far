@@ -101,7 +101,7 @@
 			{#if game.chapterKind === "shelf-chapter"}
 				<a
 					href={learnShelfPath(chapter.unitId)}
-					class="mb-3 inline-block text-sm text-muted-foreground underline-offset-4 hover:underline"
+					class="mb-3 inline-block text-sm text-muted-foreground transition-colors hover:text-link"
 					onclick={returnToShelf}
 				>
 					← Back to shelf
@@ -109,7 +109,7 @@
 			{:else}
 				<a
 					href="/"
-					class="mb-3 inline-block text-sm text-muted-foreground underline-offset-4 hover:underline"
+					class="mb-3 inline-block text-sm text-muted-foreground transition-colors hover:text-link"
 				>
 					← Back
 				</a>
@@ -138,7 +138,7 @@
 					{#each chapter.pieces as piece (piece.id)}
 						<li>
 							<a
-								class="text-primary underline-offset-4 hover:underline"
+								class="app-link"
 								href={`#piece-${piece.id}`}>{piece.title}</a
 							>
 						</li>
@@ -195,7 +195,7 @@
 							<p class="italic text-foreground/95">"{piece.quote.text}"</p>
 							<footer class="mt-2 not-italic">
 								<a
-									class="text-xs font-medium text-primary underline underline-offset-4 sm:text-sm"
+									class="app-link text-xs font-medium sm:text-sm"
 									href={piece.quote.sourceUrl}
 									target="_blank"
 									rel="noopener noreferrer"
@@ -207,7 +207,7 @@
 					{:else if piece.sourceUrl && piece.citation}
 						<p class="mt-4 text-xs sm:text-sm">
 							<a
-								class="font-medium text-primary underline underline-offset-4"
+								class="app-link font-medium"
 								href={piece.sourceUrl}
 								target="_blank"
 								rel="noopener noreferrer"
@@ -232,7 +232,7 @@
 					{#each chapter.furtherReading as link (link.url + link.label)}
 						<li>
 							<a
-								class="font-medium text-primary underline underline-offset-4"
+								class="app-link font-medium"
 								href={link.url}
 								target="_blank"
 								rel="noopener noreferrer"

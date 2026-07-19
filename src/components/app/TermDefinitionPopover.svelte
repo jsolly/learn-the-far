@@ -62,7 +62,7 @@
 		</Popover.Header>
 		{#if showOpenChapter && chapter}
 			<a
-				class="mt-2 inline-block text-sm font-medium text-primary underline-offset-4 hover:underline"
+				class="app-link mt-2 inline-block text-sm font-medium"
 				href={learnChapterPath(chapter.unitId, chapter.id)}
 			>
 				Open chapter

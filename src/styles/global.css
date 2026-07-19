@@ -40,6 +40,9 @@
 	--sidebar-accent-foreground: oklch(0.205 0 0);
 	--sidebar-border: oklch(0.922 0 0);
 	--sidebar-ring: oklch(0.708 0 0);
+	/* Deep teal-ink — clickable without default browser blue or underlines. */
+	--link: oklch(0.42 0.09 205);
+	--link-hover: oklch(0.34 0.095 205);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -75,6 +78,8 @@
 		--sidebar-accent-foreground: oklch(0.985 0 0);
 		--sidebar-border: oklch(1 0 0 / 10%);
 		--sidebar-ring: oklch(0.556 0 0);
+		--link: oklch(0.78 0.08 205);
+		--link-hover: oklch(0.86 0.07 205);
 	}
 }
 
@@ -111,6 +116,8 @@
 	--color-card: var(--card);
 	--color-foreground: var(--foreground);
 	--color-background: var(--background);
+	--color-link: var(--link);
+	--color-link-hover: var(--link-hover);
 	--radius-sm: calc(var(--radius) * 0.6);
 	--radius-md: calc(var(--radius) * 0.8);
 	--radius-lg: var(--radius);
@@ -134,4 +141,9 @@
 	[role="button"]:not([aria-disabled="true"]) {
 		cursor: pointer;
 	}
+}
+
+/* Text links: color affordance only — no underlines (ugly on wrapped lines). */
+@utility app-link {
+	@apply text-link no-underline transition-colors hover:text-link-hover;
 }

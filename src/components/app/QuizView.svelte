@@ -209,7 +209,7 @@
 						href={q.sourceUrl}
 						target="_blank"
 						rel="noreferrer"
-						class="inline-block text-xs font-medium text-primary underline underline-offset-4"
+						class="app-link inline-block text-xs font-medium"
 					>
 						{q.citation} ↗
 					</a>
@@ -218,7 +218,7 @@
 							<p class="text-xs font-medium text-muted-foreground">Review in study</p>
 							{#each studyChapters as chapter (chapter.id)}
 								<a
-									class="rounded-sm text-left text-xs font-medium text-primary underline underline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+									class="app-link rounded-sm text-left text-xs font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
 									href={learnChapterPath(chapter.unitId, chapter.id)}
 								>
 									{chapter.title}
