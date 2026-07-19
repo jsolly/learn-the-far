@@ -44,6 +44,7 @@ import {
 	parseLearnPath,
 	type LearnRoute,
 } from "$lib/learn-routes";
+import { hubCapturedPercent } from "$lib/pie-progress";
 import type {
 	QuestionRecord,
 	QuizProgress,
@@ -365,10 +366,8 @@ export class QuizGame {
 	}
 
 	get masteryPercent(): number {
-		const total = QUESTIONS.length;
-		if (total === 0) return 0;
-		const cleared = QUESTIONS.filter((q) => this.isCleared(q.id)).length;
-		return Math.round((cleared / total) * 100);
+		// Same cleared/total as the pie hub — weighted by each unit's deck size.
+		return hubCapturedPercent(this.allStats);
 	}
 
 	/** Whether the learner has any persisted progress worth resetting. */

@@ -5,12 +5,15 @@
 	import { SVGRenderer } from "echarts/renderers";
 	import type { Attachment } from "svelte/attachments";
 
+	import {
+		capturedFillRatio,
+		hubCapturedPercent,
+		sliceAngleValue,
+	} from "$lib/pie-progress";
 	import type { UnitStats } from "$lib/types";
 
 	type Props = {
 		stats: UnitStats[];
-		/** Overall mastery shown in the ALEKS-style center hub. */
-		hubPercent: number;
 	};
 
 	type WheelOption = ComposeOption<PieSeriesOption>;
@@ -23,7 +26,10 @@
 
 	use([PieChart, LabelLayout, SVGRenderer]);
 
-	let { stats, hubPercent }: Props = $props();
+	let { stats }: Props = $props();
+
+	/** Same cleared/total math as the engine — derived from the slices on screen. */
+	let hubPercent = $derived(hubCapturedPercent(stats));
 
 	function clampRatio(ratio: number): number {
 		return Math.min(1, Math.max(0, ratio));
@@ -42,7 +48,22 @@
 		const masteredPct = Math.round(clampRatio(stat.masteredRatio) * 100);
 		const learningPct = Math.round(clampRatio(stat.learningRatio) * 100);
 		const capturedPct = Math.round(clampRatio(stat.ratio) * 100);
-		return `${stat.unit.label}: ${capturedPct}% captured (${masteredPct}% mastered, ${learningPct}% learning)`;
+		return `${stat.unit.label}: ${capturedPct}% of slice (${stat.cleared}/${stat.total} questions; ${masteredPct}% mastered, ${learningPct}% learning)`;
+	}
+
+	function sliceData(
+		currentStats: UnitStats[],
+		progressIndex: number | null,
+		color: string,
+	): NonNullable<PieSeriesOption["data"]> {
+		return currentStats.map((slice, sliceIndex) => ({
+			// Angle ∝ question count so filled area matches hub % captured.
+			value: sliceAngleValue(slice.total),
+			name: slice.unit.label,
+			itemStyle: {
+				color: progressIndex === null || sliceIndex === progressIndex ? color : "transparent",
+			},
+		}));
 	}
 
 	function sliceFill(
@@ -53,7 +74,7 @@
 	): PieSeriesOption | null {
 		const masteredRatio = clampRatio(stat.masteredRatio);
 		const learningRatio = clampRatio(stat.learningRatio);
-		const capturedRatio = clampRatio(masteredRatio + learningRatio);
+		const capturedRatio = capturedFillRatio(stat);
 		if (kind === "learning" && learningRatio === 0) return null;
 		if (kind === "mastered" && masteredRatio === 0) return null;
 
@@ -79,13 +100,7 @@
 			label: { show: false },
 			labelLine: { show: false },
 			emphasis: { disabled: true },
-			data: currentStats.map((slice, sliceIndex) => ({
-				value: 1,
-				name: slice.unit.label,
-				itemStyle: {
-					color: sliceIndex === progressIndex ? color : "transparent",
-				},
-			})),
+			data: sliceData(currentStats, progressIndex, color),
 		};
 	}
 
@@ -110,7 +125,7 @@
 			labelLine: { show: false },
 			emphasis: { disabled: true },
 			data: currentStats.map((stat) => ({
-				value: 1,
+				value: sliceAngleValue(stat.total),
 				name: stat.unit.label,
 				itemStyle: {
 					color: `hsla(${stat.unit.hue}, 45%, 50%, 0.14)`,
@@ -151,7 +166,7 @@
 			labelLayout: { hideOverlap: false },
 			labelLine: { show: false },
 			data: currentStats.map((stat) => ({
-				value: 1,
+				value: sliceAngleValue(stat.total),
 				name: stat.unit.label,
 				itemStyle: { color: "transparent" },
 			})),
