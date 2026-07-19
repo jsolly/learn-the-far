@@ -1,6 +1,6 @@
 import type { GlossaryTerm } from "./glossary-types";
 
-/** Topic tags from study chapter cards that need a short definition (not everyday English). */
+/** Topic tags from study chapter cards — full glossary entries (browse, pills, and in-chapter links). */
 export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 	{
 		id: "topic-alliant",
@@ -39,12 +39,6 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 		term: "SEWP",
 		definition:
 			"NASA’s Solutions for Enterprise-Wide Procurement GWAC for IT products and services.",
-	},
-	{
-		id: "topic-sin",
-		term: "SIN",
-		definition:
-			"Special Item Number — a MAS catalog category that defines what products or services a Schedule holder can sell.",
 	},
 	{
 		id: "topic-schedule-bpa",

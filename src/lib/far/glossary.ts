@@ -4,10 +4,10 @@ import type { GlossaryTerm } from "./glossary-types";
 export type { GlossaryTerm } from "./glossary-types";
 
 /**
- * Curated core glossary. Append entries here when new terms are flagged —
- * chapter copy auto-links from this registry (no markers required).
+ * Curated glossary entries. Append here when new terms are flagged —
+ * chapter copy auto-links the first mention of any glossary term (no markers required).
  */
-export const CORE_GLOSSARY_TERMS: GlossaryTerm[] = [
+const CURATED_GLOSSARY_TERMS: GlossaryTerm[] = [
 	{
 		id: "contracting-officer",
 		term: "Contracting Officer",
@@ -287,6 +287,34 @@ export const CORE_GLOSSARY_TERMS: GlossaryTerm[] = [
 		chapterId: "competition-becomes-decision",
 	},
 	{
+		id: "gsa",
+		term: "GSA",
+		aliases: ["General Services Administration"],
+		definition:
+			"The General Services Administration — the federal agency that runs Multiple Award Schedules, several governmentwide vehicles, and related buying tools such as eBuy.",
+		chapterId: "mas-contract-coverage-order",
+	},
+	{
+		id: "sin",
+		term: "SIN",
+		aliases: ["Special Item Number", "Special Item Numbers", "SINs"],
+		definition:
+			"A Special Item Number is a MAS catalog category that defines what products or services a Schedule holder can sell under its awarded Schedule coverage.",
+		chapterId: "mas-contract-coverage-order",
+	},
+	{
+		id: "osdbu",
+		term: "OSDBU",
+		aliases: [
+			"Office of Small and Disadvantaged Business Utilization",
+			"Office of Small & Disadvantaged Business Utilization",
+			"OSDBUs",
+		],
+		definition:
+			"An agency Office of Small and Disadvantaged Business Utilization (or a similarly named small-business office) advocates for small-business participation, can recommend set-asides, review subcontracting plans, and challenge unnecessary consolidation or bundling — without awarding the contract.",
+		chapterId: "radar-not-keyword",
+	},
+	{
 		id: "mas",
 		term: "MAS",
 		aliases: [
@@ -476,8 +504,8 @@ export const CORE_GLOSSARY_TERMS: GlossaryTerm[] = [
 	},
 ];
 
-/** Core FAR/capture terms plus chapter topic tags used on shelf cards. */
-export const GLOSSARY_TERMS: GlossaryTerm[] = [...CORE_GLOSSARY_TERMS, ...CHAPTER_TOPIC_TERMS];
+/** Full glossary: curated terms plus chapter topic tags used on shelf cards. */
+export const GLOSSARY_TERMS: GlossaryTerm[] = [...CURATED_GLOSSARY_TERMS, ...CHAPTER_TOPIC_TERMS];
 
 const byId = new Map(GLOSSARY_TERMS.map((t) => [t.id, t]));
 
@@ -496,7 +524,7 @@ for (const term of GLOSSARY_TERMS) {
 	];
 	for (const key of keys) {
 		const existing = byTagKey.get(key);
-		// Prefer core FAR terms over topic-tag entries on key collisions.
+		// Prefer curated entries over topic-prefixed duplicates on key collisions.
 		if (existing && !existing.id.startsWith("topic-") && term.id.startsWith("topic-")) {
 			continue;
 		}
@@ -548,8 +576,7 @@ export type GlossaryMatchPattern = {
 /** Flat list of match labels → term id, longest label first (for regex alternation). */
 export function allMatchPatterns(): GlossaryMatchPattern[] {
 	const out: GlossaryMatchPattern[] = [];
-	// Only core FAR/capture terms auto-link in chapter body — topic tags are browse/pill only.
-	for (const term of CORE_GLOSSARY_TERMS) {
+	for (const term of GLOSSARY_TERMS) {
 		for (const label of matchStringsForTerm(term)) {
 			out.push({ termId: term.id, label });
 		}
