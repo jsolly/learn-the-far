@@ -256,15 +256,6 @@
 				</p>
 			{/if}
 			<div class={`${chapter.closing ? "mt-6" : ""} flex flex-col gap-3`}>
-				{#if showChapterQuiz}
-					<Button
-						size="lg"
-						class="w-full sm:h-11 sm:text-base"
-						onclick={() => game.runChapterQuizAction(chapter.quizCta.action)}
-					>
-						{chapter.quizCta.label}
-					</Button>
-				{/if}
 				{#if game.chapterKind === "shelf-chapter"}
 					{#if prevChapter || nextChapter}
 						<nav
@@ -297,6 +288,17 @@
 							</div>
 						</nav>
 					{/if}
+				{/if}
+				{#if showChapterQuiz}
+					<Button
+						size="lg"
+						class="w-full sm:h-11 sm:text-base"
+						onclick={() => game.runChapterQuizAction(chapter.quizCta.action)}
+					>
+						{chapter.quizCta.label}
+					</Button>
+				{/if}
+				{#if game.chapterKind === "shelf-chapter"}
 					<Button
 						size="lg"
 						variant="outline"
