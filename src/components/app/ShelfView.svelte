@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { tick } from "svelte";
+	import { tick, untrack } from "svelte";
 	import CheckIcon from "@lucide/svelte/icons/check";
 
 	import { UNITS } from "$lib/far/deck";
@@ -7,6 +7,7 @@
 	import type { UnitId } from "$lib/far/types";
 	import { resolveChapterTag } from "$lib/far/glossary";
 	import { learnChapterPath, learnShelfPath } from "$lib/learn-routes";
+	import { restoreShelfViewport, saveShelfScroll } from "$lib/shelf-scroll";
 	import { game } from "$lib/quiz-state.svelte.js";
 	import { Button } from "$lib/components/ui/button";
 	import TopicPill from "./TopicPill.svelte";
@@ -56,6 +57,11 @@
 		};
 	}
 
+	function rememberScrollBeforeChapter() {
+		if (!shelf) return;
+		saveShelfScroll(shelf.unitId);
+	}
+
 	function setHideRead(next: boolean) {
 		hideRead = next;
 		persistHideReadPref(next);
@@ -68,9 +74,15 @@
 	$effect(() => {
 		const current = shelf;
 		if (!current) return;
-		void tick().then(() => {
+		const unitId = current.unitId;
+		// One-shot focus id from Back to chapters / Browse chapters.
+		const focusChapterId = untrack(() => game.pendingShelfFocusChapterId);
+		void tick().then(async () => {
 			if (game.shelf !== current) return;
-			headingEl?.focus();
+			// Keep a11y focus without jumping the viewport to the heading.
+			headingEl?.focus({ preventScroll: true });
+			game.pendingShelfFocusChapterId = null;
+			await restoreShelfViewport(unitId, { focusChapterId });
 		});
 	});
 
@@ -137,11 +149,13 @@
 					{@const read = game.isChapterRead(ch.id)}
 					{@const pills = loadBearingTags(ch.tags)}
 					<li
+						id={`shelf-chapter-${ch.id}`}
 						class="rounded-2xl border-2 border-border bg-card transition-colors hover:border-primary/50 hover:bg-muted/30"
 					>
 						<a
 							href={learnChapterPath(shelf.unitId, ch.id)}
 							class="flex w-full flex-col gap-2 p-4 text-left sm:p-5"
+							onclick={rememberScrollBeforeChapter}
 						>
 							<div class="flex items-center justify-between gap-2">
 								<span class="text-xs tabular-nums text-muted-foreground sm:text-sm">

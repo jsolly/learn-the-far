@@ -137,6 +137,11 @@ export class QuizGame {
 	/** Unit reference shelf (multi-chapter hub). */
 	shelf = $state<ChapterShelf | null>(null);
 	reading = $state<ReadingProgress>(emptyReadingProgress());
+	/**
+	 * One-shot: after Back to chapters, ShelfView scrolls this chapter into view
+	 * when no saved window scroll position is available.
+	 */
+	pendingShelfFocusChapterId = $state<string | null>(null);
 
 	// current question interaction
 	answeredOptionId = $state<string | null>(null);
@@ -472,12 +477,13 @@ export class QuizGame {
 		}
 	}
 
-	openShelf(unitId: UnitId) {
+	openShelf(unitId: UnitId, opts?: { focusChapterId?: string }) {
 		this.shelf = shelfForUnit(unitId);
 		this.chapter = null;
 		this.chapterKind = null;
 		this.summary = null;
 		this.activeChapterId = null;
+		this.pendingShelfFocusChapterId = opts?.focusChapterId ?? null;
 		this.view = "shelf";
 		this.reading = { ...this.reading, lastUnitId: unitId };
 		saveReadingProgress(this.reading);

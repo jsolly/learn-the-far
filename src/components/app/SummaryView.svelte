@@ -87,7 +87,14 @@
 
 		<div class="flex w-full flex-col gap-2">
 			{#if s.mode === "chapter" && s.unit}
-				<Button size="lg" onclick={() => s?.unit && game.openShelf(s.unit.id)}>
+				<Button
+					size="lg"
+					onclick={() =>
+						s?.unit &&
+						game.openShelf(s.unit.id, {
+							focusChapterId: s.chapterId,
+						})}
+				>
 					Back to chapters
 				</Button>
 			{:else if s.mode === "unit" && s.unit && unitNotPrime}
