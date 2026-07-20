@@ -151,15 +151,6 @@
 							<h3 class="font-semibold leading-tight sm:text-lg">
 								{s.unit.title}
 							</h3>
-							{#if shelfRead}
-								<span
-									class="inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white sm:size-6 dark:bg-emerald-500"
-									title="Shelf read"
-								>
-									<span class="sr-only">Shelf read</span>
-									<CheckIcon class="size-3 sm:size-3.5" strokeWidth={3} aria-hidden="true" />
-								</span>
-							{/if}
 							{#if s.level !== "new"}
 								<Badge variant="secondary" class="shrink-0 text-[0.65rem] sm:text-xs"
 									>{s.levelLabel}</Badge
@@ -200,14 +191,26 @@
 					>
 						Quiz me
 					</Button>
-					<Button
-						class="flex-1"
-						size="sm"
-						variant="outline"
-						href={learnShelfPath(s.unit.id)}
-					>
-						{shelfRead ? "Review shelf" : "Start learning"}
-					</Button>
+					<div class="relative flex-1">
+						<Button
+							class="w-full"
+							size="sm"
+							variant="outline"
+							href={learnShelfPath(s.unit.id)}
+						>
+							{shelfRead ? "Review shelf" : "Start learning"}
+						</Button>
+						{#if shelfRead}
+							<span
+								class="pointer-events-none absolute -right-1 -top-1 inline-flex size-3.5 items-center justify-center rounded-full bg-emerald-600 text-white shadow-sm sm:size-4 dark:bg-emerald-500"
+								title="Shelf read"
+								aria-hidden="true"
+							>
+								<CheckIcon class="size-2 sm:size-2.5" strokeWidth={3} />
+							</span>
+							<span class="sr-only">Shelf read</span>
+						{/if}
+					</div>
 				</div>
 			</div>
 		{/each}
