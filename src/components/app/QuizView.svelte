@@ -232,7 +232,7 @@
 					</a>
 					{#if missed && studyChapters.length > 0}
 						<div class="flex flex-col gap-1.5">
-							<p class="text-xs font-medium text-muted-foreground">Review in study</p>
+							<p class="text-xs font-medium text-muted-foreground">Chapters to review</p>
 							{#each studyChapters as chapter (chapter.id)}
 								<a
 									class="app-link rounded-sm text-left text-xs font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"

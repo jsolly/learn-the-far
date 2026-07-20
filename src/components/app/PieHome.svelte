@@ -8,6 +8,7 @@
 	import PieWheel from "./PieWheel.svelte";
 	import { Button } from "$lib/components/ui/button";
 	import { Badge } from "$lib/components/ui/badge";
+	import CheckIcon from "@lucide/svelte/icons/check";
 	import Volume2Icon from "@lucide/svelte/icons/volume-2";
 	import VolumeOffIcon from "@lucide/svelte/icons/volume-off";
 
@@ -136,6 +137,7 @@
 	</h2>
 	<div class="flex flex-col gap-2 sm:gap-3">
 		{#each stats as s (s.unit.id)}
+			{@const shelfRead = game.isShelfRead(s.unit.id)}
 			<div class="rounded-2xl border-2 border-border bg-card p-3 sm:p-4 lg:p-5">
 				<div class="flex items-start gap-3 sm:gap-4">
 					<span
@@ -149,6 +151,15 @@
 							<h3 class="font-semibold leading-tight sm:text-lg">
 								{s.unit.title}
 							</h3>
+							{#if shelfRead}
+								<span
+									class="inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white sm:size-6 dark:bg-emerald-500"
+									title="Shelf read"
+								>
+									<span class="sr-only">Shelf read</span>
+									<CheckIcon class="size-3 sm:size-3.5" strokeWidth={3} aria-hidden="true" />
+								</span>
+							{/if}
 							{#if s.level !== "new"}
 								<Badge variant="secondary" class="shrink-0 text-[0.65rem] sm:text-xs"
 									>{s.levelLabel}</Badge
@@ -195,7 +206,7 @@
 						variant="outline"
 						href={learnShelfPath(s.unit.id)}
 					>
-						Start learning
+						{shelfRead ? "Review shelf" : "Start learning"}
 					</Button>
 				</div>
 			</div>
