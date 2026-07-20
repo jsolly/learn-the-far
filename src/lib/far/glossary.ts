@@ -433,6 +433,20 @@ const CURATED_GLOSSARY_TERMS: GlossaryTerm[] = [
 		chapterId: "actual-offeror-ready",
 	},
 	{
+		id: "jv",
+		term: "JV",
+		aliases: [
+			"JVs",
+			"joint venture",
+			"joint ventures",
+			"Joint Venture",
+			"Joint Ventures",
+		],
+		definition:
+			"A joint venture is a separately identified entity (often under FAR 9.601) that itself can act as the potential prime. An approved mentor-protégé relationship may enable a qualifying JV, but it is not a pursuit-ready JV until the written agreement, SAM registration, and own UEI/CAGE are in place.",
+		chapterId: "name-team-you-built",
+	},
+	{
 		id: "piid",
 		term: "PIID",
 		aliases: [

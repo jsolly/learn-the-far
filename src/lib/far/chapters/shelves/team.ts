@@ -121,7 +121,7 @@ export const TEAM_SHELF_CHAPTERS: Chapter[] = [
 		summary:
 			"Defines size/status, set-aside offeror structure, and affiliate organizational conflicts that can kill a team before bid.",
 		intro:
-			"Terms for whether the proposed offeror and teammates may bid this acquisition — size and status, eligibility path, JV readiness, and affiliate-aware OCI.",
+			"Terms for whether the proposed offeror and teammates may bid this acquisition — size and status, eligibility path, teaming readiness, and affiliate-aware OCI.",
 		tags: ["set-aside", "oci"],
 		readingMinutes: 9,
 		suggestedOrder: 3,
