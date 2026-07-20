@@ -270,7 +270,17 @@ const CURATED_GLOSSARY_TERMS: GlossaryTerm[] = [
 	{
 		id: "set-aside",
 		term: "Set-aside",
-		aliases: ["set aside", "set-asides", "set asides"],
+		aliases: [
+			"set aside",
+			"set-asides",
+			"set asides",
+			"small-business set-aside",
+			"small-business set-asides",
+			"small business set-aside",
+			"small business set-asides",
+			"total small-business set-aside",
+			"total small business set-aside",
+		],
 		definition:
 			"A competition reserved for a defined socioeconomic or small-business category when the rules and market evidence support that path.",
 		chapterId: "competition-becomes-decision",
