@@ -395,6 +395,66 @@ const CURATED_GLOSSARY_TERMS: GlossaryTerm[] = [
 		chapterId: "actual-offeror-ready",
 	},
 	{
+		id: "uei",
+		term: "UEI",
+		aliases: [
+			"Unique Entity Identifier",
+			"unique entity identifier",
+			"Unique Entity Identifiers",
+			"UEIs",
+		],
+		definition:
+			"The Unique Entity Identifier is the SAM-assigned ID for a legal entity that does business with the Government. A joint venture that will submit as offeror needs its own UEI — an affiliate’s or teammate’s UEI does not substitute.",
+		chapterId: "actual-offeror-ready",
+	},
+	{
+		id: "cage",
+		term: "CAGE",
+		aliases: [
+			"CAGE code",
+			"CAGE codes",
+			"Commercial and Government Entity",
+			"Commercial and Government Entity code",
+			"commercial and government entity",
+			"commercial and government entity code",
+		],
+		definition:
+			"A CAGE code is a five-character Commercial and Government Entity identifier used with SAM registration and many DoD/federal supplier records. A separately identified joint venture needs its own CAGE, not only the mentor’s or protégé’s.",
+		chapterId: "actual-offeror-ready",
+	},
+	{
+		id: "jv",
+		term: "JV",
+		aliases: [
+			"JVs",
+			"joint venture",
+			"joint ventures",
+			"Joint Venture",
+			"Joint Ventures",
+		],
+		definition:
+			"A joint venture is a separately identified entity (often under FAR 9.601) that itself can act as the potential prime. An approved mentor-protégé relationship may enable a qualifying JV, but it is not a pursuit-ready JV until the written agreement, SAM registration, and own UEI/CAGE are in place.",
+		chapterId: "name-team-you-built",
+	},
+	{
+		id: "mpa",
+		term: "MPA",
+		aliases: [
+			"MPAs",
+			"mentor-protégé agreement",
+			"mentor-protege agreement",
+			"Mentor-Protégé Agreement",
+			"Mentor-Protege Agreement",
+			"mentor-protégé relationship",
+			"mentor-protege relationship",
+			"SBA mentor-protégé agreement",
+			"SBA mentor-protege agreement",
+		],
+		definition:
+			"An SBA mentor-protégé agreement (MPA) is an approved mentoring relationship that may enable a qualifying joint venture. It is not itself a FAR 9.601 team form and is not a pursuit-ready JV — the JV still needs its own written agreement, SAM registration, UEI, and CAGE.",
+		chapterId: "name-team-you-built",
+	},
+	{
 		id: "piid",
 		term: "PIID",
 		aliases: [
