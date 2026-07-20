@@ -340,6 +340,15 @@
 					</Button>
 				{/if}
 				{#if game.chapterKind === "shelf-chapter"}
+					<Button
+						size="lg"
+						variant="outline"
+						class="w-full sm:h-11 sm:text-base"
+						href={learnShelfPath(chapter.unitId)}
+						onclick={returnToShelf}
+					>
+						Browse chapters
+					</Button>
 					{#if isLastShelfChapter}
 						<Button
 							size="lg"
@@ -350,15 +359,6 @@
 							Back to home
 						</Button>
 					{/if}
-					<Button
-						size="lg"
-						variant="outline"
-						class="w-full sm:h-11 sm:text-base"
-						href={learnShelfPath(chapter.unitId)}
-						onclick={returnToShelf}
-					>
-						Browse chapters
-					</Button>
 				{:else}
 					<Button
 						size="lg"
