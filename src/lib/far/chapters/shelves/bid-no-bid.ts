@@ -227,7 +227,7 @@ export const BID_NO_BID_SHELF_CHAPTERS: Chapter[] = [
 				title: "Price-to-win and walk-away price",
 				teach: "Price-to-win estimates the competitive award zone given evaluation method, competitors, and solution. Walk-away price is the seller's minimum acceptable economics and risk. A sound gate keeps them separate, tests lawful redesign to close a gap, and updates Pwin when price position moves. Escalate gap closures as redesign sprints with compliance and deadline checks — or no-bid. Portfolio economics also compare incremental B&P and specialist opportunity cost to risk-adjusted contribution.",
 				watchFor:
-					"Don't bid below walk-away to win then recover, freeze Pwin while bidding above the competitive zone, or treat Government price-analysis rules (FAR 15.404-1) as a substitute for the company's own floor.",
+					"Don't treat \"bid below walk-away and recover later\" as a cleared gate — it is a familiar but risky pressure move. Also don't freeze Pwin while bidding above the competitive zone, or treat Government price-analysis rules (FAR 15.404-1) as a substitute for the company's own floor.",
 				citation: "Capture craft (competitive pricing); FAR 15.404-1",
 				sourceUrl: "https://www.acquisition.gov/far/15.404-1",
 				sourceKind: "capture-practice",
