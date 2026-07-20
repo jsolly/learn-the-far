@@ -447,6 +447,24 @@ const CURATED_GLOSSARY_TERMS: GlossaryTerm[] = [
 		chapterId: "name-team-you-built",
 	},
 	{
+		id: "mpa",
+		term: "MPA",
+		aliases: [
+			"MPAs",
+			"mentor-protégé agreement",
+			"mentor-protege agreement",
+			"Mentor-Protégé Agreement",
+			"Mentor-Protege Agreement",
+			"mentor-protégé relationship",
+			"mentor-protege relationship",
+			"SBA mentor-protégé agreement",
+			"SBA mentor-protege agreement",
+		],
+		definition:
+			"An SBA mentor-protégé agreement (MPA) is an approved mentoring relationship that may enable a qualifying joint venture. It is not itself a FAR 9.601 team form and is not a pursuit-ready JV — the JV still needs its own written agreement, SAM registration, UEI, and CAGE.",
+		chapterId: "name-team-you-built",
+	},
+	{
 		id: "piid",
 		term: "PIID",
 		aliases: [
