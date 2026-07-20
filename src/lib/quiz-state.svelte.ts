@@ -494,6 +494,13 @@ export class QuizGame {
 		return Boolean(this.reading.read[chapterId]);
 	}
 
+	/** True when every chapter on the unit's shelf has been marked read. */
+	isShelfRead(unitId: UnitId): boolean {
+		const chapters = shelfForUnit(unitId).chapters;
+		if (chapters.length === 0) return false;
+		return chapters.every((ch) => Boolean(this.reading.read[ch.id]));
+	}
+
 	/** Shame-free manuscript of quiz misses (no progress writes). */
 	startStudyMisses() {
 		const misses = this.shakyQuestions;
