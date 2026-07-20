@@ -209,8 +209,9 @@ export const BID_NO_BID_CORE: QuizQuestion[] = [
 			{
 				id: "c",
 				text: "Bid $94M and plan to recover the margin through changes after award",
-				tier: "disqualifying",
-				consequence: "The bid knowingly crosses the economic floor and relies on uncertain post-award events.",
+				tier: "risky",
+				consequence:
+					"Teams do bid into the competitive zone hoping changes will recover margin — but that knowingly crosses the walk-away floor and bets the P&L on uncertain post-award events.",
 			},
 			{
 				id: "d",
@@ -220,7 +221,7 @@ export const BID_NO_BID_CORE: QuizQuestion[] = [
 			},
 		],
 		explanation:
-			"Capture craft—not a Government pricing formula: price-to-win estimates the competitive award zone; walk-away is the seller's minimum acceptable economics and risk. A defensible gate keeps the two separate, tests lawful redesign, and updates Pwin when price position changes.",
+			"Capture craft—not a Government pricing formula: price-to-win estimates the competitive award zone; walk-away is the seller's minimum acceptable economics and risk. A defensible gate keeps the two separate, tests lawful redesign, and updates Pwin when price position changes. Bidding below walk-away to \"win then recover\" is a familiar pursuit pressure move — treat it as a named risk posture, not a cleared gate.",
 		citation: "Capture craft (competitive pricing); FAR 15.404-1",
 		sourceUrl: "https://www.acquisition.gov/far/15.404-1",
 		tags: ["price-to-win", "walk-away", "margin", "capture-craft"],

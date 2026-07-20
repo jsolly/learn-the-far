@@ -62,16 +62,22 @@
 		best: "border-emerald-500 bg-emerald-500/10",
 		defensible: "border-sky-500 bg-sky-500/10",
 		costly: "border-amber-500 bg-amber-500/10",
+		risky: "border-orange-500 bg-orange-500/10",
 		disqualifying: "border-red-500 bg-red-500/10",
 	};
 
 	// -700 in light mode clears WCAG AA (4.5:1) for the small verdict labels on
-	// their tinted backgrounds; -400 handles dark mode.
+	// their tinted backgrounds; -400 handles dark mode. Risky shares warn tone
+	// with Costly but uses orange border fill so the two stay distinct.
 	const TONE_CLASS: Record<Tone, string> = {
 		good: "text-emerald-700 dark:text-emerald-400",
 		ok: "text-sky-700 dark:text-sky-400",
 		warn: "text-amber-700 dark:text-amber-400",
 		bad: "text-red-700 dark:text-red-400",
+	};
+
+	const TIER_LABEL_CLASS: Partial<Record<OptionTier, string>> = {
+		risky: "text-orange-700 dark:text-orange-400",
 	};
 
 	// Visual state for one option once the question is answered (quiz mode).
@@ -199,7 +205,9 @@
 						<span class="sr-only">Your answer</span>
 					{/if}
 					{#if answered && (q.scoring === "tiered" || q.scoring === "reveal-tradeoff") && opt.tier}
-						<span class={`mt-2 block text-xs font-semibold ${TONE_CLASS[TIER_VERDICT[opt.tier].tone]}`}>
+						<span
+							class={`mt-2 block text-xs font-semibold ${TIER_LABEL_CLASS[opt.tier] ?? TONE_CLASS[TIER_VERDICT[opt.tier].tone]}`}
+						>
 							{TIER_VERDICT[opt.tier].label}
 						</span>
 					{/if}

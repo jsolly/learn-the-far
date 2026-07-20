@@ -21,6 +21,7 @@ export const TIER_SCORE: Record<OptionTier, number> = {
 	best: 1,
 	defensible: 0.6,
 	costly: 0.25,
+	risky: 0.1,
 	disqualifying: 0,
 };
 
@@ -52,6 +53,7 @@ export const TIER_VERDICT: Record<OptionTier, { label: string; tone: Tone }> = {
 	best: { label: "Sharp move!", tone: "good" },
 	defensible: { label: "Defensible", tone: "ok" },
 	costly: { label: "Costly", tone: "warn" },
+	risky: { label: "Risky", tone: "warn" },
 	disqualifying: { label: "Disqualifying", tone: "bad" },
 };
 

@@ -26,10 +26,10 @@ export type Difficulty = "fundamentals" | "core" | "advanced";
 // How a single question is graded. Rotated for variety across the deck.
 export type ScoringMode =
 	| "single-best" // one right answer, rest wrong (recall + simple scenarios)
-	| "tiered" // options rated best/defensible/costly/disqualifying, partial credit
+	| "tiered" // options rated best/defensible/costly/risky/disqualifying, partial credit
 	| "reveal-tradeoff"; // like tiered, but every option's consequence unfolds after you pick
 
-export type OptionTier = "best" | "defensible" | "costly" | "disqualifying";
+export type OptionTier = "best" | "defensible" | "costly" | "risky" | "disqualifying";
 
 export type QuizOption = {
 	id: string;
