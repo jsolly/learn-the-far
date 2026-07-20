@@ -100,6 +100,7 @@
 
 	/**
 	 * Chapter further-reading plus any piece source links not already listed.
+	 * Rendered last in the chapter body (after closing), before nav CTAs.
 	 * Piece sources are shown only here — not under each teach/watch-for block.
 	 * Quote attributions stay under their excerpts.
 	 */
@@ -264,6 +265,15 @@
 			{/each}
 		</div>
 
+		{#if chapter.closing && linkedCopy.closing}
+			<p class="mt-10 text-sm leading-6 text-muted-foreground sm:mt-12 sm:text-base sm:leading-7">
+				<TermRichText
+					segments={linkedCopy.closing}
+					currentChapterId={chapter.id}
+				/>
+			</p>
+		{/if}
+
 		{#if furtherReadingLinks.length > 0}
 			<section class="mt-10 border-t pt-6 sm:mt-12">
 				<h2 class="text-sm font-semibold sm:text-base">Further reading</h2>
@@ -286,15 +296,7 @@
 		{/if}
 
 		<section class="mt-10 border-t pt-8 sm:mt-12">
-			{#if chapter.closing && linkedCopy.closing}
-				<p class="text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
-					<TermRichText
-						segments={linkedCopy.closing}
-						currentChapterId={chapter.id}
-					/>
-				</p>
-			{/if}
-			<div class={`${chapter.closing ? "mt-6" : ""} flex flex-col gap-3`}>
+			<div class="flex flex-col gap-3">
 				{#if game.chapterKind === "shelf-chapter"}
 					{#if prevChapter || nextChapter}
 						<nav
