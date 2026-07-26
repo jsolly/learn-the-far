@@ -8,6 +8,12 @@ CI owner: `local`
 
 Production URL: <https://learnthefar.com>
 
+**Prod verify:** `/ship` requires `x-release-id` to match `origin/main` (12-char). HTTP 200 alone is insufficient.
+
+```bash
+curl -sSIL https://learnthefar.com/ | rg -i '^x-release-id:'
+```
+
 ## Development
 
 ```bash
