@@ -6,7 +6,12 @@
 	"redirects": [
 		{
 			"source": "/:path(.*)",
-			"has": [{ "type": "host", "value": "www.learnthefar.com" }],
+			"has": [
+				{
+					"type": "host",
+					"value": "www.learnthefar.com"
+				}
+			],
 			"destination": "https://learnthefar.com/:path",
 			"permanent": true
 		}
@@ -15,8 +20,18 @@
 		{
 			"source": "/(.*)",
 			"headers": [
-				{ "key": "X-Frame-Options", "value": "DENY" },
-				{ "key": "X-Content-Type-Options", "value": "nosniff" }
+				{
+					"key": "X-Frame-Options",
+					"value": "DENY"
+				},
+				{
+					"key": "X-Content-Type-Options",
+					"value": "nosniff"
+				},
+				{
+					"key": "x-release-id",
+					"value": "dev"
+				}
 			]
 		}
 	]

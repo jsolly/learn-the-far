@@ -9,13 +9,16 @@
 		"worktree:init": "npm ci",
 		"dev": "astro dev",
 		"mcp:echarts": "node node_modules/echarts-mcp/src/index.js",
+		"prebuild": "node scripts/gen-release-id.mjs",
 		"build": "astro build",
+		"postbuild": "node scripts/restore-release-stub.mjs",
 		"check:ts": "astro check --minimumSeverity warning --minimumFailingSeverity warning",
 		"check": "npm run check:ts",
 		"preview": "astro preview",
 		"astro": "astro",
 		"prepare": "if [ -z \"$CI\" ] && git rev-parse --git-dir >/dev/null 2>&1; then git config core.hooksPath .git-hooks; fi",
-		"check:actions": "bash scripts/check-actions.sh"
+		"check:actions": "bash scripts/check-actions.sh",
+		"check:release-id": "node scripts/check-release-id.mjs"
 	},
 	"dependencies": {
 		"@astrojs/sitemap": "^3.7.3",

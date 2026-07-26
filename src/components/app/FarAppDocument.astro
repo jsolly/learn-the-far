@@ -1,6 +1,7 @@
 ---
 import FarQuizApp from "./FarQuizApp.svelte";
 import "../../styles/global.css";
+import { RELEASE_ID } from "../../release-id";
 
 type Props = {
 	title: string;
@@ -27,6 +28,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={description} />
+		<meta name="release-id" content={RELEASE_ID} />
 		<link rel="canonical" href={canonicalUrl} />
 		<link rel="sitemap" href="/sitemap-index.xml" />
 		<meta property="og:type" content="website" />
