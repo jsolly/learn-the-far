@@ -27,10 +27,6 @@
 				{
 					"key": "X-Content-Type-Options",
 					"value": "nosniff"
-				},
-				{
-					"key": "x-release-id",
-					"value": "dev"
 				}
 			]
 		}
