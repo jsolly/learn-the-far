@@ -36,14 +36,20 @@ jobs:
         github.event.pull_request.author_association == 'OWNER' ||
         github.event.pull_request.author_association == 'MEMBER'
       )
+    env:
+      # secrets cannot be read in steps.if; map presence into env first.
+      HAS_APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY != '' }}
+      APP_CLIENT_ID: ${{ vars.APP_CLIENT_ID || secrets.APP_CLIENT_ID }}
+      APP_ID: ${{ vars.APP_ID || secrets.APP_ID }}
     steps:
       - name: Mint GitHub App token
         id: app-token
-        if: ${{ secrets.APP_PRIVATE_KEY != '' && (vars.APP_CLIENT_ID != '' || secrets.APP_CLIENT_ID != '' || vars.APP_ID != '' || secrets.APP_ID != '') }}
+        if: ${{ env.HAS_APP_PRIVATE_KEY == 'true' && (env.APP_CLIENT_ID != '' || env.APP_ID != '') }}
         uses: actions/create-github-app-token@v3
         with:
-          client-id: ${{ vars.APP_CLIENT_ID || secrets.APP_CLIENT_ID }}
-          app-id: ${{ vars.APP_ID || secrets.APP_ID }}
+          # actionlint 1.7.12's bundled @v3 metadata has app-id, not client-id.
+          # GitHub App JWTs accept Client ID or App ID as iss.
+          app-id: ${{ env.APP_CLIENT_ID || env.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
           permission-contents: write
           permission-pull-requests: write
