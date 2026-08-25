@@ -3,6 +3,13 @@ name: Auto Merge
 # Arm squash auto-merge for non-draft same-repo PRs from a human User who is
 # the repo owner or an org OWNER/MEMBER (you or an agent using your credentials).
 # Excludes Dependabot/bots/forks. Job-level gate → skipped events burn zero minutes.
+#
+# GITHUB_TOKEN merges do not create new workflow runs except workflow_dispatch
+# and repository_dispatch (Triggering a workflow):
+# https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow
+# When APP_PRIVATE_KEY + APP_CLIENT_ID (or APP_ID) are set, mint an App
+# installation token (~1h, own identity) so the land is a real push. If unset,
+# keep GITHUB_TOKEN --auto (do not fail). No classic PAT required.
 
 on:
   pull_request:
@@ -29,9 +36,34 @@ jobs:
         github.event.pull_request.author_association == 'OWNER' ||
         github.event.pull_request.author_association == 'MEMBER'
       )
+    env:
+      # secrets cannot be read in steps.if; map presence into env first.
+      HAS_APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY != '' }}
+      APP_CLIENT_ID: ${{ vars.APP_CLIENT_ID || secrets.APP_CLIENT_ID }}
+      APP_ID: ${{ vars.APP_ID || secrets.APP_ID }}
     steps:
+      - name: Mint GitHub App token
+        id: app-token
+        if: ${{ env.HAS_APP_PRIVATE_KEY == 'true' && (env.APP_CLIENT_ID != '' || env.APP_ID != '') }}
+        uses: actions/create-github-app-token@v3
+        with:
+          # actionlint 1.7.12's bundled @v3 metadata has app-id, not client-id.
+          # GitHub App JWTs accept Client ID or App ID as iss.
+          app-id: ${{ env.APP_CLIENT_ID || env.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+
       - name: Enable auto-merge for owner/member PRs
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.GITHUB_TOKEN }}
+          HAS_APP_TOKEN: ${{ steps.app-token.outputs.token != '' }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: gh pr merge --auto --squash --delete-branch --repo "$GITHUB_REPOSITORY" "$PR_NUMBER"
+        run: |
+          set -euo pipefail
+          if [ "$HAS_APP_TOKEN" = "true" ]; then
+            echo "Arming auto-merge with GitHub App installation token (not GITHUB_TOKEN → push fires)."
+          else
+            echo "No App credentials — arming GITHUB_TOKEN --auto (do not fail)."
+          fi
+          gh pr merge --auto --squash --delete-branch --repo "$GITHUB_REPOSITORY" "$PR_NUMBER"
