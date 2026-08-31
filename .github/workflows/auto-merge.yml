@@ -1,15 +1,33 @@
 name: Auto Merge
 
-# Arm squash auto-merge for non-draft same-repo PRs from a human User who is
-# the repo owner or an org OWNER/MEMBER (you or an agent using your credentials).
-# Excludes Dependabot/bots/forks. Job-level gate → skipped events burn zero minutes.
+# Squash-merge non-draft same-repo PRs from a human User who is the repo
+# owner or an org OWNER/MEMBER (you or an agent using your credentials)
+# after this repo's `ci` check succeeds on the current PR head SHA.
+# Excludes Dependabot/bots/forks.
+#
+# Do not use `gh pr merge --auto`. GitHub --auto only waits for *required*
+# status checks. Free-plan private repos cannot set required checks, so a
+# ready PR can squash before `ci` starts (shared-infra #38). This workflow
+# waits for the `ci` check itself (workflow name `CI`, job / check context
+# `ci`) instead of relying on GitHub required-check gating.
+#
+# Triggers: pull_request (opened / reopened / synchronize / ready_for_review)
+# so a PR marked ready after a green `ci` can land; workflow_run of `CI`
+# (completed) so a green `ci` can land an already-ready PR.
+# Failed / cancelled CI, push-to-main CI with no open PR, and green CI for
+# a SHA that is no longer the open PR's head do not merge (exit 0).
+# github.event.workflow_run.pull_requests is often empty — resolve the PR
+# from the head SHA via `gh pr list`.
+#
+# Job-level gate → ineligible pull_request events and non-successful
+# pull_request CI completions burn zero minutes.
 #
 # GITHUB_TOKEN merges do not create new workflow runs except workflow_dispatch
 # and repository_dispatch (Triggering a workflow):
 # https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow
 # When APP_PRIVATE_KEY + APP_CLIENT_ID (or APP_ID) are set, mint an App
 # installation token (~1h, own identity) so the land is a real push. If unset,
-# keep GITHUB_TOKEN --auto (do not fail). No classic PAT required.
+# merge with GITHUB_TOKEN (do not fail). No classic PAT required.
 
 on:
   pull_request:
@@ -18,23 +36,36 @@ on:
       - reopened
       - synchronize
       - ready_for_review
+  workflow_run:
+    workflows: [CI]
+    types:
+      - completed
 
 permissions:
   contents: write
   pull-requests: write
   issues: write
+  checks: read
 
 jobs:
   auto-merge:
     runs-on: ubuntu-latest
     if: >-
-      github.event.pull_request.draft == false &&
-      github.event.pull_request.head.repo.full_name == github.repository &&
-      github.event.pull_request.user.type == 'User' &&
       (
-        github.event.pull_request.user.login == github.repository_owner ||
-        github.event.pull_request.author_association == 'OWNER' ||
-        github.event.pull_request.author_association == 'MEMBER'
+        github.event_name == 'workflow_run' &&
+        github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.event == 'pull_request'
+      ) ||
+      (
+        github.event_name == 'pull_request' &&
+        github.event.pull_request.draft == false &&
+        github.event.pull_request.head.repo.full_name == github.repository &&
+        github.event.pull_request.user.type == 'User' &&
+        (
+          github.event.pull_request.user.login == github.repository_owner ||
+          github.event.pull_request.author_association == 'OWNER' ||
+          github.event.pull_request.author_association == 'MEMBER'
+        )
       )
     env:
       # secrets cannot be read in steps.if; map presence into env first.
@@ -54,16 +85,119 @@ jobs:
           permission-contents: write
           permission-pull-requests: write
 
-      - name: Enable auto-merge for owner/member PRs
+      - name: Merge eligible owner/member PR when ci succeeded
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.GITHUB_TOKEN }}
+          READ_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HAS_APP_TOKEN: ${{ steps.app-token.outputs.token != '' }}
+          EVENT_NAME: ${{ github.event_name }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          WORKFLOW_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          REPO_OWNER: ${{ github.repository_owner }}
         run: |
           set -euo pipefail
+
           if [ "$HAS_APP_TOKEN" = "true" ]; then
-            echo "Arming auto-merge with GitHub App installation token (not GITHUB_TOKEN → push fires)."
+            echo "Merging with GitHub App installation token (not GITHUB_TOKEN → push fires)."
           else
-            echo "No App credentials — arming GITHUB_TOKEN --auto (do not fail)."
+            echo "No App credentials — merging with GITHUB_TOKEN (do not fail)."
           fi
-          gh pr merge --auto --squash --delete-branch --repo "$GITHUB_REPOSITORY" "$PR_NUMBER"
+
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            if [ -z "$PR_NUMBER" ] || [ -z "$PR_HEAD_SHA" ]; then
+              echo "pull_request event missing number/head — nothing to merge."
+              exit 0
+            fi
+            ci_sha="$PR_HEAD_SHA"
+            pr_candidates="$PR_NUMBER"
+          else
+            if [ -z "$WORKFLOW_HEAD_SHA" ]; then
+              echo "workflow_run missing head SHA — nothing to merge."
+              exit 0
+            fi
+            ci_sha="$WORKFLOW_HEAD_SHA"
+            # workflow_run.pull_requests is often empty. Match open PRs whose
+            # current head is the SHA CI just ran.
+            pr_candidates="$(GH_TOKEN="$READ_TOKEN" SHA="$ci_sha" gh pr list \
+              --repo "$GITHUB_REPOSITORY" \
+              --state open \
+              --limit 100 \
+              --json number,headRefOid \
+              --jq '[.[] | select(.headRefOid == env.SHA) | .number] | join("\n")')"
+          fi
+
+          if [ -z "$pr_candidates" ]; then
+            echo "No open PR whose current head is ${ci_sha} — nothing to merge."
+            exit 0
+          fi
+
+          ci_conclusion() {
+            local sha="$1"
+            GH_TOKEN="$READ_TOKEN" gh api \
+              "repos/${GITHUB_REPOSITORY}/commits/${sha}/check-runs?per_page=100" \
+              --jq '
+                [.check_runs[] | select(.name == "ci")]
+                | sort_by(.started_at)
+                | last
+                | if . == null or .status != "completed" then "" else (.conclusion // "") end
+              '
+          }
+
+          while IFS= read -r pr_number; do
+            [ -n "$pr_number" ] || continue
+
+            {
+              read -r draft
+              read -r state
+              read -r head_sha
+              read -r head_repo
+              read -r user_type
+              read -r user_login
+              read -r association
+            } < <(GH_TOKEN="$READ_TOKEN" gh api "repos/${GITHUB_REPOSITORY}/pulls/${pr_number}" --jq '
+              [
+                (.draft | tostring),
+                .state,
+                .head.sha,
+                (.head.repo.full_name // ""),
+                .user.type,
+                .user.login,
+                .author_association
+              ] | .[]
+            ')
+
+            if [ "$state" != "open" ]; then
+              echo "PR #${pr_number} is ${state} — skip."
+              continue
+            fi
+            if [ "$draft" = "true" ]; then
+              echo "PR #${pr_number} is draft — skip."
+              continue
+            fi
+            if [ "$head_repo" != "$GITHUB_REPOSITORY" ]; then
+              echo "PR #${pr_number} head repo ${head_repo} is not ${GITHUB_REPOSITORY} — skip."
+              continue
+            fi
+            if [ "$user_type" != "User" ]; then
+              echo "PR #${pr_number} author type ${user_type} is not User — skip."
+              continue
+            fi
+            if [ "$user_login" != "$REPO_OWNER" ] && [ "$association" != "OWNER" ] && [ "$association" != "MEMBER" ]; then
+              echo "PR #${pr_number} author ${user_login} (${association}) is not owner/member — skip."
+              continue
+            fi
+            if [ "$head_sha" != "$ci_sha" ]; then
+              echo "PR #${pr_number} head ${head_sha} != ci SHA ${ci_sha} — stale, skip."
+              continue
+            fi
+
+            conclusion="$(ci_conclusion "$head_sha")"
+            if [ "$conclusion" != "success" ]; then
+              echo "PR #${pr_number} check 'ci' is '${conclusion:-missing}' on ${head_sha} — skip."
+              continue
+            fi
+
+            echo "Merging PR #${pr_number} (ci success on ${head_sha})."
+            gh pr merge --squash --delete-branch --repo "$GITHUB_REPOSITORY" "$pr_number"
+          done < <(printf '%s\n' "$pr_candidates")
