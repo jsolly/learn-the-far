@@ -15,7 +15,7 @@ run_public_gate() {
   echo "→ pre-commit: using built-in gate (dotagents gate-lib not found)"
 
   # Match gate-lib: message-only amend / empty index should not run the suite.
-  if git diff --cached --quiet 2>/dev/null; then
+  if [[ "${FLEET_DOC_FAST:-1}" != 0 ]] && git diff --cached --quiet 2>/dev/null; then
     echo "▶ no staged changes vs HEAD — skipping the gate (message-only amend / empty commit)"
     exit 0
   fi
