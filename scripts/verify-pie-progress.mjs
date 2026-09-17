@@ -43,9 +43,7 @@ function scenario(name, clearedById) {
 	const hub = hubCapturedPercent(slices);
 	const weighted = weightedCapturedRatio(slices);
 	const weightedPct = Math.round(weighted * 100);
-	const fillMatchesRatio = slices.every(
-		(s) => Math.abs(capturedFillRatio(s) - s.ratio) < 1e-9,
-	);
+	const fillMatchesRatio = slices.every((s) => Math.abs(capturedFillRatio(s) - s.ratio) < 1e-9);
 
 	const ok = hub === weightedPct && fillMatchesRatio;
 	const detail = DECK.map(({ id, total }) => {
@@ -58,7 +56,9 @@ function scenario(name, clearedById) {
 	console.log(`${ok ? "PASS" : "FAIL"} ${name}`);
 	console.log(`  hub=${hub}%  weightedArea=${weightedPct}%  fill≡ratio=${fillMatchesRatio}`);
 	console.log(`  ${detail}`);
-	if (!ok) process.exitCode = 1;
+	if (!ok) {
+		process.exitCode = 1;
+	}
 	return ok;
 }
 
@@ -82,4 +82,6 @@ scenario("one slice fully mastered look (learning+mastered layers)", {
 	basics: 50, // all cleared — fill uses mastered+learning ratios in UI
 });
 
-if (!process.exitCode) console.log("\nAll pie-progress scenarios passed.");
+if (!process.exitCode) {
+	console.log("\nAll pie-progress scenarios passed.");
+}

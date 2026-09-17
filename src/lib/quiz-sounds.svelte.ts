@@ -1,6 +1,7 @@
+import { SvelteMap } from "svelte/reactivity";
 import { QUIZ_SOUND_MUTED_KEY } from "$lib/far/constants";
 
-export type FeedbackSound = "correct" | "incorrect" | "session-complete";
+type FeedbackSound = "correct" | "incorrect" | "session-complete";
 
 const SOUND_URLS: Record<FeedbackSound, string> = {
 	correct: "/sounds/correct.mp3",
@@ -8,25 +9,14 @@ const SOUND_URLS: Record<FeedbackSound, string> = {
 	"session-complete": "/sounds/session-complete.mp3",
 };
 
-/** Audio Session API types (Safari; not yet in all TS libs). */
-type AudioSessionType =
-	| "auto"
-	| "playback"
-	| "transient"
-	| "transient-solo"
-	| "ambient"
-	| "play-and-record";
-
-type NavigatorWithAudioSession = Navigator & {
-	audioSession?: { type: AudioSessionType };
-};
-
 function canUseStorage() {
 	return typeof window !== "undefined" && "localStorage" in window;
 }
 
 function loadMuted(): boolean {
-	if (!canUseStorage()) return false;
+	if (!canUseStorage()) {
+		return false;
+	}
 	try {
 		return window.localStorage.getItem(QUIZ_SOUND_MUTED_KEY) === "1";
 	} catch {
@@ -35,7 +25,9 @@ function loadMuted(): boolean {
 }
 
 function persistMuted(value: boolean) {
-	if (!canUseStorage()) return;
+	if (!canUseStorage()) {
+		return;
+	}
 	try {
 		window.localStorage.setItem(QUIZ_SOUND_MUTED_KEY, value ? "1" : "0");
 	} catch {
@@ -50,13 +42,14 @@ function persistMuted(value: boolean) {
  */
 function preferMixableAudioSession() {
 	try {
-		const session = (navigator as NavigatorWithAudioSession).audioSession;
-		if (!session) return;
-		// Prefer ducking short SFX; fall back to mix-only if assignment is rejected.
+		const session = Reflect.get(navigator, "audioSession");
+		if (!session || typeof session !== "object") {
+			return;
+		}
 		try {
-			session.type = "transient";
+			Reflect.set(session, "type", "transient");
 		} catch {
-			session.type = "ambient";
+			Reflect.set(session, "type", "ambient");
 		}
 	} catch {
 		// Unsupported platform — leave UA default.
@@ -66,10 +59,12 @@ function preferMixableAudioSession() {
 /** Shared mute preference — sound on by default. */
 let muted = $state(loadMuted());
 
-const players = new Map<FeedbackSound, HTMLAudioElement>();
+const players = new SvelteMap<FeedbackSound, HTMLAudioElement>();
 
 function getPlayer(kind: FeedbackSound): HTMLAudioElement | null {
-	if (typeof Audio === "undefined") return null;
+	if (typeof Audio === "undefined") {
+		return null;
+	}
 	let player = players.get(kind);
 	if (!player) {
 		player = new Audio(SOUND_URLS[kind]);
@@ -83,7 +78,7 @@ export function isSoundMuted(): boolean {
 	return muted;
 }
 
-export function setSoundMuted(value: boolean) {
+function setSoundMuted(value: boolean) {
 	muted = value;
 	persistMuted(value);
 }
@@ -98,9 +93,13 @@ export function toggleSoundMuted(): boolean {
  * unlocks audio). No-ops when muted or when Audio is unavailable (SSR).
  */
 export function playFeedbackSound(kind: FeedbackSound) {
-	if (muted) return;
+	if (muted) {
+		return;
+	}
 	const player = getPlayer(kind);
-	if (!player) return;
+	if (!player) {
+		return;
+	}
 	try {
 		preferMixableAudioSession();
 		player.pause();

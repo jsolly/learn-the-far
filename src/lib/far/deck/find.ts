@@ -6,5 +6,5 @@ import { FIND_FUNDAMENTALS } from "./find/fundamentals";
 export const FIND_QUESTIONS: QuizQuestion[] = [
 	...FIND_FUNDAMENTALS,
 	...FIND_CORE,
-	...FIND_ADVANCED
+	...FIND_ADVANCED,
 ];

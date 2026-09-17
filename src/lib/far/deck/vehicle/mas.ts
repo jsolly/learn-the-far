@@ -35,8 +35,7 @@ export const MAS_VEHICLE_QUESTIONS: QuizQuestion[] = [
 		explanation:
 			"MAS is the Federal Supply Schedule program. GSA awards underlying indefinite-delivery contracts for commercial offerings, and eligible ordering activities use FAR Subpart 8.4 to place orders or establish Schedule BPAs. An order award and a base Schedule contract are different instruments.",
 		citation: "FAR 8.402(a), 8.404(a); GSA Multiple Award Schedule",
-		sourceUrl:
-			"https://www.gsa.gov/buy-through-us/purchasing-programs/multiple-award-schedule",
+		sourceUrl: "https://www.gsa.gov/buy-through-us/purchasing-programs/multiple-award-schedule",
 		tags: ["GSA-MAS", "Federal-Supply-Schedule", "commercial", "ordering"],
 	},
 	{
@@ -140,8 +139,7 @@ export const MAS_VEHICLE_QUESTIONS: QuizQuestion[] = [
 				id: "c",
 				text: "Tell the program office that incumbent status alone eliminates the need for competition and written justification",
 				tier: "disqualifying",
-				consequence:
-					"The advice invents an exception and undermines the acquisition record.",
+				consequence: "The advice invents an exception and undermines the acquisition record.",
 			},
 			{
 				id: "d",

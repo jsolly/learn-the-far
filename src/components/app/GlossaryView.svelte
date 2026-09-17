@@ -1,44 +1,49 @@
 <script lang="ts">
-	import { tick } from "svelte";
+import { tick } from "svelte";
+import { Button } from "$lib/components/ui/button";
+import { chapterById } from "$lib/far/chapters";
+import { type GlossaryTerm, glossaryByLetter } from "$lib/far/glossary";
+import { learnChapterPath } from "$lib/learn-routes";
 
-	import { chapterById } from "$lib/far/chapters";
-	import { glossaryByLetter, type GlossaryTerm } from "$lib/far/glossary";
-	import { learnChapterPath } from "$lib/learn-routes";
-	import { Button } from "$lib/components/ui/button";
+let filter = $state("");
+let headingEl: HTMLHeadingElement | null = $state(null);
 
-	let filter = $state("");
-	let headingEl: HTMLHeadingElement | null = $state(null);
-
-	let groups = $derived.by(() => {
-		const q = filter.trim().toLowerCase();
-		const all = glossaryByLetter();
-		if (!q) return all;
-		return all
-			.map((g) => ({
-				letter: g.letter,
-				terms: g.terms.filter((t) => termMatches(t, q)),
-			}))
-			.filter((g) => g.terms.length > 0);
-	});
-
-	function escapeRegExp(value: string): string {
-		return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+let groups = $derived.by(() => {
+	const q = filter.trim().toLowerCase();
+	const all = glossaryByLetter();
+	if (!q) {
+		return all;
 	}
+	return all
+		.map((g) => ({
+			letter: g.letter,
+			terms: g.terms.filter((t) => termMatches(t, q)),
+		}))
+		.filter((g) => g.terms.length > 0);
+});
 
-	function termMatches(term: GlossaryTerm, q: string): boolean {
-		if (term.term.toLowerCase().includes(q)) return true;
-		if ((term.aliases ?? []).some((a) => a.toLowerCase().includes(q))) return true;
-		// Short queries: word-boundary match in definitions so "COR" ≠ "record".
-		if (q.length < 4) {
-			const re = new RegExp(`(?:^|[^a-z0-9])${escapeRegExp(q)}(?:[^a-z0-9]|$)`, "i");
-			return re.test(term.definition);
-		}
-		return term.definition.toLowerCase().includes(q);
+function escapeRegExp(value: string): string {
+	return value.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
+}
+
+function termMatches(term: GlossaryTerm, q: string): boolean {
+	if (term.term.toLowerCase().includes(q)) {
+		return true;
 	}
+	if ((term.aliases ?? []).some((a) => a.toLowerCase().includes(q))) {
+		return true;
+	}
+	// Short queries: word-boundary match in definitions so "COR" ≠ "record".
+	if (q.length < 4) {
+		const re = new RegExp(`(?:^|[^a-z0-9])${escapeRegExp(q)}(?:[^a-z0-9]|$)`, "iu");
+		return re.test(term.definition);
+	}
+	return term.definition.toLowerCase().includes(q);
+}
 
-	$effect(() => {
-		void tick().then(() => headingEl?.focus());
-	});
+$effect(() => {
+	void tick().then(() => headingEl?.focus());
+});
 </script>
 
 <div class="mx-auto flex min-h-[100dvh] w-full max-w-2xl flex-col px-4 pb-16 pt-5 sm:px-6 sm:pt-7">

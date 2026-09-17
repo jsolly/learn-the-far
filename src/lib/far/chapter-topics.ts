@@ -31,8 +31,7 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 	{
 		id: "topic-oasis+",
 		term: "OASIS+",
-		definition:
-			"GSA’s OASIS+ IDIQ suite for non-IT professional services across multiple domains.",
+		definition: "GSA’s OASIS+ IDIQ suite for non-IT professional services across multiple domains.",
 	},
 	{
 		id: "topic-sewp",
@@ -132,15 +131,13 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 		id: "topic-cica-stay",
 		term: "Cica Stay",
 		aliases: ["cica-stay"],
-		definition:
-			"The automatic stay of performance after a timely GAO protest, absent an override.",
+		definition: "The automatic stay of performance after a timely GAO protest, absent an override.",
 	},
 	{
 		id: "topic-color-reviews",
 		term: "Color Reviews",
 		aliases: ["color-reviews"],
-		definition:
-			"Structured color-team proposal reviews (pink, red, gold, etc.) before submission.",
+		definition: "Structured color-team proposal reviews (pink, red, gold, etc.) before submission.",
 	},
 	{
 		id: "topic-compliance-matrix",
@@ -186,8 +183,7 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 		id: "topic-draft-rfp",
 		term: "Draft RFP",
 		aliases: ["draft-rfp"],
-		definition:
-			"An early solicitation draft released for industry comment before the final RFP.",
+		definition: "An early solicitation draft released for industry comment before the final RFP.",
 	},
 	{
 		id: "topic-early-discovery",
@@ -206,8 +202,7 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 	{
 		id: "topic-ebuy",
 		term: "eBuy",
-		definition:
-			"GSA eBuy — the electronic RFQ tool commonly used for Schedule competitions.",
+		definition: "GSA eBuy — the electronic RFQ tool commonly used for Schedule competitions.",
 	},
 	{
 		id: "topic-far-9-6",
@@ -252,8 +247,7 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 	{
 		id: "topic-fpr",
 		term: "FPR",
-		definition:
-			"Final proposal revision — the last offer submitted after discussions.",
+		definition: "Final proposal revision — the last offer submitted after discussions.",
 	},
 	{
 		id: "topic-funding",
@@ -318,14 +312,12 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 		id: "topic-information-leveling",
 		term: "Information Leveling",
 		aliases: ["information-leveling"],
-		definition:
-			"Sharing material information with all offerors so no one has an unfair advantage.",
+		definition: "Sharing material information with all offerors so no one has an unfair advantage.",
 	},
 	{
 		id: "topic-intervention",
 		term: "Intervention",
-		definition:
-			"A successful offeror joining a protest to defend the award.",
+		definition: "A successful offeror joining a protest to defend the award.",
 	},
 	{
 		id: "topic-key-personnel",
@@ -371,8 +363,7 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 		id: "topic-no-bid",
 		term: "No Bid",
 		aliases: ["no-bid"],
-		definition:
-			"A deliberate decision not to submit an offer after gate review.",
+		definition: "A deliberate decision not to submit an offer after gate review.",
 	},
 	{
 		id: "topic-notice-types",
@@ -418,29 +409,25 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 	{
 		id: "topic-orals",
 		term: "Orals",
-		definition:
-			"Oral presentations evaluated as part of the source selection.",
+		definition: "Oral presentations evaluated as part of the source selection.",
 	},
 	{
 		id: "topic-order-competition",
 		term: "Order Competition",
 		aliases: ["order-competition"],
-		definition:
-			"Competition among vehicle holders for a task or delivery order.",
+		definition: "Competition among vehicle holders for a task or delivery order.",
 	},
 	{
 		id: "topic-ordering-guide",
 		term: "Ordering Guide",
 		aliases: ["ordering-guide"],
-		definition:
-			"The vehicle’s instructions for how agencies place and compete orders.",
+		definition: "The vehicle’s instructions for how agencies place and compete orders.",
 	},
 	{
 		id: "topic-ordering-period",
 		term: "Ordering Period",
 		aliases: ["ordering-period"],
-		definition:
-			"The window during which orders may be placed against a vehicle generation.",
+		definition: "The window during which orders may be placed against a vehicle generation.",
 	},
 	{
 		id: "topic-ostensible-subcontractor",
@@ -486,14 +473,12 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 		id: "topic-pipeline-hygiene",
 		term: "Pipeline Hygiene",
 		aliases: ["pipeline-hygiene"],
-		definition:
-			"Keeping pursuit data current — dates, amounts, stage, and kill status.",
+		definition: "Keeping pursuit data current — dates, amounts, stage, and kill status.",
 	},
 	{
 		id: "topic-prejudice",
 		term: "Prejudice",
-		definition:
-			"Protest showing that an error likely affected the protester’s chance of award.",
+		definition: "Protest showing that an error likely affected the protester’s chance of award.",
 	},
 	{
 		id: "topic-price-to-win",
@@ -513,14 +498,12 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 		id: "topic-protest-timing",
 		term: "Protest Timing",
 		aliases: ["protest-timing"],
-		definition:
-			"Strict deadlines for filing protests at GAO, the agency, or COFC.",
+		definition: "Strict deadlines for filing protests at GAO, the agency, or COFC.",
 	},
 	{
 		id: "topic-recompete",
 		term: "Recompete",
-		definition:
-			"A follow-on competition for work currently performed under an expiring contract.",
+		definition: "A follow-on competition for work currently performed under an expiring contract.",
 	},
 	{
 		id: "topic-regate",
@@ -532,15 +515,13 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 		id: "topic-related-notices",
 		term: "Related Notices",
 		aliases: ["related-notices"],
-		definition:
-			"Linked SAM notices that form one buy’s trail from forecast through award.",
+		definition: "Linked SAM notices that form one buy’s trail from forecast through award.",
 	},
 	{
 		id: "topic-repetitive-needs",
 		term: "Repetitive Needs",
 		aliases: ["repetitive-needs"],
-		definition:
-			"Recurring requirements that may justify BPAs or other streamlined ordering tools.",
+		definition: "Recurring requirements that may justify BPAs or other streamlined ordering tools.",
 	},
 	{
 		id: "topic-responsibility",
@@ -579,8 +560,7 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 		id: "topic-stop-work",
 		term: "Stop Work",
 		aliases: ["stop-work"],
-		definition:
-			"An order pausing performance — common after protest stays or funding issues.",
+		definition: "An order pausing performance — common after protest stays or funding issues.",
 	},
 	{
 		id: "topic-subcontracting",
@@ -605,22 +585,19 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 	{
 		id: "topic-supplements",
 		term: "Supplements",
-		definition:
-			"Agency FAR supplements (DFARS, etc.) that add to or implement the FAR.",
+		definition: "Agency FAR supplements (DFARS, etc.) that add to or implement the FAR.",
 	},
 	{
 		id: "topic-task-order",
 		term: "Task Order",
 		aliases: ["task-order"],
-		definition:
-			"An order for services under an IDIQ or similar vehicle.",
+		definition: "An order for services under an IDIQ or similar vehicle.",
 	},
 	{
 		id: "topic-teaming-agreement",
 		term: "Teaming Agreement",
 		aliases: ["teaming-agreement"],
-		definition:
-			"A pre-award agreement among teammates on roles, exclusivity, and proposal duties.",
+		definition: "A pre-award agreement among teammates on roles, exclusivity, and proposal duties.",
 	},
 	{
 		id: "topic-ucf",
@@ -653,7 +630,6 @@ export const CHAPTER_TOPIC_TERMS: GlossaryTerm[] = [
 		id: "topic-walk-away",
 		term: "Walk Away",
 		aliases: ["walk-away"],
-		definition:
-			"Leaving a pursuit when gates fail — protecting bid budget and capture focus.",
+		definition: "Leaving a pursuit when gates fail — protecting bid budget and capture focus.",
 	},
 ];

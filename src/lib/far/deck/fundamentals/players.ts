@@ -228,7 +228,8 @@ export const PLAYERS_FUNDAMENTALS: QuizQuestion[] = [
 		scoring: "single-best",
 		situation:
 			"You are a new capture analyst on a major civilian-agency pursuit. The draft proposal contains an aggressive price, an exception to a contract term, and a solution assumption that operations has not validated.",
-		prompt: "Which ownership model is the safest starting point, subject to the prime's delegation-of-authority policy?",
+		prompt:
+			"Which ownership model is the safest starting point, subject to the prime's delegation-of-authority policy?",
 		options: [
 			{
 				id: "a",

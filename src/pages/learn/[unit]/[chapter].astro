@@ -1,10 +1,7 @@
 ---
 import FarAppDocument from "../../../components/app/FarAppDocument.astro";
 import { chapterById } from "../../../lib/far/chapters";
-import {
-	isUnitId,
-	learnChapterStaticPaths,
-} from "../../../lib/learn-routes";
+import { isUnitId, learnChapterStaticPaths } from "../../../lib/learn-routes";
 import { formatDocumentTitle, formatMetaDescription } from "../../../lib/seo";
 
 export function getStaticPaths() {

@@ -1,153 +1,168 @@
 <script lang="ts">
-	import { tick } from "svelte";
+import { tick } from "svelte";
+import { Button } from "$lib/components/ui/button";
+import { nextChapterOnShelf, prevChapterOnShelf, questionsForChapter } from "$lib/far/chapters";
+import type { SourceKind } from "$lib/far/chapters/types";
+import { segmentGlossaryText } from "$lib/far/link-glossary-terms";
+import { learnChapterPath, learnShelfPath } from "$lib/learn-routes";
+import { game } from "$lib/quiz-state.svelte.js";
+import TermRichText from "./TermRichText.svelte";
 
-	import { game } from "$lib/quiz-state.svelte.js";
-	import { Button } from "$lib/components/ui/button";
-	import { nextChapterOnShelf, prevChapterOnShelf, questionsForChapter } from "$lib/far/chapters";
-	import type { SourceKind } from "$lib/far/chapters/types";
-	import { learnChapterPath, learnShelfPath } from "$lib/learn-routes";
-	import { segmentGlossaryText } from "$lib/far/link-glossary-terms";
-	import TermRichText from "./TermRichText.svelte";
-
-	let chapter = $derived(game.chapter);
-	let headingEl: HTMLHeadingElement | null = null;
-	let nextChapter = $derived(
-		chapter && game.chapterKind === "shelf-chapter"
-			? nextChapterOnShelf(chapter.id)
-			: undefined,
-	);
-	let prevChapter = $derived(
-		chapter && game.chapterKind === "shelf-chapter"
-			? prevChapterOnShelf(chapter.id)
-			: undefined,
-	);
-	/** Last chapter on the shelf — offer a home exit alongside Browse chapters. */
-	let isLastShelfChapter = $derived(
-		game.chapterKind === "shelf-chapter" && Boolean(chapter) && !nextChapter,
-	);
-	/** End-of-chapter quiz only when this chapter has mapped/tagged questions. */
-	let showChapterQuiz = $derived.by(() => {
-		const current = chapter;
-		if (!current) return false;
-		const action = current.quizCta.action;
-		if (action.kind !== "quiz-chapter") return true;
-		return questionsForChapter(action.chapterId).length > 0;
-	});
-
-	/** One pass per chapter: each term links once as a phrase and once as an acronym. */
-	let linkedCopy = $derived.by(() => {
-		const current = chapter;
-		if (!current) return null;
-		const linkedKeys = new Set<string>();
-		return {
-			intro: segmentGlossaryText(current.intro, linkedKeys),
-			pieces: current.pieces.map((piece) => ({
-				id: piece.id,
-				teach: segmentGlossaryText(piece.teach, linkedKeys),
-				watchFor: piece.watchFor
-					? segmentGlossaryText(piece.watchFor, linkedKeys)
-					: null,
-			})),
-			closing: current.closing
-				? segmentGlossaryText(current.closing, linkedKeys)
-				: null,
-		};
-	});
-
-	function captureHeading(element: HTMLHeadingElement) {
-		headingEl = element;
-		return () => {
-			if (headingEl === element) headingEl = null;
-		};
+let chapter = $derived(game.chapter);
+let headingEl: HTMLHeadingElement | null = null;
+let nextChapter = $derived(
+	chapter && game.chapterKind === "shelf-chapter" ? nextChapterOnShelf(chapter.id) : undefined,
+);
+let prevChapter = $derived(
+	chapter && game.chapterKind === "shelf-chapter" ? prevChapterOnShelf(chapter.id) : undefined,
+);
+/** Last chapter on the shelf — offer a home exit alongside Browse chapters. */
+let isLastShelfChapter = $derived(
+	game.chapterKind === "shelf-chapter" && Boolean(chapter) && !nextChapter,
+);
+/** End-of-chapter quiz only when this chapter has mapped/tagged questions. */
+let showChapterQuiz = $derived.by(() => {
+	const current = chapter;
+	if (!current) {
+		return false;
 	}
+	const action = current.quizCta.action;
+	if (action.kind !== "quiz-chapter") {
+		return true;
+	}
+	return questionsForChapter(action.chapterId).length > 0;
+});
 
-	$effect(() => {
-		const current = chapter;
-		if (!current) return;
-		const chapterId = current.id;
-		void tick().then(() => {
-			if (game.chapter?.id !== chapterId) return;
-			// preventScroll: bare focus() scrolls the h1 into view and can fight
-			// later in-page TOC jumps on iOS (flash, then stay at top).
-			headingEl?.focus({ preventScroll: true });
-			// Skip if a piece hash is already set (TOC jump or deep link won the race).
-			if (window.location.hash.startsWith("#piece-")) return;
-			window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+/** One pass per chapter: each term links once as a phrase and once as an acronym. */
+let linkedCopy = $derived.by(() => {
+	const current = chapter;
+	if (!current) {
+		return null;
+	}
+	const linkedKeys = new Set<string>();
+	return {
+		intro: segmentGlossaryText(current.intro, linkedKeys),
+		pieces: current.pieces.map((piece) => ({
+			id: piece.id,
+			teach: segmentGlossaryText(piece.teach, linkedKeys),
+			watchFor: piece.watchFor ? segmentGlossaryText(piece.watchFor, linkedKeys) : null,
+		})),
+		closing: current.closing ? segmentGlossaryText(current.closing, linkedKeys) : null,
+	};
+});
+
+function captureHeading(element: HTMLHeadingElement) {
+	headingEl = element;
+	return () => {
+		if (headingEl === element) {
+			headingEl = null;
+		}
+	};
+}
+
+$effect(() => {
+	const current = chapter;
+	if (!current) {
+		return;
+	}
+	const chapterId = current.id;
+	void tick().then(() => {
+		if (game.chapter?.id !== chapterId) {
+			return;
+		}
+		// preventScroll: bare focus() scrolls the h1 into view and can fight
+		// later in-page TOC jumps on iOS (flash, then stay at top).
+		headingEl?.focus({ preventScroll: true });
+		// Skip if a piece hash is already set (TOC jump or deep link won the race).
+		if (window.location.hash.startsWith("#piece-")) {
+			return;
+		}
+		window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+	});
+});
+
+function sourceKindLabel(kind: SourceKind) {
+	switch (kind) {
+		case "controlling-authority":
+			return "Controlling authority";
+		case "guidance":
+			return "Guidance";
+		case "decision":
+			return "Decision";
+		case "capture-practice":
+			return "Capture practice";
+	}
+}
+
+function pieceLinked(pieceId: string) {
+	return linkedCopy?.pieces.find((p) => p.id === pieceId);
+}
+
+/** Normalize for comparing piece citations to further-reading entries. */
+function sourceKey(url: string): string {
+	return url.replace(/\/$/u, "");
+}
+
+/**
+ * Chapter further-reading plus any piece source links not already listed.
+ * Rendered last in the chapter body (after closing), before nav CTAs.
+ * Piece sources are shown only here — not under each teach/watch-for block.
+ * Quote attributions stay under their excerpts.
+ */
+let furtherReadingLinks = $derived.by(() => {
+	const current = chapter;
+	if (!current) {
+		return [];
+	}
+	const listed = current.furtherReading ?? [];
+	const seen = new Set(listed.map((link) => sourceKey(link.url)));
+	const merged = [...listed];
+	for (const piece of current.pieces) {
+		if (piece.quote || !piece.sourceUrl || !piece.citation) {
+			continue;
+		}
+		const key = sourceKey(piece.sourceUrl);
+		if (seen.has(key)) {
+			continue;
+		}
+		seen.add(key);
+		merged.push({
+			label: piece.citation,
+			url: piece.sourceUrl,
+			kind: piece.sourceKind ?? "guidance",
 		});
-	});
-
-	function sourceKindLabel(kind: SourceKind): string {
-		switch (kind) {
-			case "controlling-authority":
-				return "Controlling authority";
-			case "guidance":
-				return "Guidance";
-			case "decision":
-				return "Decision";
-			case "capture-practice":
-				return "Capture practice";
-		}
 	}
+	return merged;
+});
 
-	function pieceLinked(pieceId: string) {
-		return linkedCopy?.pieces.find((p) => p.id === pieceId);
+/** In-page TOC: native hash jumps flash/fail on iOS with tabindex targets. */
+function jumpToPiece(event: MouseEvent, pieceId: string) {
+	if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) {
+		return;
 	}
-
-	/** Normalize for comparing piece citations to further-reading entries. */
-	function sourceKey(url: string): string {
-		return url.replace(/\/$/, "");
+	event.preventDefault();
+	const target = document.getElementById(`piece-${pieceId}`);
+	if (!target) {
+		return;
 	}
+	// Focus without scrolling, then scroll — scrollIntoView honors scroll-mt-*.
+	target.focus({ preventScroll: true });
+	target.scrollIntoView({ block: "start", behavior: "auto" });
+	history.replaceState(history.state, "", `#piece-${pieceId}`);
+}
 
-	/**
-	 * Chapter further-reading plus any piece source links not already listed.
-	 * Rendered last in the chapter body (after closing), before nav CTAs.
-	 * Piece sources are shown only here — not under each teach/watch-for block.
-	 * Quote attributions stay under their excerpts.
-	 */
-	let furtherReadingLinks = $derived.by(() => {
-		const current = chapter;
-		if (!current) return [];
-		const listed = current.furtherReading ?? [];
-		const seen = new Set(listed.map((link) => sourceKey(link.url)));
-		const merged = [...listed];
-		for (const piece of current.pieces) {
-			if (piece.quote || !piece.sourceUrl || !piece.citation) continue;
-			const key = sourceKey(piece.sourceUrl);
-			if (seen.has(key)) continue;
-			seen.add(key);
-			merged.push({
-				label: piece.citation,
-				url: piece.sourceUrl,
-				kind: piece.sourceKind ?? "guidance",
-			});
-		}
-		return merged;
-	});
-
-	/** In-page TOC: native hash jumps flash/fail on iOS with tabindex targets. */
-	function jumpToPiece(event: MouseEvent, pieceId: string) {
-		if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) {
-			return;
-		}
-		event.preventDefault();
-		const target = document.getElementById(`piece-${pieceId}`);
-		if (!target) return;
-		// Focus without scrolling, then scroll — scrollIntoView honors scroll-mt-*.
-		target.focus({ preventScroll: true });
-		target.scrollIntoView({ block: "start", behavior: "auto" });
-		history.replaceState(history.state, "", `#piece-${pieceId}`);
+function returnToShelf(event: MouseEvent) {
+	if (!chapter || game.chapterKind !== "shelf-chapter") {
+		return;
 	}
-
-	function returnToShelf(event: MouseEvent) {
-		if (!chapter || game.chapterKind !== "shelf-chapter") return;
-		// Keep href for open-in-new-tab / middle-click; primary click stays in-app
-		// so we can restore the shelf scroll captured when the chapter was opened.
-		if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) {
-			return;
-		}
-		event.preventDefault();
-		game.openShelf(chapter.unitId, { focusChapterId: chapter.id });
+	// Keep href for open-in-new-tab / middle-click; primary click stays in-app
+	// so we can restore the shelf scroll captured when the chapter was opened.
+	if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) {
+		return;
 	}
+	event.preventDefault();
+	game.openShelf(chapter.unitId, { focusChapterId: chapter.id });
+}
 </script>
 
 {#if chapter && linkedCopy}

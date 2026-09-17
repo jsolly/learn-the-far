@@ -1,4 +1,3 @@
-import type { LifecycleUnit, QuizQuestion } from "./types";
 import { BID_NO_BID_QUESTIONS } from "./deck/bid-no-bid";
 import { FIND_QUESTIONS } from "./deck/find";
 import { FUNDAMENTALS_QUESTIONS } from "./deck/fundamentals";
@@ -7,6 +6,7 @@ import { SHAPE_QUESTIONS } from "./deck/shape";
 import { TEAM_QUESTIONS } from "./deck/team";
 import { VEHICLE_QUESTIONS } from "./deck/vehicle";
 import { WIN_PROTEST_QUESTIONS } from "./deck/win-protest";
+import type { LifecycleUnit, QuizQuestion } from "./types";
 
 // The lifecycle slices of the pie, starting with Fundamentals (the knowledge
 // floor), then the deal stages in the order a capture is actually run.

@@ -15,25 +15,29 @@ export const BID_NO_BID_ADVANCED: QuizQuestion[] = [
 				id: "a",
 				text: "Evaluate the remaining $600K and future contract economics using current evidence; no-bid if the revised case fails, regardless of the $1.4M already spent",
 				tier: "best",
-				consequence: "The decision avoids throwing additional scarce resources after costs that cannot be recovered.",
+				consequence:
+					"The decision avoids throwing additional scarce resources after costs that cannot be recovered.",
 			},
 			{
 				id: "b",
 				text: "Authorize a small, time-boxed fact check only if one unresolved assumption could restore the business case",
 				tier: "defensible",
-				consequence: "A bounded option buys decisive evidence without treating the full proposal budget as inevitable.",
+				consequence:
+					"A bounded option buys decisive evidence without treating the full proposal budget as inevitable.",
 			},
 			{
 				id: "c",
 				text: "Continue because stopping would waste the $1.4M already invested",
 				tier: "disqualifying",
-				consequence: "Past spend is unrecoverable; using it to justify another $600K is the sunk-cost fallacy.",
+				consequence:
+					"Past spend is unrecoverable; using it to justify another $600K is the sunk-cost fallacy.",
 			},
 			{
 				id: "d",
 				text: "Hold Pwin constant so the original gate decision remains internally consistent",
 				tier: "costly",
-				consequence: "The forecast becomes governance theater and hides material changes in the competition.",
+				consequence:
+					"The forecast becomes governance theater and hides material changes in the competition.",
 			},
 		],
 		explanation:
@@ -93,25 +97,29 @@ export const BID_NO_BID_ADVANCED: QuizQuestion[] = [
 				id: "a",
 				text: "Escalate immediately for legal and executive review and decide whether to file a preaward agency-level or GAO protest before the proposal deadline",
 				tier: "best",
-				consequence: "The company preserves a timely challenge to an apparent solicitation impropriety and makes a deliberate relationship-versus-prejudice decision.",
+				consequence:
+					"The company preserves a timely challenge to an apparent solicitation impropriety and makes a deliberate relationship-versus-prejudice decision.",
 			},
 			{
 				id: "b",
 				text: "Submit another focused question while preserving enough time for counsel to recommend a timely protest if the agency does not amend",
 				tier: "defensible",
-				consequence: "The agency gets a final chance to clarify, but the team does not let Q&A consume the protest deadline.",
+				consequence:
+					"The agency gets a final chance to clarify, but the team does not let Q&A consume the protest deadline.",
 			},
 			{
 				id: "c",
 				text: "Choose the interpretation that favors your proposal and protest after award if the agency uses the other one",
 				tier: "disqualifying",
-				consequence: "A post-award challenge to an apparent preaward defect is generally untimely under GAO's rule.",
+				consequence:
+					"A post-award challenge to an apparent preaward defect is generally untimely under GAO's rule.",
 			},
 			{
 				id: "d",
 				text: "Price both approaches into one offer without explaining the ambiguity",
 				tier: "costly",
-				consequence: "The proposal becomes expensive or internally inconsistent while the legal defect remains unresolved.",
+				consequence:
+					"The proposal becomes expensive or internally inconsistent while the legal defect remains unresolved.",
 			},
 		],
 		explanation:
@@ -135,9 +143,21 @@ export const BID_NO_BID_ADVANCED: QuizQuestion[] = [
 				text: "Score the current evidence against the stated factors and competitor positions, model dependencies, and lower Pwin unless named actions can change the technical or price gap",
 				correct: true,
 			},
-			{ id: "b", text: "Keep Pwin high because customer access outweighs all stated evaluation factors", correct: false },
-			{ id: "c", text: "Use the historical win rate for all civilian bids regardless of this competition", correct: false },
-			{ id: "d", text: "Count every favorable fact independently even when the facts rely on the same assumption", correct: false },
+			{
+				id: "b",
+				text: "Keep Pwin high because customer access outweighs all stated evaluation factors",
+				correct: false,
+			},
+			{
+				id: "c",
+				text: "Use the historical win rate for all civilian bids regardless of this competition",
+				correct: false,
+			},
+			{
+				id: "d",
+				text: "Count every favorable fact independently even when the facts rely on the same assumption",
+				correct: false,
+			},
 		],
 		explanation:
 			"Capture craft: evidence-based Pwin aligns to Section M, competitor position, and dependencies. Customer access may improve information quality but does not itself erase an evaluated weakness or price gap. Correlated assumptions should not be double-counted as independent evidence.",
@@ -165,8 +185,16 @@ export const BID_NO_BID_ADVANCED: QuizQuestion[] = [
 				text: "Authorize only targeted actions that could create a new evaluated advantage before the final gate",
 				tier: "defensible",
 			},
-			{ id: "c", text: "Ignore the result because black hats are designed to be pessimistic", tier: "costly" },
-			{ id: "d", text: "Lower the competitor score until the pursuit clears the corporate Pwin floor", tier: "disqualifying" },
+			{
+				id: "c",
+				text: "Ignore the result because black hats are designed to be pessimistic",
+				tier: "costly",
+			},
+			{
+				id: "d",
+				text: "Lower the competitor score until the pursuit clears the corporate Pwin floor",
+				tier: "disqualifying",
+			},
 		],
 		explanation:
 			"Capture craft: black hat is useful when it changes decisions. The board should challenge source quality on both favorable and unfavorable claims, then fund actions that can alter an evaluated outcome. Renaming adverse evidence or tuning scores to a threshold defeats the control.",
@@ -189,9 +217,21 @@ export const BID_NO_BID_ADVANCED: QuizQuestion[] = [
 				text: "Current, entity- and system-specific evidence that costs can be identified and accumulated as required, plus a realistic path to the Government's adequacy determination",
 				correct: true,
 			},
-			{ id: "b", text: "The old review alone, because adequacy transfers permanently across segments and systems", correct: false },
-			{ id: "c", text: "A capture-manager certification that the ERP is commercially available", correct: false },
-			{ id: "d", text: "A plan to reconstruct direct and indirect costs manually after invoices are rejected", correct: false },
+			{
+				id: "b",
+				text: "The old review alone, because adequacy transfers permanently across segments and systems",
+				correct: false,
+			},
+			{
+				id: "c",
+				text: "A capture-manager certification that the ERP is commercially available",
+				correct: false,
+			},
+			{
+				id: "d",
+				text: "A plan to reconstruct direct and indirect costs manually after invoices are rejected",
+				correct: false,
+			},
 		],
 		explanation:
 			"FAR 16.301-3(a)(3) requires an accounting system adequate for determining costs applicable to the contract or order. 'DCAA compliant' is not a permanent generic status; the gate needs current evidence tied to the proposing entity, configured system, controls, and anticipated pre-award determination.",
@@ -214,9 +254,21 @@ export const BID_NO_BID_ADVANCED: QuizQuestion[] = [
 				text: "No-bid: passing hard gates is necessary but does not overcome a failed value, win, and economic case",
 				correct: true,
 			},
-			{ id: "b", text: "Bid because compliance and eligibility guarantee the proposal will be competitive", correct: false },
-			{ id: "c", text: "Bid because final-gate no-bids damage capture-team morale", correct: false },
-			{ id: "d", text: "Bid below walk-away and rely on the customer's urgency emerging after award", correct: false },
+			{
+				id: "b",
+				text: "Bid because compliance and eligibility guarantee the proposal will be competitive",
+				correct: false,
+			},
+			{
+				id: "c",
+				text: "Bid because final-gate no-bids damage capture-team morale",
+				correct: false,
+			},
+			{
+				id: "d",
+				text: "Bid below walk-away and rely on the customer's urgency emerging after award",
+				correct: false,
+			},
 		],
 		explanation:
 			"Capture craft: bid/no-bid is a stack, not a checklist where one passed layer cures another. Eligibility, responsibility readiness, and compliance are necessary; the company must also retain a credible why-change/why-now/why-us case, evidence-based Pwin, executable resources, and acceptable risk-adjusted economics.",

@@ -370,7 +370,8 @@ export const FAR_MAP_FUNDAMENTALS: QuizQuestion[] = [
 		scoring: "single-best",
 		situation:
 			"A GSA negotiated RFP uses the Uniform Contract Format, Sections A through M. The solution team has read the scope in Section C but has not built its compliance matrix or win themes.",
-		prompt: "Where should the team look next to learn how to respond and how the response will be scored?",
+		prompt:
+			"Where should the team look next to learn how to respond and how the response will be scored?",
 		options: [
 			{
 				id: "a",

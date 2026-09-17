@@ -1,6 +1,7 @@
-import { READING_PROGRESS_KEY } from "$lib/far/constants";
 import type { ReadingProgress } from "$lib/far/chapters/types";
+import { READING_PROGRESS_KEY } from "$lib/far/constants";
 import type { UnitId } from "$lib/far/types";
+import { isUnitId } from "$lib/learn-routes";
 
 export function emptyReadingProgress(): ReadingProgress {
 	return { read: {} };
@@ -8,6 +9,17 @@ export function emptyReadingProgress(): ReadingProgress {
 
 function canUseStorage() {
 	return typeof window !== "undefined" && "localStorage" in window;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+	return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function isStringRecord(value: unknown): value is Record<string, string> {
+	if (!isRecord(value)) {
+		return false;
+	}
+	return Object.values(value).every((entry) => typeof entry === "string");
 }
 
 export function loadReadingProgress(): ReadingProgress {
@@ -20,11 +32,16 @@ export function loadReadingProgress(): ReadingProgress {
 		if (!raw) {
 			return emptyReadingProgress();
 		}
-		const parsed = JSON.parse(raw) as Partial<ReadingProgress>;
+		const parsed: unknown = JSON.parse(raw);
+		if (!isRecord(parsed)) {
+			return emptyReadingProgress();
+		}
+		const lastChapterId = parsed["lastChapterId"];
+		const lastUnitId = parsed["lastUnitId"];
 		return {
-			read: parsed.read && typeof parsed.read === "object" ? parsed.read : {},
-			lastUnitId: parsed.lastUnitId,
-			lastChapterId: parsed.lastChapterId,
+			read: isStringRecord(parsed["read"]) ? parsed["read"] : {},
+			...(isUnitId(lastUnitId) ? { lastUnitId } : {}),
+			...(typeof lastChapterId === "string" ? { lastChapterId } : {}),
 		};
 	} catch {
 		return emptyReadingProgress();

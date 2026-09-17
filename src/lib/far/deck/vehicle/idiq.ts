@@ -73,8 +73,7 @@ export const IDIQ_VEHICLE_QUESTIONS: QuizQuestion[] = [
 			"These are distinct programs, not Schedule SINs. GSA's Alliant 2 ordering period continues through June 30, 2028, and Alliant 3 became operational March 10, 2026. NASA says it intends to extend SEWP V through January 31, 2027 and anticipates SEWP VI beginning November 1, 2026; those future dates are planning statements, not completed lifecycle events. GSA identifies six OASIS+ IDIQs and 13 non-IT service domains. NITAAC currently lists both CIO-SP3 and CIO-SP3 Small Business as operating through October 29, 2026 and does not list CIO-SP4 among its operating GWACs.",
 		citation:
 			"GSA Alliant 2 and Alliant 3; NASA SEWP announcements; GSA OASIS+; NITAAC CIO-SP3 and GWACs",
-		sourceUrl:
-			"https://www.sewp.nasa.gov/",
+		sourceUrl: "https://www.sewp.nasa.gov/",
 		tags: ["Alliant", "NASA-SEWP", "OASIS+", "NITAAC", "CIO-SP"],
 	},
 	{
@@ -229,8 +228,7 @@ export const IDIQ_VEHICLE_QUESTIONS: QuizQuestion[] = [
 		],
 		explanation:
 			"The authority governing the task-order protest bar follows the agency that awarded the underlying IDIQ. For this Title 41 contract, 41 U.S.C. 4106(f) authorizes a value-based protest above $10 million and gives GAO exclusive jurisdiction over that value exception. A protest alleging that the order increases the contract's scope, period, or maximum value is a separate statutory exception; it may be heard at the Court of Federal Claims if the claim independently satisfies 28 U.S.C. 1491(b) and other jurisdictional requirements. Counsel must confirm forum, standing, and timeliness.",
-		citation:
-			"41 U.S.C. 4106(f); 28 U.S.C. 1491(b); FAR 16.505(a)(10)",
+		citation: "41 U.S.C. 4106(f); 28 U.S.C. 1491(b); FAR 16.505(a)(10)",
 		sourceUrl:
 			"https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title41-section4106&num=0&edition=prelim",
 		tags: ["task-order-protest", "GAO", "civilian-agency", "jurisdiction", "scope"],

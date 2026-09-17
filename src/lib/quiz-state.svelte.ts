@@ -1,15 +1,20 @@
-import type {
-	AnswerOutcome,
-	Difficulty,
-	LifecycleUnit,
-	QuizOption,
-	QuizQuestion,
-	UnitId,
-} from "$lib/far/types";
-import { QUESTIONS, UNITS } from "$lib/far/deck";
+import { SvelteDate, SvelteMap, SvelteSet } from "svelte/reactivity";
 import {
-	CLEAR_THRESHOLD,
+	buildMissManuscript,
+	chapterById,
+	questionsForChapter,
+	shelfForUnit,
+} from "$lib/far/chapters";
+import type {
+	Chapter,
+	ChapterKind,
+	ChapterQuizAction,
+	ChapterShelf,
+	ReadingProgress,
+} from "$lib/far/chapters/types";
+import {
 	CHAPTER_SESSION_LENGTH,
+	CLEAR_THRESHOLD,
 	DAILY_LENGTH,
 	DIFFICULTY_ORDER,
 	LEVELS,
@@ -21,7 +26,24 @@ import {
 	TIER_SCORE,
 	TIER_UNLOCK_RATIO,
 } from "$lib/far/constants";
+import { QUESTIONS, UNITS } from "$lib/far/deck";
+import type {
+	AnswerOutcome,
+	Difficulty,
+	LifecycleUnit,
+	QuizOption,
+	QuizQuestion,
+	UnitId,
+} from "$lib/far/types";
+import {
+	isUnitId,
+	type LearnRoute,
+	learnChapterPath,
+	learnShelfPath,
+	parseLearnPath,
+} from "$lib/learn-routes";
 import { clearProgress, emptyProgress, loadProgress, saveProgress } from "$lib/local-storage";
+import { hubCapturedPercent } from "$lib/pie-progress";
 import {
 	clearReadingProgress,
 	emptyReadingProgress,
@@ -30,22 +52,6 @@ import {
 	rememberOpen,
 	saveReadingProgress,
 } from "$lib/reading-storage";
-import { buildMissManuscript, chapterById, questionsForChapter, shelfForUnit } from "$lib/far/chapters";
-import type {
-	Chapter,
-	ChapterKind,
-	ChapterQuizAction,
-	ChapterShelf,
-	ReadingProgress,
-} from "$lib/far/chapters/types";
-import {
-	isUnitId,
-	learnChapterPath,
-	learnShelfPath,
-	parseLearnPath,
-	type LearnRoute,
-} from "$lib/learn-routes";
-import { hubCapturedPercent } from "$lib/pie-progress";
 import type {
 	QuestionRecord,
 	QuizProgress,
@@ -54,7 +60,6 @@ import type {
 	UnitStats,
 	View,
 } from "$lib/types";
-import { SvelteDate, SvelteMap, SvelteSet } from "svelte/reactivity";
 
 // ---- date + rng helpers (browser-only; no workflow constraints here) ----
 
@@ -103,9 +108,38 @@ function shuffle<T>(items: T[], rng: () => number = Math.random): T[] {
 	const out = [...items];
 	for (let i = out.length - 1; i > 0; i--) {
 		const j = Math.floor(rng() * (i + 1));
-		[out[i], out[j]] = [out[j] as T, out[i] as T];
+		const left = out[i];
+		const right = out[j];
+		if (left === undefined || right === undefined) {
+			continue;
+		}
+		out[i] = right;
+		out[j] = left;
 	}
 	return out;
+}
+
+function questionsIn(unitId: UnitId): QuizQuestion[] {
+	return QUESTIONS.filter((q) => q.unitId === unitId);
+}
+
+function requireUnit(unitId: UnitId): LifecycleUnit {
+	const unit = UNITS.find((u) => u.id === unitId);
+	if (!unit) {
+		throw new Error(`Unknown unit: ${unitId}`);
+	}
+	return unit;
+}
+
+function scoreQuestion(q: QuizQuestion, optionId: string): number {
+	const option = q.options.find((o) => o.id === optionId);
+	if (!option) {
+		return 0;
+	}
+	if (q.scoring === "tiered" || q.scoring === "reveal-tradeoff") {
+		return option.tier ? TIER_SCORE[option.tier] : 0;
+	}
+	return option.correct ? 1 : 0;
 }
 
 function levelFor(ratio: number): LevelId {
@@ -118,7 +152,7 @@ function levelFor(ratio: number): LevelId {
 	return level;
 }
 
-export class QuizGame {
+class QuizGame {
 	progress = $state<QuizProgress>(emptyProgress());
 	view = $state<View>("home");
 
@@ -164,29 +198,35 @@ export class QuizGame {
 	 * SSG uses hydrate-only APIs so reading/progress side effects do not leak
 	 * across prerendered pages via the module singleton.
 	 */
-	bootFromLocation(opts?: {
-		initialUnit?: string | null;
-		initialChapter?: string | null;
-	}) {
+	bootFromLocation(opts?: { initialUnit?: string | null; initialChapter?: string | null }) {
 		const fromPath =
 			typeof window !== "undefined" ? parseLearnPath(window.location.pathname) : null;
 		const onClient = typeof window !== "undefined";
 
 		if (fromPath && (fromPath.kind === "shelf" || fromPath.kind === "chapter")) {
-			if (onClient) this.applyLearnRoute(fromPath, { syncUrl: false });
-			else this.hydrateLearnRoute(fromPath);
+			if (onClient) {
+				this.applyLearnRoute(fromPath, { syncUrl: false });
+			} else {
+				this.hydrateLearnRoute(fromPath);
+			}
 		} else if (opts?.initialChapter && isUnitId(opts.initialUnit)) {
 			const route = {
 				kind: "chapter" as const,
 				unitId: opts.initialUnit,
 				chapterId: opts.initialChapter,
 			};
-			if (onClient) this.applyLearnRoute(route, { syncUrl: false });
-			else this.hydrateLearnRoute(route);
+			if (onClient) {
+				this.applyLearnRoute(route, { syncUrl: false });
+			} else {
+				this.hydrateLearnRoute(route);
+			}
 		} else if (isUnitId(opts?.initialUnit)) {
 			const route = { kind: "shelf" as const, unitId: opts.initialUnit };
-			if (onClient) this.applyLearnRoute(route, { syncUrl: false });
-			else this.hydrateLearnRoute(route);
+			if (onClient) {
+				this.applyLearnRoute(route, { syncUrl: false });
+			} else {
+				this.hydrateLearnRoute(route);
+			}
 		} else if (onClient) {
 			this.goHome({ syncUrl: false });
 		} else {
@@ -241,10 +281,7 @@ export class QuizGame {
 	}
 
 	/** Open a shelf/chapter from a URL. */
-	applyLearnRoute(
-		route: Exclude<LearnRoute, { kind: "home" }>,
-		opts?: { syncUrl?: boolean },
-	) {
+	applyLearnRoute(route: Exclude<LearnRoute, { kind: "home" }>, opts?: { syncUrl?: boolean }) {
 		this.queue = [];
 		this.outcomes = [];
 		this.requeued = new SvelteSet();
@@ -275,7 +312,9 @@ export class QuizGame {
 	}
 
 	private syncLearnUrl(opts?: { replace?: boolean }) {
-		if (typeof window === "undefined") return;
+		if (typeof window === "undefined") {
+			return;
+		}
 
 		// Ephemeral views keep the current address bar (usually the chapter/shelf).
 		if (
@@ -292,11 +331,7 @@ export class QuizGame {
 		if (this.view === "shelf" && this.shelf) {
 			path = learnShelfPath(this.shelf.unitId);
 			title = `${this.shelf.title} — Learn The FAR`;
-		} else if (
-			this.view === "chapter" &&
-			this.chapter &&
-			this.chapterKind === "shelf-chapter"
-		) {
+		} else if (this.view === "chapter" && this.chapter && this.chapterKind === "shelf-chapter") {
 			path = learnChapterPath(this.chapter.unitId, this.chapter.id);
 			title = `${this.chapter.title} — Learn The FAR`;
 		}
@@ -311,10 +346,6 @@ export class QuizGame {
 		if (document.title !== title) {
 			document.title = title;
 		}
-	}
-
-	private questionsIn(unitId: UnitId): QuizQuestion[] {
-		return QUESTIONS.filter((q) => q.unitId === unitId);
 	}
 
 	private recordFor(id: string): QuestionRecord | undefined {
@@ -342,8 +373,8 @@ export class QuizGame {
 	// ---- derived stats for the pie + home ----
 
 	unitStats(unitId: UnitId): UnitStats {
-		const unit = UNITS.find((u) => u.id === unitId) as LifecycleUnit;
-		const qs = this.questionsIn(unitId);
+		const unit = requireUnit(unitId);
+		const qs = questionsIn(unitId);
 		const total = qs.length;
 		const cleared = qs.filter((q) => this.isCleared(q.id)).length;
 		const mastered = qs.filter((q) => this.isMastered(q.id)).length;
@@ -409,10 +440,14 @@ export class QuizGame {
 	// uncleared tier — see startUnit and workingTier.
 	unlockedTiers(unitId: UnitId): Set<Difficulty> {
 		const unlocked = new SvelteSet<Difficulty>(["fundamentals", "core"]);
-		const core = this.questionsIn(unitId).filter((q) => q.difficulty === "core");
-		if (core.length === 0) return unlocked;
+		const core = questionsIn(unitId).filter((q) => q.difficulty === "core");
+		if (core.length === 0) {
+			return unlocked;
+		}
 		const clearedCore = core.filter((q) => this.isCleared(q.id)).length;
-		if (clearedCore / core.length >= TIER_UNLOCK_RATIO) unlocked.add("advanced");
+		if (clearedCore / core.length >= TIER_UNLOCK_RATIO) {
+			unlocked.add("advanced");
+		}
 		return unlocked;
 	}
 
@@ -420,10 +455,14 @@ export class QuizGame {
 	// with an uncleared question, else the highest unlocked (unit is caught up).
 	workingTier(unitId: UnitId): Difficulty {
 		const unlocked = this.unlockedTiers(unitId);
-		const qs = this.questionsIn(unitId);
+		const qs = questionsIn(unitId);
 		for (const tier of DIFFICULTY_ORDER) {
-			if (!unlocked.has(tier)) continue;
-			if (qs.some((q) => q.difficulty === tier && !this.isCleared(q.id))) return tier;
+			if (!unlocked.has(tier)) {
+				continue;
+			}
+			if (qs.some((q) => q.difficulty === tier && !this.isCleared(q.id))) {
+				return tier;
+			}
 		}
 		const ordered = DIFFICULTY_ORDER.filter((t) => unlocked.has(t));
 		return ordered[ordered.length - 1] ?? "fundamentals";
@@ -433,22 +472,30 @@ export class QuizGame {
 
 	startUnit(unitId: UnitId) {
 		const unlocked = this.unlockedTiers(unitId);
-		const qs = this.questionsIn(unitId).filter((q) => unlocked.has(q.difficulty));
+		const qs = questionsIn(unitId).filter((q) => unlocked.has(q.difficulty));
 		// uncleared first, ordered by difficulty ramp; fall back to a review shuffle
 		const byRamp = (a: QuizQuestion, b: QuizQuestion) =>
 			DIFFICULTY_ORDER.indexOf(a.difficulty) - DIFFICULTY_ORDER.indexOf(b.difficulty);
 		const fresh = qs.filter((q) => !this.isCleared(q.id)).sort(byRamp);
 		const review = shuffle(qs.filter((q) => this.isCleared(q.id)));
 		const ordered = [...fresh, ...review].slice(0, SESSION_LENGTH);
-		this.beginSession("unit", unitId, ordered.length ? ordered : shuffle(qs).slice(0, SESSION_LENGTH));
+		this.beginSession(
+			"unit",
+			unitId,
+			ordered.length ? ordered : shuffle(qs).slice(0, SESSION_LENGTH),
+		);
 	}
 
 	/** End-of-chapter check — only questions mapped (or tagged) to that chapter. */
 	startChapterQuiz(chapterId: string) {
 		const chapter = chapterById(chapterId);
-		if (!chapter) return;
+		if (!chapter) {
+			return;
+		}
 		const pool = questionsForChapter(chapterId);
-		if (pool.length === 0) return;
+		if (pool.length === 0) {
+			return;
+		}
 		const fresh = shuffle(pool.filter((q) => !this.isCleared(q.id)));
 		const review = shuffle(pool.filter((q) => this.isCleared(q.id)));
 		const ordered = [...fresh, ...review].slice(0, CHAPTER_SESSION_LENGTH);
@@ -497,14 +544,18 @@ export class QuizGame {
 	/** True when every chapter on the unit's shelf has been marked read. */
 	isShelfRead(unitId: UnitId): boolean {
 		const chapters = shelfForUnit(unitId).chapters;
-		if (chapters.length === 0) return false;
+		if (chapters.length === 0) {
+			return false;
+		}
 		return chapters.every((ch) => Boolean(this.reading.read[ch.id]));
 	}
 
 	/** Shame-free manuscript of quiz misses (no progress writes). */
 	startStudyMisses() {
 		const misses = this.shakyQuestions;
-		if (misses.length === 0) return;
+		if (misses.length === 0) {
+			return;
+		}
 		const chapter = buildMissManuscript(shuffle(misses).slice(0, SESSION_LENGTH));
 		chapter.quizCta = {
 			label: "Back to home",
@@ -576,20 +627,13 @@ export class QuizGame {
 	// it's the last queued item AND it won't be requeued for a miss. Drives the
 	// Continue/Finish label so "Finish" never lies on a wrong final answer.
 	get willFinishAfterNext(): boolean {
-		if (this.queue.length > 1) return false;
+		if (this.queue.length > 1) {
+			return false;
+		}
 		const q = this.currentQuestion;
 		const last = this.outcomes[this.outcomes.length - 1];
 		const willRequeue = !!q && !!last && !last.cleared && !this.requeued.has(q.id);
 		return !willRequeue;
-	}
-
-	private scoreQuestion(q: QuizQuestion, optionId: string): number {
-		const option = q.options.find((o) => o.id === optionId);
-		if (!option) return 0;
-		if (q.scoring === "tiered" || q.scoring === "reveal-tradeoff") {
-			return option.tier ? TIER_SCORE[option.tier] : 0;
-		}
-		return option.correct ? 1 : 0;
 	}
 
 	private persistOutcome(outcome: AnswerOutcome) {
@@ -605,9 +649,11 @@ export class QuizGame {
 
 	answer(optionId: string) {
 		const q = this.currentQuestion;
-		if (!q || this.isAnswered) return;
+		if (!q || this.isAnswered) {
+			return;
+		}
 
-		const score = this.scoreQuestion(q, optionId);
+		const score = scoreQuestion(q, optionId);
 		const cleared = score >= CLEAR_THRESHOLD;
 		this.answeredOptionId = optionId;
 
@@ -624,7 +670,9 @@ export class QuizGame {
 
 	next() {
 		const q = this.currentQuestion;
-		if (!q) return;
+		if (!q) {
+			return;
+		}
 
 		// Clear answer chrome before advancing the queue so the next question
 		// never paints one frame as already-answered (shared a/b/c/d option ids
@@ -663,7 +711,9 @@ export class QuizGame {
 		const bestByQuestion = new SvelteMap<string, AnswerOutcome>();
 		for (const o of this.outcomes) {
 			const prior = bestByQuestion.get(o.questionId);
-			if (!prior || o.score > prior.score) bestByQuestion.set(o.questionId, o);
+			if (!prior || o.score > prior.score) {
+				bestByQuestion.set(o.questionId, o);
+			}
 		}
 		const uniqueOutcomes = [...bestByQuestion.values()];
 		const answered = uniqueOutcomes.length;
@@ -678,7 +728,9 @@ export class QuizGame {
 			this.progress.dailyDone = [...this.progress.dailyDone, today()];
 		}
 
-		if (perfect) this.grant("flawless", newAchievements);
+		if (perfect) {
+			this.grant("flawless", newAchievements);
+		}
 		this.deriveAchievements(newAchievements);
 		saveProgress(this.progress);
 
@@ -689,15 +741,14 @@ export class QuizGame {
 
 		this.summary = {
 			mode: this.mode,
-			unit: unit ?? undefined,
-			chapterId: chapter?.id,
-			chapterTitle: chapter?.title,
 			answered,
 			scoreSum,
 			scorePct,
 			perfect,
 			headline: pickSummaryHeadline(scorePct),
 			newAchievements,
+			...(unit ? { unit } : {}),
+			...(chapter ? { chapterId: chapter.id, chapterTitle: chapter.title } : {}),
 		};
 		this.view = "summary";
 	}
@@ -732,7 +783,9 @@ export class QuizGame {
 	private markActive() {
 		const t = today();
 		const s = this.progress.streak;
-		if (s.lastDay === t) return;
+		if (s.lastDay === t) {
+			return;
+		}
 		if (s.lastDay && isYesterday(s.lastDay, t)) {
 			s.current += 1;
 		} else {
@@ -746,18 +799,30 @@ export class QuizGame {
 		const anyCleared = Object.values(this.progress.questions).some(
 			(r: QuestionRecord) => r.cleared,
 		);
-		if (anyCleared) this.grant("first-clear", into);
+		if (anyCleared) {
+			this.grant("first-clear", into);
+		}
 
 		for (const m of STREAK_MILESTONES) {
-			if (this.progress.streak.current >= m) this.grant(`streak-${m}`, into);
+			if (this.progress.streak.current >= m) {
+				this.grant(`streak-${m}`, into);
+			}
 		}
 
 		const dailies = this.progress.dailyDone.length;
-		if (dailies >= 1) this.grant("daily-1", into);
-		if (dailies >= 7) this.grant("daily-7", into);
+		if (dailies >= 1) {
+			this.grant("daily-1", into);
+		}
+		if (dailies >= 7) {
+			this.grant("daily-7", into);
+		}
 
-		if (this.unitStats("shape").level === "prime") this.grant("prime-shape", into);
-		if (this.unitStats("team").level === "prime") this.grant("prime-team", into);
+		if (this.unitStats("shape").level === "prime") {
+			this.grant("prime-shape", into);
+		}
+		if (this.unitStats("team").level === "prime") {
+			this.grant("prime-team", into);
+		}
 		if (UNITS.every((u) => this.unitStats(u.id).level === "prime")) {
 			this.grant("capstone", into);
 		}

@@ -5,7 +5,7 @@ export type TextSegment =
 	| { kind: "term"; text: string; termId: string };
 
 function escapeRegExp(value: string): string {
-	return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+	return value.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
 }
 
 /** Word-ish boundary: start/end or non-alphanumeric (allows matching around & / hyphen punctuation). */
@@ -15,7 +15,7 @@ function boundaryClass(): string {
 
 /** Short all-caps labels (CO, KO, COR…) must match case-sensitively to avoid “Co.” false hits. */
 function isAcronymLabel(label: string): boolean {
-	return /^[A-Z0-9]{1,4}$/.test(label);
+	return /^[A-Z0-9]{1,4}$/u.test(label);
 }
 
 type MatchHit = { index: number; text: string; termId: string };
@@ -31,11 +31,7 @@ function matchEngine(): {
 	insensitiveLookup: Map<string, string>;
 	sensitiveLookup: Map<string, string>;
 } {
-	if (
-		cachedInsensitiveLookup &&
-		cachedSensitiveLookup &&
-		(cachedInsensitive || cachedSensitive)
-	) {
+	if (cachedInsensitiveLookup && cachedSensitiveLookup && (cachedInsensitive || cachedSensitive)) {
 		return {
 			insensitive: cachedInsensitive,
 			sensitive: cachedSensitive,
@@ -68,17 +64,11 @@ function matchEngine(): {
 	const b = boundaryClass();
 	cachedInsensitive =
 		insensitiveLabels.length > 0
-			? new RegExp(
-					`(?<=^|${b})(${insensitiveLabels.map(escapeRegExp).join("|")})(?=$|${b})`,
-					"gi",
-				)
+			? new RegExp(`(?<=^|${b})(${insensitiveLabels.map(escapeRegExp).join("|")})(?=$|${b})`, "giu")
 			: null;
 	cachedSensitive =
 		sensitiveLabels.length > 0
-			? new RegExp(
-					`(?<=^|${b})(${sensitiveLabels.map(escapeRegExp).join("|")})(?=$|${b})`,
-					"g",
-				)
+			? new RegExp(`(?<=^|${b})(${sensitiveLabels.map(escapeRegExp).join("|")})(?=$|${b})`, "gu")
 			: null;
 	cachedInsensitiveLookup = insensitiveLookup;
 	cachedSensitiveLookup = sensitiveLookup;
@@ -97,15 +87,17 @@ function collectHits(
 	lookup: Map<string, string>,
 	normalize: (matched: string) => string,
 ): MatchHit[] {
-	if (!regex) return [];
+	if (!regex) {
+		return [];
+	}
 	regex.lastIndex = 0;
 	const hits: MatchHit[] = [];
-	let match: RegExpExecArray | null;
-	while ((match = regex.exec(text)) !== null) {
+	for (const match of text.matchAll(regex)) {
 		const matched = match[1] ?? match[0];
 		const termId = lookup.get(normalize(matched));
-		if (!termId) continue;
-		hits.push({ index: match.index, text: matched, termId });
+		if (termId) {
+			hits.push({ index: match.index, text: matched, termId });
+		}
 	}
 	return hits;
 }
@@ -117,7 +109,9 @@ function collectHits(
  * Set to every field in a chapter.
  */
 export function segmentGlossaryText(text: string, linkedKeys: Set<string>): TextSegment[] {
-	if (!text) return [];
+	if (!text) {
+		return [];
+	}
 
 	const { insensitive, sensitive, insensitiveLookup, sensitiveLookup } = matchEngine();
 	const hits = [
@@ -129,9 +123,13 @@ export function segmentGlossaryText(text: string, linkedKeys: Set<string>): Text
 	let lastIndex = 0;
 
 	for (const hit of hits) {
-		if (hit.index < lastIndex) continue;
+		if (hit.index < lastIndex) {
+			continue;
+		}
 		const key = `${hit.termId}:${isAcronymLabel(hit.text) ? "acronym" : "phrase"}`;
-		if (linkedKeys.has(key)) continue;
+		if (linkedKeys.has(key)) {
+			continue;
+		}
 
 		if (hit.index > lastIndex) {
 			segments.push({ kind: "text", text: text.slice(lastIndex, hit.index) });

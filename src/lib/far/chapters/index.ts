@@ -1,5 +1,5 @@
-import type { QuizQuestion, UnitId } from "../types";
 import { QUESTIONS } from "../deck";
+import type { QuizQuestion, UnitId } from "../types";
 import { chapter } from "./helpers";
 import { CHAPTER_QUESTION_IDS, META_CHAPTER_TAGS } from "./question-map";
 import { BID_NO_BID_SHELF_CHAPTERS } from "./shelves/bid-no-bid";
@@ -91,9 +91,11 @@ export function shelfForUnit(unitId: UnitId): ChapterShelf {
 }
 
 export function chapterById(chapterId: string): Chapter | undefined {
-	for (const unitId of Object.keys(SHELF_CHAPTERS) as UnitId[]) {
-		const found = SHELF_CHAPTERS[unitId].find((c) => c.id === chapterId);
-		if (found) return found;
+	for (const chapters of Object.values(SHELF_CHAPTERS)) {
+		const found = chapters.find((c) => c.id === chapterId);
+		if (found) {
+			return found;
+		}
 	}
 	return undefined;
 }
@@ -101,20 +103,28 @@ export function chapterById(chapterId: string): Chapter | undefined {
 /** Next chapter on the same shelf in suggested order, or null at the end. */
 export function nextChapterOnShelf(chapterId: string): Chapter | undefined {
 	const current = chapterById(chapterId);
-	if (!current) return undefined;
+	if (!current) {
+		return undefined;
+	}
 	const chapters = sortShelf(SHELF_CHAPTERS[current.unitId]);
 	const index = chapters.findIndex((c) => c.id === chapterId);
-	if (index < 0 || index >= chapters.length - 1) return undefined;
+	if (index < 0 || index >= chapters.length - 1) {
+		return undefined;
+	}
 	return chapters[index + 1];
 }
 
 /** Previous chapter on the same shelf in suggested order, or null at the start. */
 export function prevChapterOnShelf(chapterId: string): Chapter | undefined {
 	const current = chapterById(chapterId);
-	if (!current) return undefined;
+	if (!current) {
+		return undefined;
+	}
 	const chapters = sortShelf(SHELF_CHAPTERS[current.unitId]);
 	const index = chapters.findIndex((c) => c.id === chapterId);
-	if (index <= 0) return undefined;
+	if (index <= 0) {
+		return undefined;
+	}
 	return chapters[index - 1];
 }
 
@@ -126,18 +136,20 @@ export function questionsForChapter(chapterId: string): QuizQuestion[] {
 		return QUESTIONS.filter((q) => idSet.has(q.id));
 	}
 
-	const chapter = chapterById(chapterId);
-	if (!chapter) return [];
+	const foundChapter = chapterById(chapterId);
+	if (!foundChapter) {
+		return [];
+	}
 
-	const tags = chapter.tags
+	const tags = foundChapter.tags
 		.filter((t) => !META_CHAPTER_TAGS.has(t))
 		.map((t) => t.toLowerCase());
-	if (tags.length === 0) return [];
+	if (tags.length === 0) {
+		return [];
+	}
 
 	return QUESTIONS.filter(
-		(q) =>
-			q.unitId === chapter.unitId &&
-			q.tags.some((t) => tags.includes(t.toLowerCase())),
+		(q) => q.unitId === foundChapter.unitId && q.tags.some((t) => tags.includes(t.toLowerCase())),
 	);
 }
 
@@ -145,21 +157,23 @@ export function questionsForChapter(chapterId: string): QuizQuestion[] {
 export function chaptersForQuestion(questionId: string): Chapter[] {
 	const mappedIds: string[] = [];
 	for (const [chapterId, questionIds] of Object.entries(CHAPTER_QUESTION_IDS)) {
-		if (questionIds.includes(questionId)) mappedIds.push(chapterId);
+		if (questionIds.includes(questionId)) {
+			mappedIds.push(chapterId);
+		}
 	}
 	if (mappedIds.length > 0) {
-		return mappedIds
-			.map((id) => chapterById(id))
-			.filter((c): c is Chapter => Boolean(c));
+		return mappedIds.map((id) => chapterById(id)).filter((c): c is Chapter => Boolean(c));
 	}
 
 	const question = QUESTIONS.find((q) => q.id === questionId);
-	if (!question) return [];
+	if (!question) {
+		return [];
+	}
 
 	const qTags = question.tags.map((t) => t.toLowerCase());
 	const shelf = sortShelf(SHELF_CHAPTERS[question.unitId] ?? []);
-	return shelf.filter((chapter) => {
-		const tags = chapter.tags
+	return shelf.filter((shelfChapter) => {
+		const tags = shelfChapter.tags
 			.filter((t) => !META_CHAPTER_TAGS.has(t))
 			.map((t) => t.toLowerCase());
 		return tags.some((t) => qTags.includes(t));
@@ -180,7 +194,7 @@ function trapLine(q: QuizQuestion): string {
 function pieceFromQuestion(q: QuizQuestion): ChapterPiece {
 	const title =
 		q.citation.trim() ||
-		q.tags[0]?.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) ||
+		q.tags[0]?.replace(/-/gu, " ").replace(/\b\w/gu, (c) => c.toUpperCase()) ||
 		"Concept";
 	const tagsHint = q.tags.slice(0, 4).join(", ");
 	return {
@@ -190,9 +204,9 @@ function pieceFromQuestion(q: QuizQuestion): ChapterPiece {
 			? `${q.explanation} You’ll meet this idea again under tags like ${tagsHint}.`
 			: q.explanation,
 		watchFor: trapLine(q),
-		citation: q.citation || undefined,
-		sourceUrl: q.sourceUrl || undefined,
 		sourceKind: "controlling-authority",
+		...(q.citation ? { citation: q.citation } : {}),
+		...(q.sourceUrl ? { sourceUrl: q.sourceUrl } : {}),
 	};
 }
 

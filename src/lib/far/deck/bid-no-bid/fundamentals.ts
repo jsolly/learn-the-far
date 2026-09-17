@@ -11,10 +11,26 @@ export const BID_NO_BID_FUNDAMENTALS: QuizQuestion[] = [
 			"At the first formal gate, the capture manager presents an exciting customer meeting and asks the board to approve a full proposal budget.",
 		prompt: "What is the gate board's primary job?",
 		options: [
-			{ id: "a", text: "Test the pursuit against agreed evidence, hard gates, win probability, and economics", correct: true },
-			{ id: "b", text: "Reward the capture team's enthusiasm so momentum is not lost", correct: false },
-			{ id: "c", text: "Approve every technically feasible pursuit and sort priorities after the RFP", correct: false },
-			{ id: "d", text: "Judge only whether the company has performed similar work before", correct: false },
+			{
+				id: "a",
+				text: "Test the pursuit against agreed evidence, hard gates, win probability, and economics",
+				correct: true,
+			},
+			{
+				id: "b",
+				text: "Reward the capture team's enthusiasm so momentum is not lost",
+				correct: false,
+			},
+			{
+				id: "c",
+				text: "Approve every technically feasible pursuit and sort priorities after the RFP",
+				correct: false,
+			},
+			{
+				id: "d",
+				text: "Judge only whether the company has performed similar work before",
+				correct: false,
+			},
 		],
 		explanation:
 			"Capture craft—not a FAR rule: a bid gate is an investment decision. The board should challenge evidence, eligibility, readiness, Pwin, and return before authorizing more B&P; enthusiasm and technical feasibility alone do not establish a sound bid.",
@@ -28,16 +44,25 @@ export const BID_NO_BID_FUNDAMENTALS: QuizQuestion[] = [
 		format: "recall",
 		difficulty: "fundamentals",
 		scoring: "single-best",
-		prompt: "Which statement correctly distinguishes why change, why now, and why us at a bid gate?",
+		prompt:
+			"Which statement correctly distinguishes why change, why now, and why us at a bid gate?",
 		options: [
 			{
 				id: "a",
 				text: "Why change is the customer's problem or opportunity; why now is the consequence or trigger; why us is our evidenced discriminator",
 				correct: true,
 			},
-			{ id: "b", text: "Why change is our growth target; why now is our fiscal year end; why us is our logo", correct: false },
+			{
+				id: "b",
+				text: "Why change is our growth target; why now is our fiscal year end; why us is our logo",
+				correct: false,
+			},
 			{ id: "c", text: "All three are different names for the technical solution", correct: false },
-			{ id: "d", text: "Why us matters, but why change and why now are irrelevant after an RFP posts", correct: false },
+			{
+				id: "d",
+				text: "Why us matters, but why change and why now are irrelevant after an RFP posts",
+				correct: false,
+			},
 		],
 		explanation:
 			"Capture craft—not a prescribed FAR framework: the triad tests whether the customer has a compelling need, a reason to act in this acquisition window, and a source-selection-relevant reason to choose this team. Unsupported slogans are not discriminators.",
@@ -60,8 +85,16 @@ export const BID_NO_BID_FUNDAMENTALS: QuizQuestion[] = [
 				text: "Check the full FAR 9.104-1 standards — resources, schedule, performance and integrity record, organization and controls, facilities, and eligibility — with evidence and owners for each gap",
 				correct: true,
 			},
-			{ id: "b", text: "Check only whether annual revenue exceeds the contract value", correct: false },
-			{ id: "c", text: "Treat technical acceptability as conclusive proof of responsibility", correct: false },
+			{
+				id: "b",
+				text: "Check only whether annual revenue exceeds the contract value",
+				correct: false,
+			},
+			{
+				id: "c",
+				text: "Treat technical acceptability as conclusive proof of responsibility",
+				correct: false,
+			},
 			{ id: "d", text: "Defer every responsibility issue until after award", correct: false },
 		],
 		explanation:
@@ -85,8 +118,16 @@ export const BID_NO_BID_FUNDAMENTALS: QuizQuestion[] = [
 				text: "For LPTA, test whether we can meet or exceed every acceptability standard at the lowest evaluated price; for the tradeoff, test whether evaluated strengths justify our price",
 				correct: true,
 			},
-			{ id: "b", text: "Use the same premium solution and price strategy for both", correct: false },
-			{ id: "c", text: "Ignore Section M because evaluators may use unstated preferences", correct: false },
+			{
+				id: "b",
+				text: "Use the same premium solution and price strategy for both",
+				correct: false,
+			},
+			{
+				id: "c",
+				text: "Ignore Section M because evaluators may use unstated preferences",
+				correct: false,
+			},
 			{ id: "d", text: "Assume the lowest price wins both competitions", correct: false },
 		],
 		explanation:
@@ -110,9 +151,21 @@ export const BID_NO_BID_FUNDAMENTALS: QuizQuestion[] = [
 				text: "Compare incremental B&P and opportunity cost with expected risk-adjusted contribution, then prioritize the portfolio",
 				correct: true,
 			},
-			{ id: "b", text: "Bid because B&P is always reimbursed directly by the agency running the competition", correct: false },
-			{ id: "c", text: "Bid because eligibility and technical capability make economics irrelevant", correct: false },
-			{ id: "d", text: "Ignore internal labor because only external consultant invoices count as bid cost", correct: false },
+			{
+				id: "b",
+				text: "Bid because B&P is always reimbursed directly by the agency running the competition",
+				correct: false,
+			},
+			{
+				id: "c",
+				text: "Bid because eligibility and technical capability make economics irrelevant",
+				correct: false,
+			},
+			{
+				id: "d",
+				text: "Ignore internal labor because only external consultant invoices count as bid cost",
+				correct: false,
+			},
 		],
 		explanation:
 			"Capture craft: gates allocate finite B&P and specialist capacity across a portfolio. FAR 31.205-18 defines and addresses allowability of B&P costs, but it does not make a particular agency reimburse each losing bid or erase the opportunity cost of internal labor.",

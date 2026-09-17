@@ -17,7 +17,7 @@ export type LifecycleUnit = {
 	hue: number; // base hue (0-360) for this slice's color
 };
 
-export type QuestionFormat = "recall" | "scenario";
+type QuestionFormat = "recall" | "scenario";
 
 // Difficulty drives progression: sessions serve fundamentals first and unlock
 // harder tiers as a unit is mastered.

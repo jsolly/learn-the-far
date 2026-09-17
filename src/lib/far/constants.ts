@@ -80,21 +80,51 @@ export const STREAK_MILESTONES = [3, 7, 14, 30];
 // The achievement catalog. Earned-state is derived from progress at runtime; a
 // few ids are computed (per-unit "prime-<unitId>", "streak-<n>").
 export const ACHIEVEMENTS: Achievement[] = [
-	{ id: "first-clear", label: "First Blood", description: "Clear your first question.", icon: "🎯" },
-	{ id: "flawless", label: "Clean Audit", description: "Finish a session with a perfect score.", icon: "✨" },
-	{ id: "daily-1", label: "Daily Briefing", description: "Complete a daily challenge.", icon: "📰" },
-	{ id: "daily-7", label: "Beltway Regular", description: "Complete 7 daily challenges.", icon: "🗞️" },
+	{
+		id: "first-clear",
+		label: "First Blood",
+		description: "Clear your first question.",
+		icon: "🎯",
+	},
+	{
+		id: "flawless",
+		label: "Clean Audit",
+		description: "Finish a session with a perfect score.",
+		icon: "✨",
+	},
+	{
+		id: "daily-1",
+		label: "Daily Briefing",
+		description: "Complete a daily challenge.",
+		icon: "📰",
+	},
+	{
+		id: "daily-7",
+		label: "Beltway Regular",
+		description: "Complete 7 daily challenges.",
+		icon: "🗞️",
+	},
 	{ id: "streak-3", label: "Warming Up", description: "Hold a 3-day streak.", icon: "🔥" },
 	{ id: "streak-7", label: "On Contract", description: "Hold a 7-day streak.", icon: "🔥" },
 	{ id: "streak-14", label: "Full Performance", description: "Hold a 14-day streak.", icon: "🔥" },
 	{ id: "streak-30", label: "Sole Source", description: "Hold a 30-day streak.", icon: "🏆" },
-	{ id: "prime-team", label: "Master Teamer", description: "Reach Prime on Team & Subcontract.", icon: "🤝" },
-	{ id: "prime-shape", label: "Requirement Whisperer", description: "Reach Prime on Shape the Requirement.", icon: "✍️" },
+	{
+		id: "prime-team",
+		label: "Master Teamer",
+		description: "Reach Prime on Team & Subcontract.",
+		icon: "🤝",
+	},
+	{
+		id: "prime-shape",
+		label: "Requirement Whisperer",
+		description: "Reach Prime on Shape the Requirement.",
+		icon: "✍️",
+	},
 	{ id: "capstone", label: "Full Capture", description: "Reach Prime on every unit.", icon: "👑" },
 ];
 
 // End-of-session summary headlines by score band (finest / highest min first).
-export const SUMMARY_HEADLINES: { min: number; phrases: string[] }[] = [
+const SUMMARY_HEADLINES: { min: number; phrases: string[] }[] = [
 	{
 		min: 100,
 		phrases: [
@@ -205,7 +235,9 @@ export const SUMMARY_HEADLINES: { min: number; phrases: string[] }[] = [
 export function pickSummaryHeadline(scorePct: number, rng: () => number = Math.random): string {
 	const band = SUMMARY_HEADLINES.find((entry) => scorePct >= entry.min);
 	const phrases = band?.phrases ?? [];
-	if (phrases.length === 0) return "Keep drilling";
+	if (phrases.length === 0) {
+		return "Keep drilling";
+	}
 	const index = Math.floor(rng() * phrases.length);
 	return phrases[index] ?? "Keep drilling";
 }

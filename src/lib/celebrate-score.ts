@@ -11,14 +11,18 @@ export function shouldCelebrateScore(scorePct: number): boolean {
 	return scorePct >= HIGH_SCORE_THRESHOLD;
 }
 
-export function prefersReducedMotion(): boolean {
-	if (typeof window === "undefined" || !("matchMedia" in window)) return false;
+function prefersReducedMotion(): boolean {
+	if (typeof window === "undefined" || !("matchMedia" in window)) {
+		return false;
+	}
 	return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
 /** Fire a short burst for a high quiz score. No-ops when motion is reduced. */
-export async function celebrateHighScore(): Promise<void> {
-	if (prefersReducedMotion()) return;
+async function celebrateHighScore(): Promise<void> {
+	if (prefersReducedMotion()) {
+		return;
+	}
 
 	const { default: confetti } = await import("canvas-confetti");
 	const base: ConfettiOptions = {
@@ -49,8 +53,12 @@ export async function celebrateHighScore(): Promise<void> {
 
 /** Once per summary object — safe if the summary view effect re-runs. */
 export async function celebrateHighScoreOnce(summary: object, scorePct: number): Promise<void> {
-	if (!shouldCelebrateScore(scorePct)) return;
-	if (celebratedSummaries.has(summary)) return;
+	if (!shouldCelebrateScore(scorePct)) {
+		return;
+	}
+	if (celebratedSummaries.has(summary)) {
+		return;
+	}
 	celebratedSummaries.add(summary);
 	await celebrateHighScore();
 }

@@ -24,11 +24,13 @@ function run(cmd) {
 }
 
 const fromEnv = process.env.VERCEL_GIT_COMMIT_SHA || process.env.GITHUB_SHA || "";
-let sha = fromEnv || run("git rev-parse HEAD");
+const sha = fromEnv || run("git rev-parse HEAD");
 let releaseId = sha ? sha.slice(0, 12) : "dev";
 if (sha && !fromEnv) {
 	const dirty = run("git status --porcelain -uno");
-	if (dirty) releaseId += "-dirty";
+	if (dirty) {
+		releaseId += "-dirty";
+	}
 }
 
 writeFileSync(

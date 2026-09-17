@@ -39,7 +39,7 @@ Fresh worktrees run `npm run worktree:init` (`npm ci`) via Cursor’s setup comm
 
 ## Pre-commit gate
 
-`.git-hooks/pre-commit` runs actionlint, `astro check`, and `astro build`. If the optional shared `dotagents` gate-lib is present on the machine, it is used; otherwise the same checks run directly. Never weaken or skip the gate with `--no-verify`.
+`.git-hooks/pre-commit` runs actionlint, the release-id contract, Biome, knip, markdownlint, yamllint, pie-progress, `astro check`, and `astro build`. If the optional shared `dotagents` gate-lib is present on the machine, it is used; otherwise the same checks run directly. Never weaken or skip the gate with `--no-verify`.
 
 ## Deploy / fork
 

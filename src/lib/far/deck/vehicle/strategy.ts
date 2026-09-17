@@ -34,8 +34,7 @@ export const STRATEGY_VEHICLE_QUESTIONS: QuizQuestion[] = [
 		],
 		explanation:
 			"An open-market procurement is competed under the generally applicable FAR solicitation procedures; an order under an existing contract is limited by that contract's scope, ordering rules, authorized ordering activities, and holder pool. FAR 16.504(a)(4)(v) requires an IDIQ solicitation and contract to describe the activities authorized to issue orders. Vehicle fit is therefore an early bid gate, not a label inferred from the customer or requirement.",
-		citation:
-			"FAR 16.504(a)(4)(v), 16.505(a)(2), 16.505(b); FAR Subpart 8.4",
+		citation: "FAR 16.504(a)(4)(v), 16.505(a)(2), 16.505(b); FAR Subpart 8.4",
 		sourceUrl: "https://www.acquisition.gov/far/16.504",
 		tags: ["acquisition-path", "open-market", "vehicle-access", "capture"],
 	},
