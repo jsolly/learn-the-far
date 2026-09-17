@@ -1,37 +1,37 @@
 <script lang="ts">
-	import * as Popover from "$lib/components/ui/popover";
-	import { chapterById } from "$lib/far/chapters";
-	import type { GlossaryTerm } from "$lib/far/glossary";
-	import { learnChapterPath } from "$lib/learn-routes";
-	import type { Snippet } from "svelte";
+import type { Snippet } from "svelte";
+import * as Popover from "$lib/components/ui/popover";
+import { chapterById } from "$lib/far/chapters";
+import type { GlossaryTerm } from "$lib/far/glossary";
+import { learnChapterPath } from "$lib/learn-routes";
 
-	let {
-		term,
-		triggerClass,
-		currentChapterId,
-		children,
-	}: {
-		term: GlossaryTerm;
-		triggerClass: string;
-		/** When set, hide "Open chapter" if the term is defined in this chapter. */
-		currentChapterId?: string;
-		children: Snippet;
-	} = $props();
+let {
+	term,
+	triggerClass,
+	currentChapterId,
+	children,
+}: {
+	term: GlossaryTerm;
+	triggerClass: string;
+	/** When set, hide "Open chapter" if the term is defined in this chapter. */
+	currentChapterId?: string;
+	children: Snippet;
+} = $props();
 
-	const uid = $props.id();
-	const titleId = `${uid}-title`;
-	const descriptionId = `${uid}-description`;
-	let titleEl: HTMLElement | null = $state(null);
+const uid = $props.id();
+const titleId = `${uid}-title`;
+const descriptionId = `${uid}-description`;
+let titleEl: HTMLElement | null = $state(null);
 
-	let chapter = $derived(term.chapterId ? chapterById(term.chapterId) : undefined);
-	let showOpenChapter = $derived(
-		Boolean(chapter && term.chapterId && term.chapterId !== currentChapterId),
-	);
+let chapter = $derived(term.chapterId ? chapterById(term.chapterId) : undefined);
+let showOpenChapter = $derived(
+	Boolean(chapter && term.chapterId && term.chapterId !== currentChapterId),
+);
 
-	function onOpenAutoFocus(event: Event) {
-		event.preventDefault();
-		titleEl?.focus();
-	}
+function onOpenAutoFocus(event: Event) {
+	event.preventDefault();
+	titleEl?.focus();
+}
 </script>
 
 <Popover.Root>

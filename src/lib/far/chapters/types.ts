@@ -1,18 +1,14 @@
 import type { UnitId } from "../types";
 
 /** Short excerpt from a U.S. government work (public domain). */
-export type PublicDomainQuote = {
+type PublicDomainQuote = {
 	text: string;
 	citation: string;
 	sourceUrl: string;
 };
 
 /** Where a linked source sits on the authority ladder. */
-export type SourceKind =
-	| "controlling-authority"
-	| "guidance"
-	| "decision"
-	| "capture-practice";
+export type SourceKind = "controlling-authority" | "guidance" | "decision" | "capture-practice";
 
 export type FurtherReading = {
 	label: string;

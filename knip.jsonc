@@ -1,0 +1,19 @@
+{
+	"$schema": "https://unpkg.com/knip@6/schema.json",
+	"astro": true,
+	"entry": [
+		"src/styles/global.css",
+		"scripts/**/*.{mjs,js,sh}",
+		// Vercel Edge Middleware (not discovered by the Astro plugin).
+		"middleware.ts"
+	],
+	"ignoreIssues": {
+		"src/lib/components/ui/**": ["files", "exports", "types", "nsExports", "nsTypes"]
+	},
+	"ignoreBinaries": ["uvx"],
+	"ignoreDependencies": [
+		// CLI only (not imported by application code).
+		"github-actionlint",
+		"markdownlint-cli2"
+	]
+}

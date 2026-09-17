@@ -23,7 +23,13 @@ Open the URL Astro prints (typically <http://localhost:4321>).
 | :-- | :-- |
 | `npm ci` | Install dependencies from the lockfile |
 | `npm run dev` | Start the local dev server |
-| `npm run check` | Run Astro/Svelte type checks |
+| `npm run check` | Biome lint + Astro/Svelte type checks |
+| `npm run check:lint` | Biome lint (error on warnings) |
+| `npm run check:fix` | Auto-fix Biome issues |
+| `npm run format` | Format with Biome |
+| `npm run check:knip` | Unused files/exports/deps |
+| `npm run check:md` | markdownlint |
+| `npm run check:yaml` | yamllint --strict (needs `uv`) |
 | `npm run build` | Build the static app to `dist/` |
 | `npm run preview` | Preview the production build locally |
 | `npm run check:actions` | Lint GitHub Actions workflows |
@@ -66,15 +72,15 @@ Production for this repo stays Git-connected: pushes to `main` deploy automatica
 
 ## CI and commits
 
-GitHub Actions (`.github/workflows/ci.yml`) runs on every PR and on `main`: actionlint, typecheck, and build.
+GitHub Actions (`.github/workflows/ci.yml`) runs on every PR and on `main`: actionlint, release-id contract, Biome, knip, markdownlint, yamllint, pie-progress, typecheck, and build.
 
-Local pre-commit (`.git-hooks/pre-commit`) runs the same checks. `npm run prepare` points `core.hooksPath` at `.git-hooks` when you are not in CI. Contributors do not need any private tooling — the hook falls back to a built-in gate when the author’s optional shared gate library is absent.
+Local pre-commit (`.git-hooks/pre-commit`) runs the same checks. `npm run prepare` points `core.hooksPath` at `.git-hooks` when you are not in CI. Contributors do not need any private tooling — the hook falls back to a built-in gate when the author’s optional shared gate library is absent. YAML lint uses `uvx` (install [uv](https://docs.astral.sh/uv/)).
 
 ## Contributing
 
 1. Create a branch from `main`.
 2. Make changes; keep the app static and local-first (no new secrets or server APIs without discussion).
-3. Run `npm run check` and `npm run build` before opening a PR.
+3. Run `npm run check` (Biome + types) and `npm run build` before opening a PR. Use `npm run gate` for the full pre-commit suite.
 4. Open a pull request against `main`.
 
 UI is public-only (no login). Prefer small, focused PRs.

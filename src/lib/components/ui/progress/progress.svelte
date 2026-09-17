@@ -1,25 +1,25 @@
 <script lang="ts">
-	import { Progress as ProgressPrimitive } from "bits-ui";
-	import { cn, type WithoutChildrenOrChild } from "$lib/utils.js";
+import { Progress as ProgressPrimitive } from "bits-ui";
+import { cn, type WithoutChildrenOrChild } from "$lib/utils.js";
 
-	let {
-		ref = $bindable(null),
-		class: className,
-		max = 100,
-		value,
-		/** Optional preview fill (e.g. current quiz question) — lighter than `value`. */
-		buffer,
-		...restProps
-	}: WithoutChildrenOrChild<ProgressPrimitive.RootProps> & {
-		buffer?: number;
-	} = $props();
+let {
+	ref = $bindable(null),
+	class: className,
+	max = 100,
+	value,
+	/** Optional preview fill (e.g. current quiz question) — lighter than `value`. */
+	buffer,
+	...restProps
+}: WithoutChildrenOrChild<ProgressPrimitive.RootProps> & {
+	buffer?: number;
+} = $props();
 
-	let maxSafe = $derived(max ?? 1);
-	let valuePct = $derived(Math.min(100, Math.max(0, (100 * (value ?? 0)) / maxSafe)));
-	let bufferPct = $derived(
-		buffer == null ? null : Math.min(100, Math.max(0, (100 * buffer) / maxSafe)),
-	);
-	let showBuffer = $derived(bufferPct != null && bufferPct > valuePct + 0.01);
+let maxSafe = $derived(max ?? 1);
+let valuePct = $derived(Math.min(100, Math.max(0, (100 * (value ?? 0)) / maxSafe)));
+let bufferPct = $derived(
+	buffer == null ? null : Math.min(100, Math.max(0, (100 * buffer) / maxSafe)),
+);
+let showBuffer = $derived(bufferPct != null && bufferPct > valuePct + 0.01);
 </script>
 
 <ProgressPrimitive.Root

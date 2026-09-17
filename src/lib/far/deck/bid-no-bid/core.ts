@@ -22,7 +22,11 @@ export const BID_NO_BID_CORE: QuizQuestion[] = [
 				tier: "defensible",
 			},
 			{ id: "c", text: "Average the CRM number with the capture lead's intuition", tier: "costly" },
-			{ id: "d", text: "Treat 65% as objective because it appears in an approved system", tier: "disqualifying" },
+			{
+				id: "d",
+				text: "Treat 65% as objective because it appears in an approved system",
+				tier: "disqualifying",
+			},
 		],
 		explanation:
 			"Capture craft—not a FAR formula: Pwin should be a traceable forecast, not a confidence slogan. Reassess when Section M, competitors, customer conditions, price, or hard gates change; use conditional funding only when uncertainty can be retired cheaply and quickly.",
@@ -46,8 +50,16 @@ export const BID_NO_BID_CORE: QuizQuestion[] = [
 				correct: true,
 			},
 			{ id: "b", text: "Submit now because SAM is required only at award", correct: false },
-			{ id: "c", text: "Use the SAM registration of an affiliated company that is not the offeror", correct: false },
-			{ id: "d", text: "Replace the UEI in the proposal with the incumbent contract number", correct: false },
+			{
+				id: "c",
+				text: "Use the SAM registration of an affiliated company that is not the offeror",
+				correct: false,
+			},
+			{
+				id: "d",
+				text: "Replace the UEI in the proposal with the incumbent contract number",
+				correct: false,
+			},
 		],
 		explanation:
 			"FAR 4.1102 requires SAM registration at submission subject to its listed exceptions. Basic FAR 52.204-7 separately requires registration at submission and award. For the unusual-or-compelling-urgency exception at 4.1102(a)(5), prescribed Alternate I requires registration as soon as possible and, if registration is not possible at submission, registration under FAR 52.204-13: within 30 days after award or three days before the first invoice, whichever is earlier. FAR 52.204-13 then requires maintenance during performance through final payment.",
@@ -113,19 +125,22 @@ export const BID_NO_BID_CORE: QuizQuestion[] = [
 				id: "b",
 				text: "Use the two remembered contracts and ask writers to make their relevance sound stronger",
 				tier: "costly",
-				consequence: "The team may miss stronger references and risks unsupported relevance claims.",
+				consequence:
+					"The team may miss stronger references and risks unsupported relevance claims.",
 			},
 			{
 				id: "c",
 				text: "List every corporate contract without checking whether Section M permits or connects it",
 				tier: "costly",
-				consequence: "Volume substitutes for admissible evidence; evaluators may give examples little or no weight.",
+				consequence:
+					"Volume substitutes for admissible evidence; evaluators may give examples little or no weight.",
 			},
 			{
 				id: "d",
 				text: "Assume evaluators can search CPARS and will select the most favorable records for you",
 				tier: "disqualifying",
-				consequence: "The proposal fails to present its case and ignores adverse or missing information the agency may consider.",
+				consequence:
+					"The proposal fails to present its case and ignores adverse or missing information the agency may consider.",
 			},
 		],
 		explanation:
@@ -149,9 +164,21 @@ export const BID_NO_BID_CORE: QuizQuestion[] = [
 				text: "No-bid unless a compliant team structure can clear the return hurdle; do not prime an opportunity for which the company is ineligible",
 				correct: true,
 			},
-			{ id: "b", text: "Bid as prime because the rule of two concerns market research, not offeror eligibility", correct: false },
-			{ id: "c", text: "Accept the uneconomic subcontract because any revenue improves the portfolio", correct: false },
-			{ id: "d", text: "Have the small prime pass through most service revenue to the large subcontractor", correct: false },
+			{
+				id: "b",
+				text: "Bid as prime because the rule of two concerns market research, not offeror eligibility",
+				correct: false,
+			},
+			{
+				id: "c",
+				text: "Accept the uneconomic subcontract because any revenue improves the portfolio",
+				correct: false,
+			},
+			{
+				id: "d",
+				text: "Have the small prime pass through most service revenue to the large subcontractor",
+				correct: false,
+			},
 		],
 		explanation:
 			"This unit's decision occurs after the strategy is clear. FAR 52.219-6 solicits offers only from small business concerns, states that offers from concerns that are not small shall be considered nonresponsive and rejected, and limits award to a small business concern. A service-contract team must also account for FAR 52.219-14's limit on payments to subcontractors that are not similarly situated. If a compliant subcontract role fails economics, no-bid is the disciplined answer.",
@@ -174,9 +201,21 @@ export const BID_NO_BID_CORE: QuizQuestion[] = [
 				text: "Treat incumbent advantage as real until broader evidence identifies a consequential weakness and a discriminator the evaluation will reward",
 				correct: true,
 			},
-			{ id: "b", text: "Assume every recompete favors the challenger because agencies must rotate vendors", correct: false },
-			{ id: "c", text: "Treat the single complaint as proof that the customer plans to replace the incumbent", correct: false },
-			{ id: "d", text: "Ignore the incumbent because only our technical compliance affects award", correct: false },
+			{
+				id: "b",
+				text: "Assume every recompete favors the challenger because agencies must rotate vendors",
+				correct: false,
+			},
+			{
+				id: "c",
+				text: "Treat the single complaint as proof that the customer plans to replace the incumbent",
+				correct: false,
+			},
+			{
+				id: "d",
+				text: "Ignore the incumbent because only our technical compliance affects award",
+				correct: false,
+			},
 		],
 		explanation:
 			"Capture craft: a black hat should model the strongest competitor from multiple observable signals and separate facts from assumptions. Incumbency is neither an automatic win nor loss; the decision turns on the solicitation's factors, credible customer evidence, transition risk, price, and discriminators.",
@@ -192,19 +231,22 @@ export const BID_NO_BID_CORE: QuizQuestion[] = [
 		scoring: "reveal-tradeoff",
 		situation:
 			"Competitive analysis supports a price-to-win range of $92–96M. Finance says the lowest price that meets requirements and the company's risk-adjusted margin floor is $101M.",
-		prompt: "How should the gate board resolve the gap between price-to-win and the walk-away price?",
+		prompt:
+			"How should the gate board resolve the gap between price-to-win and the walk-away price?",
 		options: [
 			{
 				id: "a",
 				text: "No-bid or redesign the solution if time permits; do not confuse the market's likely winning price with the company's walk-away price",
 				tier: "best",
-				consequence: "The company preserves its economic floor while allowing a fact-based redesign to close the gap.",
+				consequence:
+					"The company preserves its economic floor while allowing a fact-based redesign to close the gap.",
 			},
 			{
 				id: "b",
 				text: "Approve a short redesign sprint with explicit cost, compliance, and deadline checks before the final gate",
 				tier: "defensible",
-				consequence: "A bounded investment may find a lawful, executable cost reduction without committing to a loss.",
+				consequence:
+					"A bounded investment may find a lawful, executable cost reduction without committing to a loss.",
 			},
 			{
 				id: "c",
@@ -217,11 +259,12 @@ export const BID_NO_BID_CORE: QuizQuestion[] = [
 				id: "d",
 				text: "Bid $101M but leave Pwin unchanged because the technical solution is strong",
 				tier: "costly",
-				consequence: "The company protects margin but ignores evidence that its price position materially lowers Pwin.",
+				consequence:
+					"The company protects margin but ignores evidence that its price position materially lowers Pwin.",
 			},
 		],
 		explanation:
-			"Capture craft—not a Government pricing formula: price-to-win estimates the competitive award zone; walk-away is the seller's minimum acceptable economics and risk. A defensible gate keeps the two separate, tests lawful redesign, and updates Pwin when price position changes. Bidding below walk-away to \"win then recover\" is a familiar pursuit pressure move — treat it as a named risk posture, not a cleared gate.",
+			'Capture craft—not a Government pricing formula: price-to-win estimates the competitive award zone; walk-away is the seller\'s minimum acceptable economics and risk. A defensible gate keeps the two separate, tests lawful redesign, and updates Pwin when price position changes. Bidding below walk-away to "win then recover" is a familiar pursuit pressure move — treat it as a named risk posture, not a cleared gate.',
 		citation: "Capture craft (competitive pricing); FAR 15.404-1",
 		sourceUrl: "https://www.acquisition.gov/far/15.404-1",
 		tags: ["price-to-win", "walk-away", "margin", "capture-craft"],
@@ -246,8 +289,16 @@ export const BID_NO_BID_CORE: QuizQuestion[] = [
 				text: "Fund only the work needed to confirm whether the affiliate can submit and whether pending approvals satisfy the solicitation",
 				tier: "defensible",
 			},
-			{ id: "c", text: "Assume corporate affiliation transfers vehicle access and certifications", tier: "disqualifying" },
-			{ id: "d", text: "Submit and explain all missing gates in an assumptions volume", tier: "costly" },
+			{
+				id: "c",
+				text: "Assume corporate affiliation transfers vehicle access and certifications",
+				tier: "disqualifying",
+			},
+			{
+				id: "d",
+				text: "Submit and explain all missing gates in an assumptions volume",
+				tier: "costly",
+			},
 		],
 		explanation:
 			"Vehicle access, clearances, licenses, and certifications are entity- and solicitation-specific. FAR 16.505 governs order competitions among contract holders, but the RFP controls the stated proposal gates. The board should verify evidence and timing instead of treating affiliates or planned approvals as interchangeable.",
@@ -270,9 +321,21 @@ export const BID_NO_BID_CORE: QuizQuestion[] = [
 				text: "Run a new gate against the final terms, refresh compliance, solution, price, Pwin, staffing, and economics, and be willing to no-bid",
 				correct: true,
 			},
-			{ id: "b", text: "Continue automatically because the draft-RFP gate already authorized the bid", correct: false },
-			{ id: "c", text: "Update only the compliance matrix; strategic assumptions should remain fixed", correct: false },
-			{ id: "d", text: "Wait until color-team reviews to decide whether the changes matter", correct: false },
+			{
+				id: "b",
+				text: "Continue automatically because the draft-RFP gate already authorized the bid",
+				correct: false,
+			},
+			{
+				id: "c",
+				text: "Update only the compliance matrix; strategic assumptions should remain fixed",
+				correct: false,
+			},
+			{
+				id: "d",
+				text: "Wait until color-team reviews to decide whether the changes matter",
+				correct: false,
+			},
 		],
 		explanation:
 			"Capture craft: authorization based on draft terms does not survive material changes by inertia. FAR 15.203 makes the solicitation the Government's request for proposals; the final terms therefore reset the evidence for eligibility, evaluation, execution, price, and expected return.",
@@ -294,25 +357,29 @@ export const BID_NO_BID_CORE: QuizQuestion[] = [
 				id: "a",
 				text: "Replace the person with an available, qualified candidate and compliant commitment if the proposal can still be credibly updated; otherwise no-bid",
 				tier: "best",
-				consequence: "The offer reflects a real, evaluable team and avoids betting the bid on an unavailable key person.",
+				consequence:
+					"The offer reflects a real, evaluable team and avoids betting the bid on an unavailable key person.",
 			},
 			{
 				id: "b",
 				text: "Use the solicitation's authorized contracting-officer channel to confirm whether a qualified replacement can be submitted compliantly; replace the person if permitted, otherwise no-bid",
 				tier: "defensible",
-				consequence: "A timely answer may preserve a compliant path, but the schedule may still force a no-bid.",
+				consequence:
+					"A timely answer may preserve a compliant path, but the schedule may still force a no-bid.",
 			},
 			{
 				id: "c",
 				text: "Submit the unavailable person's resume and obtain a signature after selection",
 				tier: "disqualifying",
-				consequence: "The proposal lacks the required commitment and materially misstates the team the agency is evaluating.",
+				consequence:
+					"The proposal lacks the required commitment and materially misstates the team the agency is evaluating.",
 			},
 			{
 				id: "d",
 				text: "Rename the deputy as program manager without checking minimum qualifications or rewriting the solution",
 				tier: "costly",
-				consequence: "The substitution may fail stated qualifications and leaves proposal claims inconsistent.",
+				consequence:
+					"The substitution may fail stated qualifications and leaves proposal claims inconsistent.",
 			},
 		],
 		explanation:

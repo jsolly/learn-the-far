@@ -9,6 +9,9 @@ concurrency:
   group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   ci:
     name: ci
@@ -19,7 +22,14 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
+      - uses: astral-sh/setup-uv@v8.2.0
       - run: npm ci
       - run: npm run check:actions
+      - run: npm run check:release-id
+      - run: npm run check:lint
+      - run: npm run check:knip
+      - run: npm run check:md
+      - run: npm run check:yaml
+      - run: npm run check:pie
       - run: npm run check:ts
       - run: npm run build

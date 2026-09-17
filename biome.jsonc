@@ -1,0 +1,302 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.5.14/schema.json",
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true,
+		"defaultBranch": "main"
+	},
+	"files": {
+		"ignoreUnknown": true,
+		"includes": [
+			"**",
+			"!package-lock.json",
+			"!**/.agents",
+			"!**/.claude",
+			"!**/dist",
+			"!**/.astro",
+			"!**/.vercel"
+		]
+	},
+	"css": {
+		"parser": {
+			// Tailwind CSS 4 directives (@theme, @utility, @apply, @custom-variant).
+			"tailwindDirectives": true
+		}
+	},
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": "on"
+			}
+		}
+	},
+	"formatter": {
+		"enabled": true,
+		"indentStyle": "tab",
+		"lineWidth": 100
+	},
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "double",
+			"semicolons": "always"
+		}
+	},
+	"linter": {
+		"enabled": true,
+		"domains": {
+			"astro": "all",
+			"svelte": "all",
+			"tailwind": "all",
+			"types": "all",
+			"project": "all",
+			"test": "none",
+			"react": "none",
+			"next": "none",
+			"vue": "none",
+			"solid": "none",
+			"qwik": "none",
+			"reactNative": "none",
+			"playwright": "none",
+			"drizzle": "none",
+			"turborepo": "none"
+		},
+		"rules": {
+			"preset": "recommended",
+			"complexity": {
+				"noAdjacentSpacesInRegex": "error",
+				"noArguments": "error",
+				"noBannedTypes": "error",
+				"noCommaOperator": "error",
+				"noEmptyTypeParameters": "error",
+				"noExtraBooleanCast": "error",
+				"noFlatMapIdentity": "error",
+				"noImportantStyles": "error",
+				"noStaticOnlyClass": "error",
+				"noThisInStatic": "error",
+				"noUselessCatch": "error",
+				"noUselessConstructor": "error",
+				"noUselessContinue": "error",
+				"noUselessEmptyExport": "error",
+				"noUselessEscapeInRegex": "error",
+				"noUselessFragments": "error",
+				"noUselessLabel": "error",
+				"noUselessLoneBlockStatements": "error",
+				"noUselessRename": "error",
+				"noUselessStringRaw": "error",
+				"noUselessSwitchCase": "error",
+				"noUselessTernary": "error",
+				"noUselessThisAlias": "error",
+				"noUselessTypeConstraint": "error",
+				"noUselessUndefinedInitialization": "error",
+				"useArrowFunction": "error",
+				"useDateNow": "error",
+				"useFlatMap": "error",
+				"useIndexOf": "error",
+				"useNumericLiterals": "error",
+				// TypeScript requires bracket access for index signatures.
+				"useLiteralKeys": "off",
+				"useOptionalChain": "error",
+				"useRegexLiterals": "error",
+				"useSimpleNumberKeys": "error"
+			},
+			"correctness": {
+				"noUnusedFunctionParameters": "error",
+				"noUnusedImports": "error",
+				"noUnusedLabels": "error",
+				"noUnusedPrivateClassMembers": "error",
+				"noUnusedVariables": "error",
+				"useParseIntRadix": "error",
+				// TS-first: tsc / astro check own module resolution.
+				"noUnresolvedImports": "off",
+				// Bundler (Astro/Vite) does not require import extensions.
+				"useImportExtensions": "off"
+			},
+			"performance": {
+				"noAccumulatingSpread": "error",
+				"noDynamicNamespaceImportAccess": "error"
+			},
+			"security": {
+				"noSecrets": "error"
+			},
+			"suspicious": {
+				"noApproximativeNumericConstant": "error",
+				"noCatchAssign": "error",
+				"noConfusingLabels": "error",
+				"noConfusingVoidType": "error",
+				"noExplicitAny": "error",
+				"noConsole": {
+					"level": "error",
+					"options": {
+						"allow": ["debug", "info", "warn", "error"]
+					}
+				},
+				"noConstEnum": "error",
+				"noDeprecatedMediaType": "error",
+				"noDocumentCookie": "error",
+				"noDuplicateEnumValues": "error",
+				"noDuplicateFields": "error",
+				"noEmptyBlock": "error",
+				"noExtraNonNullAssertion": "error",
+				"noGlobalIsFinite": "error",
+				"noGlobalIsNan": "error",
+				"noIrregularWhitespace": "error",
+				"noNestedPromises": "error",
+				"noOctalEscape": "error",
+				"noProto": "error",
+				"noPrototypeBuiltins": "error",
+				"noQuickfixBiome": "error",
+				"noRedundantUseStrict": "error",
+				"noShadow": "error",
+				"noSuspiciousSemicolonInJsx": "error",
+				"noTemplateCurlyInString": "error",
+				"noTsIgnore": "error",
+				"noUselessEscapeInString": "error",
+				"noUselessRegexBackrefs": "error",
+				"useAdjacentOverloadSignatures": "error",
+				"useAwait": "error",
+				"useBiomeIgnoreFolder": "error",
+				"useDefaultSwitchClauseLast": "error",
+				"useGoogleFontDisplay": "error",
+				"useIsArray": "error"
+			},
+			"style": {
+				"noDescendingSpecificity": "error",
+				"noNonNullAssertion": "error",
+				"useArrayLiterals": "error",
+				"useConst": "error",
+				"useBlockStatements": "error",
+				"useDeprecatedReason": "error",
+				"useErrorCause": "error",
+				"useExponentiationOperator": "error",
+				"useExportType": "error",
+				"useImportType": "error",
+				"useLiteralEnumMembers": "error",
+				"useNodejsImportProtocol": "error",
+				"useShorthandFunctionType": "error",
+				"useTemplate": "error",
+				"useThrowNewError": "error",
+				"useThrowOnlyError": "error"
+			},
+			"nursery": {
+				// Promises / type-aware
+				"noFloatingPromises": "error",
+				"noMisusedPromises": "error",
+				"noMisleadingReturnType": "error",
+				"useAwaitThenable": "error",
+				"noBaseToString": "error",
+				"noUnsafePlusOperands": "error",
+				"noUselessTypeConversion": "error",
+				"noUnsafeTypeAssertion": "error",
+				"useDisposables": "error",
+				"useExhaustiveSwitchCases": "error",
+				"useIncludes": "error",
+				"useNullishCoalescing": "error",
+				"useRegexpExec": "error",
+				"useStringStartsEndsWith": "error",
+				"useReduceTypeParameter": "error",
+				"noInvalidPropertyInitValue": "error",
+				"noEmptyObjectKeys": "error",
+				"noDuplicateFieldDefinitionNames": "error",
+				// DOM
+				"useBetterDomTraversing": "error",
+				"useDomNodeTextContent": "error",
+				// getElementById is the right API for a known element id.
+				"useDomQuerySelector": "off",
+				"useControlLabel": "error",
+				"useIframeSandbox": "error",
+				"noUnsafeIframeSandbox": "error",
+				"noNonScalableViewport": "error",
+				"useArraySome": "error",
+				"useMathMinMax": "error",
+				"useModernMathApis": "error",
+				"useFlatMathMinMax": "error",
+				// CSS
+				"noDuplicateSelectors": "error",
+				"noExcessiveSelectorClasses": "error",
+				// Tailwind v4 + shadcn tokens live in :root, not @layer.
+				"useLayeredStyles": "off",
+				"useNamedLayer": "off",
+				"useBaseline": "error",
+				// Tailwind utilities are not CSS class selectors in a stylesheet.
+				"noUndeclaredClasses": "off",
+				"noUnusedClasses": "off",
+				// Git tarball of apache/echarts-mcp has no license field in package.json.
+				"noUntrustedLicenses": "off",
+				// Astro / Svelte (also activated by domains: all)
+				"noAstroSetHtmlDirective": "error",
+				"useAstroClientOnlyDirectiveValue": "error",
+				"noSvelteAtDebugTags": "error",
+				"noSvelteAtHtmlTags": "error",
+				"noSvelteLegacyConst": "error",
+				"noSvelteUnnecessaryStateWrap": "error",
+				"useSvelteRequireEachKey": "error",
+				"noTailwindArbitraryValue": "error",
+				"useTailwindShorthandClasses": "error",
+				// General correctness nursery
+				"noImpliedEval": "error",
+				"noLoopFunc": "error",
+				"noNegationInEqualityCheck": "error",
+				"noThisOutsideOfClass": "error",
+				"noUnmodifiedLoopCondition": "error",
+				"noUnnecessaryTemplateExpression": "error",
+				"noXorAsExponentiation": "error",
+				"noExtendNative": "error",
+				"noExcessiveNestedCallbacks": "error",
+				"noInvalidFileInputAccept": "error",
+				"noReturnInFinally": "error",
+				"noObsoleteTags": "error",
+				"noJsonUnsafeValues": "error",
+				"useRegexpTest": "error",
+				"useUnicodeRegex": "error",
+				"useImportsFirst": "error",
+				"useThisInClassMethods": "error",
+				"useVarsOnTop": "error",
+				"noBunModules": "error"
+			}
+		}
+	},
+	"overrides": [
+		{
+			"includes": ["**/*.svelte", "**/*.astro"],
+			"linter": {
+				"rules": {
+					"style": {
+						"useConst": "off",
+						"useImportType": "off"
+					},
+					"correctness": {
+						"noUnusedVariables": "off",
+						"noUnusedImports": "off"
+					}
+				}
+			}
+		},
+		{
+			"includes": ["scripts/**"],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						"noConsole": {
+							"level": "error",
+							"options": {
+								"allow": ["log", "debug", "info", "warn", "error"]
+							}
+						}
+					}
+				}
+			}
+		},
+		{
+			// Educational FAR copy and generated shadcn class strings trip entropy checks.
+			"includes": ["src/lib/far/**", "src/lib/components/ui/**"],
+			"linter": {
+				"rules": {
+					"security": {
+						"noSecrets": "off"
+					}
+				}
+			}
+		}
+	]
+}

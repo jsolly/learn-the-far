@@ -1,17 +1,17 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
 
-import sitemap from '@astrojs/sitemap';
-import svelte from '@astrojs/svelte';
-import tailwindcss from '@tailwindcss/vite';
+import sitemap from "@astrojs/sitemap";
+import svelte from "@astrojs/svelte";
+import tailwindcss from "@tailwindcss/vite";
+import { defineConfig } from "astro/config";
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://learnthefar.com',
-  trailingSlash: 'always',
-  integrations: [svelte(), sitemap()],
+	site: "https://learnthefar.com",
+	trailingSlash: "always",
+	integrations: [svelte(), sitemap()],
 
-  vite: {
-    plugins: [tailwindcss()]
-  }
+	vite: {
+		plugins: [tailwindcss()],
+	},
 });

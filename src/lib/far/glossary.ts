@@ -207,11 +207,7 @@ const CURATED_GLOSSARY_TERMS: GlossaryTerm[] = [
 	{
 		id: "rom",
 		term: "ROM",
-		aliases: [
-			"Rough Order of Magnitude",
-			"rough order of magnitude",
-			"ROMs",
-		],
+		aliases: ["Rough Order of Magnitude", "rough order of magnitude", "ROMs"],
 		definition:
 			"A Rough Order of Magnitude is an early, assumption-heavy ballpark cost or price estimate used in capture and market research. It is not a binding offer, and it is not the same as an IGCE or a fully supported proposal price.",
 		chapterId: "lead-not-solicitation",
@@ -365,7 +361,11 @@ const CURATED_GLOSSARY_TERMS: GlossaryTerm[] = [
 	{
 		id: "gwac",
 		term: "GWAC",
-		aliases: ["Governmentwide Acquisition Contract", "governmentwide acquisition contract", "GWACs"],
+		aliases: [
+			"Governmentwide Acquisition Contract",
+			"governmentwide acquisition contract",
+			"GWACs",
+		],
 		definition:
 			"A Governmentwide Acquisition Contract is a multi-agency IDIQ-style vehicle for IT and related services, distinct from GSA Schedule ordering rules and scope.",
 		chapterId: "what-government-awards",
@@ -425,13 +425,7 @@ const CURATED_GLOSSARY_TERMS: GlossaryTerm[] = [
 	{
 		id: "jv",
 		term: "JV",
-		aliases: [
-			"JVs",
-			"joint venture",
-			"joint ventures",
-			"Joint Venture",
-			"Joint Ventures",
-		],
+		aliases: ["JVs", "joint venture", "joint ventures", "Joint Venture", "Joint Ventures"],
 		definition:
 			"A joint venture is a separately identified entity (often under FAR 9.601) that itself can act as the potential prime. An approved mentor-protégé relationship may enable a qualifying JV, but it is not a pursuit-ready JV until the written agreement, SAM registration, and own UEI/CAGE are in place.",
 		chapterId: "name-team-you-built",
@@ -496,11 +490,7 @@ const CURATED_GLOSSARY_TERMS: GlossaryTerm[] = [
 	{
 		id: "usaspending",
 		term: "USAspending",
-		aliases: [
-			"USASpending",
-			"usaspending.gov",
-			"USAspending.gov",
-		],
+		aliases: ["USASpending", "usaspending.gov", "USAspending.gov"],
 		definition:
 			"USAspending is the official open source for federal spending analysis. It receives procurement data derived from federal contract reporting and is used with SAM.gov award records to follow obligations, transactions, and incumbent spend — not as a grants-only site.",
 		chapterId: "follow-identifiers",
@@ -539,14 +529,7 @@ const CURATED_GLOSSARY_TERMS: GlossaryTerm[] = [
 	{
 		id: "sub",
 		term: "Sub",
-		aliases: [
-			"sub",
-			"subs",
-			"subcontractor",
-			"subcontractors",
-			"Subcontractor",
-			"Subcontractors",
-		],
+		aliases: ["sub", "subs", "subcontractor", "subcontractors", "Subcontractor", "Subcontractors"],
 		definition:
 			"A firm performing under a subcontract with the prime, not under a direct contract with the Government. Payment and direction ordinarily run through the prime; flowdowns and consent may apply, but they do not create agency privity with the sub.",
 		chapterId: "name-team-you-built",
@@ -680,13 +663,13 @@ const CURATED_GLOSSARY_TERMS: GlossaryTerm[] = [
 ];
 
 /** Full glossary: curated terms plus chapter topic tags used on shelf cards. */
-export const GLOSSARY_TERMS: GlossaryTerm[] = [...CURATED_GLOSSARY_TERMS, ...CHAPTER_TOPIC_TERMS];
+const GLOSSARY_TERMS: GlossaryTerm[] = [...CURATED_GLOSSARY_TERMS, ...CHAPTER_TOPIC_TERMS];
 
 const byId = new Map(GLOSSARY_TERMS.map((t) => [t.id, t]));
 
 /** Normalize tag / alias keys for shelf-pill lookup. */
 function normalizeKey(value: string): string {
-	return value.trim().toLowerCase().replace(/\s+/g, "-");
+	return value.trim().toLowerCase().replace(/\s+/gu, "-");
 }
 
 const byTagKey = new Map<string, GlossaryTerm>();
@@ -720,10 +703,7 @@ export function resolveChapterTag(tag: string): GlossaryTerm | undefined {
 
 /** Fallback when a tag has no glossary entry: `market-research` → `Market Research`. */
 function formatKebabAsTitle(tag: string): string {
-	const parts = tag
-		.trim()
-		.split(/[-_]+/)
-		.filter(Boolean);
+	const parts = tag.trim().split(/[-_]+/u).filter(Boolean);
 	if (parts.length <= 1) {
 		return tag.trim();
 	}
@@ -739,7 +719,7 @@ export function topicPillLabel(tag: string): string {
 }
 
 /** All match strings for a term (canonical + aliases), longest first. */
-export function matchStringsForTerm(term: GlossaryTerm): string[] {
+function matchStringsForTerm(term: GlossaryTerm): string[] {
 	return [term.term, ...(term.aliases ?? [])].sort((a, b) => b.length - a.length);
 }
 
@@ -761,7 +741,7 @@ export function allMatchPatterns(): GlossaryMatchPattern[] {
 }
 
 /** Terms sorted A–Z by display term (for glossary browse). */
-export function glossarySorted(): GlossaryTerm[] {
+function glossarySorted(): GlossaryTerm[] {
 	return [...GLOSSARY_TERMS].sort((a, b) =>
 		a.term.localeCompare(b.term, "en", { sensitivity: "base" }),
 	);
@@ -772,7 +752,7 @@ export function glossaryByLetter(): { letter: string; terms: GlossaryTerm[] }[] 
 	const groups = new Map<string, GlossaryTerm[]>();
 	for (const term of glossarySorted()) {
 		const ch = term.term.charAt(0).toUpperCase();
-		const letter = /[A-Z]/.test(ch) ? ch : "#";
+		const letter = /[A-Z]/u.test(ch) ? ch : "#";
 		const list = groups.get(letter) ?? [];
 		list.push(term);
 		groups.set(letter, list);

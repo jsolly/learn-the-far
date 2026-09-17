@@ -6,5 +6,5 @@ import { SHAPE_FUNDAMENTALS } from "./shape/fundamentals";
 export const SHAPE_QUESTIONS: QuizQuestion[] = [
 	...SHAPE_FUNDAMENTALS,
 	...SHAPE_CORE,
-	...SHAPE_ADVANCED
+	...SHAPE_ADVANCED,
 ];

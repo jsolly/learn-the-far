@@ -1,5 +1,5 @@
 import { PROGRESS_KEY } from "$lib/far/constants";
-import type { QuizProgress } from "./types";
+import type { QuestionRecord, QuizProgress, StreakRecord } from "./types";
 
 export function emptyProgress(): QuizProgress {
 	return {
@@ -14,6 +14,50 @@ function canUseStorage() {
 	return typeof window !== "undefined" && "localStorage" in window;
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+	return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function isStringRecord(value: unknown): value is Record<string, string> {
+	if (!isRecord(value)) {
+		return false;
+	}
+	return Object.values(value).every((entry) => typeof entry === "string");
+}
+
+function parseStreak(value: unknown, fallback: StreakRecord): StreakRecord {
+	if (!isRecord(value)) {
+		return fallback;
+	}
+	const current = value["current"];
+	const longest = value["longest"];
+	const lastDay = value["lastDay"];
+	return {
+		current: typeof current === "number" ? current : fallback.current,
+		longest: typeof longest === "number" ? longest : fallback.longest,
+		lastDay: typeof lastDay === "string" ? lastDay : fallback.lastDay,
+	};
+}
+
+function parseQuestionRecord(value: unknown): QuestionRecord | undefined {
+	if (!isRecord(value)) {
+		return undefined;
+	}
+	const cleared = value["cleared"] === true;
+	const attempts = value["attempts"];
+	const bestScore = value["bestScore"];
+	const lastAt = value["lastAt"];
+	const correctCountRaw = value["correctCount"];
+	const correctCount = typeof correctCountRaw === "number" ? correctCountRaw : cleared ? 1 : 0;
+	return {
+		attempts: typeof attempts === "number" ? attempts : 0,
+		bestScore: typeof bestScore === "number" ? bestScore : 0,
+		cleared,
+		correctCount,
+		lastAt: typeof lastAt === "string" ? lastAt : "",
+	};
+}
+
 export function loadProgress(): QuizProgress {
 	if (!canUseStorage()) {
 		return emptyProgress();
@@ -25,27 +69,30 @@ export function loadProgress(): QuizProgress {
 			return emptyProgress();
 		}
 
-		const parsed = JSON.parse(raw) as Partial<QuizProgress>;
+		const parsed: unknown = JSON.parse(raw);
+		if (!isRecord(parsed)) {
+			return emptyProgress();
+		}
 		// Merge onto a fresh shape so older/partial records stay valid.
 		// Legacy unlock/testout fields are dropped — every slice is always open.
 		const progress = emptyProgress();
-		progress.streak = { ...progress.streak, ...(parsed.streak ?? {}) };
-		progress.dailyDone = Array.isArray(parsed.dailyDone) ? parsed.dailyDone : [];
-		progress.achievements =
-			parsed.achievements && typeof parsed.achievements === "object"
-				? parsed.achievements
-				: {};
-		// Stamp correctCount on legacy records (cleared once → learning, not attempts-based).
+		progress.streak = parseStreak(parsed["streak"], progress.streak);
+		const dailyDone = parsed["dailyDone"];
+		progress.dailyDone = Array.isArray(dailyDone)
+			? dailyDone.filter((day): day is string => typeof day === "string")
+			: [];
+		const achievements = parsed["achievements"];
+		progress.achievements = isStringRecord(achievements) ? achievements : {};
 		const questions: QuizProgress["questions"] = {};
-		for (const [id, record] of Object.entries(parsed.questions ?? {})) {
-			if (!record) continue;
-			const correctCount =
-				typeof record.correctCount === "number"
-					? record.correctCount
-					: record.cleared
-						? 1
-						: 0;
-			questions[id] = { ...record, correctCount };
+		const rawQuestions = parsed["questions"];
+		if (isRecord(rawQuestions)) {
+			for (const [id, record] of Object.entries(rawQuestions)) {
+				const parsedRecord = parseQuestionRecord(record);
+				if (!parsedRecord) {
+					continue;
+				}
+				questions[id] = parsedRecord;
+			}
 		}
 		progress.questions = questions;
 		return progress;

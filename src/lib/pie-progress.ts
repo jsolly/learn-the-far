@@ -24,7 +24,9 @@ export function hubCapturedPercent(slices: readonly ProgressSlice[]): number {
 		cleared += slice.cleared;
 		total += slice.total;
 	}
-	if (total === 0) return 0;
+	if (total === 0) {
+		return 0;
+	}
 	return Math.round((cleared / total) * 100);
 }
 
@@ -45,7 +47,9 @@ export function weightedCapturedRatio(slices: readonly ProgressSlice[]): number 
 		cleared += slice.total * clamp01(slice.ratio);
 		total += slice.total;
 	}
-	if (total === 0) return 0;
+	if (total === 0) {
+		return 0;
+	}
 	return cleared / total;
 }
 

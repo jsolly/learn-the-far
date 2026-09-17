@@ -1,41 +1,47 @@
 <script lang="ts">
-	import { tick } from "svelte";
+import CheckIcon from "@lucide/svelte/icons/check";
+import Volume2Icon from "@lucide/svelte/icons/volume-2";
+import VolumeOffIcon from "@lucide/svelte/icons/volume-off";
+import { tick } from "svelte";
+import { Badge } from "$lib/components/ui/badge";
+import { Button } from "$lib/components/ui/button";
+import { DIFFICULTY_LABEL } from "$lib/far/constants";
+import { learnShelfPath } from "$lib/learn-routes";
+import { isSoundMuted, toggleSoundMuted } from "$lib/quiz-sounds.svelte.js";
+import { game } from "$lib/quiz-state.svelte.js";
+import PieWheel from "./PieWheel.svelte";
 
-	import { game } from "$lib/quiz-state.svelte.js";
-	import { isSoundMuted, toggleSoundMuted } from "$lib/quiz-sounds.svelte.js";
-	import { DIFFICULTY_LABEL } from "$lib/far/constants";
-	import { learnShelfPath } from "$lib/learn-routes";
-	import PieWheel from "./PieWheel.svelte";
-	import { Button } from "$lib/components/ui/button";
-	import { Badge } from "$lib/components/ui/badge";
-	import CheckIcon from "@lucide/svelte/icons/check";
-	import Volume2Icon from "@lucide/svelte/icons/volume-2";
-	import VolumeOffIcon from "@lucide/svelte/icons/volume-off";
+let stats = $derived(game.allStats);
+let confirmReset = $state(false);
+let confirmYesEl: HTMLElement | null = $state(null);
+let resetButtonEl: HTMLElement | null = $state(null);
+let pageHeadingEl: HTMLHeadingElement | null = null;
 
-	let stats = $derived(game.allStats);
-	let confirmReset = $state(false);
-	let confirmYesEl: HTMLElement | null = $state(null);
-	let resetButtonEl: HTMLElement | null = $state(null);
-	let pageHeadingEl: HTMLHeadingElement | null = null;
+function capturePageHeading(element: HTMLHeadingElement) {
+	pageHeadingEl = element;
+	return () => {
+		if (pageHeadingEl === element) {
+			pageHeadingEl = null;
+		}
+	};
+}
 
-	function capturePageHeading(element: HTMLHeadingElement) {
-		pageHeadingEl = element;
-		return () => {
-			if (pageHeadingEl === element) pageHeadingEl = null;
-		};
+async function finishResetConfirmation(reset: boolean) {
+	if (reset) {
+		game.resetProgress();
 	}
-
-	async function finishResetConfirmation(reset: boolean) {
-		if (reset) game.resetProgress();
-		confirmReset = false;
-		await tick();
-		if (reset) pageHeadingEl?.focus();
-		else resetButtonEl?.focus();
+	confirmReset = false;
+	await tick();
+	if (reset) {
+		pageHeadingEl?.focus();
+	} else {
+		resetButtonEl?.focus();
 	}
+}
 
-	/** Home entry point — hide until glossary is ready to promote again. */
-	const showGlossaryOnHome = false;
-	const GITHUB_REPO_URL = "https://github.com/jsolly/learn-the-far";
+/** Home entry point — hide until glossary is ready to promote again. */
+const showGlossaryOnHome = false;
+const GITHUB_REPO_URL = "https://github.com/jsolly/learn-the-far";
 </script>
 
 <div

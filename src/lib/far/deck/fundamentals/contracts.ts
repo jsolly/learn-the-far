@@ -7,7 +7,8 @@ export const CONTRACT_FUNDAMENTALS: QuizQuestion[] = [
 		format: "recall",
 		difficulty: "fundamentals",
 		scoring: "single-best",
-		prompt: "Under a firm-fixed-price (FFP) contract, who generally bears the risk that performance costs more than expected?",
+		prompt:
+			"Under a firm-fixed-price (FFP) contract, who generally bears the risk that performance costs more than expected?",
 		options: [
 			{
 				id: "a",
@@ -77,7 +78,8 @@ export const CONTRACT_FUNDAMENTALS: QuizQuestion[] = [
 		format: "recall",
 		difficulty: "fundamentals",
 		scoring: "single-best",
-		prompt: "Which statement correctly distinguishes GSA MAS from a GWAC such as Alliant or NASA SEWP?",
+		prompt:
+			"Which statement correctly distinguishes GSA MAS from a GWAC such as Alliant or NASA SEWP?",
 		options: [
 			{
 				id: "a",

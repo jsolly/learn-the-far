@@ -1,16 +1,16 @@
 <script lang="ts">
-	import { getTerm } from "$lib/far/glossary";
-	import type { TextSegment } from "$lib/far/link-glossary-terms";
-	import TermDefinitionPopover from "./TermDefinitionPopover.svelte";
+import { getTerm } from "$lib/far/glossary";
+import type { TextSegment } from "$lib/far/link-glossary-terms";
+import TermDefinitionPopover from "./TermDefinitionPopover.svelte";
 
-	let {
-		segments,
-		currentChapterId,
-	}: {
-		segments: TextSegment[];
-		/** Chapter the reader is currently viewing, if any. */
-		currentChapterId?: string;
-	} = $props();
+let {
+	segments,
+	currentChapterId,
+}: {
+	segments: TextSegment[];
+	/** Chapter the reader is currently viewing, if any. */
+	currentChapterId?: string;
+} = $props();
 </script>
 
 <!-- Compact markup: whitespace between each/if arms would appear after inline term links. -->

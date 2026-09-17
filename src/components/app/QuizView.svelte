@@ -1,130 +1,135 @@
 <script lang="ts">
-	import { tick } from "svelte";
+import Volume2Icon from "@lucide/svelte/icons/volume-2";
+import VolumeOffIcon from "@lucide/svelte/icons/volume-off";
+import { tick } from "svelte";
+import { Badge } from "$lib/components/ui/badge";
+import { Button } from "$lib/components/ui/button";
+import { Progress } from "$lib/components/ui/progress";
+import { chaptersForQuestion } from "$lib/far/chapters";
+import { DIFFICULTY_LABEL, SCORING_LABEL, TIER_VERDICT } from "$lib/far/constants";
+import { UNITS } from "$lib/far/deck";
+import type { OptionTier, QuizOption, Tone } from "$lib/far/types";
+import { learnChapterPath } from "$lib/learn-routes";
+import { isSoundMuted, playFeedbackSound, toggleSoundMuted } from "$lib/quiz-sounds.svelte.js";
+import { game } from "$lib/quiz-state.svelte.js";
 
-	import { game } from "$lib/quiz-state.svelte.js";
-	import { isSoundMuted, playFeedbackSound, toggleSoundMuted } from "$lib/quiz-sounds.svelte.js";
-	import type { OptionTier, QuizOption, Tone } from "$lib/far/types";
-	import { DIFFICULTY_LABEL, SCORING_LABEL, TIER_VERDICT } from "$lib/far/constants";
-	import { UNITS } from "$lib/far/deck";
-	import { chaptersForQuestion } from "$lib/far/chapters";
-	import { learnChapterPath } from "$lib/learn-routes";
-	import { Badge } from "$lib/components/ui/badge";
-	import { Button } from "$lib/components/ui/button";
-	import { Progress } from "$lib/components/ui/progress";
-	import Volume2Icon from "@lucide/svelte/icons/volume-2";
-	import VolumeOffIcon from "@lucide/svelte/icons/volume-off";
+let q = $derived(game.currentQuestion);
+let answered = $derived(game.isAnswered);
+let unit = $derived(q ? UNITS.find((u) => u.id === q.unitId) : undefined);
+let counts = $derived(game.progressCount);
+let completedPct = $derived(
+	counts.total === 0 ? 0 : Math.round((counts.done / counts.total) * 100),
+);
+/** Preview fill for the question in progress — collapses into completed once answered. */
+let reservedPct = $derived(
+	counts.total === 0 ? 0 : Math.round(((counts.done + (answered ? 0 : 1)) / counts.total) * 100),
+);
+let continueBtnEl: HTMLElement | null = $state(null);
+let pickedOptionEl: HTMLButtonElement | null = null;
+let lastOutcome = $derived(game.outcomes[game.outcomes.length - 1]);
+let missed = $derived(Boolean(answered && lastOutcome && !lastOutcome.cleared));
+let studyChapters = $derived(q && missed ? chaptersForQuestion(q.id) : []);
 
-	let q = $derived(game.currentQuestion);
-	let answered = $derived(game.isAnswered);
-	let unit = $derived(q ? UNITS.find((u) => u.id === q.unitId) : undefined);
-	let counts = $derived(game.progressCount);
-	let completedPct = $derived(
-		counts.total === 0 ? 0 : Math.round((counts.done / counts.total) * 100),
-	);
-	/** Preview fill for the question in progress — collapses into completed once answered. */
-	let reservedPct = $derived(
-		counts.total === 0
-			? 0
-			: Math.round(
-					((counts.done + (answered ? 0 : 1)) / counts.total) * 100,
-				),
-	);
-	let continueBtnEl: HTMLElement | null = $state(null);
-	let pickedOptionEl: HTMLButtonElement | null = null;
-	let lastOutcome = $derived(game.outcomes[game.outcomes.length - 1]);
-	let missed = $derived(Boolean(answered && lastOutcome && !lastOutcome.cleared));
-	let studyChapters = $derived(q && missed ? chaptersForQuestion(q.id) : []);
-
-	function focusQuestionHeading(questionId: string) {
-		return (element: HTMLHeadingElement) => {
-			void tick().then(() => {
-				if (game.currentQuestion?.id !== questionId) return;
-				// preventScroll: focus alone scrolls the heading into view and leaves
-				// mobile mid-page after Continue; pin to the top of the quiz instead.
-				element.focus({ preventScroll: true });
-				window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-			});
-		};
-	}
-
-	function capturePickedOption(element: HTMLButtonElement) {
-		pickedOptionEl = element;
-		return () => {
-			if (pickedOptionEl === element) pickedOptionEl = null;
-		};
-	}
-
-	let pickedOption = $derived(
-		q && game.answeredOptionId ? q.options.find((o) => o.id === game.answeredOptionId) : undefined,
-	);
-
-	const TIER_CLASS: Record<OptionTier, string> = {
-		best: "border-emerald-500 bg-emerald-500/10",
-		defensible: "border-sky-500 bg-sky-500/10",
-		costly: "border-amber-500 bg-amber-500/10",
-		risky: "border-orange-500 bg-orange-500/10",
-		disqualifying: "border-red-500 bg-red-500/10",
+function focusQuestionHeading(questionId: string) {
+	return (element: HTMLHeadingElement) => {
+		void tick().then(() => {
+			if (game.currentQuestion?.id !== questionId) {
+				return;
+			}
+			// preventScroll: focus alone scrolls the heading into view and leaves
+			// mobile mid-page after Continue; pin to the top of the quiz instead.
+			element.focus({ preventScroll: true });
+			window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+		});
 	};
+}
 
-	// -700 in light mode clears WCAG AA (4.5:1) for the small verdict labels on
-	// their tinted backgrounds; -400 handles dark mode. Risky shares warn tone
-	// with Costly but uses orange border fill so the two stay distinct.
-	const TONE_CLASS: Record<Tone, string> = {
-		good: "text-emerald-700 dark:text-emerald-400",
-		ok: "text-sky-700 dark:text-sky-400",
-		warn: "text-amber-700 dark:text-amber-400",
-		bad: "text-red-700 dark:text-red-400",
+function capturePickedOption(element: HTMLButtonElement) {
+	pickedOptionEl = element;
+	return () => {
+		if (pickedOptionEl === element) {
+			pickedOptionEl = null;
+		}
 	};
+}
 
-	const TIER_LABEL_CLASS: Partial<Record<OptionTier, string>> = {
-		risky: "text-orange-700 dark:text-orange-400",
-	};
+let pickedOption = $derived(
+	q && game.answeredOptionId ? q.options.find((o) => o.id === game.answeredOptionId) : undefined,
+);
 
-	// Visual state for one option once the question is answered (quiz mode).
-	// Avoid font-weight changes — semibold shifts glyph widths and reflows the line.
-	// scroll-mb keeps nearest scrollIntoView clear of the sticky continue bar.
-	function optionClass(opt: QuizOption): string {
-		const base =
-			"w-full scroll-mb-28 rounded-2xl border-2 p-4 text-left transition-[transform,opacity] duration-150";
-		if (!answered) {
-			return `${base} border-border bg-card hover:border-primary/50 hover:bg-muted/50 active:scale-[0.99]`;
-		}
-		const picked = opt.id === game.answeredOptionId;
-		const pickMark = picked ? "" : "opacity-80";
-		if (q && (q.scoring === "tiered" || q.scoring === "reveal-tradeoff")) {
-			const tierClass = opt.tier ? TIER_CLASS[opt.tier] : "border-border";
-			return `${base} ${tierClass} ${pickMark}`.trim();
-		}
-		// single-best — color alone marks right/wrong; no ring (double border)
-		if (opt.correct) return `${base} ${TIER_CLASS.best}`;
-		if (picked) return `${base} ${TIER_CLASS.disqualifying}`;
-		return `${base} border-border opacity-60`;
+const TIER_CLASS: Record<OptionTier, string> = {
+	best: "border-emerald-500 bg-emerald-500/10",
+	defensible: "border-sky-500 bg-sky-500/10",
+	costly: "border-amber-500 bg-amber-500/10",
+	risky: "border-orange-500 bg-orange-500/10",
+	disqualifying: "border-red-500 bg-red-500/10",
+};
+
+// -700 in light mode clears WCAG AA (4.5:1) for the small verdict labels on
+// their tinted backgrounds; -400 handles dark mode. Risky shares warn tone
+// with Costly but uses orange border fill so the two stay distinct.
+const TONE_CLASS: Record<Tone, string> = {
+	good: "text-emerald-700 dark:text-emerald-400",
+	ok: "text-sky-700 dark:text-sky-400",
+	warn: "text-amber-700 dark:text-amber-400",
+	bad: "text-red-700 dark:text-red-400",
+};
+
+const TIER_LABEL_CLASS: Partial<Record<OptionTier, string>> = {
+	risky: "text-orange-700 dark:text-orange-400",
+};
+
+// Visual state for one option once the question is answered (quiz mode).
+// Avoid font-weight changes — semibold shifts glyph widths and reflows the line.
+// scroll-mb keeps nearest scrollIntoView clear of the sticky continue bar.
+function optionClass(opt: QuizOption): string {
+	const base =
+		"w-full scroll-mb-28 rounded-2xl border-2 p-4 text-left transition-[transform,opacity] duration-150";
+	if (!answered) {
+		return `${base} border-border bg-card hover:border-primary/50 hover:bg-muted/50 active:scale-[0.99]`;
 	}
-
-	async function answer(optionId: QuizOption["id"]) {
-		const questionId = q?.id;
-		game.answer(optionId);
-		const outcome = game.outcomes[game.outcomes.length - 1];
-		if (outcome && outcome.questionId === questionId) {
-			playFeedbackSound(outcome.cleared ? "correct" : "incorrect");
-		}
-		await tick();
-		if (questionId && game.currentQuestion?.id === questionId) {
-			// Keep the option list in view; land keyboard focus on Continue/Finish.
-			continueBtnEl?.focus({ preventScroll: true });
-			pickedOptionEl?.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "smooth" });
-		}
+	const picked = opt.id === game.answeredOptionId;
+	const pickMark = picked ? "" : "opacity-80";
+	if (q && (q.scoring === "tiered" || q.scoring === "reveal-tradeoff")) {
+		const tierClass = opt.tier ? TIER_CLASS[opt.tier] : "border-border";
+		return `${base} ${tierClass} ${pickMark}`.trim();
 	}
-
-	function verdict(): { label: string; tone: Tone } | undefined {
-		if (!q || !pickedOption) return undefined;
-		if (q.scoring === "tiered" || q.scoring === "reveal-tradeoff") {
-			return pickedOption.tier ? TIER_VERDICT[pickedOption.tier] : undefined;
-		}
-		const right = pickedOption.correct === true;
-		return right ? { label: "Correct!", tone: "good" } : { label: "Not quite", tone: "bad" };
+	// single-best — color alone marks right/wrong; no ring (double border)
+	if (opt.correct) {
+		return `${base} ${TIER_CLASS.best}`;
 	}
-	let v = $derived(verdict());
+	if (picked) {
+		return `${base} ${TIER_CLASS.disqualifying}`;
+	}
+	return `${base} border-border opacity-60`;
+}
+
+async function answer(optionId: QuizOption["id"]) {
+	const questionId = q?.id;
+	game.answer(optionId);
+	const outcome = game.outcomes[game.outcomes.length - 1];
+	if (outcome && outcome.questionId === questionId) {
+		playFeedbackSound(outcome.cleared ? "correct" : "incorrect");
+	}
+	await tick();
+	if (questionId && game.currentQuestion?.id === questionId) {
+		// Keep the option list in view; land keyboard focus on Continue/Finish.
+		continueBtnEl?.focus({ preventScroll: true });
+		pickedOptionEl?.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "smooth" });
+	}
+}
+
+function verdict(): { label: string; tone: Tone } | undefined {
+	if (!q || !pickedOption) {
+		return undefined;
+	}
+	if (q.scoring === "tiered" || q.scoring === "reveal-tradeoff") {
+		return pickedOption.tier ? TIER_VERDICT[pickedOption.tier] : undefined;
+	}
+	const right = pickedOption.correct === true;
+	return right ? { label: "Correct!", tone: "good" } : { label: "Not quite", tone: "bad" };
+}
+let v = $derived(verdict());
 </script>
 
 {#if q && unit}

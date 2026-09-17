@@ -6,11 +6,12 @@ const DESCRIPTION_MIN = 110;
 const DESCRIPTION_MAX = 160;
 const BRAND = "Learn The FAR";
 /** Appended when a page summary is below Ahrefs' minimum. */
-const DESCRIPTION_PAD =
-	" Practice FAR capture scenarios for prime contractors on Learn The FAR.";
+const DESCRIPTION_PAD = " Practice FAR capture scenarios for prime contractors on Learn The FAR.";
 
 function truncateAtWord(text: string, max: number): string {
-	if (text.length <= max) return text;
+	if (text.length <= max) {
+		return text;
+	}
 	const ellipsis = "…";
 	const budget = max - ellipsis.length;
 	const cut = text.slice(0, budget);
@@ -25,11 +26,17 @@ function truncateAtWord(text: string, max: number): string {
  */
 export function formatDocumentTitle(pageTitle: string, brand = BRAND): string {
 	const trimmed = pageTitle.trim();
-	if (!trimmed) return brand;
+	if (!trimmed) {
+		return brand;
+	}
 
 	const withBrand = `${trimmed} — ${brand}`;
-	if (withBrand.length <= TITLE_MAX) return withBrand;
-	if (trimmed.length <= TITLE_MAX) return trimmed;
+	if (withBrand.length <= TITLE_MAX) {
+		return withBrand;
+	}
+	if (trimmed.length <= TITLE_MAX) {
+		return trimmed;
+	}
 	return truncateAtWord(trimmed, TITLE_MAX);
 }
 
@@ -38,7 +45,7 @@ export function formatDocumentTitle(pageTitle: string, brand = BRAND): string {
  * cutting mid-word when possible.
  */
 export function formatMetaDescription(description: string): string {
-	let trimmed = description.trim().replace(/\s+/g, " ");
+	let trimmed = description.trim().replace(/\s+/gu, " ");
 	if (!trimmed) {
 		trimmed = `Federal contracting scenarios and FAR capture practice on ${BRAND}.`;
 	}

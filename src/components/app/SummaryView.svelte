@@ -1,54 +1,67 @@
 <script lang="ts">
-	import { tick } from "svelte";
+import { tick } from "svelte";
+import { celebrateHighScoreOnce, shouldCelebrateScore } from "$lib/celebrate-score";
+import { Button } from "$lib/components/ui/button";
+import { ACHIEVEMENTS, scoreRingColor } from "$lib/far/constants";
+import { game } from "$lib/quiz-state.svelte.js";
 
-	import { game } from "$lib/quiz-state.svelte.js";
-	import { ACHIEVEMENTS, scoreRingColor } from "$lib/far/constants";
-	import { celebrateHighScoreOnce, shouldCelebrateScore } from "$lib/celebrate-score";
-	import { Button } from "$lib/components/ui/button";
+let s = $derived(game.summary);
+let earned = $derived(
+	s ? s.newAchievements.map((id) => ACHIEVEMENTS.find((a) => a.id === id)).filter(Boolean) : [],
+);
+let unitNotPrime = $derived(s?.unit ? game.unitStats(s.unit.id).level !== "prime" : false);
+let resultHeadingEl: HTMLHeadingElement | null = null;
 
-	let s = $derived(game.summary);
-	let earned = $derived(
-		s ? s.newAchievements.map((id) => ACHIEVEMENTS.find((a) => a.id === id)).filter(Boolean) : [],
-	);
-	let unitNotPrime = $derived(s?.unit ? game.unitStats(s.unit.id).level !== "prime" : false);
-	let resultHeadingEl: HTMLHeadingElement | null = null;
+function captureResultHeading(element: HTMLHeadingElement) {
+	resultHeadingEl = element;
+	return () => {
+		if (resultHeadingEl === element) {
+			resultHeadingEl = null;
+		}
+	};
+}
 
-	function captureResultHeading(element: HTMLHeadingElement) {
-		resultHeadingEl = element;
-		return () => {
-			if (resultHeadingEl === element) resultHeadingEl = null;
-		};
+$effect(() => {
+	const result = s;
+	if (!result) {
+		return;
 	}
 
-	$effect(() => {
-		const result = s;
-		if (!result) return;
-
-		void tick().then(() => {
-			if (game.summary === result) resultHeadingEl?.focus();
-		});
+	void tick().then(() => {
+		if (game.summary === result) {
+			resultHeadingEl?.focus();
+		}
 	});
+});
 
-	$effect(() => {
-		const result = s;
-		if (!result || !shouldCelebrateScore(result.scorePct)) return;
-
-		let cancelled = false;
-		void tick().then(async () => {
-			if (cancelled || game.summary !== result) return;
-			await celebrateHighScoreOnce(result, result.scorePct);
-		});
-
-		return () => {
-			cancelled = true;
-		};
-	});
-
-	function sessionLabel(summary: NonNullable<typeof s>): string {
-		if (summary.mode === "daily") return "Daily challenge";
-		if (summary.mode === "chapter" && summary.chapterTitle) return summary.chapterTitle;
-		return summary.unit?.title ?? "Quiz";
+$effect(() => {
+	const result = s;
+	if (!result || !shouldCelebrateScore(result.scorePct)) {
+		return;
 	}
+
+	let cancelled = false;
+	void tick().then(async () => {
+		if (cancelled || game.summary !== result) {
+			return;
+		}
+		await celebrateHighScoreOnce(result, result.scorePct);
+	});
+
+	return () => {
+		cancelled = true;
+	};
+});
+
+function sessionLabel(summary: NonNullable<typeof s>): string {
+	if (summary.mode === "daily") {
+		return "Daily challenge";
+	}
+	if (summary.mode === "chapter" && summary.chapterTitle) {
+		return summary.chapterTitle;
+	}
+	return summary.unit?.title ?? "Quiz";
+}
 </script>
 
 {#if s}

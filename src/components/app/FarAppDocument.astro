@@ -10,12 +10,7 @@ type Props = {
 	initialChapter?: string | null;
 };
 
-const {
-	title,
-	description,
-	initialUnit = null,
-	initialChapter = null,
-} = Astro.props;
+const { title, description, initialUnit = null, initialChapter = null } = Astro.props;
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 ---

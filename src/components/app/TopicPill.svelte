@@ -1,15 +1,15 @@
 <script lang="ts">
-	import { resolveChapterTag, topicPillLabel } from "$lib/far/glossary";
-	import TermDefinitionPopover from "./TermDefinitionPopover.svelte";
+import { resolveChapterTag, topicPillLabel } from "$lib/far/glossary";
+import TermDefinitionPopover from "./TermDefinitionPopover.svelte";
 
-	let {
-		tag,
-	}: {
-		tag: string;
-	} = $props();
+let {
+	tag,
+}: {
+	tag: string;
+} = $props();
 
-	let term = $derived(resolveChapterTag(tag));
-	let label = $derived(topicPillLabel(tag));
+let term = $derived(resolveChapterTag(tag));
+let label = $derived(topicPillLabel(tag));
 </script>
 
 {#if term}

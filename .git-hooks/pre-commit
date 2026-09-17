@@ -29,6 +29,11 @@ run_public_gate() {
 
   npm run check:actions
   npm run check:release-id
+  npm run check:lint
+  npm run check:knip
+  npm run check:md
+  npm run check:yaml
+  npm run check:pie
   npm run check:ts
   npm run build
   echo "✓ pre-commit gate passed — commit will land; push to a PR, Vercel deploys via GitHub integration on merge."
@@ -43,6 +48,11 @@ if [[ -n "$GATE_LIB" && -f "$GATE_LIB" ]]; then
   run_step "dep grounding" gate_check_dep_grounding .git-hooks/pre-commit
   run_step "actionlint" npm run check:actions
   run_step "release-id contract" npm run check:release-id
+  run_step "lint" npm run check:lint
+  run_step "knip" npm run check:knip
+  run_step "markdown lint" npm run check:md
+  run_step "yaml lint" npm run check:yaml
+  run_step "pie progress" npm run check:pie
   run_step "astro check (types)" npm run check:ts
   run_step "build" npm run build
   echo "✓ pre-commit gate passed — commit will land; push to a PR, Vercel deploys via GitHub integration on merge."

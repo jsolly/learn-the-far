@@ -88,7 +88,8 @@ export const FIND_SHELF_CHAPTERS: Chapter[] = [
 					"Forecast and vehicle channels are discovery paths beyond public SAM.gov solicitations. Agency acquisition forecasts and OSDBU / small-business office channels surface civilian demand earlier than many solicitations. FAR 5.404-1(b)(3) requires released long-range estimates to say they use the best available information, are subject to modification, and are not binding. GSA eBuy requests are generally visible to eligible contract holders for the relevant category or SIN — not necessarily as same-day public SAM.gov solicitations. Maintain three tabs per account: public notices, agency forecasts / vendor updates, and vehicle portals for the categories you or partners hold.",
 				watchFor:
 					"Don't treat a forecast date as a committed solicitation date, or call an eBuy RFQ nonexistent because a public SAM.gov search is empty. Incumbent marketing pages and state/local expiration lists are not substitutes for federal forecast and vehicle channels.",
-				citation: "Acquisition.gov — Agency Recurring Procurement Forecasts; FAR 5.404-1(b)(3); GSA Vendor Support Center — GSA eBuy",
+				citation:
+					"Acquisition.gov — Agency Recurring Procurement Forecasts; FAR 5.404-1(b)(3); GSA Vendor Support Center — GSA eBuy",
 				sourceUrl: "https://www.acquisition.gov/procurement-forecast",
 				sourceKind: "guidance",
 			},
@@ -137,7 +138,8 @@ export const FIND_SHELF_CHAPTERS: Chapter[] = [
 					"A related-notice chain connects sources sought, presolicitation, solicitation, amendments, justification, and award for one acquisition story in SAM.gov. A transaction chain follows PIIDs, parent IDVs, task orders, award and modification records, net obligations including deobligations, and potential value as a ceiling rather than revenue. Use the notice chain for requirement evolution when building recompete binders; use the PIID / modification trail for dates and money. Distinguish historical facts from assumptions about the next procurement — ceiling is not spend; continuity is not customer sentiment.",
 				watchFor:
 					"Don't treat the awardee's legal name alone as a reliable identity key, assume an award notice holds the full SOW and every amendment, or count potential value plus every child order as incumbent revenue. Negative obligations are not automatic proof of failed performance.",
-				citation: "SAM.gov Opportunity Management API — Related Notices; USAspending — Analyst's Guide to Federal Spending Data",
+				citation:
+					"SAM.gov Opportunity Management API — Related Notices; USAspending — Analyst's Guide to Federal Spending Data",
 				sourceUrl: "https://open.gsa.gov/api/opportunities-api/",
 				sourceKind: "guidance",
 			},

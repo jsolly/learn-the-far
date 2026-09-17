@@ -37,8 +37,8 @@ export function chapter(draft: ChapterDraft): Chapter {
 		readingMinutes: draft.readingMinutes,
 		suggestedOrder: draft.suggestedOrder,
 		pieces: draft.pieces,
-		closing: draft.closing,
-		furtherReading: draft.furtherReading,
 		quizCta: draft.quizCta ?? defaultQuizCta(draft.id),
+		...(draft.closing !== undefined ? { closing: draft.closing } : {}),
+		...(draft.furtherReading !== undefined ? { furtherReading: draft.furtherReading } : {}),
 	};
 }

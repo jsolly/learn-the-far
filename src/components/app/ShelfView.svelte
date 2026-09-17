@@ -1,94 +1,105 @@
 <script lang="ts">
-	import { tick, untrack } from "svelte";
-	import CheckIcon from "@lucide/svelte/icons/check";
+import CheckIcon from "@lucide/svelte/icons/check";
+import { tick, untrack } from "svelte";
+import { Button } from "$lib/components/ui/button";
+import { SHELF_HIDE_READ_KEY } from "$lib/far/constants";
+import { UNITS } from "$lib/far/deck";
+import { resolveChapterTag } from "$lib/far/glossary";
+import type { UnitId } from "$lib/far/types";
+import { learnChapterPath, learnShelfPath } from "$lib/learn-routes";
+import { game } from "$lib/quiz-state.svelte.js";
+import { restoreShelfViewport, saveShelfScroll } from "$lib/shelf-scroll";
+import TopicPill from "./TopicPill.svelte";
 
-	import { UNITS } from "$lib/far/deck";
-	import { SHELF_HIDE_READ_KEY } from "$lib/far/constants";
-	import type { UnitId } from "$lib/far/types";
-	import { resolveChapterTag } from "$lib/far/glossary";
-	import { learnChapterPath, learnShelfPath } from "$lib/learn-routes";
-	import { restoreShelfViewport, saveShelfScroll } from "$lib/shelf-scroll";
-	import { game } from "$lib/quiz-state.svelte.js";
-	import { Button } from "$lib/components/ui/button";
-	import TopicPill from "./TopicPill.svelte";
+function loadHideReadPref(): boolean {
+	if (typeof window === "undefined" || !("localStorage" in window)) {
+		return false;
+	}
+	try {
+		return window.localStorage.getItem(SHELF_HIDE_READ_KEY) === "1";
+	} catch {
+		return false;
+	}
+}
 
-	function loadHideReadPref(): boolean {
-		if (typeof window === "undefined" || !("localStorage" in window)) return false;
-		try {
-			return window.localStorage.getItem(SHELF_HIDE_READ_KEY) === "1";
-		} catch {
-			return false;
+function persistHideReadPref(value: boolean) {
+	if (typeof window === "undefined" || !("localStorage" in window)) {
+		return;
+	}
+	try {
+		window.localStorage.setItem(SHELF_HIDE_READ_KEY, value ? "1" : "0");
+	} catch {
+		// Ignore quota / private-mode failures; in-memory toggle still works.
+	}
+}
+
+let shelf = $derived(game.shelf);
+let headingEl: HTMLHeadingElement | null = null;
+let hideRead = $state(loadHideReadPref());
+
+let readCount = $derived(
+	shelf ? shelf.chapters.filter((ch) => game.isChapterRead(ch.id)).length : 0,
+);
+let visibleChapters = $derived(
+	shelf
+		? hideRead
+			? shelf.chapters.filter((ch) => !game.isChapterRead(ch.id))
+			: shelf.chapters
+		: [],
+);
+
+/** Only glossary-backed jargon — not pedagogical or everyday-English tags. */
+function loadBearingTags(tags: string[]): string[] {
+	return tags.filter((tag) => Boolean(resolveChapterTag(tag))).slice(0, 4);
+}
+
+function captureHeading(element: HTMLHeadingElement) {
+	headingEl = element;
+	return () => {
+		if (headingEl === element) {
+			headingEl = null;
 		}
-	}
+	};
+}
 
-	function persistHideReadPref(value: boolean) {
-		if (typeof window === "undefined" || !("localStorage" in window)) return;
-		try {
-			window.localStorage.setItem(SHELF_HIDE_READ_KEY, value ? "1" : "0");
-		} catch {
-			// Ignore quota / private-mode failures; in-memory toggle still works.
+function rememberScrollBeforeChapter() {
+	if (!shelf) {
+		return;
+	}
+	saveShelfScroll(shelf.unitId);
+}
+
+function setHideRead(next: boolean) {
+	hideRead = next;
+	persistHideReadPref(next);
+}
+
+function toggleHideRead() {
+	setHideRead(!hideRead);
+}
+
+$effect(() => {
+	const current = shelf;
+	if (!current) {
+		return;
+	}
+	const unitId = current.unitId;
+	// One-shot focus id from Back to chapters / Browse chapters.
+	const focusChapterId = untrack(() => game.pendingShelfFocusChapterId);
+	void tick().then(async () => {
+		if (game.shelf !== current) {
+			return;
 		}
-	}
-
-	let shelf = $derived(game.shelf);
-	let headingEl: HTMLHeadingElement | null = null;
-	let hideRead = $state(loadHideReadPref());
-
-	let readCount = $derived(
-		shelf ? shelf.chapters.filter((ch) => game.isChapterRead(ch.id)).length : 0,
-	);
-	let visibleChapters = $derived(
-		shelf
-			? hideRead
-				? shelf.chapters.filter((ch) => !game.isChapterRead(ch.id))
-				: shelf.chapters
-			: [],
-	);
-
-	/** Only glossary-backed jargon — not pedagogical or everyday-English tags. */
-	function loadBearingTags(tags: string[]): string[] {
-		return tags.filter((tag) => Boolean(resolveChapterTag(tag))).slice(0, 4);
-	}
-
-	function captureHeading(element: HTMLHeadingElement) {
-		headingEl = element;
-		return () => {
-			if (headingEl === element) headingEl = null;
-		};
-	}
-
-	function rememberScrollBeforeChapter() {
-		if (!shelf) return;
-		saveShelfScroll(shelf.unitId);
-	}
-
-	function setHideRead(next: boolean) {
-		hideRead = next;
-		persistHideReadPref(next);
-	}
-
-	function toggleHideRead() {
-		setHideRead(!hideRead);
-	}
-
-	$effect(() => {
-		const current = shelf;
-		if (!current) return;
-		const unitId = current.unitId;
-		// One-shot focus id from Back to chapters / Browse chapters.
-		const focusChapterId = untrack(() => game.pendingShelfFocusChapterId);
-		void tick().then(async () => {
-			if (game.shelf !== current) return;
-			// Keep a11y focus without jumping the viewport to the heading.
-			headingEl?.focus({ preventScroll: true });
-			game.pendingShelfFocusChapterId = null;
-			await restoreShelfViewport(unitId, { focusChapterId });
-		});
+		// Keep a11y focus without jumping the viewport to the heading.
+		headingEl?.focus({ preventScroll: true });
+		game.pendingShelfFocusChapterId = null;
+		await restoreShelfViewport(unitId, { focusChapterId });
 	});
+});
 
-	function unitLabel(unitId: UnitId): string {
-		return UNITS.find((u) => u.id === unitId)?.label ?? "this slice";
-	}
+function unitLabel(unitId: UnitId): string {
+	return UNITS.find((u) => u.id === unitId)?.label ?? "this slice";
+}
 </script>
 
 {#if shelf}

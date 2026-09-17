@@ -1,11 +1,12 @@
-import { UNITS } from "$lib/far/deck";
 import { chapterById, shelfForUnit } from "$lib/far/chapters";
+import { UNITS } from "$lib/far/deck";
 import type { UnitId } from "$lib/far/types";
 
-export const UNIT_IDS: UnitId[] = UNITS.map((u) => u.id);
+const UNIT_IDS: UnitId[] = UNITS.map((u) => u.id);
+const UNIT_ID_SET: ReadonlySet<string> = new Set(UNIT_IDS);
 
-export function isUnitId(value: string | null | undefined): value is UnitId {
-	return Boolean(value && (UNIT_IDS as string[]).includes(value));
+export function isUnitId(value: unknown): value is UnitId {
+	return typeof value === "string" && UNIT_ID_SET.has(value);
 }
 
 export function learnShelfPath(unitId: UnitId): string {
@@ -23,8 +24,10 @@ export type LearnRoute =
 
 /** Parse a pathname into a learn route. Unknown paths are treated as home. */
 export function parseLearnPath(pathname: string): LearnRoute {
-	const clean = pathname.replace(/\/+$/, "") || "/";
-	if (clean === "/") return { kind: "home" };
+	const clean = pathname.replace(/\/+$/u, "") || "/";
+	if (clean === "/") {
+		return { kind: "home" };
+	}
 
 	const parts = clean.split("/").filter(Boolean);
 	if (parts[0] !== "learn" || parts.length < 2 || parts.length > 3) {
@@ -32,16 +35,22 @@ export function parseLearnPath(pathname: string): LearnRoute {
 	}
 
 	const unitId = parts[1];
-	if (!isUnitId(unitId)) return { kind: "home" };
+	if (!isUnitId(unitId)) {
+		return { kind: "home" };
+	}
 
 	if (parts.length === 2) {
 		return { kind: "shelf", unitId };
 	}
 
 	const chapterId = parts[2];
-	if (!chapterId) return { kind: "home" };
+	if (!chapterId) {
+		return { kind: "home" };
+	}
 	const chapter = chapterById(chapterId);
-	if (!chapter || chapter.unitId !== unitId) return { kind: "home" };
+	if (!chapter || chapter.unitId !== unitId) {
+		return { kind: "home" };
+	}
 	return { kind: "chapter", unitId, chapterId };
 }
 

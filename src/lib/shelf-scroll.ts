@@ -11,7 +11,9 @@ function keyFor(unitId: UnitId): string {
 
 /** Remember where the learner was on a unit shelf before opening a chapter. */
 export function saveShelfScroll(unitId: UnitId, scrollY = window.scrollY) {
-	if (!canUseSessionStorage()) return;
+	if (!canUseSessionStorage()) {
+		return;
+	}
 	try {
 		const y = Math.max(0, Math.round(scrollY));
 		window.sessionStorage.setItem(keyFor(unitId), String(y));
@@ -21,11 +23,15 @@ export function saveShelfScroll(unitId: UnitId, scrollY = window.scrollY) {
 }
 
 /** Peek at a saved shelf scroll without clearing it. */
-export function peekShelfScroll(unitId: UnitId): number | null {
-	if (!canUseSessionStorage()) return null;
+function peekShelfScroll(unitId: UnitId): number | null {
+	if (!canUseSessionStorage()) {
+		return null;
+	}
 	try {
 		const raw = window.sessionStorage.getItem(keyFor(unitId));
-		if (raw == null) return null;
+		if (raw == null) {
+			return null;
+		}
 		const y = Number(raw);
 		return Number.isFinite(y) && y >= 0 ? y : null;
 	} catch {
@@ -34,8 +40,10 @@ export function peekShelfScroll(unitId: UnitId): number | null {
 }
 
 /** Clear a saved shelf scroll after a successful restore (or intentional discard). */
-export function clearShelfScroll(unitId: UnitId) {
-	if (!canUseSessionStorage()) return;
+function clearShelfScroll(unitId: UnitId) {
+	if (!canUseSessionStorage()) {
+		return;
+	}
 	try {
 		window.sessionStorage.removeItem(keyFor(unitId));
 	} catch {
@@ -79,7 +87,9 @@ export async function restoreShelfViewport(
 	}
 
 	const chapterId = opts?.focusChapterId;
-	if (!chapterId) return;
+	if (!chapterId) {
+		return;
+	}
 	const card = document.getElementById(`shelf-chapter-${chapterId}`);
 	card?.scrollIntoView({ block: "center", behavior: "auto" });
 }

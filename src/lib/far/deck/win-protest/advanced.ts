@@ -192,8 +192,7 @@ export const WIN_PROTEST_ADVANCED: QuizQuestion[] = [
 			"FAR 33.103(d)(4) warns that an agency appellate review does not extend GAO timeliness; a later GAO protest generally must be filed within 10 days after knowledge of initial adverse agency action. COFC is a distinct judicial forum under 28 U.S.C. § 1491(b), not a blanket safe harbor. Under Blue & Gold, a party that had an opportunity to object to a patent solicitation defect ordinarily waives that objection by waiting past proposal submission or the close of bidding—not merely by waiting until award.",
 		citation:
 			"FAR 33.103(d)(4); 4 C.F.R. § 21.2(a)(3); Blue & Gold Fleet, L.P. v. United States, 492 F.3d 1308 (Fed. Cir. 2007)",
-		sourceUrl:
-			"https://www.cafc.uscourts.gov/6-26-2007-2006-5064-blue-gold-fleet-lp-v-us-06-5064/",
+		sourceUrl: "https://www.cafc.uscourts.gov/6-26-2007-2006-5064-blue-gold-fleet-lp-v-us-06-5064/",
 		tags: ["agency-protest", "GAO", "COFC", "initial-adverse-action"],
 	},
 	{
@@ -274,8 +273,7 @@ export const WIN_PROTEST_ADVANCED: QuizQuestion[] = [
 		],
 		explanation:
 			"Corrective action can produce a genuinely new source-selection decision and new protest bases. Under 4 C.F.R. 21.2(a), timeliness runs from the operative events and knowledge; Wright Brothers Aero dismissed a post-corrective-action reaward protest filed more than 10 days after the protester knew or should have known its basis. The company must analyze the new record and separately recalculate debriefing, GAO merits, and CICA stay dates rather than relying on the dismissed case.",
-		citation:
-			"FAR 33.104(c); 4 C.F.R. § 21.2(a); Wright Brothers Aero, Inc., B-423326.2",
+		citation: "FAR 33.104(c); 4 C.F.R. § 21.2(a); Wright Brothers Aero, Inc., B-423326.2",
 		sourceUrl: "https://www.gao.gov/products/b-423326.2",
 		tags: ["corrective-action", "reaward", "new-protest-basis", "customer-relationship"],
 	},

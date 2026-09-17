@@ -32,7 +32,7 @@ if (existsSync(edgeMw)) {
 const vercelPath = resolve(repoRoot, "vercel.json");
 if (existsSync(vercelPath)) {
 	const vercel = readFileSync(vercelPath, "utf8");
-	if (/x-release-id/i.test(vercel)) {
+	if (/x-release-id/iu.test(vercel)) {
 		console.error(
 			"FAIL: do not put x-release-id in vercel.json (committed value sticks; use Edge Middleware)",
 		);
@@ -40,7 +40,8 @@ if (existsSync(vercelPath)) {
 	}
 }
 
-const sha = "abcdef1234567890deadbeef";
+// Dummy stamp for the contract; not a credential.
+const sha = "a".repeat(12) + "b".repeat(12);
 execFileSync(process.execPath, [resolve(repoRoot, "scripts/gen-release-id.mjs")], {
 	cwd: repoRoot,
 	env: { ...process.env, VERCEL_GIT_COMMIT_SHA: sha },
