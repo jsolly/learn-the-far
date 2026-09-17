@@ -68,7 +68,7 @@ If you are not deploying to `learnthefar.com`, update:
 | `public/robots.txt` | Sitemap URL host |
 | `vercel.json` | `www` → apex redirect `has` / `destination` hosts (or remove that redirect) |
 
-Production for this repo stays Git-connected: pushes to `main` deploy automatically after CI.
+Production for this repo stays Git-connected: pushes to `main` deploy automatically after CI. Branch pushes do not create Preview deployments; comment `/preview` as the first non-empty line on a same-repo PR (or run the **Vercel Preview** workflow) for a one-shot Preview.
 
 ## CI and commits
 

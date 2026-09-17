@@ -55,6 +55,8 @@ Fresh worktrees run `npm run worktree:init` (`npm ci`) via Cursor’s setup comm
 
 Static Vercel deploy only — see README **Deploy your own copy**. For a different domain, update `astro.config.mjs` `site`, `public/robots.txt`, and `vercel.json` host redirects. No production secrets or server env vars.
 
+Production Git deploys stay on for `main` (`vercel.json` `git.deploymentEnabled`). Branch pushes do **not** create Preview deployments. Comment `/preview` as the first non-empty line on a same-repo PR (owner/member/collaborator User), or run workflow **Vercel Preview** with the PR number. GitHub runs that workflow from `main`. One-shot: new commits do not rebuild until you ask again. Requires GitHub secret `VERCEL_TOKEN`. Agents must not comment `/preview` unless the user asked.
+
 ## Documentation
 
 - Project README: [README.md](./README.md)
