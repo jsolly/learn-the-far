@@ -33,6 +33,16 @@ Manage with `astro dev stop`, `astro dev status`, and `astro dev logs`. Default 
 
 No `.env` is required to run or build the app. `.env.example` is only for the optional ECharts MCP helper.
 
+## Dependencies / Assets
+
+### No CDN for app assets
+
+Prefer npm packages, files in this repo, and same-origin URLs the build emits. Do not load application CSS, JS, or fonts from a third-party CDN (jsDelivr, unpkg, cdnjs, Google Hosted Libraries, Google Fonts CSS, Tailwind Play CDN, esm.sh, and similar).
+
+Install libraries with npm and import them. Do not add remote `<script src>` or `<link rel="stylesheet">` tags for runtime UI. Self-host fonts with `@fontsource*` — this app already does that for Inter in `src/styles/global.css`.
+
+Study-content hyperlinks (acquisition.gov, eCFR, GAO, and similar) are not app assets. Tooling git/tarball deps (for example `echarts-mcp`) and JSON Schema `$schema` URLs in config files are not runtime CDNs.
+
 ## Worktrees
 
 Fresh worktrees run `npm run worktree:init` (`npm ci`) via Cursor’s setup command or the optional Git `post-checkout` hook. The app has no required gitignored local configuration, so `.worktreeinclude` is intentionally absent.
