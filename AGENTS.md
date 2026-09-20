@@ -76,3 +76,11 @@ No auth — public UI only. Smoke the changed routes on desktop and mobile width
 
 - **Dev server:** `astro dev --background` (or `npm run dev`).
 - **Auth:** none — public pages only.
+
+## Verified-tree CI
+
+PRs run the full CI suite. Post-merge CI reuses a successful PR run only when
+its recorded checkout tree exactly matches the landed tree, using
+`scripts/ci-verified-tree.sh` from dotagents. Missing proof runs full CI;
+manual runs always validate. Job names and deployment triggers stay intact.
+Canonical contract: `~/code/dotagents/templates/github/verified-tree-ci.md`.
