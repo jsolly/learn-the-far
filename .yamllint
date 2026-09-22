@@ -6,8 +6,6 @@ ignore: |
   .astro/
   .aws-sam/
   .vercel/
-  .claude/
-  .agents/
   .venv/
   .playwright-cli/
   .playwright-mcp/
