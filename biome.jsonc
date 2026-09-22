@@ -8,15 +8,7 @@
 	},
 	"files": {
 		"ignoreUnknown": true,
-		"includes": [
-			"**",
-			"!package-lock.json",
-			"!**/.agents",
-			"!**/.claude",
-			"!**/dist",
-			"!**/.astro",
-			"!**/.vercel"
-		]
+		"includes": ["**", "!package-lock.json", "!**/dist", "!**/.astro", "!**/.vercel"]
 	},
 	"css": {
 		"parser": {
