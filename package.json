@@ -27,7 +27,9 @@
 		"prepare": "if [ -z \"$CI\" ] && git rev-parse --git-dir >/dev/null 2>&1; then git config core.hooksPath .git-hooks; fi",
 		"check:actions": "bash scripts/check-actions.sh && bash scripts/vercel-preview-comment-contract.sh && bash scripts/vercel-preview-workflow-contract.sh",
 		"check:release-id": "node scripts/check-release-id.mjs",
-		"gate": "FLEET_DOC_FAST=0 bash .git-hooks/pre-commit"
+		"gate": "FLEET_DOC_FAST=0 bash .git-hooks/pre-commit",
+		"smoke:production": "node scripts/production-smoke.mjs",
+		"smoke:scenario-contract": "node --test scripts/production-smoke-scenario.test.mjs"
 	},
 	"dependencies": {
 		"@astrojs/sitemap": "^3.7.3",
@@ -54,6 +56,7 @@
 		"github-actionlint": "^1.7.12",
 		"knip": "^6.36.0",
 		"markdownlint-cli2": "^0.22.1",
+		"playwright": "1.63.0",
 		"shadcn-svelte": "^1.3.0",
 		"tailwind-merge": "^3.6.0",
 		"tailwind-variants": "^3.2.2",

@@ -28,3 +28,6 @@ pnpm-debug.log*
 
 # local SEO audit artifacts
 .seo-audit/
+
+# Production browser smoke diagnostics
+production-smoke-artifacts/
