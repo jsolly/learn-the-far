@@ -70,7 +70,7 @@ jobs:
               )
             )
       )
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     env:
       # secrets cannot be read in steps.if; map presence into env first.
       HAS_APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY != '' }}
