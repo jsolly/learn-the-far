@@ -44,7 +44,7 @@ if [[ -n "$GATE_LIB" && -f "$GATE_LIB" ]]; then
   source "$GATE_LIB"
   gate_begin_commit "learn-the-far"
   gate_require_node
-  gate_npm_ci --if-stale
+  gate_npm_ci
   run_step "dep grounding" gate_check_dep_grounding .git-hooks/pre-commit
   run_step "actionlint" npm run check:actions
   run_step "release-id contract" npm run check:release-id
