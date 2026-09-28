@@ -6,9 +6,6 @@
 # without installing private tooling.
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$ROOT"
-
 GATE_LIB="${DOTAGENTS_GATE_LIB:-${HOME:-}/code/dotagents/gate/gate-lib.sh}"
 
 run_public_gate() {
@@ -42,6 +39,9 @@ run_public_gate() {
 if [[ -n "$GATE_LIB" && -f "$GATE_LIB" ]]; then
   # shellcheck source=/dev/null
   source "$GATE_LIB"
+  # Gate the tree being committed, not this copy's: under an absolute core.hooksPath (Claude
+  # desktop worktrees) this re-execs the committing tree's own hook; it sets ROOT and cd's.
+  gate_enter_committing_tree "${BASH_SOURCE[0]}"
   gate_begin_commit "learn-the-far"
   gate_require_node
   gate_npm_ci
@@ -57,5 +57,6 @@ if [[ -n "$GATE_LIB" && -f "$GATE_LIB" ]]; then
   run_step "build" npm run build
   echo "✓ pre-commit gate passed — commit will land; push to a PR, Vercel deploys via GitHub integration on merge."
 else
+  cd "$(git rev-parse --show-toplevel)"
   run_public_gate
 fi
