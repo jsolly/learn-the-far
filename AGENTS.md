@@ -2,17 +2,13 @@
 
 Ship profile: `vercel-static`
 
-**Integration: branch → PR → merge on green `CI / ci`.** `/ship` opens the PR, arms native auto-merge as the backstop where the base branch's ruleset requires `ci`, and runs the head-pinned squash itself as soon as `ci` passes on the head (`~/code/dotagents/skills/ship/references/git-discipline.md` → Merge a same-repo self PR). Agents never push to `main`, change rulesets, or admin-merge.
-
-CI owner: `local`
+**Integration: branch → PR → merge on green `CI / ci`.** `/ship` merges per `skills/ship/references/git-discipline.md` → Merge a same-repo self PR (read the installed `/ship` reference). Agents never push to `main`, change rulesets, or admin-merge.
 
 Production URL: <https://learnthefar.com>
 
-**Prod verify:** `/ship` requires `x-release-id` to match `origin/main` (12-char). HTTP 200 alone is insufficient.
+Production verification follows Vercel READY and the public chapter and quiz behavior smoke.
 
-```bash
-curl -sSIL https://learnthefar.com/ | rg -i '^x-release-id:'
-```
+Local gate before push: `npm run gate`.
 
 ## Development
 
@@ -43,11 +39,11 @@ Study-content hyperlinks (acquisition.gov, eCFR, GAO, and similar) are not app a
 
 ## Worktrees
 
-Fresh worktrees run `npm run worktree:init` (`npm ci`) via Cursor’s setup command or the optional Git `post-checkout` hook. The app has no required gitignored local configuration, so `.worktreeinclude` is intentionally absent.
+Fresh worktrees run `npm run worktree:init` (`npm ci`) via Cursor’s setup command. The app has no required gitignored local configuration, so `.worktreeinclude` is intentionally absent.
 
 ## Pre-commit gate
 
-`.git-hooks/pre-commit` runs actionlint, the release-id contract, Biome, knip, markdownlint, yamllint, pie-progress, `astro check`, and `astro build`. If the optional shared `dotagents` gate-lib is present on the machine, it is used; otherwise the same checks run directly. Never weaken or skip the gate with `--no-verify`.
+`.git-hooks/pre-commit` runs the bash floor check (with the shared gate-lib), actionlint, Biome, knip, markdownlint, yamllint, pie-progress, the negative quiz smoke contract, `astro check`, and `astro build`. If the optional shared `dotagents` gate-lib is present on the machine, it is used; otherwise the same checks run directly. Never weaken or skip the gate with `--no-verify`.
 
 ## Deploy / fork
 
@@ -106,3 +102,11 @@ until a drain re-kicks the new head (remove, then re-add the label). Deferred ru
 report `ci-deferred` and cannot satisfy the required `ci` check. Skipped or
 absent checks never authorize a dependency merge. See the Dependabot CI kick in
 the canonical `dotagents/skills/optimize-workspaces/references/pr-drain.md`.
+
+## Git hooks
+
+`core.hooksPath` is the dotagents dispatcher `~/.local/share/dotagents/hooks`, installed and set by the dotagents installers. Never point it at `.git-hooks` or set it from a package script. The dispatcher runs this repo’s tracked pre-commit hook only when its bytes match a version on `origin/main` or your approved hook blob. Approve only your own edits using the command printed by the refusal. Review fork and third-party PR heads using `gh pr diff`; never check them out here. Canon: dotagents `rules/agent-cloud-access.md` → GitHub.
+
+## Fleet rollout
+
+Changes inside this repo ship normally. For changes other repos must adopt, link the merged PR on the existing dotagents Todoist fleet-rollout task. Do not start that rollout or spawn per-repo chips, PRs or tasks from here. John authorizes one lead to walk the fleet after canon settles. Follow the installed `persist-todos-in-todoist` skill → Fleet rollout.

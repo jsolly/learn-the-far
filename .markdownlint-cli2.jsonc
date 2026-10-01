@@ -18,9 +18,6 @@
 		"node_modules/**",
 		// Archival planning/spec records — not active content, not lint-gated.
 		"docs/plans/**",
-		"docs/specs/**",
-		// CLAUDE.md is a symlink to its sibling AGENTS.md (already linted) — skip to avoid double-linting.
-		"CLAUDE.md",
-		"**/CLAUDE.md"
+		"docs/specs/**"
 	]
 }

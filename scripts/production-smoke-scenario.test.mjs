@@ -18,7 +18,7 @@ test("quiz without answer handling fails", async () => {
 			}),
 		);
 		await page.goto(productionUrl);
-		await assert.rejects(smoke({ page, context }), /Timeout/u);
+		await assert.rejects(smoke({ page, context, verifyHttp: async () => {} }), /Timeout/u);
 	} finally {
 		await browser.close();
 	}
