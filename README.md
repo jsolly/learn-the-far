@@ -8,7 +8,7 @@ Live site: <https://learnthefar.com>
 
 ## Quick start
 
-Requirements: Node.js 24.x (see `.nvmrc`).
+Requirements: Node.js 24.x (see `.nvmrc`) and Bash 5+ (macOS: `brew install bash`).
 
 ```bash
 git clone https://github.com/jsolly/learn-the-far.git
@@ -72,9 +72,9 @@ Production for this repo stays Git-connected: pushes to `main` deploy automatica
 
 ## CI and commits
 
-GitHub Actions (`.github/workflows/ci.yml`) runs on every PR and on `main`: actionlint, release-id contract, Biome, knip, markdownlint, yamllint, pie-progress, typecheck, and build.
+GitHub Actions (`.github/workflows/ci.yml`) runs on every PR and on `main`: actionlint, Biome, knip, markdownlint, yamllint, pie-progress, the negative quiz smoke contract, typecheck, and build.
 
-Local pre-commit (`.git-hooks/pre-commit`) runs the same checks. `npm run prepare` points `core.hooksPath` at `.git-hooks` when you are not in CI. Contributors do not need any private tooling — the hook falls back to a built-in gate when the author’s optional shared gate library is absent. YAML lint uses `uvx` (install [uv](https://docs.astral.sh/uv/)).
+Local pre-commit (`.git-hooks/pre-commit`) runs the same checks. The personal fleet uses the installed dotagents hook dispatcher; package scripts never reset `core.hooksPath`. Forks can run `npm run gate` directly. Contributors do not need any private tooling — the hook falls back to a built-in gate when the author’s optional shared gate library is absent. The hook and scripts need Bash 5 or newer; on macOS, `brew install bash` (the stock `/bin/bash` is 3.2, and the scripts refuse it). YAML lint uses `uvx` (install [uv](https://docs.astral.sh/uv/)).
 
 ## Contributing
 
