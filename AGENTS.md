@@ -27,6 +27,20 @@ Manage with `astro dev stop`, `astro dev status`, and `astro dev logs`. Default 
 
 No `.env` is required to run or build the app. `.env.example` is only for the optional ECharts MCP helper.
 
+## Frontend stack
+
+Astro owns routes; Svelte owns interactive islands. Use the installed
+shadcn-svelte components for new or replaced standard controls; load the shared
+`/shadcn-svelte` skill before implementation. Reuse `src/lib/components/ui` and
+its existing theme in `src/styles/global.css`. Chapter, shelf, quiz, glossary
+and home views already use Button, Badge, Progress and Popover in product UI.
+
+`components.json` defines the registry and `$lib` aliases. Use the lockfile's
+local shadcn-svelte CLI for component additions and review generated changes.
+Keep domain-specific study content and charts as application code. Alternative
+stacks and framework migrations require explicit user direction.
+Canon: `~/code/dotagents/rules/frontend-stack.md`.
+
 ## Dependencies / Assets
 
 ### No CDN for app assets
