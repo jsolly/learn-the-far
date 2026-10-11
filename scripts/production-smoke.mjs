@@ -3,7 +3,6 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
-const RELEASE_SHA = /^[0-9a-f]{40}$/u;
 const REQUEST_ID = /^[a-zA-Z0-9_-]{1,100}$/u;
 
 export function verifyResponse({ url, status }, canonical) {
@@ -16,6 +15,15 @@ export function verifyResponse({ url, status }, canonical) {
 		throw new Error(`HTTP ${status}: ${url}`);
 	}
 }
+/**
+ * @typedef {object} SmokeReceipt
+ * @property {string | undefined} requestId
+ * @property {string | undefined} releaseSha
+ * @property {Array<{url: string, status: number, source?: string, scope?: string, script?: string, state?: string, controlled?: boolean}>} observations
+ * @property {string[]} errors
+ * @property {boolean} success
+ */
+/** @returns {Promise<SmokeReceipt>} */
 export async function runSmoke({
 	scenario,
 	env = process.env,
@@ -34,7 +42,7 @@ export async function runSmoke({
 		errors: [],
 		success: false,
 	};
-	let browser, context, page, timer;
+	let browser, context, page, workerContext, workerPage, timer;
 	const recordError = (error) => receipt.errors.push(String(error));
 	const diagnostics = [];
 	const drainDiagnostics = async () => {
@@ -55,11 +63,64 @@ export async function runSmoke({
 		verifyResponse(observation, url);
 		return response;
 	};
+	const watchPage = (target) => {
+		const origin = new URL(scenario.productionUrl).origin;
+		target.setDefaultTimeout(15000);
+		target.on("console", (message) => {
+			if (message.type() === "error") {
+				recordError(`console: ${message.text()}`);
+			}
+		});
+		target.on("pageerror", (error) => recordError(`pageerror: ${error}`));
+		target.on("requestfailed", (request) => {
+			if (new URL(request.url()).origin !== origin) {
+				return;
+			}
+			diagnostics.push(
+				(async () => {
+					const failure = request.failure()?.errorText;
+					if (request.method() === "HEAD" && failure === "net::ERR_ABORTED") {
+						// Chromium can abort a HEAD body after receiving its successful headers.
+						const response = await request.response();
+						if (response && response.status() >= 200 && response.status() < 300) {
+							receipt.observations.push({
+								url: response.url(),
+								status: response.status(),
+								source: "browser-head",
+								method: "HEAD",
+							});
+							return;
+						}
+					}
+					recordError(`requestfailed: ${request.url()} ${failure}`);
+				})().catch(recordError),
+			);
+		});
+		target.on("response", (response) => {
+			if (new URL(response.url()).origin !== origin) {
+				return;
+			}
+			if (response.status() >= 400) {
+				recordError(`HTTP ${response.status()}: ${response.url()}`);
+			}
+			if (
+				response.request().resourceType() === "document" &&
+				response.status() >= 200 &&
+				response.status() < 300
+			) {
+				receipt.observations.push({
+					url: response.url(),
+					status: response.status(),
+					source: "browser",
+				});
+			}
+		});
+	};
 	try {
 		if (!REQUEST_ID.test(receipt.requestId ?? "")) {
 			throw new Error("Invalid smoke request ID");
 		}
-		if (!RELEASE_SHA.test(receipt.releaseSha ?? "")) {
+		if (!/^[0-9a-f]{40}$/u.test(receipt.releaseSha ?? "")) {
 			throw new Error("Invalid smoke release SHA");
 		}
 		if (new URL(scenario.productionUrl).protocol !== "https:") {
@@ -91,57 +152,7 @@ export async function runSmoke({
 			sources: true,
 		});
 		page = await context.newPage();
-		page.setDefaultTimeout(15000);
-		const origin = new URL(scenario.productionUrl).origin;
-		page.on("console", (message) => {
-			if (message.type() === "error") {
-				recordError(`console: ${message.text()}`);
-			}
-		});
-		page.on("pageerror", (error) => recordError(`pageerror: ${error}`));
-		page.on("requestfailed", (request) => {
-			if (new URL(request.url()).origin !== origin) {
-				return;
-			}
-			diagnostics.push(
-				(async () => {
-					const failure = request.failure()?.errorText;
-					if (request.method() === "HEAD" && failure === "net::ERR_ABORTED") {
-						// Chromium can abort a HEAD body after receiving its successful headers.
-						const response = await request.response();
-						if (response && response.status() >= 200 && response.status() < 300) {
-							receipt.observations.push({
-								url: response.url(),
-								status: response.status(),
-								source: "browser-head",
-								method: "HEAD",
-							});
-							return;
-						}
-					}
-					recordError(`requestfailed: ${request.url()} ${failure}`);
-				})().catch(recordError),
-			);
-		});
-		page.on("response", (response) => {
-			if (new URL(response.url()).origin !== origin) {
-				return;
-			}
-			if (response.status() >= 400) {
-				recordError(`HTTP ${response.status()}: ${response.url()}`);
-			}
-			if (
-				response.request().resourceType() === "document" &&
-				response.status() >= 200 &&
-				response.status() < 300
-			) {
-				receipt.observations.push({
-					url: response.url(),
-					status: response.status(),
-					source: "browser",
-				});
-			}
-		});
+		watchPage(page);
 		await Promise.race([
 			(async () => {
 				const response = await page.goto(scenario.productionUrl, {
@@ -152,6 +163,72 @@ export async function runSmoke({
 				}
 				verifyResponse({ url: response.url(), status: response.status() }, scenario.productionUrl);
 				await scenario.smoke({ page, context, artifacts, verifyHttp });
+				if (scenario.serviceWorker !== undefined) {
+					const settings = scenario.serviceWorker;
+					const canonical = new URL(scenario.productionUrl);
+					const urls = {};
+					for (const key of ["page", "scope", "script"]) {
+						if (typeof settings?.[key] !== "string") {
+							throw new Error(`Service worker ${key} must be a URL path`);
+						}
+						const value = new URL(settings[key], canonical);
+						if (value.origin !== canonical.origin || value.search || value.hash) {
+							throw new Error(`Noncanonical service worker ${key}`);
+						}
+						urls[key] = value.href;
+					}
+					if (!urls.scope.endsWith("/") || !urls.page.startsWith(urls.scope)) {
+						throw new Error("Service worker page must be inside its directory scope");
+					}
+					// A fresh context cannot inherit a previous release's worker or cache.
+					// Main behavioral checks remain in the worker-blocked context above.
+					workerContext = await browser.newContext({ serviceWorkers: "allow" });
+					await workerContext.tracing.start({
+						screenshots: true,
+						snapshots: true,
+						sources: true,
+					});
+					workerPage = await workerContext.newPage();
+					watchPage(workerPage);
+					const workerResponse = await workerPage.goto(urls.page, {
+						waitUntil: "domcontentloaded",
+					});
+					if (!workerResponse) {
+						throw new Error("Worker navigation returned no document");
+					}
+					verifyResponse({ url: workerResponse.url(), status: workerResponse.status() }, urls.page);
+					await workerPage.waitForFunction(
+						async ({ scope, script }) => {
+							const registration = await navigator.serviceWorker.getRegistration();
+							return (
+								registration?.scope === scope &&
+								registration.active?.state === "activated" &&
+								registration.active.scriptURL === script
+							);
+						},
+						urls,
+						{ timeout: behaviorMs },
+					);
+					await workerPage.waitForLoadState("networkidle");
+					await workerPage.reload({ waitUntil: "domcontentloaded" });
+					await workerPage.waitForFunction(
+						({ script }) => navigator.serviceWorker.controller?.scriptURL === script,
+						urls,
+						{ timeout: behaviorMs },
+					);
+					if (workerPage.url() !== urls.page) {
+						throw new Error("Worker page redirected");
+					}
+					receipt.observations.push({
+						url: urls.page,
+						status: workerResponse.status(),
+						source: "service-worker",
+						scope: urls.scope,
+						script: urls.script,
+						state: "activated",
+						controlled: true,
+					});
+				}
 				await drainDiagnostics();
 				if (receipt.errors.length) {
 					throw new Error("Browser diagnostics failed");
@@ -169,6 +246,19 @@ export async function runSmoke({
 		if (page) {
 			await page
 				.screenshot({ path: resolve(artifacts, "page.png"), fullPage: true })
+				.catch(recordError);
+		}
+		if (workerPage) {
+			await workerPage
+				.screenshot({
+					path: resolve(artifacts, "service-worker.png"),
+					fullPage: true,
+				})
+				.catch(recordError);
+		}
+		if (workerContext) {
+			await workerContext.tracing
+				.stop({ path: resolve(artifacts, "service-worker-trace.zip") })
 				.catch(recordError);
 		}
 		if (context) {
@@ -192,8 +282,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
 		);
 		const receipt = await runSmoke({ scenario });
 		process.stdout.write(`${JSON.stringify(receipt, null, 2)}\n`);
-		// biome-ignore lint/suspicious/noUnnecessaryConditions: asynchronous diagnostics can invalidate the receipt during cleanup.
-		if (!receipt.success) {
+		if (receipt.errors.length > 0) {
 			process.exitCode = 1;
 		}
 	} catch (error) {
