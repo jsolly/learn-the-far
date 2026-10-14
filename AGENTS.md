@@ -2,7 +2,7 @@
 
 Ship profile: `vercel-static`
 
-**Integration: branch → PR → merge on green `CI / ci`.** `/ship` merges per `skills/ship/references/git-discipline.md` → Merge a same-repo self PR (read the installed `/ship` reference). Agents never push to `main`, change rulesets, or admin-merge.
+**Integration: branch → reviewed PR → merge on green `CI / ci`.** Follow [local release instructions](docs/development.md). Agents never push to `main`, change rulesets, or admin-merge.
 
 Production URL: <https://learnthefar.com>
 
@@ -30,8 +30,7 @@ No `.env` is required to run or build the app. `.env.example` is only for the op
 ## Frontend stack
 
 Astro owns routes; Svelte owns interactive islands. Use the installed
-shadcn-svelte components for new or replaced standard controls; load the shared
-`/shadcn-svelte` skill before implementation. Reuse `src/lib/components/ui` and
+shadcn-svelte components for new or replaced standard controls. Reuse `src/lib/components/ui` and
 its existing theme in `src/styles/global.css`. Chapter, shelf, quiz, glossary
 and home views already use Button, Badge, Progress and Popover in product UI.
 
@@ -39,7 +38,8 @@ and home views already use Button, Badge, Progress and Popover in product UI.
 local shadcn-svelte CLI for component additions and review generated changes.
 Keep domain-specific study content and charts as application code. Alternative
 stacks and framework migrations require explicit user direction.
-Canon: `~/code/dotagents/rules/frontend-stack.md`.
+Preserve accessible labels, keyboard operation and focus states. Follow Local UI
+verification below. The personal `/shadcn-svelte` skill is optional.
 
 ## Dependencies / Assets
 
@@ -53,11 +53,15 @@ Study-content hyperlinks (acquisition.gov, eCFR, GAO, and similar) are not app a
 
 ## Worktrees
 
-Fresh worktrees run `npm run worktree:init` (`npm ci`) via Cursor’s setup command. The app has no required gitignored local configuration, so `.worktreeinclude` is intentionally absent.
+Fresh worktrees run `npm run worktree:init` (repository-owned tool, dependency
+and hook setup) via the committed Cursor and Codex setup commands. The app has no required gitignored local configuration, so `.worktreeinclude` is intentionally absent.
 
 ## Pre-commit gate
 
-`.git-hooks/pre-commit` runs the bash floor check (with the shared gate-lib), actionlint, Biome, knip, markdownlint, yamllint, pie-progress, the negative quiz smoke contract, `astro check`, and `astro build`. If the optional shared `dotagents` gate-lib is present on the machine, it is used; otherwise the same checks run directly. Never weaken or skip the gate with `--no-verify`.
+`.git-hooks/pre-commit` sources the repo-owned `gate/gate-lib.sh` and runs the
+Bash floor check, staged secrets scan, actionlint, Biome, knip, markdownlint,
+yamllint, pie-progress, the negative quiz smoke contract, `astro check`,
+`astro build` and isolated hook/bootstrap fixtures. Never weaken or skip the gate.
 
 ## Deploy / fork
 
@@ -93,7 +97,7 @@ for the intended production release and verifies the public browser flow with
 `scripts/production-smoke-scenario.mjs`; the workflow uses no deployment secrets.
 Vercel Git deployment and the existing PR CI checks remain unchanged.
 
-`/ship` must wait for the exact release's Production smoke run to succeed and
+The release process must wait for the exact release's Production smoke run to succeed and
 record its URL. Missing, failed, cancelled, skipped or timed-out runs are not
 success. If the automatic trigger is missing, dispatch the workflow on `main`
 with the full expected release SHA and a unique request ID, then follow that
@@ -103,28 +107,36 @@ specific run. Preserve `production-smoke-artifacts/` diagnostics when a check fa
 
 PRs run the full CI suite. Post-merge CI reuses a successful PR run only when
 its recorded checkout tree exactly matches the landed tree, using
-`scripts/ci-verified-tree.sh` from dotagents. Missing proof runs full CI;
+the repo-owned `scripts/ci-verified-tree.sh`. Missing proof runs full CI;
 manual runs always validate. Job names and deployment triggers stay intact.
-Canonical contract: `~/code/dotagents/templates/github/verified-tree-ci.md`.
+Canonical contract: [local CI helper](scripts/ci-verified-tree.sh).
 
 ## Dependabot CI
 
-Dependabot PR events allocate no validation runners until a manually invoked
-`/optimize-workspaces drain` applies the `ow-ci` label. Only the `labeled` event
-that adds `ow-ci` runs the real `ci` check; later Dependabot pushes defer again
-until a drain re-kicks the new head (remove, then re-add the label). Deferred runs
-report `ci-deferred` and cannot satisfy the required `ci` check. Skipped or
-absent checks never authorize a dependency merge. See the Dependabot CI kick in
-the canonical `dotagents/skills/optimize-workspaces/references/pr-drain.md`.
+Dependabot PR events allocate no validation runners until an explicitly
+authorized maintenance run applies the `ow-ci` label. Only that `labeled` event
+runs the real `ci` check. Later Dependabot pushes defer again until maintenance
+removes and re-adds the label for the new head. Deferred runs report `ci-deferred`
+and cannot satisfy required `ci`. Skipped or absent checks never authorize a
+merge. See the repository CI workflow and [release instructions](docs/development.md).
 
 ## Git hooks
 
-`core.hooksPath` is the dotagents dispatcher `~/.local/share/dotagents/hooks`, installed and set by the dotagents installers. Never point it at `.git-hooks` or set it from a package script. The dispatcher runs this repo’s tracked pre-commit hook only when its bytes match a version on `origin/main` or your approved hook blob. Approve only your own edits using the command printed by the refusal. Review fork and third-party PR heads using `gh pr diff`; never check them out here. Canon: dotagents `rules/agent-cloud-access.md` → GitHub.
+This repo owns `gate/gate-lib.sh` and `scripts/repo-hooks.py`. Run reviewed
+`scripts/setup-agent-environment.sh` on main to install its outside-worktree
+pre-commit dispatcher. Never set hooksPath to `.git-hooks`: a branch could then
+register executable hooks. See [development and release](docs/development.md).
 
-## Fleet rollout
+## Repository ownership
 
-Changes inside this repo ship normally. For changes other repos must adopt, link the merged PR on the existing dotagents Todoist fleet-rollout task. Do not start that rollout or spawn per-repo chips, PRs or tasks from here. John authorizes one lead to walk the fleet after canon settles. Follow the installed `persist-todos-in-todoist` skill → Fleet rollout.
+This repo maintains its executable helpers, agent instructions and workflow
+contracts. Changes in another repo do not automatically rewrite this one. A
+cross-repository migration needs the user's explicit scope, independent review,
+and a separate verified PR in each affected repository.
 
-## Cloud skills
+## Agent environment
 
-- **Cloud skills.** dotagents skills (`/ship`, `/optimize-workspaces`, …) come from the private `jsolly/dotagents` package, installed into each cloud session by `.cursor/install-cloud-skills.sh` (Cursor runs it from `.cursor/environment.json`, Claude Code from the `.claude/settings.json` SessionStart hook). Before repository work in a cloud session, read `~/.local/share/dotagents/package/CLOUD.md` when it exists and follow its installed owners. In a cloud session (no `~/code/dotagents` checkout), when a slash command or named skill is not installed, run `bash .cursor/install-cloud-skills.sh`, then read `~/.local/share/dotagents/package/CLOUD.md` and `~/.local/share/dotagents/package/skills/<name>/SKILL.md` and follow them. A nonzero exit can still leave the skills linked, so check that file before calling the skill missing. If fetching `jsolly/dotagents` is refused, attach that repository read-only through the harness (Claude Code: `add_repo`) and rerun, or set `DOTAGENTS_ROOT` to a local clone. Still blocked: report setup blocked. Never reconstruct a skill from memory or prose. Canon: dotagents `templates/cloud-agent/README.md`.
+Use this repository's AGENTS.md and [development guide](docs/development.md).
+Run its reviewed `scripts/setup-agent-environment.sh` for pinned tools and hooks.
+No private configuration repo, external instruction import or global skill is
+required. Optional personal skills do not change this repository's authority.
