@@ -74,7 +74,12 @@ Production for this repo stays Git-connected: pushes to `main` deploy automatica
 
 GitHub Actions (`.github/workflows/ci.yml`) runs on every PR and on `main`: actionlint, Biome, knip, markdownlint, yamllint, pie-progress, the negative quiz smoke contract, typecheck, and build.
 
-Local pre-commit (`.git-hooks/pre-commit`) runs the same checks. The personal fleet uses the installed dotagents hook dispatcher; package scripts never reset `core.hooksPath`. Forks can run `npm run gate` directly. Contributors do not need any private tooling — the hook falls back to a built-in gate when the author’s optional shared gate library is absent. The hook and scripts need Bash 5 or newer; on macOS, `brew install bash` (the stock `/bin/bash` is 3.2, and the scripts refuse it). YAML lint uses `uvx` (install [uv](https://docs.astral.sh/uv/)).
+Local pre-commit (`.git-hooks/pre-commit`) runs the same checks plus isolated
+hook/bootstrap fixtures. This repo owns its gate library and trusted dispatcher;
+no private configuration repository or personal skill is required. Install Git,
+Bash >= 5 and Python >= 3.11, then follow [repository setup](docs/development.md).
+Setup provisions pinned public tools, including uv for YAML lint, and lockfile
+dependencies. Package scripts never point `core.hooksPath` at `.git-hooks`.
 
 ## Contributing
 

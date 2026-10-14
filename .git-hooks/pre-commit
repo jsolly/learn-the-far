@@ -1,65 +1,25 @@
 #!/usr/bin/env bash
-# Pre-commit GATE for learn-the-far (gate-only — this hook does NOT deploy).
-#
-# Prefer the shared dotagents gate-lib when present (authoring machine).
-# Otherwise run the same checks directly so forks and contributors can commit
-# without installing private tooling. Either way it needs Bash >= 5 (on macOS,
-# `brew install bash`); the dotagents installer the refusal names is the author's.
-((BASH_VERSINFO[0] >= 5)) || { echo "✗ $0 requires Bash >= 5, not $BASH_VERSION. Fix: brew install bash; rerun bash ~/code/dotagents/setup/install-local-agent-runtime.sh; open a new shell." >&2; exit 1; }
+((BASH_VERSINFO[0] >= 5)) || { echo "✗ $0 requires Bash >= 5, not $BASH_VERSION. Fix: brew install bash; open a fresh shell and rerun repository setup." >&2; exit 1; }
+# Repository-owned quality gate; Vercel deploys from main after merge.
 set -euo pipefail
 
-GATE_LIB="${DOTAGENTS_GATE_LIB:-${HOME:-}/code/dotagents/gate/gate-lib.sh}"
+# shellcheck source=/dev/null
+_repo_owned_gate_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
+source "$_repo_owned_gate_root/gate/gate-lib.sh"
+gate_enter_committing_tree "${BASH_SOURCE[0]}"
+gate_begin_commit "learn-the-far"
+run_step "bash floor" gate_check_bash_floor   # every Bash entrypoint refuses Bash < 5
+gate_require_node
+gate_npm_ci
+run_step "actionlint" npm run check:actions
+run_step "lint" npm run check:lint
+run_step "knip" npm run check:knip
+run_step "markdown lint" npm run check:md
+run_step "yaml lint" npm run check:yaml
+run_step "pie progress" npm run check:pie
+run_step "negative quiz smoke contract" npm run smoke:scenario-contract
+run_step "astro check (types)" npm run check:ts
+run_step "build" npm run build
+run_step "repository hook trust" bash scripts/repo-python.sh scripts/test-repo-hooks.py
 
-run_public_gate() {
-  echo "→ pre-commit: using built-in gate (dotagents gate-lib not found)"
-
-  # Match gate-lib: message-only amend / empty index should not run the suite.
-  if [[ "${FLEET_DOC_FAST:-1}" != 0 ]] && git diff --cached --quiet 2>/dev/null; then
-    echo "▶ no staged changes vs HEAD — skipping the gate (message-only amend / empty commit)"
-    exit 0
-  fi
-
-  if [[ ! -d node_modules ]] \
-    || [[ ! -f node_modules/.package-lock.json ]] \
-    || [[ package-lock.json -nt node_modules/.package-lock.json ]]; then
-    echo "→ npm ci (node_modules missing or lockfile newer than install)"
-    npm ci
-  fi
-
-  npm run check:actions
-  npm run check:lint
-  npm run check:knip
-  npm run check:md
-  npm run check:yaml
-  npm run check:pie
-  npm run smoke:scenario-contract
-  npm run check:ts
-  npm run build
-  echo "✓ pre-commit gate passed — commit will land; push to a PR, Vercel deploys via GitHub integration on merge."
-}
-
-if [[ -n "$GATE_LIB" && -f "$GATE_LIB" ]]; then
-  # shellcheck source=/dev/null
-  source "$GATE_LIB"
-  # Gate the tree being committed, not this copy's: under an absolute core.hooksPath (Claude
-  # desktop worktrees) this re-execs the committing tree's own hook; it sets ROOT and cd's.
-  gate_enter_committing_tree "${BASH_SOURCE[0]}"
-  gate_require_lib 12  # gate_check_bash_floor
-  gate_begin_commit "learn-the-far"
-  run_step "bash floor" gate_check_bash_floor   # every Bash entrypoint refuses Bash < 5
-  gate_require_node
-  gate_npm_ci
-  run_step "actionlint" npm run check:actions
-  run_step "lint" npm run check:lint
-  run_step "knip" npm run check:knip
-  run_step "markdown lint" npm run check:md
-  run_step "yaml lint" npm run check:yaml
-  run_step "pie progress" npm run check:pie
-  run_step "negative quiz smoke contract" npm run smoke:scenario-contract
-  run_step "astro check (types)" npm run check:ts
-  run_step "build" npm run build
-  echo "✓ pre-commit gate passed — commit will land; push to a PR, Vercel deploys via GitHub integration on merge."
-else
-  cd "$(git rev-parse --show-toplevel)"
-  run_public_gate
-fi
+echo "✓ pre-commit gate passed — commit will land; push to a PR, Vercel deploys via GitHub integration on merge."

@@ -6,7 +6,7 @@
 		"node": "24.x"
 	},
 	"scripts": {
-		"worktree:init": "npm ci",
+		"worktree:init": "bash scripts/setup-agent-environment.sh",
 		"dev": "astro dev",
 		"mcp:echarts": "node node_modules/echarts-mcp/src/index.js",
 		"build": "astro build",
