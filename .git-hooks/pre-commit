@@ -20,6 +20,7 @@ run_step "pie progress" npm run check:pie
 run_step "negative quiz smoke contract" npm run smoke:scenario-contract
 run_step "astro check (types)" npm run check:ts
 run_step "build" npm run build
+run_step "website update browser contract" npm run check:updates
 run_step "repository hook trust" bash scripts/repo-python.sh scripts/test-repo-hooks.py
 
 echo "✓ pre-commit gate passed — commit will land; push to a PR, Vercel deploys via GitHub integration on merge."
