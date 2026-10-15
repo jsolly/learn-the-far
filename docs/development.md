@@ -78,20 +78,55 @@ removed or overwritten by repo setup.
 
 ## Website updates
 
-Every production build generates a fresh immutable release identity in the client
-bundle and `dist/release.json`. Vercel serves `/release.json` without browser or
-CDN caching. Visible, online tabs check at startup, every five minutes, and on
-focus or reconnection, with a one-minute minimum interval and ten-second timeout.
-Only a valid different identity displays the update notice. Failed checks leave
-the current page alone. No service worker is installed.
+Adapted from dotagents website-update canon at
+`f861d7c961a7bb1e6229d4565b7c787d91279e1c`; all implementation and tests are owned
+by this repository. No runtime or build dependency on dotagents is required.
 
-The learner chooses **Update and reload**. During a quiz the button is disabled
-until the learner finishes or exits, because the active question is held in
-memory. Saved reading and quiz progress stays in local storage. Each tab reloads
-independently; other tabs keep their current page and quiz. The first release
-containing this feature cannot notify tabs opened before the feature existed.
+The build derives one opaque UUID from the immutable Vercel deployment ID,
+Vercel build commit, or local Git commit. A missing/invalid identity fails the
+build. The UUID schema preserves compatibility with the first shipped detector.
+The embedded document/client and `dist/release.json` share that identity. Vercel
+serves `/release.json` with browser and CDN `no-store`; requests reject redirects,
+wrong origins, bad content types/schema, HTTP failures and timeouts.
 
-The full gate builds two real snapshots and runs `node tests/update-notice.mjs`
-against a local static server. It verifies release detection, explicit keyboard
-reload, active quiz protection, independent tabs, invalid identities and offline
-checks, with desktop/mobile screenshots in both system themes under `/tmp`.
+`FarQuizApp` owns one notice across its Svelte view changes. Ordinary route links
+perform full document navigation and tear down the old controller; in-app
+view/history transitions preserve the existing owner. Online,
+visible tabs check at startup, return and reconnection, with a one-minute minimum
+interval. Foreground polling uses five minutes plus up to thirty seconds of
+jitter. Failures back off to thirty minutes plus jitter. Hidden/offline tabs stop their
+timer; unmount aborts requests and removes all listeners. No service worker or
+authenticated route exists.
+
+**Later** dismisses only the detected release in the current document. The
+persistent **Update available** button reopens it. A distinct release announces
+again. The polite live region stays mounted, never steals focus on discovery,
+and does not repeatedly announce the same release. Dismiss/reopen moves focus
+to the replacement control. Quiz, chapter, shelf, summary, glossary and home
+views share the same owner; no cross-tab messages can initiate reload.
+
+**Update and reload** is disabled during quizzes and while offline. The handler
+coalesces repeated clicks, rechecks the target, and refuses changed/failed targets.
+It preserves the current URL, local storage and saved reading/quiz progress.
+A tab-local session marker detects stale HTML after one explicit reload and
+shows a manual retry message. Polling and startup never reload. The first shipped
+release cannot notify tabs opened before detection code existed; those tabs need
+one manual refresh. Existing UUID detectors can detect this aligned release.
+
+Vercel publishes atomic static builds, but this application does not assume
+unconfigured Skew Protection or permanent access to old deployments. Hydrated
+app views hold their code/data in memory; their only deferred module is confetti.
+`retained-assets/` keeps that immutable URL indefinitely, with provenance/license.
+The build rejects new client lazy chunks until their bytes are retained. Full
+route navigation obtains a consistent new document. Fonts keep content-addressed
+URLs and system-font fallbacks. Do not remove retained assets while supported
+open clients may need them, or splice new mutable data into an old client.
+
+The full gate runs `npm run check:updates` using three real builds at one local
+origin. It covers saved progress, independent tabs, active quiz safety, timer
+polling, invalid/offline/HTTP failure checks, Later/reopen, dismissal across view
+navigation, changed targets, stale reload/manual recovery and the retained lazy
+asset. Desktop/mobile light/dark screenshots are written under `/tmp`. The
+intentional HTTP 503 cases produce their expected browser diagnostics; unexpected
+console/page errors fail. Worker, auth and offline-navigation rows of the canon
+acceptance matrix are not applicable to this public site without a worker.
