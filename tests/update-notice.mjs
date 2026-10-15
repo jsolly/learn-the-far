@@ -1,28 +1,53 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { cp, mkdtemp, readFile, rm } from "node:fs/promises";
+import { cp, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { createServer } from "node:http";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { chromium } from "playwright";
 
-// Two real builds, served atomically like Vercel deployments. No production writes.
+// Three real builds, served atomically like Vercel deployments. No production writes.
+execFileSync("npm", ["run", "build"], {
+	stdio: "pipe",
+	env: { ...process.env, VERCEL_DEPLOYMENT_ID: "dpl_local_browser_a" },
+});
 const fixture = await mkdtemp(join(tmpdir(), "far-release-"));
 const a = join(fixture, "a");
 await cp("dist", a, { recursive: true });
-execFileSync("npm", ["run", "build"], { stdio: "pipe" });
-const b = resolve("dist");
+execFileSync("npm", ["run", "build"], {
+	stdio: "pipe",
+	env: { ...process.env, VERCEL_DEPLOYMENT_ID: "dpl_local_browser_b" },
+});
+const b = join(fixture, "b");
+await cp("dist", b, { recursive: true });
+execFileSync("npm", ["run", "build"], {
+	stdio: "pipe",
+	env: { ...process.env, VERCEL_DEPLOYMENT_ID: "dpl_local_browser_c" },
+});
+const c = resolve("dist");
+const third = JSON.parse(await readFile(join(c, "release.json"), "utf8")).id;
 const first = JSON.parse(await readFile(join(a, "release.json"), "utf8")).id;
 const second = JSON.parse(await readFile(join(b, "release.json"), "utf8")).id;
 assert.notEqual(first, second);
+assert.notEqual(third, first);
+assert.notEqual(third, second);
 let root = a;
+let metadataRoot = null;
 let checks = 0;
 const server = createServer(async (req, res) => {
 	const pathname = new URL(req.url, "http://localhost").pathname;
+	if (pathname === "/release-redirect.json") {
+		res.writeHead(200, { "Content-Type": "application/json" });
+		res.end(JSON.stringify({ id: third }));
+		return;
+	}
 	if (pathname === "/release.json") {
 		checks++;
 	}
-	const path = join(root, pathname.endsWith("/") ? `${pathname}index.html` : pathname);
+	const path = join(
+		pathname === "/release.json" && metadataRoot ? metadataRoot : root,
+		pathname.endsWith("/") ? `${pathname}index.html` : pathname,
+	);
 	try {
 		const body = await readFile(path);
 		const type = path.endsWith(".json")
@@ -58,8 +83,11 @@ try {
 	});
 	const page = await context.newPage();
 	await page.clock.install();
+	const initialCheck = page.waitForResponse("**/release.json");
 	await page.goto(url);
 	await page.locator("astro-island[ssr]").waitFor({ state: "detached" });
+	await (await initialCheck).finished();
+	await page.clock.runFor(100);
 	await page.waitForFunction(() => document.querySelector("h1"));
 	assert.equal(await page.locator('meta[name="app-release"]').getAttribute("content"), first);
 	assert.equal(
@@ -74,6 +102,13 @@ try {
 		.first()
 		.click();
 	await page.getByRole("navigation", { name: "On this page" }).waitFor();
+	await page.locator("astro-island[ssr]").waitFor({ state: "detached" });
+	await page.waitForFunction(
+		() =>
+			Object.keys(
+				JSON.parse(localStorage.getItem("learn-the-far:reading-progress:v1") || "{}").read || {},
+			).length > 0,
+	);
 	await page.goto(url);
 	await page.locator("astro-island[ssr]").waitFor({ state: "detached" });
 	await page.getByRole("button", { name: "Quiz me", exact: true }).first().click();
@@ -88,6 +123,12 @@ try {
 	assert.ok(Object.keys(JSON.parse(saved.quiz).questions).length > 0);
 	assert.ok(Object.keys(JSON.parse(saved.reading).read).length > 0);
 	root = b;
+	const retained = await page.evaluate(async () => {
+		const asset = "/_astro/confetti.module.CSklD5ZL.js";
+		const module = await import(asset);
+		return typeof module.default;
+	});
+	assert.equal(retained, "function", "old lazy asset remains importable after B publication");
 	await page.clock.fastForward(60_001);
 	await page.evaluate(() => window.dispatchEvent(new Event("focus")));
 	await page.getByRole("complementary", { name: "Website update" }).waitFor();
@@ -104,12 +145,21 @@ try {
 	// Another tab on A sees B, while the quiz tab remains usable and never reloads.
 	root = a;
 	const other = await context.newPage();
+	let otherChecks = 0;
+	other.on("request", (req) => {
+		if (req.url().endsWith("/release.json")) {
+			otherChecks++;
+		}
+	});
 	await other.clock.install();
+	const initialOtherCheck = other.waitForResponse("**/release.json");
 	await other.goto(url);
 	await other.locator("astro-island[ssr]").waitFor({ state: "detached" });
+	await (await initialOtherCheck).finished();
+	await other.clock.runFor(100);
 	root = b;
 	// A continuously focused tab detects B via its timer without focus events.
-	await other.clock.runFor(300_001);
+	await other.clock.fastForward(330_001);
 	await other.getByRole("button", { name: "Update and reload" }).waitFor();
 	for (const [name, viewport, colorScheme] of [
 		["desktop-light", { width: 1280, height: 900 }, "light"],
@@ -119,12 +169,151 @@ try {
 	]) {
 		await other.setViewportSize(viewport);
 		await other.emulateMedia({ colorScheme });
-		await other.screenshot({ path: `/tmp/far-update-${name}.png` });
+		await other.screenshot({ animations: "disabled", path: `/tmp/far-update-${name}.png` });
 		assert.ok(
 			await other.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
 			"no horizontal overflow",
 		);
 	}
+	// Dismissal is scoped to B and survives in-app view changes without remounting.
+	await other.getByRole("button", { name: "Later", exact: true }).click();
+	await other.getByRole("button", { name: "Update available", exact: true }).waitFor();
+	assert.equal(await other.getByRole("button", { name: "Update and reload" }).count(), 0);
+	await other.getByRole("button", { name: "Quiz me", exact: true }).first().click();
+	await other.getByText("Pick your answer", { exact: true }).waitFor();
+	await other.getByRole("button", { name: "Exit session" }).click();
+	assert.equal(
+		await other.getByRole("button", { name: "Update and reload" }).count(),
+		0,
+		"shell navigation retains dismissal",
+	);
+	await other.clock.setSystemTime((await other.evaluate(() => Date.now())) + 60_001);
+	await other.evaluate(() => window.dispatchEvent(new Event("focus")));
+	await other.clock.runFor(100);
+	assert.equal(
+		await other.getByRole("button", { name: "Update and reload" }).count(),
+		0,
+		"same release stays dismissed",
+	);
+	await other.getByRole("button", { name: "Update available", exact: true }).focus();
+	await other.keyboard.press("Enter");
+	await other.getByRole("button", { name: "Later", exact: true }).waitFor();
+	await other.waitForFunction(() => document.activeElement?.textContent?.trim() === "Later");
+	await context.setOffline(true);
+	await other.getByText("Reconnect before updating.").waitFor();
+	assert.equal(
+		await other.getByRole("button", { name: "Update and reload" }).isDisabled(),
+		true,
+		"offline application is blocked",
+	);
+	await context.setOffline(false);
+	await other.getByRole("button", { name: "Update and reload" }).waitFor();
+	// A rollback to this document removes the target and returns keyboard focus safely.
+	root = a;
+	await other.getByRole("button", { name: "Update and reload" }).click();
+	await other
+		.getByRole("complementary", { name: "Website update" })
+		.getByText("This version is current again.", { exact: true })
+		.waitFor();
+	assert.ok(
+		(await other.getByRole("status").textContent()).includes("This version is current again."),
+	);
+	await other.waitForFunction(() => document.activeElement?.textContent?.trim() === "Later");
+	await other.getByRole("button", { name: "Later", exact: true }).click();
+	await other.waitForFunction(() => document.querySelector("main h1") === document.activeElement);
+	root = b;
+	await other.clock.setSystemTime((await other.evaluate(() => Date.now())) + 60_001);
+	await other.evaluate(() => window.dispatchEvent(new Event("focus")));
+	await other.getByRole("button", { name: "Update and reload" }).waitFor();
+	// A failed explicit application must retain B and all user work, without navigation.
+	await other.route("**/release.json", (route) =>
+		route.fulfill({ status: 503, contentType: "application/json", body: "{}" }),
+	);
+	const beforeFailedApplyUrl = other.url();
+	await other.getByRole("button", { name: "Update and reload" }).click();
+	await other
+		.getByRole("complementary", { name: "Website update" })
+		.getByText("Could not check the update. Reconnect and try again.", { exact: true })
+		.waitFor();
+	assert.equal(other.url(), beforeFailedApplyUrl);
+	assert.equal(await other.locator('meta[name="app-release"]').getAttribute("content"), first);
+	assert.deepEqual(
+		await other.evaluate(() => ({
+			quiz: localStorage.getItem("learn-the-far:quiz-progress:v2"),
+			reading: localStorage.getItem("learn-the-far:reading-progress:v1"),
+		})),
+		saved,
+	);
+	await other.unroute("**/release.json");
+	// Revalidate on click: C replaces B, requiring a new explicit choice.
+	root = c;
+	const previousAnnouncement = await other.getByRole("status").locator("span").elementHandle();
+	await other.getByRole("button", { name: "Update and reload" }).click();
+	await other
+		.getByRole("complementary", { name: "Website update" })
+		.getByText("Another update is available. Choose Update and reload again when ready.", {
+			exact: true,
+		})
+		.waitFor();
+	assert.equal(
+		await other.locator('meta[name="app-release"]').getAttribute("content"),
+		first,
+		"changed target does not reload",
+	);
+	assert.equal(
+		await previousAnnouncement.evaluate((el) => el.isConnected),
+		false,
+		"distinct C updates live-region DOM while B was expanded",
+	);
+	root = b;
+	await other.getByRole("button", { name: "Update and reload" }).click();
+	await other.getByRole("button", { name: "Update and reload" }).waitFor();
+	await other.clock.runFor(100);
+	assert.equal(
+		await other.locator('meta[name="app-release"]').getAttribute("content"),
+		first,
+		"rollback target also requires a new choice",
+	);
+	// Stale HTML after an explicit reload remains usable and never loops.
+	root = a;
+	metadataRoot = b;
+	let navigations = 0;
+	other.on("framenavigated", (frame) => {
+		if (frame === other.mainFrame()) {
+			navigations++;
+		}
+	});
+	let rechecks = 0;
+	let ready;
+	const reached = new Promise((done) => {
+		ready = done;
+	});
+	await other.route("**/release.json", (route) => {
+		rechecks++;
+		ready(route);
+	});
+	await other.getByRole("button", { name: "Update and reload" }).evaluate((el) => {
+		el.click();
+		el.click();
+	});
+	const held = await reached;
+	assert.equal(rechecks, 1, "duplicate clicks coalesce into one application check");
+	const loaded = other.waitForEvent("load");
+	await held.fulfill({ contentType: "application/json", body: JSON.stringify({ id: second }) });
+	await loaded;
+	await other.unroute("**/release.json");
+	await other.locator("astro-island[ssr]").waitFor({ state: "detached" });
+	await other
+		.getByRole("complementary", { name: "Website update" })
+		.getByText("The page is still on the previous version. Try updating again when ready.", {
+			exact: true,
+		})
+		.waitFor();
+	assert.equal(navigations, 1, "stale reload happens once");
+	await other.clock.fastForward(330_001);
+	assert.equal(navigations, 1, "polling cannot start a reload loop");
+	root = b;
+	metadataRoot = null;
 	await other.getByRole("button", { name: "Update and reload" }).focus();
 	await Promise.all([other.waitForEvent("load"), other.keyboard.press("Enter")]);
 	await other.locator("astro-island[ssr]").waitFor({ state: "detached" });
@@ -161,13 +350,13 @@ try {
 		"exiting quiz makes reload available",
 	);
 	await other.bringToFront();
-	const cooldownChecks = checks;
+	const cooldownChecks = otherChecks;
 	await other.evaluate(() => window.dispatchEvent(new Event("focus")));
 	await other.clock.runFor(100);
-	assert.equal(checks, cooldownChecks, "focus during cooldown makes no request");
+	assert.equal(otherChecks, cooldownChecks, "focus during cooldown makes no request");
 	async function checkOther() {
 		const response = other.waitForResponse("**/release.json");
-		await other.clock.setSystemTime((await other.evaluate(() => Date.now())) + 60_001);
+		await other.clock.setSystemTime((await other.evaluate(() => Date.now())) + 1_800_001);
 		await other.evaluate(() => window.dispatchEvent(new Event("focus")));
 		await (await response).finished();
 		await other.clock.runFor(100);
@@ -187,6 +376,40 @@ try {
 	await checkOther();
 	assert.equal(await other.getByRole("complementary", { name: "Website update" }).count(), 0);
 	await other.unroute("**/release.json");
+	await other.route("**/release-redirect.json", (route) =>
+		route.fulfill({ contentType: "application/json", body: JSON.stringify({ id: third }) }),
+	);
+	await other.route("**/release.json", (route) =>
+		route.fulfill({ status: 302, headers: { Location: "/release-redirect.json" } }),
+	);
+	await checkOther();
+	assert.equal(
+		await other.getByRole("complementary", { name: "Website update" }).count(),
+		0,
+		"redirected JSON cannot advertise a release",
+	);
+	await other.unroute("**/release.json");
+	await other.unroute("**/release-redirect.json");
+	// A held fetch reaches its real bounded timeout without inventing availability.
+	let timeoutReady;
+	const heldTimeout = new Promise((done) => {
+		timeoutReady = done;
+	});
+	await other.route("**/release.json", (route) => timeoutReady(route));
+	const timedOut = other.waitForEvent("requestfailed", {
+		predicate: (req) => req.url().endsWith("/release.json"),
+		timeout: 15_000,
+	});
+	await other.clock.setSystemTime((await other.evaluate(() => Date.now())) + 1_800_001);
+	await other.evaluate(() => window.dispatchEvent(new Event("focus")));
+	await heldTimeout;
+	await timedOut;
+	assert.equal(
+		await other.getByRole("complementary", { name: "Website update" }).count(),
+		0,
+		"timeout cannot advertise a release",
+	);
+	await other.unroute("**/release.json");
 	// Deliberate HTTP failure must leave the current page usable.
 	await other.route("**/release.json", (route) =>
 		route.fulfill({ status: 503, contentType: "application/json", body: "{}" }),
@@ -194,10 +417,23 @@ try {
 	await checkOther();
 	assert.equal(await other.getByRole("complementary", { name: "Website update" }).count(), 0);
 	await other.unroute("**/release.json");
-	const before = checks;
+	// Exercise the visibility handler with the browser visibility boundary modeled.
+	await other.evaluate(() => {
+		Object.defineProperty(document, "hidden", { configurable: true, get: () => true });
+		document.dispatchEvent(new Event("visibilitychange"));
+	});
+	const hiddenChecks = otherChecks;
+	await other.clock.fastForward(1_800_001);
+	assert.equal(otherChecks, hiddenChecks, "hidden handler stops the timer");
+	await other.evaluate(() => {
+		Reflect.deleteProperty(document, "hidden");
+		document.dispatchEvent(new Event("visibilitychange"));
+	});
+	await other.clock.runFor(100);
+	const before = otherChecks;
 	await context.setOffline(true);
 	await other.clock.fastForward(300_001);
-	assert.equal(checks, before, "offline tabs do not poll");
+	assert.equal(otherChecks, before, "offline tabs do not poll");
 	await context.setOffline(false);
 	await other.bringToFront();
 	await other.clock.fastForward(60_001);
@@ -211,9 +447,20 @@ try {
 	await checkOther();
 	await other.getByRole("button", { name: "Update and reload" }).waitFor();
 	assert.ok(await other.locator("h1").textContent(), "chapter stays readable after release change");
+	await other.getByRole("button", { name: "Later", exact: true }).click();
+	root = c;
+	await checkOther();
+	await other.getByRole("button", { name: "Update and reload" }).waitFor();
+	assert.equal(
+		await other.getByRole("button", { name: "Update available", exact: true }).count(),
+		0,
+		"distinct C overrides dismissal of B",
+	);
+	await other.waitForFunction(() => document.activeElement?.textContent?.trim() === "Later");
+	await other.unroute("**/release.json");
 	assert.equal(
 		errors.filter((message) => message.includes("503")).length,
-		1,
+		2,
 		"expected console error from deliberate HTTP failure",
 	);
 	assert.deepEqual(
@@ -221,7 +468,29 @@ try {
 		[],
 		"no unexpected browser console or page errors",
 	);
-	process.stdout.write("PASS update browser contract; expected HTTP 503 diagnostic only\n");
+	await other.goto("about:blank");
+	const afterUnmount = otherChecks;
+	await other.clock.fastForward(1_800_001);
+	assert.equal(otherChecks, afterUnmount, "document navigation stops the old controller");
+	await writeFile(
+		"/tmp/far-alignment-browser-receipt.json",
+		JSON.stringify(
+			{
+				success: true,
+				builds: { a: first, b: second, c: third },
+				routes: ["/", "/learn/fundamentals/", "/learn/fundamentals/need-not-yet-contract/"],
+				expectedHttp503Diagnostics: 2,
+				metadataRequests: checks,
+				unexpectedErrors: errors.filter((message) => !message.includes("503")),
+				screenshots: ["desktop-light", "desktop-dark", "mobile-light", "mobile-dark"].map(
+					(name) => `/tmp/far-update-${name}.png`,
+				),
+			},
+			null,
+			2,
+		),
+	);
+	process.stdout.write("PASS A/B/C update browser contract; expected HTTP 503 diagnostics only\n");
 } finally {
 	await browser?.close();
 	server.closeAllConnections();
