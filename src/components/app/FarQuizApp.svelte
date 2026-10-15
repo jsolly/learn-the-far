@@ -8,6 +8,7 @@ import PieHome from "./PieHome.svelte";
 import QuizView from "./QuizView.svelte";
 import ShelfView from "./ShelfView.svelte";
 import SummaryView from "./SummaryView.svelte";
+import UpdateNotice from "./UpdateNotice.svelte";
 
 let {
 	initialUnit = null,
@@ -38,6 +39,8 @@ $effect(() => {
 	});
 });
 </script>
+
+<UpdateNotice busy={game.view === "session"} />
 
 <main bind:this={main} class="min-h-[100dvh] bg-background text-foreground">
 	{#if game.view === "session"}

@@ -75,3 +75,23 @@ prove infrastructure adoption. Never bypass a dirty-infrastructure deploy refusa
 Repository instructions and access rules are maintained here. Personal home
 configuration and optional global skills remain separate and are not installed,
 removed or overwritten by repo setup.
+
+## Website updates
+
+Every production build generates a fresh immutable release identity in the client
+bundle and `dist/release.json`. Vercel serves `/release.json` without browser or
+CDN caching. Visible, online tabs check at startup, every five minutes, and on
+focus or reconnection, with a one-minute minimum interval and ten-second timeout.
+Only a valid different identity displays the update notice. Failed checks leave
+the current page alone. No service worker is installed.
+
+The learner chooses **Update and reload**. During a quiz the button is disabled
+until the learner finishes or exits, because the active question is held in
+memory. Saved reading and quiz progress stays in local storage. Each tab reloads
+independently; other tabs keep their current page and quiz. The first release
+containing this feature cannot notify tabs opened before the feature existed.
+
+The full gate builds two real snapshots and runs `node tests/update-notice.mjs`
+against a local static server. It verifies release detection, explicit keyboard
+reload, active quiz protection, independent tabs, invalid identities and offline
+checks, with desktop/mobile screenshots in both system themes under `/tmp`.
