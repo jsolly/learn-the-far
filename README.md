@@ -34,7 +34,7 @@ Open the URL Astro prints (typically <http://localhost:4321>).
 | `npm run preview` | Preview the production build locally |
 | `npm run check:actions` | Lint GitHub Actions workflows |
 
-Optional (Cursor only): `npm run mcp:echarts` starts a project-local Apache ECharts MCP server. Copy `.env.example` to `.env` and fill Baidu BOS credentials if you use that server to publish chart images. The app itself does **not** need `.env` to build or run.
+Optional (Cursor only): `npm run mcp:echarts` starts a project-local Apache ECharts MCP server. Copy `config/mcp/.env.example` to `.env` and fill Baidu BOS credentials if you use that server to publish chart images. The app itself does **not** need `.env` to build or run.
 
 ## Architecture
 
@@ -44,7 +44,7 @@ Optional (Cursor only): `npm run mcp:echarts` starts a project-local Apache ECha
 - **Routes** — home (`/`) plus shareable learn routes (`/learn/[unit]/`, `/learn/[unit]/[chapter]/`).
 - **State** — quiz progress and reading state in `localStorage` only (`src/lib/local-storage.ts`, `src/lib/reading-storage.ts`).
 
-No env vars are required for the production app. Site URL for the sitemap is set in `astro.config.mjs` (`site`).
+No env vars are required for the production app. Site URL for the sitemap is set in `config/app/astro.mjs` (`site`).
 
 ## Deploy your own copy (Vercel)
 
@@ -64,7 +64,7 @@ If you are not deploying to `learnthefar.com`, update:
 
 | File | What to change |
 | :-- | :-- |
-| `astro.config.mjs` | `site: 'https://your-domain.example'` |
+| `config/app/astro.mjs` | `site: 'https://your-domain.example'` |
 | `public/robots.txt` | Sitemap URL host |
 | `vercel.json` | `www` → apex redirect `has` / `destination` hosts (or remove that redirect) |
 

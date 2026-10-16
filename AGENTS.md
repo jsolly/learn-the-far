@@ -25,7 +25,7 @@ astro dev --background
 
 Manage with `astro dev stop`, `astro dev status`, and `astro dev logs`. Default local URL is typically <http://localhost:4321>.
 
-No `.env` is required to run or build the app. `.env.example` is only for the optional ECharts MCP helper.
+No `.env` is required to run or build the app. `config/mcp/.env.example` is only for the optional ECharts MCP helper.
 
 ## Frontend stack
 
@@ -65,7 +65,7 @@ yamllint, pie-progress, the negative quiz smoke contract, `astro check`,
 
 ## Deploy / fork
 
-Static Vercel deploy only — see README **Deploy your own copy**. For a different domain, update `astro.config.mjs` `site`, `public/robots.txt`, and `vercel.json` host redirects. No production secrets or server env vars.
+Static Vercel deploy only — see README **Deploy your own copy**. For a different domain, update `config/app/astro.mjs` `site`, `public/robots.txt`, and `vercel.json` host redirects. No production secrets or server env vars.
 
 Production Git deploys stay on for `main` (`vercel.json` `git.deploymentEnabled`). Branch pushes do **not** create Preview deployments. Comment `/preview` as the first non-empty line on a same-repo PR (owner/member/collaborator User), or run workflow **Vercel Preview** with the PR number. GitHub runs that workflow from `main`. One-shot: new commits do not rebuild until you ask again. Requires GitHub secret `VERCEL_TOKEN`. Agents must not comment `/preview` unless the user asked.
 
@@ -126,6 +126,12 @@ This repo owns `gate/gate-lib.sh` and `scripts/repo-hooks.py`. Run reviewed
 `scripts/setup-agent-environment.sh` on main to install its outside-worktree
 pre-commit dispatcher. Never set hooksPath to `.git-hooks`: a branch could then
 register executable hooks. See [development and release](docs/development.md).
+
+## Configuration
+
+Relocatable tracked settings live under `config/<domain>/`, with one owner per
+setting and minimal native adapters. See [configuration guidance](config/README.md)
+for domains, native exceptions and verification. This repository owns them.
 
 ## Repository ownership
 
