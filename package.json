@@ -15,7 +15,7 @@
 		"check:fix": "biome check --write --error-on-warnings .",
 		"format": "biome format --write .",
 		"check:md": "bash scripts/lint-md.sh",
-		"check:yaml": "uvx yamllint@1.38.0 --strict .",
+		"check:yaml": "uvx yamllint@1.38.0 -c config/quality/yamllint.yaml --strict .",
 		"check:knip": "knip --treat-config-hints-as-errors --treat-tag-hints-as-errors",
 		"check:pie": "node scripts/verify-pie-progress.mjs",
 		"check": "npm run check:lint && npm run check:ts",
