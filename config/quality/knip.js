@@ -1,6 +1,8 @@
 export default {
 	$schema: "https://unpkg.com/knip@6/schema.json",
-	astro: { config: ["astro.config.mjs", "config/app/astro.mjs"] },
+	astro: { config: ["config/app/astro.mjs"] },
+	svelte: { entry: ["config/app/svelte.js"] },
+	biome: { config: ["config/quality/biome.settings.jsonc"] },
 	entry: ["src/styles/global.css", "scripts/**/*.{mjs,js,sh}"],
 	ignoreIssues: {
 		"src/lib/components/ui/**": ["files", "exports", "types", "nsExports", "nsTypes"],

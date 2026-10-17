@@ -20,10 +20,10 @@ npm run dev
 When starting the Astro CLI in background mode:
 
 ```bash
-astro dev --background
+npm run dev -- --background
 ```
 
-Manage with `astro dev stop`, `astro dev status`, and `astro dev logs`. Default local URL is typically <http://localhost:4321>.
+Manage with `npm run dev -- stop`, `npm run dev -- status`, and `npm run dev -- logs`. Default local URL is typically <http://localhost:4321>.
 
 No `.env` is required to run or build the app. `config/mcp/.env.example` is only for the optional ECharts MCP helper.
 
@@ -86,7 +86,7 @@ Useful Astro guides:
 
 No auth — public UI only. Smoke the changed routes on desktop and mobile widths; confirm the browser console is clean.
 
-- **Dev server:** `astro dev --background` (or `npm run dev`).
+- **Dev server:** `npm run dev -- --background` (or `npm run dev`).
 - **Auth:** none — public pages only.
 
 ## Production smoke
@@ -130,7 +130,8 @@ register executable hooks. See [development and release](docs/development.md).
 ## Configuration
 
 Relocatable tracked settings live under `config/<domain>/`, with one owner per
-setting and minimal native adapters. See [configuration guidance](config/README.md)
+setting. CLI commands select their owners explicitly; native adapters require a
+named active consumer. See [configuration guidance](config/README.md)
 for domains, native exceptions and verification. This repository owns them.
 
 ## Repository ownership
