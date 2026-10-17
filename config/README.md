@@ -1,6 +1,8 @@
 # Configuration
 
-Relocatable tracked settings have one repository-owned home under `config/<domain>/`:
+Move optional top-level tracked settings into `config/<domain>/` or their owner;
+keep existing nested configuration with its component. Test configuration may live
+under `tests/`. Each setting has one repository-owned home:
 
 - `app/astro.mjs` owns Astro, Vite and release-identity settings. Package dev,
   build, preview, check and generic Astro commands select it explicitly. The
@@ -12,9 +14,9 @@ Relocatable tracked settings have one repository-owned home under `config/<domai
   server; successful initial startup alone does not prove reload behavior.
 - `app/svelte.js` owns preprocessing. Astro's Svelte integration selects it through
   a file URL resolved beside the app configuration.
-- `typescript/project.json` owns compiler options, source scope and aliases,
-  extending `strict-astro.json` and Astro's package preset. Rebased include/exclude
-  and `baseUrl` paths preserve the root; aliases stay relative to that base.
+- `typescript/tsconfig.json` owns compiler policy and extends Astro's package
+  preset. Its empty `files` and `include` keep it from independently owning source
+  files during native discovery; the root adapter supplies project membership.
 - `quality/biome.settings.jsonc` owns Biome rules, globs and overrides. Package
   commands select this file explicitly, preserving repository VCS/ignore scope.
 - `quality/knip.js` is selected explicitly. Its Astro, Svelte and Biome metadata
@@ -30,13 +32,24 @@ Relocatable tracked settings have one repository-owned home under `config/<domai
 
 ## Required native files
 
-Root `tsconfig.json` remains a minimal adapter for Astro 7.3.1's root TypeScript
-loader and its Vite alias fallback. `--config` selects the app settings and does
-not redirect TypeScript discovery. Removing this adapter makes the app build
-fail on `$lib` imports. The canonical `baseUrl` anchors the inherited alias map
-for the pinned framework loader; moving that map without preserving its context
-breaks Svelte imports. Verify the configured Astro typecheck and complete app build,
-and the pinned shadcn-svelte component generator, when changing these paths.
+Root `tsconfig.json` is required by Astro 7.3.1, its Vite 8.1.0 graph and the
+pinned shadcn-svelte generator. It owns source membership, exclusions, `baseUrl`
+and aliases; compiler policy stays in `config/typescript/tsconfig.json`.
+`--config` selects app settings and does not redirect TypeScript discovery.
+Keeping membership at the root preserves TypeScript's selected inputs and gives
+Vite's native resolver the intended root scope and `dist/` exclusion. Its native
+nested filename also lets Vite recognize compiler-policy edits without clearing
+its cache. Both `files` and `include` must remain empty in the policy file so a
+source beneath `config/typescript/` falls back to the root adapter.
+
+Verify actual per-file native resolution and emitted code, including source,
+config, scripts, tests, nearer nested overrides, `dist/` and an outside sibling.
+`tests/config/tsconfig-consumer.test.mjs` covers cold native discovery and output.
+For reload acceptance, change and restore `verbatimModuleSyntax` in the physical
+policy owner and a setting in `config/app/astro.mjs` while Astro serves the same
+module URL with its native cache. Compare resolved TypeScript options and inputs,
+then run the configured Astro typecheck, complete build and pinned shadcn-svelte
+component generator. Successful initial startup alone does not prove reload.
 
 Package manifests/lockfiles, `.npmrc`, `.nvmrc`, `.mise.toml`, Git files, `.github/`,
 native agent registrations, `vercel.json` and `components.json` keep their required

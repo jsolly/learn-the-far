@@ -1,5 +1,8 @@
 {
 	"$schema": "https://json.schemastore.org/tsconfig",
+	"extends": "astro/tsconfigs/strict",
+	"files": [],
+	"include": [],
 	"compilerOptions": {
 		"noUncheckedIndexedAccess": true,
 		"noUnusedLocals": true,
