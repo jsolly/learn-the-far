@@ -7,6 +7,9 @@ Relocatable tracked settings have one repository-owned home under `config/<domai
   retained-assets URL stays `../../retained-assets/`, preserving immutable lazy
   assets and provenance. Repository roots, public assets and build outputs stay
   the same.
+  Its watch registration reloads Astro configuration when this physical owner
+  changes. Verify an actual setting change and restoration in the running dev
+  server; successful initial startup alone does not prove reload behavior.
 - `app/svelte.js` owns preprocessing. Astro's Svelte integration selects it through
   a file URL resolved beside the app configuration.
 - `typescript/project.json` owns compiler options, source scope and aliases,

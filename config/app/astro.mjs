@@ -27,6 +27,14 @@ export default defineConfig({
 	site: "https://learnthefar.com",
 	trailingSlash: "always",
 	integrations: [
+		{
+			name: "learn-the-far-config-watch",
+			hooks: {
+				"astro:config:setup": ({ addWatchFile }) => {
+					addWatchFile(new URL("./astro.mjs", import.meta.url));
+				},
+			},
+		},
 		svelte({ configFile: fileURLToPath(new URL("./svelte.js", import.meta.url)) }),
 		sitemap(),
 		{
