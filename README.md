@@ -38,7 +38,7 @@ Optional (Cursor only): `npm run mcp:echarts` starts a project-local Apache ECha
 
 ## Architecture
 
-- **Static SPA** — `astro build` emits `dist/`; Vercel serves that directory (`vercel.json`).
+- **Static SPA** — `npm run build` emits `dist/`; Vercel serves that directory (`vercel.json`).
 - **Svelte islands** — interactive study/quiz UI under `src/components/app/`.
 - **FAR content** — chapters and decks live under `src/lib/far/` (shelves, glossary, questions). Source links point at [acquisition.gov](https://www.acquisition.gov/browse/index/far).
 - **Routes** — home (`/`) plus shareable learn routes (`/learn/[unit]/`, `/learn/[unit]/[chapter]/`).

@@ -3,6 +3,7 @@
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { copyFile, mkdir, readdir } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
 import sitemap from "@astrojs/sitemap";
 import svelte from "@astrojs/svelte";
 import tailwindcss from "@tailwindcss/vite";
@@ -26,7 +27,7 @@ export default defineConfig({
 	site: "https://learnthefar.com",
 	trailingSlash: "always",
 	integrations: [
-		svelte(),
+		svelte({ configFile: fileURLToPath(new URL("./svelte.js", import.meta.url)) }),
 		sitemap(),
 		{
 			name: "release-identity",
