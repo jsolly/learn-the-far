@@ -157,7 +157,7 @@ let v = $derived(verdict());
 				variant="ghost"
 				size="sm"
 				class="shrink-0 px-2"
-				aria-label={isSoundMuted() ? "Unmute quiz sounds" : "Mute quiz sounds"}
+				aria-label="Mute quiz sounds"
 				aria-pressed={isSoundMuted()}
 				onclick={() => toggleSoundMuted()}
 			>

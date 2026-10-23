@@ -64,17 +64,19 @@ const GITHUB_REPO_URL = "https://github.com/jsolly/learn-the-far";
 		<div
 			class="flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border bg-card px-3 py-2 sm:gap-2.5 sm:px-3.5 sm:py-2.5"
 			title={`${game.streak.current}-day streak${game.streak.longest ? ` · best ${game.streak.longest}` : ""}`}
-			aria-label={`${game.streak.current}-day streak${game.streak.longest ? `, best ${game.streak.longest}` : ""}`}
 		>
-			<span class="inline-flex items-center gap-1 leading-none" aria-hidden="true">
-				<span class="text-sm sm:text-base">🔥</span>
+			<span class="inline-flex items-center gap-1 leading-none">
+				<span class="text-sm sm:text-base" aria-hidden="true">🔥</span>
 				<span class="text-sm font-bold tabular-nums tracking-tight sm:text-base"
 					>{game.streak.current}</span
 				>
 			</span>
-			<span class="text-xs font-medium leading-none text-muted-foreground sm:text-sm" aria-hidden="true"
+			<span class="text-xs font-medium leading-none text-muted-foreground sm:text-sm"
 				>day streak</span
 			>
+			{#if game.streak.longest}
+				<span class="sr-only">, best {game.streak.longest}</span>
+			{/if}
 		</div>
 	</header>
 
@@ -227,17 +229,15 @@ const GITHUB_REPO_URL = "https://github.com/jsolly/learn-the-far";
 			variant="ghost"
 			size="sm"
 			class="text-muted-foreground"
-			aria-label={isSoundMuted() ? "Unmute quiz sounds" : "Mute quiz sounds"}
 			aria-pressed={isSoundMuted()}
 			onclick={() => toggleSoundMuted()}
 		>
 			{#if isSoundMuted()}
 				<VolumeOffIcon class="size-4" aria-hidden="true" />
-				Sound off
 			{:else}
 				<Volume2Icon class="size-4" aria-hidden="true" />
-				Sound on
 			{/if}
+			Mute quiz sounds
 		</Button>
 		{#if game.hasProgress}
 			{#if confirmReset}
