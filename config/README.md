@@ -23,6 +23,8 @@ under `tests/`. Each setting has one repository-owned home:
   names the actual owners, preserving analysis plugins and entry discovery.
 - `quality/yamllint.yaml` and `quality/.markdownlint-cli2.jsonc` are selected
   explicitly by the YAML command and root-anchored Markdown helper.
+- `testing/vitest.preview.mjs` selects the Preview workflow fixture suite from
+  the repository root. `test:preview-workflow` and `check:actions` select it explicitly.
 - `agents/repository.json` owns hook identity and its fixed trusted-bundle roster.
   Current checkouts refuse retired root `.repo-independent.json`, including a
   dangling link. [Hook trust](../docs/development.md#hook-trust) describes the
