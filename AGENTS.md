@@ -67,7 +67,7 @@ yamllint, pie-progress, the negative quiz smoke contract, `astro check`,
 
 Static Vercel deploy only — see README **Deploy your own copy**. For a different domain, update `config/app/astro.mjs` `site`, `public/robots.txt`, and `vercel.json` host redirects. No production secrets or server env vars.
 
-Production Git deploys stay on for `main` (`vercel.json` `git.deploymentEnabled`). Branch pushes do **not** create Preview deployments. Comment `/preview` as the first non-empty line on a same-repo PR (owner/member/collaborator User), or run workflow **Vercel Preview** with the PR number. GitHub runs that workflow from `main`. One-shot: new commits do not rebuild until you ask again. Requires GitHub secret `VERCEL_TOKEN`. Agents must not comment `/preview` unless the user asked.
+Production Git deploys remain limited to `main` (`vercel.json` `git.deploymentEnabled`). Branch pushes do **not** create Preview deployments. Comment `/preview` as the first non-empty line on a same-repo PR (owner/member/collaborator User), or run **Vercel Preview** from `main` with the PR number. These are one-shot requests. Add the `preview` label to redeploy on every push until it is removed. Labeled requests keep one protected project/PR URL and one comment updated to the current head. Closed, moved or unlabeled builds cannot replace that URL. Requires GitHub secret `VERCEL_TOKEN`. Agents must not comment `/preview`, apply the label or dispatch the workflow unless John asked. Full CI still runs on PRs, including drafts; Preview does not defer quality checks.
 
 ## Documentation
 
