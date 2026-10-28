@@ -27,7 +27,8 @@
 		"smoke:production": "node scripts/production-smoke.mjs",
 		"smoke:scenario-contract": "node --test scripts/production-smoke-scenario.test.mjs",
 		"check:updates": "node tests/update-notice.mjs",
-		"test:preview-workflow": "vitest run --config config/testing/vitest.preview.mjs"
+		"test:preview-workflow": "vitest run --config config/testing/vitest.preview.mjs",
+		"check:a11y": "node scripts/check-accessibility.mjs"
 	},
 	"dependencies": {
 		"@astrojs/sitemap": "^3.7.3",
@@ -47,6 +48,7 @@
 		"@internationalized/date": "^3.12.2",
 		"@lucide/svelte": "^1.21.0",
 		"@types/canvas-confetti": "^1.9.0",
+		"axe-core": "^4.14.0",
 		"bits-ui": "^2.18.1",
 		"clsx": "^2.1.1",
 		"echarts-mcp": "git+https://github.com/apache/echarts-mcp.git#18b6aa8253231c1df9e3b5baf1991739f4bf0942",
