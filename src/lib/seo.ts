@@ -45,18 +45,18 @@ export function formatDocumentTitle(pageTitle: string, brand = BRAND): string {
  * cutting mid-word when possible.
  */
 export function formatMetaDescription(description: string): string {
-	let trimmed = description.trim().replace(/\s+/gu, " ");
-	if (!trimmed) {
-		trimmed = `Federal contracting scenarios and FAR capture practice on ${BRAND}.`;
+	const summary = description.trim().replace(/\s+/gu, " ");
+	if (!summary) {
+		return `Federal Acquisition Regulation capture practice for prime contractors on ${BRAND}. Scenario quizzes build judgment before B&P spend.`;
 	}
 
-	if (trimmed.length < DESCRIPTION_MIN) {
-		trimmed = `${trimmed}${DESCRIPTION_PAD}`;
+	if (summary.length >= DESCRIPTION_MIN) {
+		return truncateAtWord(summary, DESCRIPTION_MAX);
 	}
 
-	if (trimmed.length < DESCRIPTION_MIN) {
-		trimmed = `Federal Acquisition Regulation capture practice for prime contractors on ${BRAND}. Scenario quizzes build judgment before B&P spend.`;
-	}
-
-	return truncateAtWord(trimmed, DESCRIPTION_MAX);
+	// Append the boilerplate only when all of it fits. Padding first and
+	// truncating afterwards cut the boilerplate itself, ending real snippets on
+	// a dangling fragment ("… FAR capture scenarios for prime contractors on…").
+	const padded = `${summary}${DESCRIPTION_PAD}`;
+	return padded.length <= DESCRIPTION_MAX ? padded : summary;
 }
