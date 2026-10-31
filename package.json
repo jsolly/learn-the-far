@@ -28,6 +28,7 @@
 		"smoke:scenario-contract": "node --test scripts/production-smoke-scenario.test.mjs",
 		"check:updates": "node tests/update-notice.mjs",
 		"test:preview-workflow": "vitest run --config config/testing/vitest.preview.mjs",
+		"test:unit": "vitest run --config config/testing/vitest.unit.mjs",
 		"check:a11y": "node scripts/check-accessibility.mjs"
 	},
 	"dependencies": {

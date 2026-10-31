@@ -60,8 +60,10 @@ and hook setup) via the committed Cursor and Codex setup commands. The app has n
 
 `.git-hooks/pre-commit` sources the repo-owned `gate/gate-lib.sh` and runs the
 Bash floor check, staged secrets scan, actionlint, Biome, knip, markdownlint,
-yamllint, pie-progress, the negative quiz smoke contract, `astro check`,
-`astro build` and isolated hook/bootstrap fixtures. Never weaken or skip the gate.
+yamllint, pie-progress, the negative quiz smoke contract, the TypeScript config
+consumers, the Vitest unit suite (`npm run test:unit`), `astro check`,
+`astro build`, the website update browser contract and isolated hook/bootstrap
+fixtures. Never weaken or skip the gate.
 
 ## Deploy / fork
 

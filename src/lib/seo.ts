@@ -5,8 +5,17 @@ const DESCRIPTION_MIN = 110;
 /** Ahrefs flags meta descriptions longer than 160 characters. */
 const DESCRIPTION_MAX = 160;
 const BRAND = "Learn The FAR";
-/** Appended when a page summary is below Ahrefs' minimum. */
-const DESCRIPTION_PAD = " Practice FAR capture scenarios for prime contractors on Learn The FAR.";
+/**
+ * Appended to a page summary below Ahrefs' minimum, longest first. Only a pad
+ * whose combined length lands inside the band is used, so the boilerplate is
+ * never itself truncated.
+ */
+const DESCRIPTION_PADS = [
+	` Practice FAR capture scenarios for prime contractors on ${BRAND}.`,
+	` Practice FAR capture scenarios on ${BRAND}.`,
+];
+/** Stands alone when neither the summary nor any padded form reaches the minimum. */
+const DESCRIPTION_FALLBACK = `Federal Acquisition Regulation capture practice for prime contractors on ${BRAND}. Scenario quizzes build judgment before B&P spend.`;
 
 function truncateAtWord(text: string, max: number): string {
 	if (text.length <= max) {
@@ -41,22 +50,32 @@ export function formatDocumentTitle(pageTitle: string, brand = BRAND): string {
 }
 
 /**
- * Keep meta descriptions inside Ahrefs' 110–160 character band without
- * cutting mid-word when possible.
+ * Keep meta descriptions inside Ahrefs' 110–160 character band. A summary that
+ * already reaches the minimum is truncated at a word boundary; a shorter one
+ * takes the first boilerplate pad whose total lands inside the band; a summary
+ * too short for any pad to reach the minimum, including an empty one, is
+ * replaced by the standalone sentence. The boilerplate is only ever appended
+ * whole. `DESCRIPTION_FALLBACK` is returned unclamped on purpose: its length is
+ * pinned by the tests, so lengthening it past the maximum fails loudly instead
+ * of being silently truncated to a dangling fragment.
  */
 export function formatMetaDescription(description: string): string {
-	let trimmed = description.trim().replace(/\s+/gu, " ");
-	if (!trimmed) {
-		trimmed = `Federal contracting scenarios and FAR capture practice on ${BRAND}.`;
+	const summary = description.trim().replace(/\s+/gu, " ");
+
+	if (summary.length >= DESCRIPTION_MIN) {
+		return truncateAtWord(summary, DESCRIPTION_MAX);
 	}
 
-	if (trimmed.length < DESCRIPTION_MIN) {
-		trimmed = `${trimmed}${DESCRIPTION_PAD}`;
+	// Pad with a whole sentence or not at all. Padding first and truncating
+	// afterwards cut the boilerplate itself, ending real snippets on a dangling
+	// fragment ("… FAR capture scenarios for prime contractors on…"); returning
+	// the bare summary instead dropped 17 pages below the 110-character minimum.
+	for (const pad of DESCRIPTION_PADS) {
+		const padded = `${summary}${pad}`;
+		if (padded.length >= DESCRIPTION_MIN && padded.length <= DESCRIPTION_MAX) {
+			return padded;
+		}
 	}
 
-	if (trimmed.length < DESCRIPTION_MIN) {
-		trimmed = `Federal Acquisition Regulation capture practice for prime contractors on ${BRAND}. Scenario quizzes build judgment before B&P spend.`;
-	}
-
-	return truncateAtWord(trimmed, DESCRIPTION_MAX);
+	return DESCRIPTION_FALLBACK;
 }
