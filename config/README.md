@@ -25,6 +25,10 @@ under `tests/`. Each setting has one repository-owned home:
   explicitly by the YAML command and root-anchored Markdown helper.
 - `testing/vitest.preview.mjs` selects the Preview workflow fixture suite from
   the repository root. `test:preview-workflow` and `check:actions` select it explicitly.
+- `testing/vitest.unit.mjs` selects the `src/**/*.test.ts` unit suite from the
+  repository root. `test:unit` selects it explicitly and the gate runs it. It
+  mirrors the root `tsconfig.json` `$lib/*` path, which Vitest does not read;
+  the root file stays that alias's owner.
 - `agents/repository.json` owns hook identity and its fixed trusted-bundle roster.
   Current checkouts refuse retired root `.repo-independent.json`, including a
   dangling link. [Hook trust](../docs/development.md#hook-trust) describes the

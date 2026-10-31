@@ -72,7 +72,7 @@ Production for this repo stays Git-connected: pushes to `main` deploy automatica
 
 ## CI and commits
 
-GitHub Actions (`.github/workflows/ci.yml`) runs on every PR and on `main`: actionlint, Biome, knip, markdownlint, yamllint, pie-progress, the negative quiz smoke contract, typecheck, and build.
+GitHub Actions (`.github/workflows/ci.yml`) runs on every PR and on `main`: actionlint, Biome, knip, markdownlint, yamllint, pie-progress, the negative quiz smoke contract, the Vitest unit suite, typecheck, and build.
 
 Local pre-commit (`.git-hooks/pre-commit`) runs the same checks plus isolated
 hook/bootstrap fixtures. This repo owns its gate library and trusted dispatcher;

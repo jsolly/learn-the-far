@@ -53,14 +53,14 @@ export function formatDocumentTitle(pageTitle: string, brand = BRAND): string {
  * Keep meta descriptions inside Ahrefs' 110–160 character band. A summary that
  * already reaches the minimum is truncated at a word boundary; a shorter one
  * takes the first boilerplate pad whose total lands inside the band; a summary
- * too short for any pad to reach the minimum is replaced by the standalone
- * sentence. The boilerplate is only ever appended whole.
+ * too short for any pad to reach the minimum, including an empty one, is
+ * replaced by the standalone sentence. The boilerplate is only ever appended
+ * whole. `DESCRIPTION_FALLBACK` is returned unclamped on purpose: its length is
+ * pinned by the tests, so lengthening it past the maximum fails loudly instead
+ * of being silently truncated to a dangling fragment.
  */
 export function formatMetaDescription(description: string): string {
 	const summary = description.trim().replace(/\s+/gu, " ");
-	if (!summary) {
-		return truncateAtWord(DESCRIPTION_FALLBACK, DESCRIPTION_MAX);
-	}
 
 	if (summary.length >= DESCRIPTION_MIN) {
 		return truncateAtWord(summary, DESCRIPTION_MAX);
@@ -77,5 +77,5 @@ export function formatMetaDescription(description: string): string {
 		}
 	}
 
-	return truncateAtWord(DESCRIPTION_FALLBACK, DESCRIPTION_MAX);
+	return DESCRIPTION_FALLBACK;
 }
