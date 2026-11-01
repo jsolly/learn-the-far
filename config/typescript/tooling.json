@@ -9,7 +9,11 @@
 		"../../tests/config/tsconfig-consumer.test.mts",
 		"../../scripts/vercel-preview-workflow.test.ts",
 		"../../scripts/check-generated-test-fixtures.ts",
-		"../../tests/update-notice.ts"
+		"../../tests/update-notice.ts",
+		"../../scripts/production-smoke.mts",
+		"../../scripts/production-smoke-scenario.mts",
+		"../../scripts/production-smoke-scenario.test.ts",
+		"../../scripts/production-smoke.test.ts"
 	],
 	"compilerOptions": {
 		"noEmit": true,

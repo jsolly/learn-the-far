@@ -4,7 +4,7 @@ Move optional top-level tracked settings into `config/<domain>/` or their owner;
 keep existing nested configuration with its component. Test configuration may live
 under `tests/`. Each setting has one repository-owned home:
 
-- `app/astro.mjs` owns Astro, Vite and release-identity settings. Package dev,
+- `app/astro.ts` owns Astro, Vite and release-identity settings. Package dev,
   build, preview, check and generic Astro commands select it explicitly. The
   retained-assets URL stays `../../retained-assets/`, preserving immutable lazy
   assets and provenance. Repository roots, public assets and build outputs stay
@@ -12,7 +12,7 @@ under `tests/`. Each setting has one repository-owned home:
   Its watch registration reloads Astro configuration when this physical owner
   changes. Verify an actual setting change and restoration in the running dev
   server; successful initial startup alone does not prove reload behavior.
-- `app/svelte.js` owns preprocessing. Astro's Svelte integration selects it through
+- `app/svelte.ts` owns preprocessing. Astro's Svelte integration selects it through
   a file URL resolved beside the app configuration.
 - `typescript/tsconfig.json` owns compiler policy and extends Astro's package
   preset. Its empty `files` and `include` keep it from independently owning source
@@ -88,3 +88,13 @@ checkout, home links, generator or synchronization is required.
 The converted TypeScript tooling is checked by `tsc --project
 config/typescript/tooling.json` before Astro checking in `npm run check:ts`. Node 24
 runs the pie verifier directly; Vitest and Knip load their typed configurations.
+
+The same strict generator also owns the production smoke consumers. Edit
+`scripts/production-smoke.mts` and `scripts/production-smoke-scenario.mts`, then
+run `npm run generate:test-fixtures`. Their generated `.mjs` siblings retain the
+CLI, exported runner functions and scenario-loader paths. `check:ts` verifies
+these consumers alongside the generated test fixtures. The native TypeScript
+smoke tests use real Playwright objects with every HTTP request fulfilled by a
+local fixture and an injected fetcher; they never call the production origin.
+The deliberately broken quiz-handler HTML remains an intentional literal
+JavaScript fixture.
