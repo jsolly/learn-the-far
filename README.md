@@ -44,7 +44,7 @@ Optional (Cursor only): `npm run mcp:echarts` starts a project-local Apache ECha
 - **Routes** — home (`/`) plus shareable learn routes (`/learn/[unit]/`, `/learn/[unit]/[chapter]/`).
 - **State** — quiz progress and reading state in `localStorage` only (`src/lib/local-storage.ts`, `src/lib/reading-storage.ts`).
 
-No env vars are required for the production app. Site URL for the sitemap is set in `config/app/astro.mjs` (`site`).
+No env vars are required for the production app. Site URL for the sitemap is set in `config/app/astro.ts` (`site`).
 
 ## Deploy your own copy (Vercel)
 
@@ -64,7 +64,7 @@ If you are not deploying to `learnthefar.com`, update:
 
 | File | What to change |
 | :-- | :-- |
-| `config/app/astro.mjs` | `site: 'https://your-domain.example'` |
+| `config/app/astro.ts` | `site: 'https://your-domain.example'` |
 | `public/robots.txt` | Sitemap URL host |
 | `vercel.json` | `www` → apex redirect `has` / `destination` hosts (or remove that redirect) |
 

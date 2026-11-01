@@ -1,6 +1,11 @@
 {
 	"extends": "./tsconfig.json",
-	"include": ["../testing/*.ts", "../quality/knip.ts", "../../scripts/verify-pie-progress.ts"],
+	"include": [
+		"../app/*.ts",
+		"../testing/*.ts",
+		"../quality/knip.ts",
+		"../../scripts/verify-pie-progress.ts"
+	],
 	"compilerOptions": {
 		"noEmit": true,
 		"allowJs": false,

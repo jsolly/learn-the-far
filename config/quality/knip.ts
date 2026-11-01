@@ -2,8 +2,8 @@ import type { KnipConfig } from "knip";
 
 export default {
 	$schema: "https://unpkg.com/knip@6/schema.json",
-	astro: { config: ["config/app/astro.mjs"] },
-	svelte: { entry: ["config/app/svelte.js"] },
+	astro: { config: ["config/app/astro.ts"] },
+	svelte: { entry: ["config/app/svelte.ts"] },
 	biome: { config: ["config/quality/biome.settings.jsonc"] },
 	entry: ["src/styles/global.css", "scripts/**/*.{mjs,js,ts,sh}"],
 	ignoreIssues: {
