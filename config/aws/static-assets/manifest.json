@@ -1,0 +1,47 @@
+{
+	"version": 1,
+	"assets": [
+		{
+			"path": "/apple-touch-icon.png",
+			"sha256": "25ea348f347f9514ef1dd2ef75e4166d7f93f346d7526ccf2263227fe07f0f31",
+			"bytes": 34722,
+			"key": "sha256/25ea348f347f9514ef1dd2ef75e4166d7f93f346d7526ccf2263227fe07f0f31/apple-touch-icon.png",
+			"contentType": "image/png"
+		},
+		{
+			"path": "/favicon.ico",
+			"sha256": "13e6ab0c94966c211a548ae8f5f495444c3a4a487f24560e0e353aeb9dd45daa",
+			"bytes": 7672,
+			"key": "sha256/13e6ab0c94966c211a548ae8f5f495444c3a4a487f24560e0e353aeb9dd45daa/favicon.ico",
+			"contentType": "image/x-icon"
+		},
+		{
+			"path": "/og-image.png",
+			"sha256": "eb1318de3063d7a456eb36a44cd4880b3b0a8ae04acc076c747bcaf751da7d22",
+			"bytes": 843660,
+			"key": "sha256/eb1318de3063d7a456eb36a44cd4880b3b0a8ae04acc076c747bcaf751da7d22/og-image.png",
+			"contentType": "image/png"
+		},
+		{
+			"path": "/sounds/correct.mp3",
+			"sha256": "a99924ca0408ec6d4bbf739555c0c54e417a7264015c675053557d836e381fb1",
+			"bytes": 2439,
+			"key": "sha256/a99924ca0408ec6d4bbf739555c0c54e417a7264015c675053557d836e381fb1/sounds/correct.mp3",
+			"contentType": "audio/mpeg"
+		},
+		{
+			"path": "/sounds/incorrect.mp3",
+			"sha256": "d2bf3b92a950a6423d444614f35393465e0daa74f6169f9b6b2a9459584fcfea",
+			"bytes": 1529,
+			"key": "sha256/d2bf3b92a950a6423d444614f35393465e0daa74f6169f9b6b2a9459584fcfea/sounds/incorrect.mp3",
+			"contentType": "audio/mpeg"
+		},
+		{
+			"path": "/sounds/session-complete.mp3",
+			"sha256": "691d0732ca996baf96fb04072d1adf128f9fa40a7b4334e5304cd4a4a5351a1e",
+			"bytes": 3713,
+			"key": "sha256/691d0732ca996baf96fb04072d1adf128f9fa40a7b4334e5304cd4a4a5351a1e/sounds/session-complete.mp3",
+			"contentType": "audio/mpeg"
+		}
+	]
+}
