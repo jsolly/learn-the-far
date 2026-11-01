@@ -1,10 +1,11 @@
 /**
  * Verifies hub % matches weighted slice fill for representative progress mixes.
- * Run: node scripts/verify-pie-progress.mjs
+ * Run: node scripts/verify-pie-progress.ts
  */
 import {
 	capturedFillRatio,
 	hubCapturedPercent,
+	type ProgressSlice,
 	weightedCapturedRatio,
 } from "../src/lib/pie-progress.ts";
 
@@ -20,7 +21,11 @@ const DECK = [
 	{ id: "win", total: 22 },
 ];
 
-function slice(total, cleared, { mastered = cleared, learning = 0 } = {}) {
+function slice(
+	total: number,
+	cleared: number,
+	{ mastered = cleared, learning = 0 }: { mastered?: number; learning?: number } = {},
+): ProgressSlice {
 	const ratio = total === 0 ? 0 : cleared / total;
 	return {
 		cleared,
@@ -31,7 +36,7 @@ function slice(total, cleared, { mastered = cleared, learning = 0 } = {}) {
 	};
 }
 
-function scenario(name, clearedById) {
+function scenario(name: string, clearedById: Readonly<Record<string, number>>): boolean {
 	const slices = DECK.map(({ id, total }) => {
 		const cleared = clearedById[id] ?? 0;
 		// Split: first clear = learning, second+ = mastered (approx for fill layers).

@@ -19,13 +19,13 @@ under `tests/`. Each setting has one repository-owned home:
   files during native discovery; the root adapter supplies project membership.
 - `quality/biome.settings.jsonc` owns Biome rules, globs and overrides. Package
   commands select this file explicitly, preserving repository VCS/ignore scope.
-- `quality/knip.js` is selected explicitly. Its Astro, Svelte and Biome metadata
+- `quality/knip.ts` is selected explicitly. Its Astro, Svelte and Biome metadata
   names the actual owners, preserving analysis plugins and entry discovery.
 - `quality/yamllint.yaml` and `quality/.markdownlint-cli2.jsonc` are selected
   explicitly by the YAML command and root-anchored Markdown helper.
-- `testing/vitest.preview.mjs` selects the Preview workflow fixture suite from
+- `testing/vitest.preview.ts` selects the Preview workflow fixture suite from
   the repository root. `test:preview-workflow` and `check:actions` select it explicitly.
-- `testing/vitest.unit.mjs` selects the `src/**/*.test.ts` unit suite from the
+- `testing/vitest.unit.ts` selects the `src/**/*.test.ts` unit suite from the
   repository root. `test:unit` selects it explicitly and the gate runs it. It
   mirrors the root `tsconfig.json` `$lib/*` path, which Vitest does not read;
   the root file stays that alias's owner.
@@ -72,3 +72,7 @@ fixtures. Exercise `npm run astro -- sync` and the documented dev lifecycle too.
 After merge verify intended Vercel production READY and exact-release chapter/quiz
 smoke. Production stays main-only; no automatic Preview. No external configuration
 checkout, home links, generator or synchronization is required.
+
+The converted TypeScript tooling is checked by `tsc --project
+config/typescript/tooling.json` before Astro checking in `npm run check:ts`. Node 24
+runs the pie verifier directly; Vitest and Knip load their typed configurations.
