@@ -7,7 +7,7 @@ export default {
 	biome: { config: ["config/quality/biome.settings.jsonc"] },
 	entry: [
 		"src/styles/global.css",
-		"scripts/**/*.{mjs,js,ts,sh}",
+		"scripts/**/*.{mjs,js,ts,mts,sh}",
 		"scripts/fixtures/vercel-preview-cli.cts",
 		"scripts/fixtures/vercel-preview-cli.cjs",
 	],

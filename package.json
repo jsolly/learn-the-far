@@ -25,7 +25,7 @@
 		"check:actions": "bash scripts/check-actions.sh && bash scripts/vercel-preview-comment-contract.sh && bash scripts/vercel-preview-workflow-contract.sh && npm run test:preview-workflow",
 		"gate": "FLEET_DOC_FAST=0 bash .git-hooks/pre-commit",
 		"smoke:production": "node scripts/production-smoke.mjs",
-		"smoke:scenario-contract": "node --test scripts/production-smoke-scenario.test.mjs",
+		"smoke:scenario-contract": "node --test scripts/production-smoke-scenario.test.ts scripts/production-smoke.test.ts",
 		"check:updates": "node tests/update-notice.ts",
 		"test:preview-workflow": "vitest run --config config/testing/vitest.preview.ts",
 		"test:unit": "vitest run --config config/testing/vitest.unit.ts",

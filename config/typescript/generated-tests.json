@@ -2,7 +2,9 @@
 	"extends": "./tsconfig.json",
 	"files": [
 		"../../tests/config/tsconfig-consumer.test.mts",
-		"../../scripts/fixtures/vercel-preview-cli.cts"
+		"../../scripts/fixtures/vercel-preview-cli.cts",
+		"../../scripts/production-smoke.mts",
+		"../../scripts/production-smoke-scenario.mts"
 	],
 	"include": [],
 	"compilerOptions": {

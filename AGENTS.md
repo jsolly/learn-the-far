@@ -96,7 +96,8 @@ No auth — public UI only. Smoke the changed routes on desktop and mobile width
 The **Production smoke** workflow is a separate post-deployment gate. It waits
 for the intended production release and verifies the public browser flow with
 `npm run smoke:production`. The URL is pinned in
-`scripts/production-smoke-scenario.mjs`; the workflow uses no deployment secrets.
+`scripts/production-smoke-scenario.mts`; regenerate its preserved `.mjs` consumer
+with `npm run generate:test-fixtures`. The workflow uses no deployment secrets.
 Vercel Git deployment and the existing PR CI checks remain unchanged.
 
 The release process must wait for the exact release's Production smoke run to succeed and
