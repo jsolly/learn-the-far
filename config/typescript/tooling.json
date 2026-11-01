@@ -5,7 +5,10 @@
 		"../testing/*.ts",
 		"../quality/knip.ts",
 		"../../scripts/verify-pie-progress.ts",
-		"../../scripts/check-accessibility.ts"
+		"../../scripts/check-accessibility.ts",
+		"../../tests/config/tsconfig-consumer.test.mts",
+		"../../scripts/vercel-preview-workflow.test.ts",
+		"../../scripts/check-generated-test-fixtures.ts"
 	],
 	"compilerOptions": {
 		"noEmit": true,
