@@ -50,7 +50,19 @@ source beneath `config/typescript/` falls back to the root adapter.
 
 Verify actual per-file native resolution and emitted code, including source,
 config, scripts, tests, nearer nested overrides, `dist/` and an outside sibling.
-`tests/config/tsconfig-consumer.test.mjs` covers cold native discovery and output.
+`tests/config/tsconfig-consumer.test.mts` authors the cold native discovery and
+output test. Its sibling `.mjs` is generated because the protected hook consumer
+requires that exact path. `npm run generate:test-fixtures` regenerates it with the
+strict `typescript/generated-tests.json` compiler project; `check:ts` compiles to
+a temporary directory and fails if the committed output differs. The compiler
+checks types before emitting; the existing pinned Biome normalizes generated
+formatting and import organization before comparison. The substantial fake
+gh/git/npx CLI is authored as
+`scripts/fixtures/vercel-preview-cli.cts` and generated as its sibling `.cjs` by
+the same strict project and freshness check. Native dynamic Node imports inside an async CLI entrypoint preserve the shared
+verbatim-module policy for both its CommonJS output and application checking. Tests add the Node shebang when
+writing extensionless mock executables. Literal compiler probes and deliberately
+rejected executable configurations remain intentional language fixtures.
 For reload acceptance, change and restore `verbatimModuleSyntax` in the physical
 policy owner and a setting in `config/app/astro.ts` while Astro serves the same
 module URL with its native cache. Compare resolved TypeScript options and inputs,

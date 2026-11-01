@@ -1,3 +1,4 @@
+// Generated JavaScript consumer: regenerate the sibling .mjs from this authored .mts.
 import assert from "node:assert/strict";
 import {
 	mkdirSync,
@@ -19,12 +20,32 @@ const require = createRequire(new URL("../../package.json", import.meta.url));
 // Follow Astro's actual Vite graph, including its own native compiler bindings.
 const astroRequire = createRequire(require.resolve("astro/package.json"));
 const viteRequire = createRequire(astroRequire.resolve("vite/package.json"));
-const { transformWithOxc } = await import(pathToFileURL(viteRequire.resolve("vite")).href);
-const { resolveTsconfig } = await import(
-	pathToFileURL(viteRequire.resolve("rolldown/experimental")).href
+// Load the actual Astro-selected compiler graph rather than assuming a root
+// package version. Runtime exports and native results are checked before use.
+function isCallable(value) {
+	return typeof value === "function";
+}
+function assertRecord(value) {
+	assert.ok(value !== null && typeof value === "object" && !Array.isArray(value));
+}
+function compilerExport(module, name) {
+	assertRecord(module);
+	const value = module[name];
+	assert.ok(isCallable(value), `Missing compiler export: ${name}`);
+	return value;
+}
+const transformWithOxc = compilerExport(
+	await import(pathToFileURL(viteRequire.resolve("vite")).href),
+	"transformWithOxc",
 );
-const { TsconfigCache } = await import(pathToFileURL(viteRequire.resolve("rolldown/utils")).href);
-
+const resolveTsconfig = compilerExport(
+	await import(pathToFileURL(viteRequire.resolve("rolldown/experimental")).href),
+	"resolveTsconfig",
+);
+const TsconfigCache = compilerExport(
+	await import(pathToFileURL(viteRequire.resolve("rolldown/utils")).href),
+	"TsconfigCache",
+);
 it("Astro applies compiler policy inside the repository and excludes dist output", async () => {
 	const parent = realpathSync(mkdtempSync(join(tmpdir(), "learn-tsconfig-")));
 	const root = join(parent, "project");
@@ -36,24 +57,29 @@ it("Astro applies compiler policy inside the repository and excludes dist output
 		return path;
 	}
 	function owner(path) {
-		const result = resolveTsconfig(path, new TsconfigCache());
+		const cache = Reflect.construct(TsconfigCache, []);
+		const result = resolveTsconfig(path, cache);
 		if (result === null) {
 			return null;
 		}
-		assert(result && typeof result === "object" && "tsconfigFilePaths" in result);
-		assert(Array.isArray(result.tsconfigFilePaths));
-		const first = result.tsconfigFilePaths[0];
+		assertRecord(result);
+		assert(Array.isArray(result["tsconfigFilePaths"]));
+		const first = result["tsconfigFilePaths"][0];
 		assert(typeof first === "string");
 		if (first === join(root, "tsconfig.json")) {
-			assert.equal(result.tsconfig.compilerOptions.baseUrl, root, path);
+			const tsconfig = result["tsconfig"];
+			assertRecord(tsconfig);
+			const compilerOptions = tsconfig["compilerOptions"];
+			assertRecord(compilerOptions);
+			assert.equal(compilerOptions["baseUrl"], root, path);
 		}
 		return first;
 	}
 	async function emitted(path) {
 		const result = await transformWithOxc(source, path);
-		assert(result && typeof result === "object" && "code" in result);
-		assert(typeof result.code === "string");
-		return result.code;
+		assertRecord(result);
+		assert(typeof result["code"] === "string");
+		return result["code"];
 	}
 	try {
 		for (const name of ["tsconfig.json", "config/typescript/tsconfig.json"]) {

@@ -14,7 +14,67 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { describe, it } from "vitest";
+import { describe, it, type TestContext } from "vitest";
+
+type PreviewPullRequest = {
+	state: string;
+	base: { ref: string };
+	head: { sha: string; ref?: string; repo?: { full_name: string } };
+	labels: { name: string }[];
+};
+type PreviewComment = { id: number; user: { login: string }; body: string };
+type FixtureConfig = {
+	prs?: PreviewPullRequest[];
+	comments?: PreviewComment[];
+	configPath?: string;
+	tracked?: boolean;
+	env?: Record<string, string>;
+	existingComment?: boolean;
+	checkoutHead?: string;
+	failNpx?: string;
+};
+type FixtureCommand = "gh" | "git" | "npx";
+type FixtureCall = {
+	kind: FixtureCommand;
+	args: string[];
+	cwd: string;
+	githubToken: boolean;
+	vercelToken: boolean;
+	cache?: string;
+};
+function isFixtureCall(value: unknown): value is FixtureCall {
+	if (value === null || typeof value !== "object") {
+		return false;
+	}
+	if (
+		!("kind" in value) ||
+		!(value.kind === "gh" || value.kind === "git" || value.kind === "npx")
+	) {
+		return false;
+	}
+	return (
+		"args" in value &&
+		Array.isArray(value.args) &&
+		value.args.every((arg: unknown) => typeof arg === "string") &&
+		"cwd" in value &&
+		typeof value.cwd === "string" &&
+		"githubToken" in value &&
+		typeof value.githubToken === "boolean" &&
+		"vercelToken" in value &&
+		typeof value.vercelToken === "boolean" &&
+		(!("cache" in value) || typeof value.cache === "string")
+	);
+}
+function parseCall(line: string): FixtureCall {
+	const value: unknown = JSON.parse(line);
+	assert.ok(isFixtureCall(value), "Malformed command call fixture record");
+	return value;
+}
+const inheritedPath = process.env["PATH"];
+assert.ok(
+	typeof inheritedPath === "string",
+	"Fixture requires the existing executable search path",
+);
 
 const workflow = readFileSync(
 	new URL("../.github/workflows/vercel-preview.yml", import.meta.url),
@@ -25,13 +85,13 @@ const project = "prj_fixtureproject";
 const realGit = spawnSync("which", ["git"], { encoding: "utf8" }).stdout.trim();
 assert.ok(realGit.startsWith("/"));
 
-function runBlock(name, source = workflow) {
+function runBlock(name: string, source = workflow): string {
 	const lines = source.split("\n");
 	const start = lines.indexOf(`      - name: ${name}`);
 	assert.ok(start >= 0, `missing step: ${name}`);
 	const run = lines.findIndex((line, index) => index > start && line === "        run: |");
 	assert.ok(run > start, `missing inline script: ${name}`);
-	const body = [];
+	const body: string[] = [];
 	for (const line of lines.slice(run + 1)) {
 		if (line.trim() && !line.startsWith("          ")) {
 			break;
@@ -42,7 +102,7 @@ function runBlock(name, source = workflow) {
 	return body.join("\n");
 }
 
-function pr(overrides = {}) {
+function pr(overrides: Partial<PreviewPullRequest> = {}): PreviewPullRequest {
 	return {
 		state: "open",
 		base: { ref: "main" },
@@ -56,18 +116,18 @@ function pr(overrides = {}) {
 	};
 }
 
-function fixture(t, config = {}) {
+function fixture(t: Pick<TestContext, "onTestFinished">, config: FixtureConfig = {}) {
 	const root = mkdtempSync(join(tmpdir(), "preview-workflow-"));
 	t.onTestFinished(() => rmSync(root, { recursive: true, force: true }));
 	mkdirSync(join(root, "bin"));
 	mkdirSync(join(root, "source"));
 	const gitEnv = {
-		PATH: process.env.PATH,
+		PATH: inheritedPath,
 		HOME: root,
 		GIT_CONFIG_NOSYSTEM: "1",
 		GIT_CONFIG_GLOBAL: "/dev/null",
 	};
-	const git = (...args) => {
+	const git = (...args: string[]): void => {
 		const result = spawnSync(realGit, ["-C", join(root, "source"), ...args], {
 			env: gitEnv,
 			encoding: "utf8",
@@ -92,6 +152,8 @@ function fixture(t, config = {}) {
 		join(root, "case.json"),
 		JSON.stringify({
 			prs: [pr()],
+			defaultHead: head,
+			realGit,
 			comments: [
 				{ id: 15, user: { login: "someone" }, body: "<!-- vercel-preview -->" },
 				{
@@ -111,48 +173,16 @@ function fixture(t, config = {}) {
 	);
 	writeFileSync(join(root, "output"), "");
 	writeFileSync(join(root, "calls"), "");
-	const stub = `#!${process.execPath}
-const fs = require("node:fs");
-const path = require("node:path");
-const { spawnSync } = require("node:child_process");
-const root = process.env.PREVIEW_FIXTURE;
-const cfg = JSON.parse(fs.readFileSync(path.join(root, "case.json"), "utf8"));
-const kind = path.basename(process.argv[1]);
-const args = process.argv.slice(2);
-fs.appendFileSync(path.join(root, "calls"), JSON.stringify({
-  kind, args, cwd: process.cwd(), githubToken: !!process.env.GH_TOKEN,
-  vercelToken: !!process.env.VERCEL_TOKEN, cache: process.env.NPM_CONFIG_CACHE
-}) + "\\n");
-if (kind === "gh") {
-  if (args.some(arg => /\\/pulls\\/\\d+$/.test(arg))) {
-    const countFile = path.join(root, "pr-count");
-    const count = fs.existsSync(countFile) ? Number(fs.readFileSync(countFile, "utf8")) : 0;
-    fs.writeFileSync(countFile, String(count + 1));
-    console.log(JSON.stringify(cfg.prs[Math.min(count, cfg.prs.length - 1)]));
-  } else if (args.includes("--paginate")) {
-    const selector = args[args.indexOf("--jq") + 1];
-    const comments = cfg.existingComment === false ? [] : cfg.comments;
-    const result = spawnSync("jq", ["-r", selector], { input: JSON.stringify(comments), encoding: "utf8" });
-    process.stdout.write(result.stdout); process.stderr.write(result.stderr); process.exit(result.status);
-  }
-} else if (kind === "git") {
-  if (args.includes("rev-parse")) console.log(cfg.checkoutHead || "${head}");
-  else if (args.includes("ls-files")) {
-    const result = spawnSync(${JSON.stringify(realGit)}, args, { env: process.env, encoding: "utf8" });
-    process.stdout.write(result.stdout); process.stderr.write(result.stderr); process.exit(result.status);
-  }
-} else if (kind === "npx") {
-  if (args.includes(cfg.failNpx)) process.exit(12);
-  if (args.includes("deploy")) console.log("https://immutable.vercel.app");
-}
-`;
+	// Extensionless CLI executables require compiled CommonJS; their implementation
+	// is authored and checked in fixtures/vercel-preview-cli.cts.
+	const stub = readFileSync(new URL("fixtures/vercel-preview-cli.cjs", import.meta.url), "utf8");
 	for (const name of ["gh", "git", "npx"]) {
-		writeFileSync(join(root, "bin", name), stub);
+		writeFileSync(join(root, "bin", name), `#!${process.execPath}\n${stub}`);
 		chmodSync(join(root, "bin", name), 0o755);
 	}
 	const env = {
 		...gitEnv,
-		PATH: `${join(root, "bin")}:${process.env.PATH}`,
+		PATH: `${join(root, "bin")}:${inheritedPath}`,
 		PREVIEW_FIXTURE: root,
 		GITHUB_OUTPUT: join(root, "output"),
 		RUNNER_TEMP: root,
@@ -170,7 +200,7 @@ if (kind === "gh") {
 		GH_TOKEN: "fixture-github",
 		...config.env,
 	};
-	function execute(step, source = workflow) {
+	function execute(step: string, source = workflow) {
 		// Node's captured stderr is a socket on Linux. Unlike a pipe or file,
 		// it cannot be opened through /dev/stderr by the real workflow's tee.
 		const stderrPath = join(root, "stderr");
@@ -191,11 +221,11 @@ if (kind === "gh") {
 			closeSync(stderrFd);
 		}
 	}
-	function calls(kind) {
+	function calls(kind?: FixtureCommand): FixtureCall[] {
 		return readFileSync(join(root, "calls"), "utf8")
 			.split("\n")
 			.filter(Boolean)
-			.map((line) => JSON.parse(line))
+			.map(parseCall)
 			.filter((call) => !kind || call.kind === kind);
 	}
 	return { root, env, execute, calls };
@@ -257,7 +287,7 @@ describe("resolver refuses closed PRs, forks, invalid heads and invalid request 
 			},
 		],
 		["wrong base", { prs: [pr({ base: { ref: "other" } })] }],
-	]) {
+	] satisfies [string, FixtureConfig][]) {
 		it(name, (scenario) => {
 			const f = fixture(scenario, config);
 			assert.notEqual(f.execute("Resolve the pull request head").status, 0);
@@ -285,8 +315,11 @@ it("a labeled Preview uses isolated CLI commands and edits one stable comment", 
 		assert.equal(call.vercelToken, true);
 		assert.equal(call.cache, join(f.root, "npm-cache"));
 	}
-	assert.ok(commands[0].args.includes(f.env.SOURCE_DIR));
-	assert.deepEqual(commands[1].args, [
+	const deploy = commands[0];
+	const alias = commands[1];
+	assert.ok(deploy && alias);
+	assert.ok(deploy.args.includes(f.env.SOURCE_DIR));
+	assert.deepEqual(alias.args, [
 		"--yes",
 		"vercel@59.20.0",
 		"alias",
@@ -298,6 +331,7 @@ it("a labeled Preview uses isolated CLI commands and edits one stable comment", 
 	]);
 	const patch = f.calls("gh").filter((call) => call.args.includes("PATCH"));
 	assert.equal(patch.length, 1);
+	assert.ok(patch[0]);
 	assert.ok(patch[0].args.includes("repos/fixture/repo/issues/comments/17"));
 	assert.ok(
 		patch[0].args.some((arg) => arg.includes(head) && arg.includes("<!-- vercel-preview -->")),
@@ -315,6 +349,7 @@ it("a manual one-shot Preview does not require or claim label redeploys", (t) =>
 	});
 	assert.equal(f.execute("Deploy the Preview").status, 0);
 	const comment = f.calls("gh").find((call) => call.args[0] === "pr");
+	assert.ok(comment);
 	assert.ok(comment.args.some((arg) => arg.includes("one-shot deploy")));
 	assert.equal(
 		f.calls("gh").some((call) => call.args.includes("PATCH")),
@@ -327,7 +362,7 @@ describe("changed, closed or unlabeled PRs stand down before deployment", () => 
 		["new head", pr({ head: { sha: "b".repeat(40) } })],
 		["closed", pr({ state: "closed" })],
 		["removed label", pr({ labels: [] })],
-	]) {
+	] satisfies [string, PreviewPullRequest][]) {
 		it(name, (scenario) => {
 			const f = fixture(scenario, { prs: [next] });
 			const result = f.execute("Deploy the Preview");
@@ -343,13 +378,15 @@ describe("changed, closed or unlabeled builds never replace the alias or comment
 		["new head", pr({ head: { sha: "b".repeat(40) } })],
 		["closed", pr({ state: "closed" })],
 		["removed label", pr({ labels: [] })],
-	]) {
+	] satisfies [string, PreviewPullRequest][]) {
 		it(name, (scenario) => {
 			const f = fixture(scenario, { prs: [pr(), next] });
 			const result = f.execute("Deploy the Preview");
 			assert.equal(result.status, 0, result.stderr);
 			assert.equal(f.calls("npx").length, 1);
-			assert.ok(f.calls("npx")[0].args.includes("deploy"));
+			const deploy = f.calls("npx")[0];
+			assert.ok(deploy);
+			assert.ok(deploy.args.includes("deploy"));
 			assert.equal(
 				f.calls("gh").some((call) => call.args.includes("PATCH") || call.args[0] === "pr"),
 				false,
@@ -363,7 +400,7 @@ describe("failed credentials, executable configs and failed alias updates fail v
 		["missing token", { env: { VERCEL_TOKEN: "" } }, 0, true],
 		["executable config", { configPath: "nested/vercel.mjs" }, 0, true],
 		["alias failure", { failNpx: "alias" }, 2, false],
-	]) {
+	] satisfies [string, FixtureConfig, number, boolean][]) {
 		it(name, (scenario) => {
 			const f = fixture(scenario, config);
 			assert.notEqual(f.execute("Deploy the Preview").status, 0);
@@ -382,7 +419,7 @@ it("the workflow contract rejects changes that re-expose tokens or PR tooling", 
 	const verify = () =>
 		spawnSync("bash", ["scripts/vercel-preview-workflow-contract.sh"], {
 			cwd: f.root,
-			env: { PATH: process.env.PATH },
+			env: { PATH: inheritedPath },
 			encoding: "utf8",
 		});
 	writeFileSync(path, workflow);
@@ -417,7 +454,7 @@ it("the workflow contract rejects changes that re-expose tokens or PR tooling", 
 				`ref: \${{ github.event.pull_request.head.sha }}`,
 			),
 		],
-	]) {
+	] satisfies [string, string][]) {
 		assert.notEqual(changed, workflow, name);
 		writeFileSync(path, changed);
 		assert.notEqual(verify().status, 0, name);
@@ -446,6 +483,7 @@ it("boundary fixtures expose removed comment ownership and config path matching"
 	assert.notEqual(wrongSelector, workflow);
 	assert.equal(comment.execute("Deploy the Preview", wrongSelector).status, 0);
 	const patch = comment.calls("gh").find((call) => call.args.includes("PATCH"));
+	assert.ok(patch);
 	assert.ok(patch.args.includes("repos/fixture/repo/issues/comments/18"));
 	const config = fixture(t, { configPath: "nested/vercel.mjs" });
 	const wrongPaths = workflow.replace("':(glob)**/vercel.mjs'", "");
