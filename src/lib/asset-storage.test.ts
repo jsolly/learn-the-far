@@ -286,3 +286,59 @@ globalThis.fetch = async (input) => {
 		await rm(receipt, { force: true });
 	}
 });
+
+it("malformed authorization JSON cannot leak credential input through the real CLI", async () => {
+	const root = await publicationFixture();
+	const cli = fileURLToPath(new URL("../../scripts/assets/cli.ts", import.meta.url));
+	const authorizationFile = join(root, "private-upload-input.json");
+	const canary = "FAKE_AUTHORIZATION_CANARY";
+	try {
+		execFileSync(process.execPath, [cli, "inventory"], { cwd: root, stdio: "pipe" });
+		await writeFile(authorizationFile, `{"key":"${canary}" trailing`);
+		assert.throws(
+			() =>
+				execFileSync(
+					process.execPath,
+					[
+						cli,
+						"upload",
+						"https://d123.cloudfront.net",
+						"reviewed-assets-bucket",
+						authorizationFile,
+					],
+					{ cwd: root, stdio: "pipe" },
+				),
+			(error: unknown) => {
+				assert.ok(error instanceof Error && "stderr" in error);
+				const stderr = String(error.stderr);
+				assert.match(stderr, /Invalid upload authorization document/u);
+				assert.ok(!stderr.includes(canary));
+				assert.ok(!String(error).includes(canary));
+				return true;
+			},
+		);
+		await writeFile(authorizationFile, JSON.stringify([canary]));
+		assert.throws(
+			() =>
+				execFileSync(
+					process.execPath,
+					[
+						cli,
+						"upload",
+						"https://d123.cloudfront.net",
+						"reviewed-assets-bucket",
+						authorizationFile,
+					],
+					{ cwd: root, stdio: "pipe" },
+				),
+			(error: unknown) => {
+				assert.ok(error instanceof Error && "stderr" in error);
+				assert.match(String(error.stderr), /Invalid upload authorization document/u);
+				assert.ok(!String(error.stderr).includes(canary));
+				return true;
+			},
+		);
+	} finally {
+		await rm(root, { recursive: true, force: true });
+	}
+});

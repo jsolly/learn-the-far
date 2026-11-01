@@ -11,7 +11,7 @@ import {
 	deliveryOrigin,
 	digest,
 	type ObjectResponse,
-	parseAuthorizations,
+	parseAuthorizationJson,
 	parseManifest,
 	publishedReferences,
 	TransientError,
@@ -64,7 +64,7 @@ if (command === "inventory") {
 		// This file is a credential: keep it outside Git. No role discovery or login.
 		const urls =
 			command === "upload" && authorizationFile
-				? parseAuthorizations(JSON.parse(await readFile(authorizationFile, "utf8")))
+				? parseAuthorizationJson(await readFile(authorizationFile, "utf8"))
 				: {};
 		if (command === "upload" && !authorizationFile) {
 			throw new Error("Upload requires an external presigned PUT URL map");

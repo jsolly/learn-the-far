@@ -27,7 +27,7 @@ export function objectKey(path: string, sha256: string): string {
 function record(value: unknown): value is Record<string, unknown> {
 	return !!value && typeof value === "object" && !Array.isArray(value);
 }
-export function parseAuthorizations(value: unknown): Record<string, string> {
+function parseAuthorizations(value: unknown): Record<string, string> {
 	if (!record(value) || Object.values(value).some((url) => typeof url !== "string")) {
 		throw new Error("Invalid authorization map");
 	}
@@ -39,6 +39,14 @@ export function parseAuthorizations(value: unknown): Record<string, string> {
 			return [key, url];
 		}),
 	);
+}
+export function parseAuthorizationJson(text: string): Record<string, string> {
+	try {
+		return parseAuthorizations(JSON.parse(text));
+	} catch {
+		// biome-ignore lint/style/useErrorCause: Parser errors can quote credential-bearing input; redact both JSON and schema failures.
+		throw new Error("Invalid upload authorization document (details redacted)");
+	}
 }
 export function parseManifest(value: unknown): AssetManifest {
 	if (
