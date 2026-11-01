@@ -102,8 +102,10 @@ creates a deployment. Test live Preview behavior only when John explicitly asks.
 
 ## Infrastructure and access
 
-This static Vercel app has no AWS stack or infrastructure commands. Setup, build
-and gate use public tools and need no AWS login. Separately authorized AWS reads
+The proposed repository-owned static-media stack and human apply/upload handoff
+are documented in [AWS static media preparation](aws-static-assets.md). It is
+not applied, and media remains tracked until preservation and cutover checks pass.
+Setup, build and gate use public tools and need no AWS login. Separately authorized AWS reads
 use exactly one native production `aws_mcp` connection for `agent@jsolly.com`,
 authorized as `AgentMcp` in account `730335616323`. Do not install an agent AWS
 profile or credential-process helper, export OAuth credentials, add a second AWS
