@@ -1,8 +1,6 @@
-// @ts-check
-
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { copyFile, mkdir, readdir } from "node:fs/promises";
+import { copyFile, mkdir, readdir, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import sitemap from "@astrojs/sitemap";
 import svelte from "@astrojs/svelte";
@@ -31,17 +29,16 @@ export default defineConfig({
 			name: "learn-the-far-config-watch",
 			hooks: {
 				"astro:config:setup": ({ addWatchFile }) => {
-					addWatchFile(new URL("./astro.mjs", import.meta.url));
+					addWatchFile(new URL("./astro.ts", import.meta.url));
 				},
 			},
 		},
-		svelte({ configFile: fileURLToPath(new URL("./svelte.js", import.meta.url)) }),
+		svelte({ configFile: fileURLToPath(new URL("./svelte.ts", import.meta.url)) }),
 		sitemap(),
 		{
 			name: "release-identity",
 			hooks: {
 				"astro:build:generated": async ({ dir }) => {
-					const { writeFile } = await import("node:fs/promises");
 					await writeFile(new URL("release.json", dir), JSON.stringify({ id: releaseId }));
 					await mkdir(new URL("_astro/", dir), { recursive: true });
 					for (const name of retained) {

@@ -52,7 +52,7 @@ Verify actual per-file native resolution and emitted code, including source,
 config, scripts, tests, nearer nested overrides, `dist/` and an outside sibling.
 `tests/config/tsconfig-consumer.test.mjs` covers cold native discovery and output.
 For reload acceptance, change and restore `verbatimModuleSyntax` in the physical
-policy owner and a setting in `config/app/astro.mjs` while Astro serves the same
+policy owner and a setting in `config/app/astro.ts` while Astro serves the same
 module URL with its native cache. Compare resolved TypeScript options and inputs,
 then run the configured Astro typecheck, complete build and pinned shadcn-svelte
 component generator. Successful initial startup alone does not prove reload.
