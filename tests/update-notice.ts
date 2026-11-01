@@ -4,37 +4,85 @@ import { cp, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { createServer } from "node:http";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { chromium } from "playwright";
+import { type Browser, chromium, type Route } from "playwright";
+
+interface BrowserReceipt {
+	success: true;
+	builds: Record<"a" | "b" | "c", string>;
+	routes: string[];
+	expectedHttp503Diagnostics: number;
+	metadataRequests: number;
+	unexpectedErrors: string[];
+	screenshots: string[];
+}
+
+type ScreenshotCase = [
+	name: string,
+	viewport: { width: number; height: number },
+	colorScheme: "light" | "dark",
+];
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+	return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+async function readReleaseId(directory: string): Promise<string> {
+	const manifest: unknown = JSON.parse(await readFile(join(directory, "release.json"), "utf8"));
+	assert.ok(isRecord(manifest));
+	const id = manifest["id"];
+	assert.ok(typeof id === "string");
+	assert.match(id, /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u);
+	return id;
+}
+
+function assertStoredProgress(serialized: string | null, key: "questions" | "read"): void {
+	assert.ok(serialized !== null);
+	const progress: unknown = JSON.parse(serialized);
+	assert.ok(isRecord(progress));
+	const entries = progress[key];
+	assert.ok(isRecord(entries));
+	assert.ok(Object.keys(entries).length > 0);
+}
+
+function deferred<T>(): { promise: Promise<T>; resolve: (value: T) => void } {
+	let resolvePromise: ((value: T) => void) | undefined;
+	const promise = new Promise<T>((done) => {
+		resolvePromise = done;
+	});
+	assert.ok(resolvePromise);
+	return { promise, resolve: resolvePromise };
+}
 
 // Three real builds, served atomically like Vercel deployments. No production writes.
 execFileSync("npm", ["run", "build"], {
 	stdio: "pipe",
-	env: { ...process.env, VERCEL_DEPLOYMENT_ID: "dpl_local_browser_a" },
+	env: { ...process.env, VERCEL_DEPLOYMENT_ID: "dpl_local_browser_a" } satisfies NodeJS.ProcessEnv,
 });
 const fixture = await mkdtemp(join(tmpdir(), "far-release-"));
 const a = join(fixture, "a");
 await cp("dist", a, { recursive: true });
 execFileSync("npm", ["run", "build"], {
 	stdio: "pipe",
-	env: { ...process.env, VERCEL_DEPLOYMENT_ID: "dpl_local_browser_b" },
+	env: { ...process.env, VERCEL_DEPLOYMENT_ID: "dpl_local_browser_b" } satisfies NodeJS.ProcessEnv,
 });
 const b = join(fixture, "b");
 await cp("dist", b, { recursive: true });
 execFileSync("npm", ["run", "build"], {
 	stdio: "pipe",
-	env: { ...process.env, VERCEL_DEPLOYMENT_ID: "dpl_local_browser_c" },
+	env: { ...process.env, VERCEL_DEPLOYMENT_ID: "dpl_local_browser_c" } satisfies NodeJS.ProcessEnv,
 });
 const c = resolve("dist");
-const third = JSON.parse(await readFile(join(c, "release.json"), "utf8")).id;
-const first = JSON.parse(await readFile(join(a, "release.json"), "utf8")).id;
-const second = JSON.parse(await readFile(join(b, "release.json"), "utf8")).id;
+const third = await readReleaseId(c);
+const first = await readReleaseId(a);
+const second = await readReleaseId(b);
 assert.notEqual(first, second);
 assert.notEqual(third, first);
 assert.notEqual(third, second);
 let root = a;
-let metadataRoot = null;
+let metadataRoot: string | null = null;
 let checks = 0;
 const server = createServer(async (req, res) => {
+	assert.ok(typeof req.url === "string", "local HTTP requests provide a URL");
 	const pathname = new URL(req.url, "http://localhost").pathname;
 	if (pathname === "/release-redirect.json") {
 		res.writeHead(200, { "Content-Type": "application/json" });
@@ -66,10 +114,15 @@ const server = createServer(async (req, res) => {
 		res.end();
 	}
 });
-await new Promise((done) => server.listen(0, "127.0.0.1", done));
-const url = `http://127.0.0.1:${server.address().port}`;
-let browser;
-const errors = [];
+await new Promise<void>((done) => server.listen(0, "127.0.0.1", done));
+const address = server.address();
+if (address === null || typeof address === "string") {
+	server.close();
+	throw new Error("Expected a local TCP server address");
+}
+const url = `http://127.0.0.1:${address.port}`;
+let browser: Browser | undefined;
+const errors: string[] = [];
 try {
 	browser = await chromium.launch({ headless: true });
 	const context = await browser.newContext();
@@ -103,12 +156,21 @@ try {
 		.click();
 	await page.getByRole("navigation", { name: "On this page" }).waitFor();
 	await page.locator("astro-island[ssr]").waitFor({ state: "detached" });
-	await page.waitForFunction(
-		() =>
-			Object.keys(
-				JSON.parse(localStorage.getItem("learn-the-far:reading-progress:v1") || "{}").read || {},
-			).length > 0,
-	);
+	await page.waitForFunction(() => {
+		const progress: unknown = JSON.parse(
+			localStorage.getItem("learn-the-far:reading-progress:v1") || "{}",
+		);
+		if (typeof progress !== "object" || progress === null || !("read" in progress)) {
+			return false;
+		}
+		const read = progress.read;
+		return (
+			typeof read === "object" &&
+			read !== null &&
+			!Array.isArray(read) &&
+			Object.keys(read).length > 0
+		);
+	});
 	await page.goto(url);
 	await page.locator("astro-island[ssr]").waitFor({ state: "detached" });
 	await page.getByRole("button", { name: "Quiz me", exact: true }).first().click();
@@ -120,12 +182,15 @@ try {
 		quiz: localStorage.getItem("learn-the-far:quiz-progress:v2"),
 		reading: localStorage.getItem("learn-the-far:reading-progress:v1"),
 	}));
-	assert.ok(Object.keys(JSON.parse(saved.quiz).questions).length > 0);
-	assert.ok(Object.keys(JSON.parse(saved.reading).read).length > 0);
+	assertStoredProgress(saved.quiz, "questions");
+	assertStoredProgress(saved.reading, "read");
 	root = b;
 	const retained = await page.evaluate(async () => {
 		const asset = "/_astro/confetti.module.CSklD5ZL.js";
-		const module = await import(asset);
+		const module: unknown = await import(asset);
+		if (typeof module !== "object" || module === null || !("default" in module)) {
+			throw new Error("Retained asset has no default export");
+		}
 		return typeof module.default;
 	});
 	assert.equal(retained, "function", "old lazy asset remains importable after B publication");
@@ -161,12 +226,13 @@ try {
 	// A continuously focused tab detects B via its timer without focus events.
 	await other.clock.fastForward(330_001);
 	await other.getByRole("button", { name: "Update and reload" }).waitFor();
-	for (const [name, viewport, colorScheme] of [
+	const screenshotCases: readonly ScreenshotCase[] = [
 		["desktop-light", { width: 1280, height: 900 }, "light"],
 		["desktop-dark", { width: 1280, height: 900 }, "dark"],
 		["mobile-light", { width: 390, height: 844 }, "light"],
 		["mobile-dark", { width: 390, height: 844 }, "dark"],
-	]) {
+	];
+	for (const [name, viewport, colorScheme] of screenshotCases) {
 		await other.setViewportSize(viewport);
 		await other.emulateMedia({ colorScheme });
 		await other.screenshot({ animations: "disabled", path: `/tmp/far-update-${name}.png` });
@@ -216,7 +282,7 @@ try {
 		.getByText("This version is current again.", { exact: true })
 		.waitFor();
 	assert.ok(
-		(await other.getByRole("status").textContent()).includes("This version is current again."),
+		(await other.getByRole("status").textContent())?.includes("This version is current again."),
 	);
 	await other.waitForFunction(() => document.activeElement?.textContent?.trim() === "Later");
 	await other.getByRole("button", { name: "Later", exact: true }).click();
@@ -248,6 +314,7 @@ try {
 	// Revalidate on click: C replaces B, requiring a new explicit choice.
 	root = c;
 	const previousAnnouncement = await other.getByRole("status").locator("span").elementHandle();
+	assert.ok(previousAnnouncement, "expanded update has a live-region announcement");
 	await other.getByRole("button", { name: "Update and reload" }).click();
 	await other
 		.getByRole("complementary", { name: "Website update" })
@@ -284,15 +351,15 @@ try {
 		}
 	});
 	let rechecks = 0;
-	let ready;
-	const reached = new Promise((done) => {
-		ready = done;
-	});
+	const { promise: reached, resolve: ready } = deferred<Route>();
 	await other.route("**/release.json", (route) => {
 		rechecks++;
 		ready(route);
 	});
 	await other.getByRole("button", { name: "Update and reload" }).evaluate((el) => {
+		if (!(el instanceof HTMLButtonElement)) {
+			throw new Error("Update control must be a button");
+		}
 		el.click();
 		el.click();
 	});
@@ -354,7 +421,7 @@ try {
 	await other.evaluate(() => window.dispatchEvent(new Event("focus")));
 	await other.clock.runFor(100);
 	assert.equal(otherChecks, cooldownChecks, "focus during cooldown makes no request");
-	async function checkOther() {
+	async function checkOther(): Promise<void> {
 		const response = other.waitForResponse("**/release.json");
 		await other.clock.setSystemTime((await other.evaluate(() => Date.now())) + 1_800_001);
 		await other.evaluate(() => window.dispatchEvent(new Event("focus")));
@@ -391,10 +458,7 @@ try {
 	await other.unroute("**/release.json");
 	await other.unroute("**/release-redirect.json");
 	// A held fetch reaches its real bounded timeout without inventing availability.
-	let timeoutReady;
-	const heldTimeout = new Promise((done) => {
-		timeoutReady = done;
-	});
+	const { promise: heldTimeout, resolve: timeoutReady } = deferred<Route>();
 	await other.route("**/release.json", (route) => timeoutReady(route));
 	const timedOut = other.waitForEvent("requestfailed", {
 		predicate: (req) => req.url().endsWith("/release.json"),
@@ -485,7 +549,7 @@ try {
 				screenshots: ["desktop-light", "desktop-dark", "mobile-light", "mobile-dark"].map(
 					(name) => `/tmp/far-update-${name}.png`,
 				),
-			},
+			} satisfies BrowserReceipt,
 			null,
 			2,
 		),
@@ -494,6 +558,6 @@ try {
 } finally {
 	await browser?.close();
 	server.closeAllConnections();
-	await new Promise((done) => server.close(done));
+	await new Promise<void>((done) => server.close(() => done()));
 	await rm(fixture, { recursive: true, force: true });
 }

@@ -26,7 +26,7 @@
 		"gate": "FLEET_DOC_FAST=0 bash .git-hooks/pre-commit",
 		"smoke:production": "node scripts/production-smoke.mjs",
 		"smoke:scenario-contract": "node --test scripts/production-smoke-scenario.test.mjs",
-		"check:updates": "node tests/update-notice.mjs",
+		"check:updates": "node tests/update-notice.ts",
 		"test:preview-workflow": "vitest run --config config/testing/vitest.preview.ts",
 		"test:unit": "vitest run --config config/testing/vitest.unit.ts",
 		"check:a11y": "node scripts/check-accessibility.ts",

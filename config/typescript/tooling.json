@@ -8,7 +8,8 @@
 		"../../scripts/check-accessibility.ts",
 		"../../tests/config/tsconfig-consumer.test.mts",
 		"../../scripts/vercel-preview-workflow.test.ts",
-		"../../scripts/check-generated-test-fixtures.ts"
+		"../../scripts/check-generated-test-fixtures.ts",
+		"../../tests/update-notice.ts"
 	],
 	"compilerOptions": {
 		"noEmit": true,
