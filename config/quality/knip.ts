@@ -1,9 +1,16 @@
+import type { KnipConfig } from "knip";
+
 export default {
 	$schema: "https://unpkg.com/knip@6/schema.json",
-	astro: { config: ["config/app/astro.mjs"] },
-	svelte: { entry: ["config/app/svelte.js"] },
+	astro: { config: ["config/app/astro.ts"] },
+	svelte: { entry: ["config/app/svelte.ts"] },
 	biome: { config: ["config/quality/biome.settings.jsonc"] },
-	entry: ["src/styles/global.css", "scripts/**/*.{mjs,js,sh}"],
+	entry: [
+		"src/styles/global.css",
+		"scripts/**/*.{mjs,js,ts,mts,sh}",
+		"scripts/fixtures/vercel-preview-cli.cts",
+		"scripts/fixtures/vercel-preview-cli.cjs",
+	],
 	ignoreIssues: {
 		"src/lib/components/ui/**": ["files", "exports", "types", "nsExports", "nsTypes"],
 	},
@@ -12,4 +19,4 @@ export default {
 		// CLI only (not imported by application code).
 		"markdownlint-cli2",
 	],
-};
+} satisfies KnipConfig;

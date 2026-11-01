@@ -5,6 +5,6 @@ export default defineConfig({
 	root: fileURLToPath(new URL("../../", import.meta.url)),
 	test: {
 		environment: "node",
-		include: ["scripts/vercel-preview-workflow.test.mjs"],
+		include: ["scripts/vercel-preview-workflow.test.ts"],
 	},
 });

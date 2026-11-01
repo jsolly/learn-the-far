@@ -1,13 +1,20 @@
 import { readdir, readFile, stat, writeFile } from "node:fs/promises";
 import { createServer } from "node:http";
 import { extname, join, resolve, sep } from "node:path";
-import axe from "axe-core";
-import { chromium } from "playwright";
+import axe, { type AxeResults } from "axe-core";
+import { type Browser, chromium } from "playwright";
+
+// axe.source installs this API in each isolated audit page before it is called.
+declare global {
+	interface Window {
+		axe?: typeof axe;
+	}
+}
 
 // Scan every built HTML document. Optional arguments restrict the route inventory.
 const INDEX_HTML = /index\.html$/u;
 const root = resolve("dist");
-async function inventory(dir) {
+async function inventory(dir: string): Promise<string[]> {
 	const entries = await readdir(dir, { withFileTypes: true });
 	const files = await Promise.all(
 		entries
@@ -26,7 +33,7 @@ const pages = routes.length
 if (!pages.length) {
 	throw new Error("No HTML pages found. Run npm run build first.");
 }
-const mime = {
+const mime: Readonly<Record<string, string>> = {
 	".html": "text/html",
 	".js": "text/javascript",
 	".css": "text/css",
@@ -37,6 +44,9 @@ const mime = {
 };
 const server = createServer(async (req, res) => {
 	try {
+		if (typeof req.url !== "string") {
+			throw new Error("Missing request URL");
+		}
 		let path = resolve(
 			root,
 			`.${decodeURIComponent(new URL(req.url, "http://localhost").pathname)}`,
@@ -53,15 +63,26 @@ const server = createServer(async (req, res) => {
 		res.writeHead(404).end();
 	}
 });
-await new Promise((r) => server.listen(0, "127.0.0.1", r));
-const origin = `http://127.0.0.1:${server.address().port}`;
-let browser;
-const results = [];
+await new Promise<void>((ready) => server.listen(0, "127.0.0.1", ready));
+const address = server.address();
+if (address === null || typeof address === "string") {
+	server.close();
+	throw new Error("Expected a local TCP server address");
+}
+const origin = `http://127.0.0.1:${address.port}`;
+let browser: Browser | undefined;
+const results: {
+	path: string;
+	width: number;
+	violations: AxeResults["violations"];
+	incomplete: AxeResults["incomplete"];
+}[] = [];
 try {
-	browser = await chromium.launch({ headless: true });
+	const activeBrowser = await chromium.launch({ headless: true });
+	browser = activeBrowser;
 	await Promise.all(
 		[1280, 390].map(async (width) => {
-			const context = await browser.newContext({
+			const context = await activeBrowser.newContext({
 				viewport: { width, height: 900 },
 				bypassCSP: true,
 			});
@@ -73,11 +94,11 @@ try {
 			await Promise.all(
 				Array.from({ length: 4 }, async () => {
 					const page = await context.newPage();
-					async function nextPage() {
-						if (!queue.length) {
+					async function nextPage(): Promise<void> {
+						const path = queue.shift();
+						if (path === undefined) {
 							return;
 						}
-						const path = queue.shift();
 						const response = await page.goto(origin + path, { waitUntil: "load" });
 						if (!response?.ok()) {
 							throw new Error(`Failed to load ${path}: ${response?.status()}`);
@@ -95,7 +116,13 @@ try {
 							);
 						});
 						await page.evaluate(axe.source);
-						const { violations, incomplete } = await page.evaluate(() => window.axe.run());
+						const { violations, incomplete } = await page.evaluate(() => {
+							const scanner = window.axe;
+							if (!scanner || typeof scanner.run !== "function") {
+								throw new Error("axe did not install its audit API");
+							}
+							return scanner.run();
+						});
 						results.push({ path, width, violations, incomplete });
 						process.stdout.write(
 							`${width} ${path}: ${violations.length} violations, ${incomplete.length} need review\n`,
@@ -111,7 +138,7 @@ try {
 	);
 } finally {
 	await browser?.close();
-	await new Promise((r) => server.close(r));
+	await new Promise<void>((closed) => server.close(() => closed()));
 	await writeFile("accessibility-results.json", JSON.stringify(results, null, 2));
 }
 if (results.some((r) => r.violations.length)) {

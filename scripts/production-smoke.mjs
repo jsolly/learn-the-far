@@ -1,10 +1,23 @@
+// Generated JavaScript consumer: regenerate the sibling .mjs from this authored .mts.
 // Starter from jsolly/dotagents skills/engineering/new-solly-repo/templates/github/production-smoke.mjs; the consuming repository owns its copy.
 import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
+function isRecord(value) {
+	return typeof value === "object" && value !== null;
+}
+function isSmokeScenario(value) {
+	return (
+		typeof value === "object" &&
+		value !== null &&
+		"productionUrl" in value &&
+		typeof value.productionUrl === "string" &&
+		"smoke" in value &&
+		typeof value.smoke === "function"
+	);
+}
 const REQUEST_ID = /^[a-zA-Z0-9_-]{1,100}$/u;
-
 export function verifyResponse({ url, status }, canonical) {
 	const final = new URL(url);
 	const target = new URL(canonical);
@@ -15,17 +28,8 @@ export function verifyResponse({ url, status }, canonical) {
 		throw new Error(`HTTP ${status}: ${url}`);
 	}
 }
-/**
- * @typedef {object} SmokeReceipt
- * @property {string | undefined} requestId
- * @property {string | undefined} releaseSha
- * @property {Array<{url: string, status: number, source?: string, scope?: string, script?: string, state?: string, controlled?: boolean}>} observations
- * @property {string[]} errors
- * @property {boolean} success
- */
-/** @returns {Promise<SmokeReceipt>} */
 export async function runSmoke({
-	scenario,
+	scenario: scenarioInput,
 	env = process.env,
 	fetcher = fetch,
 	launch,
@@ -36,14 +40,21 @@ export async function runSmoke({
 	const artifacts = resolve("production-smoke-artifacts");
 	await mkdir(artifacts, { recursive: true });
 	const receipt = {
-		requestId: env.PRODUCTION_SMOKE_REQUEST_ID,
-		releaseSha: env.PRODUCTION_SMOKE_RELEASE_SHA,
+		requestId: env["PRODUCTION_SMOKE_REQUEST_ID"],
+		releaseSha: env["PRODUCTION_SMOKE_RELEASE_SHA"],
 		observations: [],
 		errors: [],
 		success: false,
 	};
-	let browser, context, page, workerContext, workerPage, timer;
-	const recordError = (error) => receipt.errors.push(String(error));
+	let browser;
+	let context;
+	let page;
+	let workerContext;
+	let workerPage;
+	let timer;
+	const recordError = (error) => {
+		receipt.errors.push(String(error));
+	};
 	const diagnostics = [];
 	const drainDiagnostics = async () => {
 		for (let checked = 0; checked < diagnostics.length; ) {
@@ -63,8 +74,8 @@ export async function runSmoke({
 		verifyResponse(observation, url);
 		return response;
 	};
-	const watchPage = (target) => {
-		const origin = new URL(scenario.productionUrl).origin;
+	const watchPage = (target, productionUrl) => {
+		const origin = new URL(productionUrl).origin;
 		target.setDefaultTimeout(15000);
 		target.on("console", (message) => {
 			if (message.type() === "error") {
@@ -123,6 +134,10 @@ export async function runSmoke({
 		if (!/^[0-9a-f]{40}$/u.test(receipt.releaseSha ?? "")) {
 			throw new Error("Invalid smoke release SHA");
 		}
+		if (!isSmokeScenario(scenarioInput)) {
+			throw new Error("Scenario must export a production URL and smoke function");
+		}
+		const scenario = scenarioInput;
 		if (new URL(scenario.productionUrl).protocol !== "https:") {
 			throw new Error("Production URL must use HTTPS");
 		}
@@ -142,62 +157,74 @@ export async function runSmoke({
 				);
 			}
 		}
-		browser = await (launch ?? (async () => (await import("playwright")).chromium.launch()))();
-		context = await browser.newContext({ serviceWorkers: "block" });
+		const activeBrowser = await (
+			launch ?? (async () => (await import("playwright")).chromium.launch())
+		)();
+		browser = activeBrowser;
+		const activeContext = await activeBrowser.newContext({ serviceWorkers: "block" });
+		context = activeContext;
 		// Routing disables the HTTP cache so every document comes from the network.
-		await context.route("**/*", (route) => route.continue());
-		await context.tracing.start({
+		await activeContext.route("**/*", (route) => route.continue());
+		await activeContext.tracing.start({
 			screenshots: true,
 			snapshots: true,
 			sources: true,
 		});
-		page = await context.newPage();
-		watchPage(page);
+		const activePage = await activeContext.newPage();
+		page = activePage;
+		watchPage(activePage, scenario.productionUrl);
 		await Promise.race([
 			(async () => {
-				const response = await page.goto(scenario.productionUrl, {
+				const response = await activePage.goto(scenario.productionUrl, {
 					waitUntil: "domcontentloaded",
 				});
 				if (!response) {
 					throw new Error("Navigation returned no document");
 				}
 				verifyResponse({ url: response.url(), status: response.status() }, scenario.productionUrl);
-				await scenario.smoke({ page, context, artifacts, verifyHttp });
+				await scenario.smoke({ page: activePage, context: activeContext, artifacts, verifyHttp });
 				if (scenario.serviceWorker !== undefined) {
 					const settings = scenario.serviceWorker;
 					const canonical = new URL(scenario.productionUrl);
-					const urls = {};
-					for (const key of ["page", "scope", "script"]) {
-						if (typeof settings?.[key] !== "string") {
+					const workerUrl = (key) => {
+						const path = isRecord(settings) && key in settings ? settings[key] : undefined;
+						if (typeof path !== "string") {
 							throw new Error(`Service worker ${key} must be a URL path`);
 						}
-						const value = new URL(settings[key], canonical);
+						const value = new URL(path, canonical);
 						if (value.origin !== canonical.origin || value.search || value.hash) {
 							throw new Error(`Noncanonical service worker ${key}`);
 						}
-						urls[key] = value.href;
-					}
+						return value.href;
+					};
+					const urls = {
+						page: workerUrl("page"),
+						scope: workerUrl("scope"),
+						script: workerUrl("script"),
+					};
 					if (!urls.scope.endsWith("/") || !urls.page.startsWith(urls.scope)) {
 						throw new Error("Service worker page must be inside its directory scope");
 					}
 					// A fresh context cannot inherit a previous release's worker or cache.
 					// Main behavioral checks remain in the worker-blocked context above.
-					workerContext = await browser.newContext({ serviceWorkers: "allow" });
-					await workerContext.tracing.start({
+					const activeWorkerContext = await activeBrowser.newContext({ serviceWorkers: "allow" });
+					workerContext = activeWorkerContext;
+					await activeWorkerContext.tracing.start({
 						screenshots: true,
 						snapshots: true,
 						sources: true,
 					});
-					workerPage = await workerContext.newPage();
-					watchPage(workerPage);
-					const workerResponse = await workerPage.goto(urls.page, {
+					const activeWorkerPage = await activeWorkerContext.newPage();
+					workerPage = activeWorkerPage;
+					watchPage(activeWorkerPage, scenario.productionUrl);
+					const workerResponse = await activeWorkerPage.goto(urls.page, {
 						waitUntil: "domcontentloaded",
 					});
 					if (!workerResponse) {
 						throw new Error("Worker navigation returned no document");
 					}
 					verifyResponse({ url: workerResponse.url(), status: workerResponse.status() }, urls.page);
-					await workerPage.waitForFunction(
+					await activeWorkerPage.waitForFunction(
 						async ({ scope, script }) => {
 							const registration = await navigator.serviceWorker.getRegistration();
 							return (
@@ -209,14 +236,14 @@ export async function runSmoke({
 						urls,
 						{ timeout: behaviorMs },
 					);
-					await workerPage.waitForLoadState("networkidle");
-					await workerPage.reload({ waitUntil: "domcontentloaded" });
-					await workerPage.waitForFunction(
+					await activeWorkerPage.waitForLoadState("networkidle");
+					await activeWorkerPage.reload({ waitUntil: "domcontentloaded" });
+					await activeWorkerPage.waitForFunction(
 						({ script }) => navigator.serviceWorker.controller?.scriptURL === script,
 						urls,
 						{ timeout: behaviorMs },
 					);
-					if (workerPage.url() !== urls.page) {
+					if (activeWorkerPage.url() !== urls.page) {
 						throw new Error("Worker page redirected");
 					}
 					receipt.observations.push({

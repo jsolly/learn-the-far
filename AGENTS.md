@@ -67,7 +67,7 @@ fixtures. Never weaken or skip the gate.
 
 ## Deploy / fork
 
-Static Vercel deploy only — see README **Deploy your own copy**. For a different domain, update `config/app/astro.mjs` `site`, `public/robots.txt`, and `vercel.json` host redirects. No production secrets or server env vars.
+Static Vercel deploy only — see README **Deploy your own copy**. For a different domain, update `config/app/astro.ts` `site`, `public/robots.txt`, and `vercel.json` host redirects. No production secrets or server env vars.
 
 Production Git deploys remain limited to `main` (`vercel.json` `git.deploymentEnabled`). Branch pushes do **not** create Preview deployments. Comment `/preview` as the first non-empty line on a same-repo PR (owner/member/collaborator User), or run **Vercel Preview** from `main` with the PR number. These are one-shot requests. Add the `preview` label to redeploy on every push until it is removed. Labeled requests keep one protected project/PR URL and one comment updated to the current head. Closed, moved or unlabeled builds cannot replace that URL. Requires GitHub secret `VERCEL_TOKEN`. Agents must not comment `/preview`, apply the label or dispatch the workflow unless John asked. Full CI still runs on PRs, including drafts; Preview does not defer quality checks.
 
@@ -96,7 +96,8 @@ No auth — public UI only. Smoke the changed routes on desktop and mobile width
 The **Production smoke** workflow is a separate post-deployment gate. It waits
 for the intended production release and verifies the public browser flow with
 `npm run smoke:production`. The URL is pinned in
-`scripts/production-smoke-scenario.mjs`; the workflow uses no deployment secrets.
+`scripts/production-smoke-scenario.mts`; regenerate its preserved `.mjs` consumer
+with `npm run generate:test-fixtures`. The workflow uses no deployment secrets.
 Vercel Git deployment and the existing PR CI checks remain unchanged.
 
 The release process must wait for the exact release's Production smoke run to succeed and

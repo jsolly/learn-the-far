@@ -1,0 +1,24 @@
+{
+	"extends": "./tsconfig.json",
+	"include": [
+		"../app/*.ts",
+		"../testing/*.ts",
+		"../quality/knip.ts",
+		"../../scripts/verify-pie-progress.ts",
+		"../../scripts/check-accessibility.ts",
+		"../../tests/config/tsconfig-consumer.test.mts",
+		"../../scripts/vercel-preview-workflow.test.ts",
+		"../../scripts/check-generated-test-fixtures.ts",
+		"../../tests/update-notice.ts",
+		"../../scripts/production-smoke.mts",
+		"../../scripts/production-smoke-scenario.mts",
+		"../../scripts/production-smoke-scenario.test.ts",
+		"../../scripts/production-smoke.test.ts"
+	],
+	"compilerOptions": {
+		"noEmit": true,
+		"allowJs": false,
+		"allowImportingTsExtensions": true,
+		"types": ["node"]
+	}
+}

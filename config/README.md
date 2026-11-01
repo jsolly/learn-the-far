@@ -4,7 +4,7 @@ Move optional top-level tracked settings into `config/<domain>/` or their owner;
 keep existing nested configuration with its component. Test configuration may live
 under `tests/`. Each setting has one repository-owned home:
 
-- `app/astro.mjs` owns Astro, Vite and release-identity settings. Package dev,
+- `app/astro.ts` owns Astro, Vite and release-identity settings. Package dev,
   build, preview, check and generic Astro commands select it explicitly. The
   retained-assets URL stays `../../retained-assets/`, preserving immutable lazy
   assets and provenance. Repository roots, public assets and build outputs stay
@@ -12,20 +12,20 @@ under `tests/`. Each setting has one repository-owned home:
   Its watch registration reloads Astro configuration when this physical owner
   changes. Verify an actual setting change and restoration in the running dev
   server; successful initial startup alone does not prove reload behavior.
-- `app/svelte.js` owns preprocessing. Astro's Svelte integration selects it through
+- `app/svelte.ts` owns preprocessing. Astro's Svelte integration selects it through
   a file URL resolved beside the app configuration.
 - `typescript/tsconfig.json` owns compiler policy and extends Astro's package
   preset. Its empty `files` and `include` keep it from independently owning source
   files during native discovery; the root adapter supplies project membership.
 - `quality/biome.settings.jsonc` owns Biome rules, globs and overrides. Package
   commands select this file explicitly, preserving repository VCS/ignore scope.
-- `quality/knip.js` is selected explicitly. Its Astro, Svelte and Biome metadata
+- `quality/knip.ts` is selected explicitly. Its Astro, Svelte and Biome metadata
   names the actual owners, preserving analysis plugins and entry discovery.
 - `quality/yamllint.yaml` and `quality/.markdownlint-cli2.jsonc` are selected
   explicitly by the YAML command and root-anchored Markdown helper.
-- `testing/vitest.preview.mjs` selects the Preview workflow fixture suite from
+- `testing/vitest.preview.ts` selects the Preview workflow fixture suite from
   the repository root. `test:preview-workflow` and `check:actions` select it explicitly.
-- `testing/vitest.unit.mjs` selects the `src/**/*.test.ts` unit suite from the
+- `testing/vitest.unit.ts` selects the `src/**/*.test.ts` unit suite from the
   repository root. `test:unit` selects it explicitly and the gate runs it. It
   mirrors the root `tsconfig.json` `$lib/*` path, which Vitest does not read;
   the root file stays that alias's owner.
@@ -50,9 +50,21 @@ source beneath `config/typescript/` falls back to the root adapter.
 
 Verify actual per-file native resolution and emitted code, including source,
 config, scripts, tests, nearer nested overrides, `dist/` and an outside sibling.
-`tests/config/tsconfig-consumer.test.mjs` covers cold native discovery and output.
+`tests/config/tsconfig-consumer.test.mts` authors the cold native discovery and
+output test. Its sibling `.mjs` is generated because the protected hook consumer
+requires that exact path. `npm run generate:test-fixtures` regenerates it with the
+strict `typescript/generated-tests.json` compiler project; `check:ts` compiles to
+a temporary directory and fails if the committed output differs. The compiler
+checks types before emitting; the existing pinned Biome normalizes generated
+formatting and import organization before comparison. The substantial fake
+gh/git/npx CLI is authored as
+`scripts/fixtures/vercel-preview-cli.cts` and generated as its sibling `.cjs` by
+the same strict project and freshness check. Native dynamic Node imports inside an async CLI entrypoint preserve the shared
+verbatim-module policy for both its CommonJS output and application checking. Tests add the Node shebang when
+writing extensionless mock executables. Literal compiler probes and deliberately
+rejected executable configurations remain intentional language fixtures.
 For reload acceptance, change and restore `verbatimModuleSyntax` in the physical
-policy owner and a setting in `config/app/astro.mjs` while Astro serves the same
+policy owner and a setting in `config/app/astro.ts` while Astro serves the same
 module URL with its native cache. Compare resolved TypeScript options and inputs,
 then run the configured Astro typecheck, complete build and pinned shadcn-svelte
 component generator. Successful initial startup alone does not prove reload.
@@ -72,3 +84,17 @@ fixtures. Exercise `npm run astro -- sync` and the documented dev lifecycle too.
 After merge verify intended Vercel production READY and exact-release chapter/quiz
 smoke. Production stays main-only; no automatic Preview. No external configuration
 checkout, home links, generator or synchronization is required.
+
+The converted TypeScript tooling is checked by `tsc --project
+config/typescript/tooling.json` before Astro checking in `npm run check:ts`. Node 24
+runs the pie verifier directly; Vitest and Knip load their typed configurations.
+
+The same strict generator also owns the production smoke consumers. Edit
+`scripts/production-smoke.mts` and `scripts/production-smoke-scenario.mts`, then
+run `npm run generate:test-fixtures`. Their generated `.mjs` siblings retain the
+CLI, exported runner functions and scenario-loader paths. `check:ts` verifies
+these consumers alongside the generated test fixtures. The native TypeScript
+smoke tests use real Playwright objects with every HTTP request fulfilled by a
+local fixture and an injected fetcher; they never call the production origin.
+The deliberately broken quiz-handler HTML remains an intentional literal
+JavaScript fixture.
