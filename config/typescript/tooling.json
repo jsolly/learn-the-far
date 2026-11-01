@@ -4,7 +4,8 @@
 		"../app/*.ts",
 		"../testing/*.ts",
 		"../quality/knip.ts",
-		"../../scripts/verify-pie-progress.ts"
+		"../../scripts/verify-pie-progress.ts",
+		"../../scripts/check-accessibility.ts"
 	],
 	"compilerOptions": {
 		"noEmit": true,

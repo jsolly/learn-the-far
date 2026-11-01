@@ -29,7 +29,7 @@
 		"check:updates": "node tests/update-notice.mjs",
 		"test:preview-workflow": "vitest run --config config/testing/vitest.preview.ts",
 		"test:unit": "vitest run --config config/testing/vitest.unit.ts",
-		"check:a11y": "node scripts/check-accessibility.mjs"
+		"check:a11y": "node scripts/check-accessibility.ts"
 	},
 	"dependencies": {
 		"@astrojs/sitemap": "^3.7.3",
