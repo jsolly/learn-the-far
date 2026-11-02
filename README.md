@@ -8,7 +8,7 @@ Live site: <https://learnthefar.com>
 
 ## Quick start
 
-Requirements: Node.js 24.x (see `.nvmrc`) and Bash 5+ (macOS: `brew install bash`).
+Requirements: Node.js 26.x (see `.nvmrc`) and Bash 5+ (macOS: `brew install bash`).
 
 ```bash
 git clone https://github.com/jsolly/learn-the-far.git
