@@ -1,3 +1,5 @@
+import type { ChapterShelf } from "./far/chapters/types";
+
 /** Soft SERP budget for `<title>` (Ahrefs flags >70; Google often shows ~60). */
 const TITLE_MAX = 60;
 /** Ahrefs flags meta descriptions shorter than 110 characters. */
@@ -17,7 +19,7 @@ const DESCRIPTION_PADS = [
 /** Stands alone when neither the summary nor any padded form reaches the minimum. */
 const DESCRIPTION_FALLBACK = `Federal Acquisition Regulation capture practice for prime contractors on ${BRAND}. Scenario quizzes build judgment before B&P spend.`;
 
-function truncateAtWord(text: string, max: number): string {
+function truncateAtWord(text: string, max: number, min = 0): string {
 	if (text.length <= max) {
 		return text;
 	}
@@ -25,7 +27,8 @@ function truncateAtWord(text: string, max: number): string {
 	const budget = max - ellipsis.length;
 	const cut = text.slice(0, budget);
 	const atWord = cut.lastIndexOf(" ");
-	const base = atWord >= Math.floor(budget * 0.6) ? cut.slice(0, atWord) : cut;
+	const wordBoundaryFloor = Math.max(Math.floor(budget * 0.6), min - ellipsis.length);
+	const base = atWord >= wordBoundaryFloor ? cut.slice(0, atWord) : cut;
 	return `${base.trimEnd()}${ellipsis}`;
 }
 
@@ -51,7 +54,8 @@ export function formatDocumentTitle(pageTitle: string, brand = BRAND): string {
 
 /**
  * Keep meta descriptions inside Ahrefs' 110–160 character band. A summary that
- * already reaches the minimum is truncated at a word boundary; a shorter one
+ * already reaches the minimum is truncated at a word boundary when that keeps
+ * it inside the band, otherwise at the character budget; a shorter one
  * takes the first boilerplate pad whose total lands inside the band; a summary
  * too short for any pad to reach the minimum, including an empty one, is
  * replaced by the standalone sentence. The boilerplate is only ever appended
@@ -63,7 +67,7 @@ export function formatMetaDescription(description: string): string {
 	const summary = description.trim().replace(/\s+/gu, " ");
 
 	if (summary.length >= DESCRIPTION_MIN) {
-		return truncateAtWord(summary, DESCRIPTION_MAX);
+		return truncateAtWord(summary, DESCRIPTION_MAX, DESCRIPTION_MIN);
 	}
 
 	// Pad with a whole sentence or not at all. Padding first and truncating
@@ -78,4 +82,15 @@ export function formatMetaDescription(description: string): string {
 	}
 
 	return DESCRIPTION_FALLBACK;
+}
+
+/** The shelf page and its description contract use the same fallback order. */
+export function formatShelfDescription({
+	intro,
+	subtitle,
+	unitLabel,
+}: Pick<ChapterShelf, "intro" | "subtitle"> & { unitLabel: string }): string {
+	return formatMetaDescription(
+		intro || subtitle || `Browse the ${unitLabel} learning shelf on Learn The FAR.`,
+	);
 }

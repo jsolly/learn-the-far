@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { chapterById, shelfForUnit } from "./far/chapters";
+import { UNITS } from "./far/deck";
 import { learnChapterStaticPaths, learnShelfStaticPaths } from "./learn-routes";
-import { formatDocumentTitle, formatMetaDescription } from "./seo";
+import { formatDocumentTitle, formatMetaDescription, formatShelfDescription } from "./seo";
 
 /** Ahrefs flags a meta description outside this band; `seo.ts` exists to hold it. */
 const MIN = 110;
@@ -42,9 +43,13 @@ function publishedChapterDescriptions() {
 function publishedShelfDescriptions() {
 	return learnShelfStaticPaths().map(({ params }) => {
 		const shelf = shelfForUnit(params.unit);
+		const unit = UNITS.find((candidate) => candidate.id === params.unit);
+		if (!unit) {
+			throw new Error(`Unknown shelf unit: ${params.unit}`);
+		}
 		return {
 			page: `/learn/${params.unit}/`,
-			description: formatMetaDescription(shelf.intro || shelf.subtitle),
+			description: formatShelfDescription({ ...shelf, unitLabel: unit.label }),
 		};
 	});
 }
@@ -85,6 +90,23 @@ describe("A reader finds a page of this site in a search result", () => {
 });
 
 describe("An author writes a chapter summary of an awkward length", () => {
+	it.each([95, 108, 109])(
+		"keeps the description floor when its last word boundary is at %i",
+		(boundary) => {
+			const summary = `${"a".repeat(boundary)} ${"b".repeat(80)}`;
+			const description = formatMetaDescription(summary);
+			expect(description).toBe(
+				boundary < 109 ? `${summary.slice(0, 159)}…` : `${"a".repeat(boundary)}…`,
+			);
+			expect(description.length).toBeGreaterThanOrEqual(MIN);
+			expect(description.length).toBeLessThanOrEqual(MAX);
+		},
+	);
+
+	it("keeps a long unbroken summary inside the band without adding boilerplate", () => {
+		expect(formatMetaDescription("x".repeat(200))).toBe(`${"x".repeat(159)}…`);
+	});
+
 	// The pads are 71 and 49 characters and the standalone sentence is 137, so each
 	// row below pins one edge of the band rather than a round number.
 	it.each([
@@ -169,6 +191,13 @@ describe("An author writes a chapter summary of an awkward length", () => {
 });
 
 describe("A reader scans the page title in a search result", () => {
+	it.each([34, 35])("uses a word boundary only at the title's 0.6 floor (%i)", (boundary) => {
+		const title = `${"a".repeat(boundary)} ${"b".repeat(40)}`;
+		expect(formatDocumentTitle(title)).toBe(
+			boundary < 35 ? `${title.slice(0, 59)}…` : `${"a".repeat(boundary)}…`,
+		);
+	});
+
 	it("keeps the brand on a title that fits and drops it from one that does not", () => {
 		expect(formatDocumentTitle("Bid / No-Bid shelf")).toBe("Bid / No-Bid shelf — Learn The FAR");
 
@@ -179,5 +208,31 @@ describe("A reader scans the page title in a search result", () => {
 		expect(title).not.toContain("Learn The FAR");
 		expect(title.length).toBeLessThanOrEqual(60);
 		expect(title.endsWith("…")).toBe(true);
+	});
+});
+
+describe("A shelf has incomplete description copy", () => {
+	it.each([
+		{
+			intro:
+				"Explains the bid decision and the evidence needed before committing capture resources.",
+			subtitle: "Reviews acquisition timing and teaming choices before a prime contractor commits.",
+			selected:
+				"Explains the bid decision and the evidence needed before committing capture resources.",
+		},
+		{
+			intro: "",
+			subtitle: "Reviews acquisition timing and teaming choices before a prime contractor commits.",
+			selected: "Reviews acquisition timing and teaming choices before a prime contractor commits.",
+		},
+		{
+			intro: "",
+			subtitle: "",
+			selected: "Browse the Bid / No-Bid learning shelf on Learn The FAR.",
+		},
+	])("uses intro, subtitle, then unit copy ($selected)", ({ intro, subtitle, selected }) => {
+		expect(formatShelfDescription({ intro, subtitle, unitLabel: "Bid / No-Bid" })).toBe(
+			formatMetaDescription(selected),
+		);
 	});
 });
