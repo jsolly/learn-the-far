@@ -12,7 +12,7 @@ export const VEHICLE_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "buying-path-not-buzzword",
 		unitId: "vehicle",
-		title: "Open-market acquisitions versus vehicle orders and commercial status",
+		title: "Open-market vs. vehicle orders and commercial status",
 		summary:
 			"Defines whether the agency is buying open-market or ordering under a vehicle, and when Part 12 commercial status applies.",
 		intro:
@@ -165,7 +165,7 @@ export const VEHICLE_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "mas-contract-coverage-order",
 		unitId: "vehicle",
-		title: "GSA Multiple Award Schedule contracts, SINs, and ordering procedures",
+		title: "GSA Schedules, SINs, and ordering procedures",
 		summary:
 			"Defines the Schedule contract versus an order, SIN coverage, and FAR 8.405-1 versus 8.405-2 ordering methods.",
 		intro:

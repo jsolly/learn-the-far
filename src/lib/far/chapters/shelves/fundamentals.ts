@@ -64,7 +64,7 @@ export const FUNDAMENTALS_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "who-may-speak-who-may-bind",
 		unitId: "fundamentals",
-		title: "Contracting officer warrants, COR limits, and program managers",
+		title: "CO warrants, COR limits, and program managers",
 		summary:
 			"Defines who can bind the Government versus who monitors performance or owns mission need — so scope changes go to the right authority.",
 		intro:

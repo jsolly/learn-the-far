@@ -105,7 +105,7 @@ export const SHAPE_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "shape-outcomes-not-staffing",
 		unitId: "shape",
-		title: "Statements of objectives, performance work statements, and offeror-developed PWS",
+		title: "SOOs, PWSs, and offeror-developed work statements",
 		summary:
 			"Defines SOO, PWS, and related shapes so capture knows whether methods, staffing, or outcomes are what compete.",
 		intro:
@@ -149,7 +149,7 @@ export const SHAPE_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "comments-usable-questions-fair",
 		unitId: "shape",
-		title: "Draft RFP comments, leveled Q&A, and post-release communications",
+		title: "Draft RFPs, leveled Q&A, and post-release communications",
 		summary:
 			"Defines how industry comments and questions should improve the buy without creating private advantage after release.",
 		intro:
@@ -204,7 +204,7 @@ export const SHAPE_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "help-without-governments-pen",
 		unitId: "shape",
-		title: "Requirements support, J&A assistance, and brand-name-or-equal descriptions",
+		title: "Requirements, J&As, and brand-name-or-equal descriptions",
 		summary:
 			"Defines the line between helpful industry input and writing the Government’s PWS, justification, or lock-in specifications.",
 		intro:
@@ -264,7 +264,7 @@ export const SHAPE_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "diagnose-oci-before-remedy",
 		unitId: "shape",
-		title: "Organizational conflict of interest types, remedies, and waivers",
+		title: "OCI types, remedies, and waivers",
 		summary:
 			"Defines OCI archetypes and the matching toolkit of avoidance, neutralization, mitigation, or waiver.",
 		intro:
@@ -313,7 +313,7 @@ export const SHAPE_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "shaping-integrity-incident",
 		unitId: "shape",
-		title: "Protected procurement information, former officials, and unsolicited proposals",
+		title: "Protected data, former officials, and unsolicited proposals",
 		summary:
 			"Defines integrity stop-points during shaping: protected information, compensation restrictions, and mishandled unsolicited proposals.",
 		intro:

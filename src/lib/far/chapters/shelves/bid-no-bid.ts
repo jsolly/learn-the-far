@@ -59,7 +59,7 @@ export const BID_NO_BID_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "case-agency-will-score",
 		unitId: "bid-no-bid",
-		title: "LPTA versus tradeoff, past performance, and competitive analysis",
+		title: "LPTA vs. tradeoff, past performance, competitive analysis",
 		summary:
 			"Defines the evaluation case Section M will score — including LPTA vs tradeoff, past-performance inventory, and black-hat competitor views.",
 		intro:
@@ -119,7 +119,7 @@ export const BID_NO_BID_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "actual-offeror-ready",
 		unitId: "bid-no-bid",
-		title: "Responsibility standards, SAM status, vehicle access, and accounting readiness",
+		title: "Responsibility, SAM, vehicle access, accounting readiness",
 		summary:
 			"Defines entity-specific hard gates that decide whether this offeror can actually submit and perform.",
 		intro:

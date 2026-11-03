@@ -12,7 +12,7 @@ export const PROPOSE_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "rfp-as-evaluation-machine",
 		unitId: "propose",
-		title: "Sections L and M, LPTA versus tradeoff, and evaluation findings",
+		title: "Sections L/M, LPTA, tradeoffs, and evaluation findings",
 		summary:
 			"Defines how instruction and evaluation sections work together, and the vocabulary of LPTA, tradeoff, weaknesses, and deficiencies.",
 		intro:
@@ -115,7 +115,7 @@ export const PROPOSE_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "write-evidence-not-adjectives",
 		unitId: "propose",
-		title: "Feature–mechanism–benefit writing, past performance, and orals",
+		title: "Feature-mechanism-benefit writing, past performance, orals",
 		summary:
 			"Defines evidence-based proposal claims: mechanism and support, attributed past performance, and orals as scored evidence.",
 		intro:

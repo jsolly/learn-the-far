@@ -12,7 +12,7 @@ export const TEAM_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "name-team-you-built",
 		unitId: "team",
-		title: "Contractor team arrangements, joint ventures, and prime–sub structures",
+		title: "Teaming, joint ventures, and prime-sub structures",
 		summary:
 			"Defines FAR 9.601 team forms and who owns performance and privity under each structure.",
 		intro:
@@ -271,7 +271,7 @@ export const TEAM_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "subcontracting-plan-promise",
 		unitId: "team",
-		title: "Individual and commercial small-business subcontracting plans",
+		title: "Individual and commercial small-business subcontract plans",
 		summary:
 			"Defines plan contents, administration, reporting, and good-faith duties for individual and commercial plans.",
 		intro:
@@ -320,7 +320,7 @@ export const TEAM_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "award-changes-paper",
 		unitId: "team",
-		title: "Subcontract flowdowns, consent, and post-award teammate changes",
+		title: "Flowdowns, consent, and post-award teammate changes",
 		summary:
 			"Defines clause flowdowns, consent/CPSR constraints, and how member changes still leave the prime responsible.",
 		intro:
