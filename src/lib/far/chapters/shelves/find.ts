@@ -210,7 +210,7 @@ export const FIND_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "mission-vs-funds",
 		unitId: "find",
-		title: "Budget justifications, continuing resolutions, and obligation authority",
+		title: "Budget justifications, CRs, and obligation authority",
 		summary:
 			"Defines CBJ language versus CR limits versus obligation authority — mission intent is not the same as funding to award.",
 		intro:
@@ -308,7 +308,7 @@ export const FIND_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "promote-evidence",
 		unitId: "find",
-		title: "Qualified opportunities, procurement integrity, and incumbent posture",
+		title: "Opportunity qualification, integrity, and incumbent posture",
 		summary:
 			"Defines when a lead becomes a qualified opportunity, what integrity rules bound usable information, and how to treat incumbent status as a fact.",
 		intro:

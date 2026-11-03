@@ -131,7 +131,7 @@ export const WIN_PROTEST_SHELF_CHAPTERS: Chapter[] = [
 	chapter({
 		id: "protest-theory",
 		unitId: "win-protest",
-		title: "Protest elements: rule, record error, and competitive prejudice",
+		title: "Protest rules, record errors, and competitive prejudice",
 		summary:
 			"Defines the three elements of a viable protest theory — disappointment alone is not enough.",
 		intro:
