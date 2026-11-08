@@ -428,6 +428,7 @@ it("branches that differ only in punctuation or case get distinct links", (t) =>
 const REPO_CASES: ReadonlyArray<readonly [string, string]> = [
 	["jsolly/Learn.The_Far", "learn-the-far-feat--x"],
 	["jsolly/.github", "github-feat--x"],
+	["jsolly/Foo_", "foo-feat--x"],
 ];
 
 describe("the repository name reduces the same way as the branch", () => {
