@@ -23,8 +23,6 @@ under `tests/`. Each setting has one repository-owned home:
   names the actual owners, preserving analysis plugins and entry discovery.
 - `quality/yamllint.yaml` and `quality/.markdownlint-cli2.jsonc` are selected
   explicitly by the YAML command and root-anchored Markdown helper.
-- `testing/vitest.preview.ts` selects the Preview workflow fixture suite from
-  the repository root. `test:preview-workflow` and `check:actions` select it explicitly.
 - `testing/vitest.unit.ts` selects the `src/**/*.test.ts` unit suite from the
   repository root. `test:unit` selects it explicitly and the gate runs it. It
   mirrors the root `tsconfig.json` `$lib/*` path, which Vitest does not read;
@@ -56,12 +54,7 @@ requires that exact path. `npm run generate:test-fixtures` regenerates it with t
 strict `typescript/generated-tests.json` compiler project; `check:ts` compiles to
 a temporary directory and fails if the committed output differs. The compiler
 checks types before emitting; the existing pinned Biome normalizes generated
-formatting and import organization before comparison. The substantial fake
-gh/git/npx CLI is authored as
-`scripts/fixtures/vercel-preview-cli.cts` and generated as its sibling `.cjs` by
-the same strict project and freshness check. Native dynamic Node imports inside an async CLI entrypoint preserve the shared
-verbatim-module policy for both its CommonJS output and application checking. Tests add the Node shebang when
-writing extensionless mock executables. Literal compiler probes and deliberately
+formatting and import organization before comparison. Literal compiler probes and deliberately
 rejected executable configurations remain intentional language fixtures.
 For reload acceptance, change and restore `verbatimModuleSyntax` in the physical
 policy owner and a setting in `config/app/astro.ts` while Astro serves the same
@@ -70,8 +63,9 @@ then run the configured Astro typecheck, complete build and pinned shadcn-svelte
 component generator. Successful initial startup alone does not prove reload.
 
 Package manifests/lockfiles, `.npmrc`, `.nvmrc`, `.mise.toml`, Git files, `.github/`,
-native agent registrations, `vercel.json` and `components.json` keep their required
-locations. `components.json` owns shadcn-svelte's generation manifest, alias names
+native agent registrations, `vercel.ts` and `components.json` keep their required
+locations. `vercel.ts` is handwritten strict TypeScript, typed by `@vercel/config` and
+checked by the root `tsconfig.json`, `config/typescript/tooling.json`, Biome and knip. `components.json` owns shadcn-svelte's generation manifest, alias names
 and CSS path. No optional Astro, Svelte, Biome or Knip root adapter remains.
 No `.worktreeinclude` is needed because the app has no required ignored local config.
 Application logic/content, retained assets, fixtures, executable helpers and
@@ -82,7 +76,7 @@ behavior when moving settings. Compare resolved settings and selected inputs,
 then run `npm run gate`, including retained lazy-asset and three-release browser
 fixtures. Exercise `npm run astro -- sync` and the documented dev lifecycle too.
 After merge verify intended Vercel production READY and exact-release chapter/quiz
-smoke. Production stays main-only; no automatic Preview. No external configuration
+smoke. Production stays main-only; Vercel builds Previews only for `preview/**` branches. No external configuration
 checkout, home links, generator or synchronization is required.
 
 The converted TypeScript tooling is checked by `tsc --project

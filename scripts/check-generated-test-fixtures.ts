@@ -30,7 +30,6 @@ try {
 	}
 	const artifacts = [
 		"tests/config/tsconfig-consumer.test.mjs",
-		"scripts/fixtures/vercel-preview-cli.cjs",
 		"scripts/production-smoke.mjs",
 		"scripts/production-smoke-scenario.mjs",
 	];

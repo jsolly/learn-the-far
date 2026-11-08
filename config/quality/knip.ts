@@ -5,12 +5,7 @@ export default {
 	astro: { config: ["config/app/astro.ts"] },
 	svelte: { entry: ["config/app/svelte.ts"] },
 	biome: { config: ["config/quality/biome.settings.jsonc"] },
-	entry: [
-		"src/styles/global.css",
-		"scripts/**/*.{mjs,js,ts,mts,sh}",
-		"scripts/fixtures/vercel-preview-cli.cts",
-		"scripts/fixtures/vercel-preview-cli.cjs",
-	],
+	entry: ["src/styles/global.css", "scripts/**/*.{mjs,js,ts,mts,sh}"],
 	ignoreIssues: {
 		"src/lib/components/ui/**": ["files", "exports", "types", "nsExports", "nsTypes"],
 	},
