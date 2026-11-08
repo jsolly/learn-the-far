@@ -325,7 +325,7 @@ it("a labeled Preview uses isolated CLI commands and edits one stable comment", 
 		"alias",
 		"set",
 		"https://immutable.vercel.app",
-		"pr-129-fixtureproject.vercel.app",
+		"repo-feature-preview.preview.jsolly.com",
 		"--scope",
 		"jsollys-projects",
 	]);
@@ -340,6 +340,17 @@ it("a labeled Preview uses isolated CLI commands and edits one stable comment", 
 		f.calls("gh").some((call) => call.args[0] === "pr"),
 		false,
 	);
+});
+
+it("a long branch keeps its Preview alias inside one DNS label", (t) => {
+	const ref = "claude/Fix_Every-Unicode--Branch!!-and-keep-going-until-the-label-overflows";
+	const f = fixture(t, { env: { HEAD_REF: ref } });
+	assert.equal(f.execute("Deploy the Preview").status, 0);
+	const alias = f.calls("npx")[1]?.args[5] ?? "";
+	const label = alias.replace(/\.preview\.jsolly\.com$/u, "");
+	assert.notEqual(label, alias);
+	assert.equal(label.length, 63);
+	assert.match(label, /^repo-claude-fix-every-unicode-branch-and-keep-going-un-[0-9a-f]{8}$/u);
 });
 
 it("a manual one-shot Preview does not require or claim label redeploys", (t) => {
