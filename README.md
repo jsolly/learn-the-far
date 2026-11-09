@@ -38,7 +38,7 @@ Optional (Cursor only): `npm run mcp:echarts` starts a project-local Apache ECha
 
 ## Architecture
 
-- **Static SPA** — `npm run build` emits `dist/`; Vercel serves that directory (`vercel.json`).
+- **Static SPA** — `npm run build` emits `dist/`; Vercel serves that directory (`vercel.ts`).
 - **Svelte islands** — interactive study/quiz UI under `src/components/app/`.
 - **FAR content** — chapters and decks live under `src/lib/far/` (shelves, glossary, questions). Source links point at [acquisition.gov](https://www.acquisition.gov/browse/index/far).
 - **Routes** — home (`/`) plus shareable learn routes (`/learn/[unit]/`, `/learn/[unit]/[chapter]/`).
@@ -52,7 +52,7 @@ This project is designed to fork and redeploy with zero backend setup.
 
 1. Fork (or clone) the repository on GitHub.
 2. In [Vercel](https://vercel.com), **Add New Project** → import the fork.
-3. Leave Framework Preset as Astro (or Other). Build settings are already in `vercel.json`:
+3. Leave Framework Preset as Astro (or Other). Build settings are already in `vercel.ts`:
    - **Build Command:** `npm run build`
    - **Output Directory:** `dist`
 4. Deploy. No environment variables are required for the app.
@@ -66,9 +66,9 @@ If you are not deploying to `learnthefar.com`, update:
 | :-- | :-- |
 | `config/app/astro.ts` | `site: 'https://your-domain.example'` |
 | `public/robots.txt` | Sitemap URL host |
-| `vercel.json` | `www` → apex redirect `has` / `destination` hosts (or remove that redirect) |
+| `vercel.ts` | `www` → apex redirect `has` / `destination` hosts (or remove that redirect) |
 
-Production for this repo stays Git-connected: pushes to `main` deploy automatically after CI. Branch pushes do not create Preview deployments; comment `/preview` as the first non-empty line on a same-repo PR (or run the **Vercel Preview** workflow) for a one-shot Preview.
+Production for this repo stays Git-connected: pushes to `main` deploy automatically after CI. Vercel's Git integration also builds a Preview for a pushed branch named `preview/**` (`vercel.ts` `git.deploymentEnabled`); every other branch builds nothing.
 
 ## CI and commits
 
