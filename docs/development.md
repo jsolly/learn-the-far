@@ -95,7 +95,7 @@ Work from fresh main on an isolated branch. Review the actual final diff for bug
 secrets, security, tests and repository guidelines; use an independent reviewer
 for substantial or sensitive changes. Run the required complete local gate before
 pushing. Create a same-repository PR; use a draft while approval/work remains.
-Non-draft pull requests from `solly-agent` or `jsolly` arm GitHub squash
+Non-draft pull requests from `solly-agent`, `jsolly`, or `cursor[bot]` arm GitHub squash
 auto-merge (`.github/workflows/auto-merge.yml`). Convert the pull request to a
 draft, or run `gh pr merge --disable-auto`, to hold it. Other authors are not
 auto-merged. Every 30 minutes, and on a manual run, the workflow re-arms

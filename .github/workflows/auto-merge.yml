@@ -1,7 +1,7 @@
 name: Auto-merge
 
 # Arms GitHub native squash auto-merge for non-draft pull requests from
-# solly-agent or jsolly. A 30-minute sweep re-arms that setting and, when ci
+# solly-agent, jsolly, or cursor[bot]. A 30-minute sweep re-arms that setting and, when ci
 # and security are already green, squash-merges that head directly.
 # Every API call uses AUTO_MERGE_TOKEN. This file never checks out the
 # repository, so it cannot run pull request code, and it does not fall back
@@ -48,12 +48,21 @@ jobs:
             printf 'https://github.com/%s/pull/%s' "$GH_REPO" "$1"
           }
 
+          # Pull-request events report this bot as cursor[bot]. gh pr view reports
+          # the same bot as app/cursor. Dependabot and every other author stay out.
+          allowed_author() {
+            case "$1" in
+              solly-agent|jsolly|cursor\[bot\]|app/cursor) return 0 ;;
+              *) return 1 ;;
+            esac
+          }
+
           pr_is_eligible() {
             local base=$1
             jq -e --arg repo "$GH_REPO" --arg base "$base" '
               .state == "OPEN"
               and .isDraft == false
-              and (.author.login == "solly-agent" or .author.login == "jsolly")
+              and (.author.login == "solly-agent" or .author.login == "jsolly" or .author.login == "cursor[bot]" or .author.login == "app/cursor")
               and .baseRefName == $base
               and .isCrossRepository == false
               and .headRepository.nameWithOwner == $repo
@@ -205,7 +214,7 @@ jobs:
               echo "::error::Pull request event has no numeric number"
               exit 1
             }
-            if [[ "$draft" != "false" || ( "$login" != "solly-agent" && "$login" != "jsolly" ) || "$head_repo" != "$base_repo" || "$base_repo" != "$GH_REPO" || "$base_ref" != "$default_ref" || -z "$default_ref" ]]; then
+            if [[ "$draft" != "false" ]] || ! allowed_author "$login" || [[ "$head_repo" != "$base_repo" || "$base_repo" != "$GH_REPO" || "$base_ref" != "$default_ref" || -z "$default_ref" ]]; then
               echo "Not arming auto-merge for pull request #${number}"
               exit 0
             fi
