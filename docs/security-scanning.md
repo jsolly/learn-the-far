@@ -3,7 +3,9 @@
 OSV-Scanner 2.7.1 reads `package-lock.json` from the pre-push hook and from
 `Security / osv-scanner`. A finding or a failed request to `api.osv.dev` fails
 the check. The scanner is not disabled, and the configuration does not ignore
-a package, a severity, or a directory.
+a package, a severity, or a directory. The workflow's `security` job is the
+required status check. It runs after gitleaks, Semgrep, OSV-Scanner, zizmor,
+and cfn-lint, and it fails unless every one of those jobs succeeded.
 
 `osv-scanner.toml` sits beside the lockfile. `IgnoredVulns` lists one advisory
 id at a time. `reason` says why that id is accepted, and `effectiveUntil` is

@@ -73,8 +73,9 @@ Pre-push runs Semgrep with `p/default --error` and OSV-Scanner on
 `package-lock.json`. Those two call semgrep.dev and api.osv.dev and fail
 closed when the request or a finding fails. `.github/workflows/security.yml`
 runs the same scanners on a pull request, plus the pinned gitleaks range
-scan. `.cursor/hooks.json` runs gitleaks before an agent `git commit` or
-`git push`.
+scan. Its `security` job waits for those scanner jobs and succeeds only when
+every one succeeded. `.cursor/hooks.json` runs gitleaks before an agent
+`git commit` or `git push`.
 
 OSV-Scanner loads [`osv-scanner.toml`](../osv-scanner.toml) from the lockfile
 directory. Each exception there is one advisory id, with a reason and an

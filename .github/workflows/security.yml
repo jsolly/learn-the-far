@@ -107,3 +107,31 @@ jobs:
           enable-cache: false
       - name: cfn-lint
         run: bash scripts/security-pre-commit.sh cfn-lint
+
+  # The ruleset requires a check named exactly `security`. This job does not
+  # scan. It fails unless every scanner job above succeeded.
+  security:
+    name: security
+    needs: [gitleaks, semgrep, osv-scanner, zizmor, cfn-lint]
+    if: always()
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 5
+    steps:
+      - name: Require every scanner to succeed
+        env:
+          GITLEAKS: ${{ needs.gitleaks.result }}
+          SEMGREP: ${{ needs.semgrep.result }}
+          OSV_SCANNER: ${{ needs.osv-scanner.result }}
+          ZIZMOR: ${{ needs.zizmor.result }}
+          CFN_LINT: ${{ needs.cfn-lint.result }}
+        run: |
+          set -euo pipefail
+          printf '%s\n' \
+            "gitleaks=$GITLEAKS" \
+            "semgrep=$SEMGREP" \
+            "osv-scanner=$OSV_SCANNER" \
+            "zizmor=$ZIZMOR" \
+            "cfn-lint=$CFN_LINT"
+          for result in "$GITLEAKS" "$SEMGREP" "$OSV_SCANNER" "$ZIZMOR" "$CFN_LINT"; do
+            [[ "$result" == success ]]
+          done
