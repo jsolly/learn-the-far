@@ -11,3 +11,10 @@ supported open clients. Do not delete or replace these bytes during a dependency
 upgrade. The build rejects new lazy chunks until their immutable output is added
 to this directory with provenance and license. This makes asset retention a
 repository contract, independent of hosting settings or another repository.
+
+`confetti.module.D2UmBLOm.js.txt` is the canvas-confetti 1.9.4 module emitted for
+clients built with Astro 7.4.5 and Vite 8.3.5. Rolldown's output differs from
+the earlier chunk, so the URL is new. It is unmodified generated code under the
+same ISC license. SHA-256:
+`d5f63457b5ae16bbcc885ce5445cd01de0860933babcd1da4fd9485c275f770c`.
+The earlier URL stays in this directory for clients that already loaded it.

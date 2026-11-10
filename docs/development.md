@@ -76,6 +76,11 @@ runs the same scanners on a pull request, plus the pinned gitleaks range
 scan. `.cursor/hooks.json` runs gitleaks before an agent `git commit` or
 `git push`.
 
+OSV-Scanner loads [`osv-scanner.toml`](../osv-scanner.toml) from the lockfile
+directory. Each exception there is one advisory id, with a reason and an
+expiry. The scanner stays enabled. The current rows and the overrides that
+carry patched releases are in [security scanning](security-scanning.md).
+
 cfn-lint covers the tracked CloudFormation template. There is no CDK app, so
 Checkov and cdk-nag are not installed. Trivy, CodeQL, detect-secrets, and
 cfn-nag are not installed.
