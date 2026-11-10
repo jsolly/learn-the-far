@@ -385,7 +385,8 @@ gate_check_bash_floor() { # [<exempt glob>…]
 # machine-global one on $PATH. The fix differs by tool class. Project-local tools run from
 # node_modules/.bin, and each repo's committed .npmrc sets `yes=false`, so any `npx <tool>` that
 # is not installed locally fails closed ("npx canceled due to missing packages") instead of
-# fetching <tool>@latest; `npx --yes` is the explicit opt-in. System CLIs get a presence guard
+# fetching <tool>@latest; `npx --yes` is the explicit opt-in. `min-release-age=7` waits a week
+# before a newly published version can be installed. System CLIs get a presence guard
 # (NOT a hard-coded absolute path: Homebrew differs Intel vs Apple-Silicon) plus the repo's
 # .mise.toml pins, and the Node runtime is version-asserted against .nvmrc.
 

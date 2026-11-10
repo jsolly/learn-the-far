@@ -60,10 +60,10 @@ and hook setup) via the committed Cursor and Codex setup commands. The app has n
 
 `.git-hooks/pre-commit` sources the repo-owned `gate/gate-lib.sh` and runs the
 Bash floor check, staged secrets scan, actionlint, Biome, knip, markdownlint,
-yamllint, pie-progress, the negative quiz smoke contract, the TypeScript config
+yamllint, offline zizmor, cfn-lint, pie-progress, the negative quiz smoke contract, the TypeScript config
 consumers, the Vitest unit suite (`npm run test:unit`), `astro check`,
 `astro build`, the website update browser contract and isolated hook/bootstrap
-fixtures. Never weaken or skip the gate.
+fixtures. Pre-push runs Semgrep and OSV-Scanner. Never weaken or skip the gate.
 
 ## Deploy / fork
 
@@ -127,7 +127,7 @@ merge. See the repository CI workflow and [release instructions](docs/developmen
 
 This repo owns `gate/gate-lib.sh` and `scripts/repo-hooks.py`. Run reviewed
 `scripts/setup-agent-environment.sh` on main to install its outside-worktree
-pre-commit dispatcher. Never set hooksPath to `.git-hooks`: a branch could then
+pre-commit and pre-push dispatcher. Never set hooksPath to `.git-hooks`: a branch could then
 register executable hooks. See [development and release](docs/development.md).
 
 ## Configuration

@@ -169,6 +169,14 @@ def directory(path: Path):
         raise ValueError('Hook storage is not a directory')
 
 
+def pre_push_dispatch(pre_commit: bytes) -> bytes:
+    """Derive the pre-push dispatcher from the reviewed pre-commit dispatcher."""
+    needle = b'repo-hooks.py" dispatch\n'
+    if pre_commit.count(needle) != 1:
+        raise ValueError('pre-commit dispatcher cannot derive pre-push')
+    return pre_commit.replace(needle, b'repo-hooks.py" dispatch-push\n', 1)
+
+
 def snapshot(parent: Path, digest: str, payload: dict[str, bytes], slug: str) -> Path:
     directory(parent)
     dest = parent / digest
@@ -195,6 +203,8 @@ def snapshot(parent: Path, digest: str, payload: dict[str, bytes], slug: str) ->
         (staging / 'hooks').mkdir(mode=0o700)
         (staging / 'hooks/pre-commit').write_bytes(payload['gate/hooks/pre-commit'])
         (staging / 'hooks/pre-commit').chmod(0o755)
+        (staging / 'hooks/pre-push').write_bytes(pre_push_dispatch(payload['gate/hooks/pre-commit']))
+        (staging / 'hooks/pre-push').chmod(0o755)
         # Rename publishes all bytes at once. Old configured versions remain usable.
         staging.rename(dest)
     finally:
@@ -243,11 +253,23 @@ def verify_dispatcher(version: Path):
     hookdir = version / 'hooks'
     if hookdir.is_symlink() or not hookdir.is_dir():
         raise ValueError('Unsafe installed dispatcher directory')
+    pre_commit = regular(version, 'gate/hooks/pre-commit', 0o755)
     dispatcher = regular(version, 'hooks/pre-commit', 0o755)
-    if stat.S_IMODE((hookdir / 'pre-commit').stat().st_mode) != 0o755 or dispatcher != regular(version, 'gate/hooks/pre-commit', 0o755):
+    if stat.S_IMODE((hookdir / 'pre-commit').stat().st_mode) != 0o755 or dispatcher != pre_commit:
         raise ValueError('Installed dispatcher differs from its verified snapshot')
+    # Snapshots installed before pre-push have no dispatch_push. Require the extra
+    # hook only for an installer that knows how to write it, so an old reviewed
+    # snapshot can still approve a newer bundle.
+    expected = {'pre-commit'}
+    if b'\ndef dispatch_push(' in regular(version, 'scripts/repo-hooks.py', 0o755):
+        expected.add('pre-push')
+        pushed = hookdir / 'pre-push'
+        if (pushed.is_symlink() or not pushed.is_file()
+                or stat.S_IMODE(pushed.stat().st_mode) != 0o755
+                or pushed.read_bytes() != pre_push_dispatch(pre_commit)):
+            raise ValueError('Installed dispatcher differs from its verified snapshot')
     for path in hookdir.iterdir():
-        if path.name != 'pre-commit' or path.is_symlink() or not path.is_file():
+        if path.name not in expected or path.is_symlink() or not path.is_file():
             raise ValueError('Unexpected hook in installed dispatcher directory')
 
 
@@ -302,7 +324,7 @@ def install(root: Path, common: Path, slug: str, digest: str, payload: dict[str,
     print('Repository-owned hooks installed: ' + str(hooks))
 
 
-def dispatch(root: Path, common: Path, slug: str, digest: str, payload: dict[str, bytes]):
+def _trusted_snapshot(root: Path, common: Path, slug: str, digest: str, payload: dict[str, bytes]) -> Path:
     installed = verify_installed(common, slug)
     for rel in ['scripts/repo-hooks.py', 'scripts/repo-python.sh', 'gate/hooks/pre-commit']:
         if (installed / rel).read_bytes() != payload[rel]:
@@ -313,8 +335,13 @@ def dispatch(root: Path, common: Path, slug: str, digest: str, payload: dict[str
         raise ValueError('Worktree hooksPath override is stale; run reviewed repository setup')
     if not trusted(root, slug, digest):
         raise ValueError('Unreviewed hook/setup/library bundle; review and approve exact digest ' + digest)
-    snap = snapshot(common / 'repo-hooks' / 'bundles', digest, payload, slug)
+    return snapshot(common / 'repo-hooks' / 'bundles', digest, payload, slug)
+
+
+def _dispatch_env(root: Path) -> dict[str, str]:
     env = {k: v for k, v in os.environ.items() if k not in CONTEXT}
+    # Callers cannot switch a commit hook into the smaller push scan.
+    env.pop('GATE_HOOK', None)
     # Git supplies a temporary committing index for -a and path-limited commits.
     # Trust reads ignore it, but staged scanning must use that exact index.
     committing_index = os.environ.get('GIT_INDEX_FILE')
@@ -329,14 +356,29 @@ def dispatch(root: Path, common: Path, slug: str, digest: str, payload: dict[str
         if index.parent != gitdir or not (index.name in {'index', 'index.lock'} or re.fullmatch(r'next-index-[0-9]+\.lock', index.name)):
             raise ValueError('Committing index is outside this worktree Git directory')
         env['GIT_INDEX_FILE'] = str(index)
+    return env
+
+
+def dispatch(root: Path, common: Path, slug: str, digest: str, payload: dict[str, bytes]):
+    snap = _trusted_snapshot(root, common, slug, digest, payload)
+    env = _dispatch_env(root)
     # Snapshot shim sources snapshot library; quality scripts run in the committing root.
+    os.chdir(root)
+    os.execve(str(snap / '.git-hooks/pre-commit'), [str(snap / '.git-hooks/pre-commit')], env)
+
+
+def dispatch_push(root: Path, common: Path, slug: str, digest: str, payload: dict[str, bytes]):
+    snap = _trusted_snapshot(root, common, slug, digest, payload)
+    env = _dispatch_env(root)
+    env.pop('GIT_INDEX_FILE', None)
+    env['GATE_HOOK'] = 'pre-push'
     os.chdir(root)
     os.execve(str(snap / '.git-hooks/pre-commit'), [str(snap / '.git-hooks/pre-commit')], env)
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command', choices=['install', 'dispatch', 'verify', 'digest', 'approve', 'approve-upgrade'])
+    parser.add_argument('command', choices=['install', 'dispatch', 'dispatch-push', 'verify', 'digest', 'approve', 'approve-upgrade'])
     parser.add_argument('--root', type=Path, default=Path.cwd())
     parser.add_argument('--digest')
     args = parser.parse_args()
@@ -366,6 +408,8 @@ def main() -> int:
             if not trusted(root, slug, digest):
                 raise ValueError('Current source bundle is not trusted')
             print('Repository-owned hooks verified')
+        elif args.command == 'dispatch-push':
+            dispatch_push(root, common, slug, digest, payload)
         else:
             dispatch(root, common, slug, digest, payload)
     return 0

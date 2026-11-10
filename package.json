@@ -23,6 +23,8 @@
 		"preview": "astro preview --config config/app/astro.ts",
 		"astro": "astro --config config/app/astro.ts",
 		"check:actions": "bash scripts/check-actions.sh",
+		"check:supply": "bash scripts/security-pre-commit.sh",
+		"check:pre-push": "bash scripts/security-pre-push.sh",
 		"gate": "FLEET_DOC_FAST=0 bash .git-hooks/pre-commit",
 		"smoke:production": "node scripts/production-smoke.mjs",
 		"smoke:scenario-contract": "node --test scripts/production-smoke-scenario.test.ts scripts/production-smoke.test.ts",
@@ -36,7 +38,7 @@
 		"@astrojs/sitemap": "^3.7.3",
 		"@astrojs/svelte": "^9.0.0",
 		"@tailwindcss/vite": "^4.3.1",
-		"astro": "^7.0.3",
+		"astro": "^7.4.5",
 		"canvas-confetti": "^1.9.4",
 		"echarts": "^6.1.0",
 		"svelte": "^5.56.4",
@@ -67,14 +69,24 @@
 	},
 	"overrides": {
 		"@types/node": "$@types/node",
+		"@hono/node-server": "^2.1.6",
+		"@vercel/config": {
+			"zod": "4.6.7"
+		},
+		"@vercel/routing-utils": {
+			"path-to-regexp": "6.3.0"
+		},
 		"markdownlint-cli2": {
 			"js-yaml": "^4.3.1",
-			"markdown-it": "^14.2.0"
+			"markdown-it": "14.3.3",
+			"smol-toml": "1.9.1"
+		},
+		"micromark-extension-math": {
+			"katex": "0.19.1"
 		}
 	},
 	"allowScripts": {
 		"canvas@3.2.3": true,
-		"esbuild@0.28.1": true,
 		"fsevents@2.3.3": true
 	}
 }

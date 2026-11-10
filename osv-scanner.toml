@@ -1,0 +1,7 @@
+# Reviewed dependency dispositions. See docs/security-scanning.md.
+# effectiveUntil is the first day the advisory fails the scan again.
+
+[[IgnoredVulns]]
+id = "GHSA-gcqx-w48m-w2h4"
+effectiveUntil = 2026-12-10
+reason = "deepmerge 4.3.1 has no patched release. @sveltejs/vite-plugin-svelte 7.3.1 merges repository-owned build configuration with it. Accepted through 2026-12-09."

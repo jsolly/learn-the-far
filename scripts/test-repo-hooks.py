@@ -48,6 +48,7 @@ owner="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 source "$owner/gate/gate-lib.sh"
 gate_enter_committing_tree "${BASH_SOURCE[0]}"
 printf 'fixture-root=%s\\n' "$ROOT"
+printf 'hook-mode=%s\\n' "${GATE_HOOK:-commit}"
 gate_gitleaks_bin() { printf '%s\\n' "$ROOT/tools/fixture-gitleaks"; }
 gate_secrets_scan_staged
 ''')
@@ -138,6 +139,31 @@ fi
                 (self.root / 'content.txt').write_text('safe updated ' + str(options) + '\n')
                 result = self.git('commit', '-m', 'safe commit', *options, check=False)
                 self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_pre_push_dispatcher_sets_push_mode_and_commit_dispatch_clears_it(self):
+        pushed = subprocess.run(
+            [str(self.hooks / 'pre-push'), 'origin', 'https://example.invalid/fixture.git'],
+            cwd=self.root, env=self.env, text=True, capture_output=True, input='')
+        self.assertEqual(pushed.returncode, 0, pushed.stderr)
+        self.assertIn('hook-mode=pre-push', pushed.stdout)
+        self.assertIn('fixture-root=' + str(self.root), pushed.stdout)
+        self.assertEqual(stat.S_IMODE((self.hooks / 'pre-push').stat().st_mode), 0o755)
+        env = dict(self.env)
+        env['GATE_HOOK'] = 'pre-push'
+        committed = subprocess.run([str(self.hooks / 'pre-commit')], cwd=self.root, env=env,
+                                   text=True, capture_output=True)
+        self.assertEqual(committed.returncode, 0, committed.stderr)
+        self.assertIn('hook-mode=commit', committed.stdout)
+
+    def test_tampered_pre_push_dispatcher_is_refused(self):
+        path = self.hooks / 'pre-push'
+        original = path.read_bytes()
+        path.write_bytes(original + b'\n# tamper\n')
+        result = self.tool('verify', installed=True)
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertIn('dispatcher', result.stderr)
+        path.write_bytes(original)
+        self.tool('verify', installed=True, check=True)
 
 
     def legacy_upgrade_fixture(self):
@@ -424,6 +450,31 @@ cp "$BOOTSTRAP_PAYLOAD" "$2"
         self.assertNotEqual(result.returncode, 0)
         self.assertEqual(destination.read_text(), 'existing useful content\n')
         self.assertFalse(self.downloads.exists())
+
+
+class SecurityPins(unittest.TestCase):
+    def test_gitleaks_pins_match_the_commit_gate_and_ci(self):
+        lib = (SOURCE / 'gate/gate-lib.sh').read_text()
+        tools = (SOURCE / 'scripts/security-tools.sh').read_text()
+        ci = (SOURCE / '.github/workflows/ci.yml').read_text()
+        self.assertIn('GATE_GITLEAKS_VERSION=8.24.2', lib)
+        self.assertIn('8.24.2', ci)
+        self.assertIn('8.24.2', tools)
+        for pin in (
+            'c75ea6f594e0a857efa1220fa08088b55e1465a32ab00cfc7aa2ec64cec031fe',
+            '64805175c8f88959587ba6afc58210401088206a27ba582cfbb98791137d6208',
+            '455494f14c34ee5394fa0eef6af986d0eebbabc16aca5be0bdc9bdd62518eb03',
+        ):
+            self.assertIn(pin, lib)
+            self.assertIn(pin, tools)
+        archive = '574a6d52573c61173add7ddb5e3cc68c0e82cb0735818a1eeb9a0a2de1643fbc'
+        self.assertIn(archive, ci)
+        self.assertIn(archive, tools)
+
+    def test_commit_gate_keeps_push_scanners_ahead_of_the_commit_preamble(self):
+        hook = (SOURCE / '.git-hooks/pre-commit').read_text()
+        self.assertLess(hook.index('scripts/security-pre-push.sh'), hook.index('gate_begin_commit'))
+        self.assertIn('scripts/security-pre-commit.sh', hook)
 
 
 if __name__ == '__main__':

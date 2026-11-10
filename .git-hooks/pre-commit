@@ -7,6 +7,14 @@ set -euo pipefail
 _repo_owned_gate_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 source "$_repo_owned_gate_root/gate/gate-lib.sh"
 gate_enter_committing_tree "${BASH_SOURCE[0]}"
+if [[ "${GATE_HOOK:-}" == pre-push ]]; then
+	trap 'echo "✗ pre-push security scan failed — push aborted" >&2' ERR
+	echo "▶ pre-push security scan (learn-the-far)"
+	gate_require_node
+	run_step "semgrep and osv-scanner" bash scripts/security-pre-push.sh
+	echo "✓ pre-push security scan passed"
+	exit 0
+fi
 gate_begin_commit "learn-the-far"
 run_step "bash floor" gate_check_bash_floor   # every Bash entrypoint refuses Bash < 5
 gate_require_node
@@ -16,6 +24,7 @@ run_step "lint" npm run check:lint
 run_step "knip" npm run check:knip
 run_step "markdown lint" npm run check:md
 run_step "yaml lint" npm run check:yaml
+run_step "zizmor and cfn-lint" bash scripts/security-pre-commit.sh
 run_step "pie progress" npm run check:pie
 run_step "negative quiz smoke contract" npm run smoke:scenario-contract
 run_step "TypeScript config consumers" node --test tests/config/tsconfig-consumer.test.mjs
