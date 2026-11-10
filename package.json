@@ -23,6 +23,8 @@
 		"preview": "astro preview --config config/app/astro.ts",
 		"astro": "astro --config config/app/astro.ts",
 		"check:actions": "bash scripts/check-actions.sh",
+		"check:supply": "bash scripts/security-pre-commit.sh",
+		"check:pre-push": "bash scripts/security-pre-push.sh",
 		"gate": "FLEET_DOC_FAST=0 bash .git-hooks/pre-commit",
 		"smoke:production": "node scripts/production-smoke.mjs",
 		"smoke:scenario-contract": "node --test scripts/production-smoke-scenario.test.ts scripts/production-smoke.test.ts",

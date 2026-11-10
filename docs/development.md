@@ -28,7 +28,7 @@ that the gate ran. No setup command deploys the application or infrastructure.
 ## Hook trust
 
 The dispatcher lives in this clone's Git common directory, shared only by its
-linked worktrees. It registers pre-commit only. The complete hook/library/setup
+linked worktrees. It registers pre-commit and pre-push. The complete hook/library/setup
 bundle must match current reviewed `origin/main`, or a deliberately approved exact
 bundle digest. Missing files, symlinks, unreviewed modes and a foreign origin fail
 closed. The dispatcher executes a verified snapshot, then runs quality scripts in
@@ -65,6 +65,23 @@ digest and dispatcher, then approves only the reviewed new digest. It does not
 trust an old manifest in the candidate checkout. Once reviewed main has the new
 layout, ordinary setup installs it directly, including over a valid old snapshot.
 Older checkouts must merge the reviewed migration before rerunning setup.
+
+## Security scanning
+
+The commit gate runs staged gitleaks, then offline zizmor and cfn-lint.
+Pre-push runs Semgrep with `p/default --error` and OSV-Scanner on
+`package-lock.json`. Those two call semgrep.dev and api.osv.dev and fail
+closed when the request or a finding fails. `.github/workflows/security.yml`
+runs the same scanners on a pull request, plus the pinned gitleaks range
+scan. `.cursor/hooks.json` runs gitleaks before an agent `git commit` or
+`git push`.
+
+cfn-lint covers the tracked CloudFormation template. There is no CDK app, so
+Checkov and cdk-nag are not installed. Trivy, CodeQL, detect-secrets, and
+cfn-nag are not installed.
+
+`.github/dependabot.yml` opens npm and GitHub Actions updates. Those pull
+requests still wait for the `ow-ci` label before validation runners start.
 
 ## Review and integration
 

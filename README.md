@@ -72,10 +72,10 @@ Production for this repo stays Git-connected: pushes to `main` deploy automatica
 
 ## CI and commits
 
-GitHub Actions (`.github/workflows/ci.yml`) runs on every PR and on `main`: actionlint, Biome, knip, markdownlint, yamllint, pie-progress, the negative quiz smoke contract, the Vitest unit suite, typecheck, and build.
+GitHub Actions (`.github/workflows/ci.yml`) runs on every PR and on `main`: actionlint, Biome, knip, markdownlint, yamllint, pie-progress, the negative quiz smoke contract, the Vitest unit suite, typecheck, and build. `.github/workflows/security.yml` adds gitleaks, Semgrep, OSV-Scanner, zizmor, and cfn-lint on pull requests.
 
-Local pre-commit (`.git-hooks/pre-commit`) runs the same checks plus isolated
-hook/bootstrap fixtures. This repo owns its gate library and trusted dispatcher;
+Local pre-commit (`.git-hooks/pre-commit`) runs the same quality checks plus offline zizmor, cfn-lint, and isolated
+hook/bootstrap fixtures. Pre-push runs Semgrep and OSV-Scanner. This repo owns its gate library and trusted dispatcher;
 no private configuration repository or personal skill is required. Install Git,
 Bash >= 5 and Python >= 3.11, then follow [repository setup](docs/development.md).
 Setup provisions pinned public tools, including uv for YAML lint, and lockfile
