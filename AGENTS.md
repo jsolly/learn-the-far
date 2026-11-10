@@ -2,7 +2,7 @@
 
 Ship profile: `vercel-static`
 
-**Integration: branch → reviewed PR → merge on green `CI / ci`.** Follow [local release instructions](docs/development.md). Agents never push to `main`, change rulesets, or admin-merge.
+**Integration: branch → reviewed PR → merge on green `CI / ci`.** Non-draft pull requests from `solly-agent` or `jsolly` arm GitHub squash auto-merge and merge when the required checks are green. Convert the pull request to a draft, or run `gh pr merge --disable-auto`, to hold it. Other authors are not auto-merged. Follow [local release instructions](docs/development.md). Agents never push to `main`, change rulesets, or admin-merge.
 
 Production URL: <https://learnthefar.com>
 

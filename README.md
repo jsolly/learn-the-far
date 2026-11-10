@@ -88,6 +88,8 @@ dependencies. Package scripts never point `core.hooksPath` at `.git-hooks`.
 3. Run `npm run check` (Biome + types) and `npm run build` before opening a PR. Use `npm run gate` for the full pre-commit suite.
 4. Open a pull request against `main`.
 
+Non-draft pull requests from `solly-agent` or `jsolly` arm squash auto-merge and land when the required checks are green. Convert the pull request to a draft, or run `gh pr merge --disable-auto`, to hold it. Other authors are not auto-merged.
+
 UI is public-only (no login). Prefer small, focused PRs.
 
 ## License
