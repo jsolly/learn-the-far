@@ -95,7 +95,14 @@ Work from fresh main on an isolated branch. Review the actual final diff for bug
 secrets, security, tests and repository guidelines; use an independent reviewer
 for substantial or sensitive changes. Run the required complete local gate before
 pushing. Create a same-repository PR; use a draft while approval/work remains.
-Merge only when the required CI validates the exact current head. Never push to
+Non-draft pull requests from `solly-agent` or `jsolly` arm GitHub squash
+auto-merge (`.github/workflows/auto-merge.yml`). Convert the pull request to a
+draft, or run `gh pr merge --disable-auto`, to hold it. Other authors are not
+auto-merged. Every 30 minutes, and on a manual run, the workflow re-arms
+auto-merge and squash-merges a head whose `ci` and `security` checks are
+already green. Those calls use the repository `AUTO_MERGE_TOKEN`, so `push`
+workflows run; the job fails if that secret is absent. Merge only when the
+required CI validates the exact current head. Never push to
 the default branch, weaken rulesets, bypass checks or use an admin merge. Optional
 personal review skills may help, but they are not prerequisites for this flow.
 
