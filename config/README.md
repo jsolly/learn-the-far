@@ -62,7 +62,7 @@ module URL with its native cache. Compare resolved TypeScript options and inputs
 then run the configured Astro typecheck, complete build and pinned shadcn-svelte
 component generator. Successful initial startup alone does not prove reload.
 
-Package manifests/lockfiles, `.npmrc`, `.nvmrc`, `.mise.toml`, Git files, `.github/`,
+Package manifests/lockfiles, `.npmrc`, `.nvmrc`, `.mise.toml`, `mise.lock`, Git files, `.github/`,
 native agent registrations, `vercel.ts` and `components.json` keep their required
 locations. `vercel.ts` is handwritten strict TypeScript, typed by `@vercel/config` and
 checked by the root `tsconfig.json`, `config/typescript/tooling.json`, Biome and knip. `components.json` owns shadcn-svelte's generation manifest, alias names
