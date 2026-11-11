@@ -234,7 +234,10 @@ jobs:
           fi
 
           require_token
-          default_branch=$(gh repo view --json defaultBranchRef --jq .defaultBranchRef.name)
+          # gh repo view ignores GH_REPO and reads the local checkout, which this
+          # job never has, so it must name the repository. The gh pr and gh api
+          # calls take a pull request URL, honor GH_REPO, or embed it in the path.
+          default_branch=$(gh repo view "$GH_REPO" --json defaultBranchRef --jq .defaultBranchRef.name)
           [[ "$default_branch" =~ ^[A-Za-z0-9._/-]+$ ]] || {
             echo "::error::Unexpected default branch"
             exit 1

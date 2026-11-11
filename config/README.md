@@ -23,8 +23,8 @@ under `tests/`. Each setting has one repository-owned home:
   names the actual owners, preserving analysis plugins and entry discovery.
 - `quality/yamllint.yaml` and `quality/.markdownlint-cli2.jsonc` are selected
   explicitly by the YAML command and root-anchored Markdown helper.
-- `testing/vitest.unit.ts` selects the `src/**/*.test.ts` unit suite from the
-  repository root. `test:unit` selects it explicitly and the gate runs it. It
+- `testing/vitest.unit.ts` selects the `src/**/*.test.ts` unit suite and the
+  `tests/**/*.test.ts` workflow tests from the repository root. `test:unit` selects it explicitly and the gate runs it. It
   mirrors the root `tsconfig.json` `$lib/*` path, which Vitest does not read;
   the root file stays that alias's owner.
 - `agents/repository.json` owns hook identity and its fixed trusted-bundle roster.
