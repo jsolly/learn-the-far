@@ -62,18 +62,9 @@ describe("auto-merge sweep", () => {
 		return { ...result, calls: (await readFile(log, "utf8")).trim().split("\n") };
 	}
 
-	it("names the repository when reading the default branch outside a checkout", async () => {
-		const { status, stderr, calls } = await sweep("schedule", "");
-		expect(stderr).not.toContain("not a git repository");
-		expect(status).toBe(0);
-		expect(calls).toEqual([
-			`repo view ${repo} --json defaultBranchRef --jq .defaultBranchRef.name`,
-			"pr list --state open --base main --limit 200 --json number --jq .[].number",
-		]);
-	});
-
-	it("arms auto-merge for an eligible pull request whose checks are not green yet", async () => {
-		const pr = JSON.stringify({
+	/** A pull request as `gh pr view` reports it, eligible unless overridden. */
+	function pullRequest(overrides: Record<string, unknown> = {}): string {
+		return JSON.stringify({
 			number: 7,
 			state: "OPEN",
 			isDraft: false,
@@ -83,10 +74,32 @@ describe("auto-merge sweep", () => {
 			headRepository: { nameWithOwner: repo },
 			isCrossRepository: false,
 			autoMergeRequest: null,
+			...overrides,
 		});
-		const { status, stderr, calls } = await sweep("workflow_dispatch", "7", pr);
+	}
+
+	it("a scheduled sweep on a runner with no checkout finds main and lists its open pull requests", async () => {
+		const { status, stderr, calls } = await sweep("schedule", "");
+		expect(stderr).not.toContain("not a git repository");
+		expect(status).toBe(0);
+		expect(calls[0]).toBe(`repo view ${repo} --json defaultBranchRef --jq .defaultBranchRef.name`);
+		expect(calls[1]).toMatch(/^pr list --state open --base main /u);
+	});
+
+	it("a manual sweep arms squash auto-merge for a solly-agent pull request with no CI run yet", async () => {
+		const { status, stderr, calls } = await sweep("workflow_dispatch", "7", pullRequest());
 		expect(stderr).not.toContain("not a git repository");
 		expect(status).toBe(0);
 		expect(calls.at(-1)).toBe(`pr merge --auto --squash https://github.com/${repo}/pull/7`);
+	});
+
+	it("a scheduled sweep leaves a Dependabot pull request alone", async () => {
+		const pr = pullRequest({ author: { login: "app/dependabot" } });
+		const { status, stdout, calls } = await sweep("schedule", "7", pr);
+		expect(status).toBe(0);
+		expect(stdout).toContain("Skipping pull request #7");
+		expect(calls.some((call) => call.startsWith("pr merge") || call.startsWith("api "))).toBe(
+			false,
+		);
 	});
 });
