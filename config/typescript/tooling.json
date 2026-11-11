@@ -9,6 +9,7 @@
 		"../../tests/config/tsconfig-consumer.test.mts",
 		"../../scripts/check-generated-test-fixtures.ts",
 		"../../tests/update-notice.ts",
+		"../../tests/workflows/auto-merge.test.ts",
 		"../../vercel.ts",
 		"../../scripts/production-smoke.mts",
 		"../../scripts/production-smoke-scenario.mts",
