@@ -477,5 +477,75 @@ class SecurityPins(unittest.TestCase):
         self.assertIn('scripts/security-pre-commit.sh', hook)
 
 
+
+class PrePushReachability(unittest.TestCase):
+    """The pre-push hook skips only a scan whose server cannot be reached; CI never skips."""
+
+    def setUp(self):
+        scratch = tempfile.TemporaryDirectory()
+        self.addCleanup(scratch.cleanup)
+        self.scratch = Path(scratch.name)
+        self.bin = self.scratch / 'bin'
+        self.bin.mkdir()
+        self.calls = self.scratch / 'calls'
+        # A fake curl that exits with $FAKE_CURL_RC, and a fake uvx that records the scan.
+        for name, body in (('curl', 'printf "curl %s\\n" "$*" >>"$CALLS"\nexit "${FAKE_CURL_RC:-0}"\n'),
+                           ('uvx', 'printf "uvx %s\\n" "$*" >>"$CALLS"\n')):
+            tool = self.bin / name
+            tool.write_text('#!/usr/bin/env bash\n' + body)
+            tool.chmod(0o755)
+
+    def scan(self, *args, curl_rc=0):
+        env = dict(os.environ, PATH=f'{self.bin}:{os.environ["PATH"]}', CALLS=str(self.calls),
+                   FAKE_CURL_RC=str(curl_rc))
+        result = subprocess.run(['bash', str(SOURCE / 'scripts/security-pre-push.sh'), *args],
+                                env=env, capture_output=True, text=True, timeout=60)
+        calls = self.calls.read_text().splitlines() if self.calls.exists() else []
+        return result, calls
+
+    def test_unreachable_servers_skip_every_scan_with_a_warning(self):
+        for rc in (5, 6, 7, 28, 35, 56):
+            with self.subTest(curl_exit=rc):
+                self.calls.unlink(missing_ok=True)
+                result, calls = self.scan('--skip-unreachable', curl_rc=rc)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertIn('semgrep (pre-push) skipped: https://semgrep.dev/ is unreachable', result.stderr)
+                self.assertIn('osv-scanner (pre-push) skipped: https://api.osv.dev/ is unreachable', result.stderr)
+                self.assertIn("CI's security job runs it on the pull request", result.stderr)
+                self.assertFalse([c for c in calls if not c.startswith('curl ')], calls)
+
+    def test_reachable_server_runs_the_scan(self):
+        result, calls = self.scan('--skip-unreachable', 'semgrep', curl_rc=0)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn('skipped', result.stderr)
+        self.assertEqual(calls[0], 'curl --head --silent --output /dev/null --connect-timeout 5 --max-time 15 https://semgrep.dev/')
+        self.assertTrue(calls[1].startswith('uvx --from semgrep==1.185.0 semgrep scan --config p/default --error'), calls)
+
+    def test_other_probe_failures_fail_without_scanning(self):
+        result, calls = self.scan('--skip-unreachable', 'semgrep', curl_rc=60)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('curl exit 60, not a refused connection', result.stderr)
+        self.assertEqual([c for c in calls if c.startswith('uvx ')], [])
+
+    def test_without_the_flag_nothing_is_probed_or_skipped(self):
+        result, calls = self.scan('semgrep', curl_rc=56)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn('skipped', result.stderr)
+        self.assertEqual([c for c in calls if c.startswith('curl ')], [])
+        self.assertTrue(calls and calls[0].startswith('uvx --from semgrep==1.185.0'), calls)
+
+    def test_bad_arguments_are_refused(self):
+        for args in (('--skip-unreachable', 'nope'), ('semgrep', 'osv'), ('semgrep', '--skip-unreachable')):
+            with self.subTest(args=args):
+                result, _ = self.scan(*args)
+                self.assertEqual(result.returncode, 2, result.stderr)
+
+    def test_only_the_hook_passes_the_flag(self):
+        hook = (SOURCE / '.git-hooks/pre-commit').read_text()
+        self.assertIn('bash scripts/security-pre-push.sh --skip-unreachable', hook)
+        for workflow in (SOURCE / '.github/workflows').glob('*.yml'):
+            self.assertNotIn('--skip-unreachable', workflow.read_text(), workflow.name)
+        self.assertNotIn('--skip-unreachable', (SOURCE / 'package.json').read_text())
+
 if __name__ == '__main__':
     unittest.main()
