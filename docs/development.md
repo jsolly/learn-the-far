@@ -9,7 +9,7 @@ fresh Linux setup provisions a pinned, checksum-verified public mise binary in
 `/usr/local/bin`, using noninteractive sudo only when needed. The repository's `.mise.toml`
 and `.nvmrc` own its tool pins; `mise.lock` records each tool's download URL and checksum so
 installs need no GitHub API lookup. To bump a pin, edit `.mise.toml`, run `mise lock`, and
-commit both files. On a reviewed fresh `origin/main` checkout run:
+commit both files; a major-only pin such as node moves only with `mise lock --bump`. On a reviewed fresh `origin/main` checkout run:
 
 ```bash
 bash scripts/setup-agent-environment.sh
