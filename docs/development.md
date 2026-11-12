@@ -72,9 +72,13 @@ Older checkouts must merge the reviewed migration before rerunning setup.
 
 The commit gate runs staged gitleaks, then offline zizmor and cfn-lint.
 Pre-push runs Semgrep with `p/default --error` and OSV-Scanner on
-`package-lock.json`. Those two call semgrep.dev and api.osv.dev and fail
-closed when the request or a finding fails. `.github/workflows/security.yml`
-runs the same scanners on a pull request, plus the pinned gitleaks range
+`package-lock.json`. Those two call semgrep.dev and api.osv.dev, and a finding
+or scan error fails the push. When the hook cannot reach a scan's server at
+all (no DNS, TCP or TLS, no answer, or a proxy denial, as in Claude's cloud
+sessions), it skips that scan with a warning. Any HTTP answer counts as
+reachable, and any other probe failure fails the push. CI never skips:
+`.github/workflows/security.yml` runs the same scanners on a pull request and
+fails closed when a request fails, plus the pinned gitleaks range
 scan. Its `security` job waits for those scanner jobs and succeeds only when
 every one succeeded. `.cursor/hooks.json` runs gitleaks before an agent
 `git commit` or `git push`.
