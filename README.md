@@ -72,7 +72,7 @@ Production for this repo stays Git-connected: pushes to `main` deploy automatica
 
 ## CI and commits
 
-GitHub Actions (`.github/workflows/ci.yml`) runs on every PR and on `main`: actionlint, Biome, knip, markdownlint, yamllint, pie-progress, the negative quiz smoke contract, the Vitest unit suite, typecheck, and build. `.github/workflows/security.yml` adds gitleaks, Semgrep, OSV-Scanner, zizmor, and cfn-lint on pull requests. Its `security` job succeeds only when every scanner succeeded.
+GitHub Actions (`.github/workflows/ci.yml`) runs on PRs and on `main`: actionlint, Biome, knip, markdownlint, yamllint, pie-progress, the negative quiz smoke contract, the Vitest unit suite, typecheck, and build. Eligible PR events also run gitleaks, Semgrep, OSV-Scanner, zizmor and cfn-lint. The required `ci` job waits for their `security` aggregate and fails unless every scanner succeeded. Dependabot PRs retain their `ow-ci` deferral.
 
 Local pre-commit (`.git-hooks/pre-commit`) runs the same quality checks plus offline zizmor, cfn-lint, and isolated
 hook/bootstrap fixtures. Pre-push runs Semgrep and OSV-Scanner. This repo owns its gate library and trusted dispatcher;

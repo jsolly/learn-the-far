@@ -108,8 +108,7 @@ jobs:
           check_success() {
             local sha=$1 name=$2 workflow payload run_id jobs total count status conclusion line
             case "$name" in
-              ci) workflow=ci.yml ;;
-              security) workflow=security.yml ;;
+              ci|security) workflow=ci.yml ;;
               *) return 2 ;;
             esac
             if ! payload=$(gh api "repos/${GH_REPO}/actions/workflows/${workflow}/runs?head_sha=${sha}&per_page=100"); then

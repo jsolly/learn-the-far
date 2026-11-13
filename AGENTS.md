@@ -10,6 +10,10 @@ Production verification follows Vercel READY and the public chapter and quiz beh
 
 Local gate before push: `npm run gate`.
 
+The required `ci` job waits for all pull request security scanners. Failed,
+cancelled or skipped scans fail `ci` before checkout or dependency installation.
+The existing Dependabot `ow-ci` deferral remains in effect.
+
 ## Development
 
 ```bash

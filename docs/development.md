@@ -77,10 +77,13 @@ or scan error fails the push. When the hook cannot reach a scan's server at
 all (no DNS, TCP or TLS, no answer, or a proxy denial, as in Claude's cloud
 sessions), it skips that scan with a warning. Any HTTP answer counts as
 reachable, and any other probe failure fails the push. CI never skips:
-`.github/workflows/security.yml` runs the same scanners on a pull request and
-fails closed when a request fails, plus the pinned gitleaks range
+`.github/workflows/ci.yml` runs the same scanners on eligible pull request
+events and fails closed when a request fails, plus the pinned gitleaks range
 scan. Its `security` job waits for those scanner jobs and succeeds only when
-every one succeeded. `.cursor/hooks.json` runs gitleaks before an agent
+every one succeeded. Required `ci` waits for `security` and rejects any other
+result before checkout or dependency installation. Dependabot's `ow-ci` policy
+is unchanged. Main pushes and manual CI runs keep their existing gate without
+repeating the PR scans. `.cursor/hooks.json` runs gitleaks before an agent
 `git commit` or `git push`.
 
 OSV-Scanner loads [`osv-scanner.toml`](../osv-scanner.toml) from the lockfile
