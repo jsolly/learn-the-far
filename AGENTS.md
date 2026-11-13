@@ -67,9 +67,9 @@ Bash floor check, staged secrets scan, actionlint, Biome, knip, markdownlint,
 yamllint, offline zizmor, cfn-lint, pie-progress, the negative quiz smoke contract, the TypeScript config
 consumers, the Vitest unit suite (`npm run test:unit`), `astro check`,
 `astro build`, the website update browser contract and isolated hook/bootstrap
-fixtures. Pre-push runs Semgrep and OSV-Scanner; it skips one with a warning
-only when that scanner's server is unreachable, and CI's `security` job still
-runs it. Never weaken or skip the gate.
+fixtures. Pre-push runs pinned gitleaks over outgoing commits only. Semgrep and
+OSV-Scanner remain required in CI and available through `npm run check:pre-push`.
+Never weaken or skip the gate.
 
 ## Deploy / fork
 
