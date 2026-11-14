@@ -10,6 +10,10 @@ Production verification follows Vercel READY and the public chapter and quiz beh
 
 Local gate before push: `npm run gate`.
 
+The required `ci` job waits for all pull request security scanners. Failed,
+cancelled or skipped scans fail `ci` before checkout or dependency installation.
+The existing Dependabot `ow-ci` deferral remains in effect.
+
 ## Development
 
 ```bash
@@ -63,9 +67,9 @@ Bash floor check, staged secrets scan, actionlint, Biome, knip, markdownlint,
 yamllint, offline zizmor, cfn-lint, pie-progress, the negative quiz smoke contract, the TypeScript config
 consumers, the Vitest unit suite (`npm run test:unit`), `astro check`,
 `astro build`, the website update browser contract and isolated hook/bootstrap
-fixtures. Pre-push runs Semgrep and OSV-Scanner; it skips one with a warning
-only when that scanner's server is unreachable, and CI's `security` job still
-runs it. Never weaken or skip the gate.
+fixtures. Pre-push runs pinned gitleaks over outgoing commits only. Semgrep and
+OSV-Scanner remain required in CI and available through `npm run check:pre-push`.
+Never weaken or skip the gate.
 
 ## Deploy / fork
 

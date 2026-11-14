@@ -43,7 +43,12 @@ describe("auto-merge sweep", () => {
 		await rm(dir, { recursive: true, force: true });
 	});
 
-	async function sweep(event: "schedule" | "workflow_dispatch", open: string, pr = "{}") {
+	async function sweep(
+		event: "schedule" | "workflow_dispatch",
+		open: string,
+		pr = "{}",
+		validation: "missing" | "green" | "failed-ci" | "missing-security" = "missing",
+	) {
 		const log = join(dir, "gh.log");
 		await writeFile(log, "");
 		const result = spawnSync("bash", ["-c", await workflowScript()], {
@@ -57,6 +62,7 @@ describe("auto-merge sweep", () => {
 				GH_STUB_LOG: log,
 				GH_STUB_OPEN: open,
 				GH_STUB_PR: pr,
+				GH_STUB_VALIDATION: validation,
 			},
 		});
 		return { ...result, calls: (await readFile(log, "utf8")).trim().split("\n") };
@@ -98,6 +104,37 @@ describe("auto-merge sweep", () => {
 		const { status, stdout, calls } = await sweep("schedule", "7", pr);
 		expect(status).toBe(0);
 		expect(stdout).toContain("Skipping pull request #7");
+		expect(calls.some((call) => call.startsWith("pr merge") || call.startsWith("api "))).toBe(
+			false,
+		);
+	});
+
+	it("a green sweep reads both checks from CI and merges only the checked head", async () => {
+		const { status, calls } = await sweep("schedule", "7", pullRequest(), "green");
+		expect(status).toBe(0);
+		const workflowReads = calls.filter((call) => call.includes("actions/workflows/"));
+		expect(workflowReads).toHaveLength(2);
+		expect(workflowReads.every((call) => call.includes("actions/workflows/ci.yml/runs?"))).toBe(
+			true,
+		);
+		expect(calls.at(-1)).toBe(
+			`pr merge --squash --match-head-commit ${"a".repeat(40)} https://github.com/${repo}/pull/7`,
+		);
+	});
+
+	it.each(["failed-ci", "missing-security"] as const)(
+		"a green workflow report with %s cannot authorize a direct merge",
+		async (validation) => {
+			const pr = pullRequest({ autoMergeRequest: {} });
+			const { status, calls } = await sweep("schedule", "7", pr, validation);
+			expect(status).toBe(0);
+			expect(calls.some((call) => call.startsWith("pr merge"))).toBe(false);
+		},
+	);
+
+	it("a scheduled sweep leaves a held draft alone even when validation is green", async () => {
+		const { status, calls } = await sweep("schedule", "7", pullRequest({ isDraft: true }), "green");
+		expect(status).toBe(0);
 		expect(calls.some((call) => call.startsWith("pr merge") || call.startsWith("api "))).toBe(
 			false,
 		);

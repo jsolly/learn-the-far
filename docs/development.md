@@ -71,16 +71,18 @@ Older checkouts must merge the reviewed migration before rerunning setup.
 ## Security scanning
 
 The commit gate runs staged gitleaks, then offline zizmor and cfn-lint.
-Pre-push runs Semgrep with `p/default --error` and OSV-Scanner on
-`package-lock.json`. Those two call semgrep.dev and api.osv.dev, and a finding
-or scan error fails the push. When the hook cannot reach a scan's server at
-all (no DNS, TCP or TLS, no answer, or a proxy denial, as in Claude's cloud
-sessions), it skips that scan with a warning. Any HTTP answer counts as
-reachable, and any other probe failure fails the push. CI never skips:
-`.github/workflows/security.yml` runs the same scanners on a pull request and
-fails closed when a request fails, plus the pinned gitleaks range
+Pre-push runs pinned gitleaks on Git's outgoing ref ranges. It rejects malformed
+commit IDs, unavailable history, findings, scanner errors and three-parent merges.
+New branches require a fetched `origin/main`; deletions and empty ranges need no
+history scan. Semgrep and OSV run explicitly through `npm run check:pre-push`
+for manual checks and CI, without reachability probes or skipped scans:
+`.github/workflows/ci.yml` runs the same scanners on eligible pull request
+events and fails closed when a request fails, plus the pinned gitleaks range
 scan. Its `security` job waits for those scanner jobs and succeeds only when
-every one succeeded. `.cursor/hooks.json` runs gitleaks before an agent
+every one succeeded. Required `ci` waits for `security` and rejects any other
+result before checkout or dependency installation. Dependabot's `ow-ci` policy
+is unchanged. Main pushes and manual CI runs keep their existing gate without
+repeating the PR scans. `.cursor/hooks.json` runs gitleaks before an agent
 `git commit` or `git push`.
 
 OSV-Scanner loads [`osv-scanner.toml`](../osv-scanner.toml) from the lockfile

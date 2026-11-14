@@ -1,12 +1,13 @@
 # Security scanning
 
-OSV-Scanner 2.7.1 reads `package-lock.json` from the pre-push hook and from
-`Security / osv-scanner`. A finding or a failed request to `api.osv.dev` fails
-the check. The pre-push hook alone skips the scan with a warning when it
-cannot reach `api.osv.dev` at all; the pull request's check still runs it. The scanner is not disabled, and the configuration does not ignore
-a package, a severity, or a directory. The workflow's `security` job is the
-required status check. It runs after gitleaks, Semgrep, OSV-Scanner, zizmor,
-and cfn-lint, and it fails unless every one of those jobs succeeded.
+OSV-Scanner 2.7.1 reads `package-lock.json` from the explicit manual
+`npm run check:pre-push` command and `CI / osv-scanner`. A finding or a failed
+request to `api.osv.dev` fails the check. Git pre-push runs ranged gitleaks only;
+network scanners remain required in CI. The configuration does not ignore
+a package, a severity, or a directory. CI's `security` aggregate runs after
+gitleaks, Semgrep, OSV-Scanner, zizmor and cfn-lint, and it fails unless every
+scanner succeeded. Required `ci` waits for that aggregate and rejects failed,
+cancelled or skipped security scans before checkout or dependency installation.
 
 `osv-scanner.toml` sits beside the lockfile. `IgnoredVulns` lists one advisory
 id at a time. `reason` says why that id is accepted, and `effectiveUntil` is
@@ -21,7 +22,8 @@ releases do not enforce that setting.
 
 ## Patched releases
 
-Direct `astro` is `^7.4.5`. That release depends on patched `vite` 8.3.5,
+Direct `astro` is `^7.4.7`, fixing GHSA-r3h5-4585-7x3w. Astro 7.4.7 was
+published November 5 and meets the unchanged seven-day minimum. This release depends on patched `vite` 8.3.5,
 `zod` 4.6.7, `devalue` 6.0.3, and `smol-toml` 1.9.1. Svelte keeps its own
 `devalue` 5.9.4, which includes the 5.9.3 fixes. `unifont` 1.0.3, required by
 this Astro release, resolves `undici` 8.12.3. The lockfile resolves the other

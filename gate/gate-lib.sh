@@ -442,3 +442,42 @@ gate_npm_ci() { # gate_npm_ci
     echo "⚠ npm ci set core.hooksPath to '${hooks_after:-unset}' (a package.json script such as prepare); restored the dispatcher $hooks_before. Delete that script line." >&2
   fi
 }
+
+# Git pre-push entry: scan only outgoing commit history with pinned gitleaks.
+# scripts/security-pre-push.sh remains the explicit manual/CI network entry.
+gate_pre_push_security() {
+  local gl local_ref local_sha remote_ref remote_sha sha range count merges
+  if [[ -t 0 ]]; then
+    echo "✗ pre-push expects Git's ref list on stdin; use npm run check:pre-push for explicit manual scans" >&2
+    return 1
+  fi
+  gl="$(gate_gitleaks_bin)" || return
+  while IFS=' ' read -r local_ref local_sha remote_ref remote_sha; do
+    [[ -n "${local_sha:-}" ]] || continue
+    for sha in "$local_sha" "$remote_sha"; do
+      if [[ ! "$sha" =~ ^([0-9a-fA-F]{40}|[0-9a-fA-F]{64})$ ]]; then
+        echo "✗ pre-push received a revision that is not a commit id" >&2
+        return 1
+      fi
+    done
+    [[ "$local_sha" =~ ^0+$ ]] && continue
+    if [[ "$remote_sha" =~ ^0+$ ]]; then
+      git rev-parse --verify --quiet refs/remotes/origin/main >/dev/null \
+        || { echo "✗ a new branch needs refs/remotes/origin/main for the gitleaks range" >&2; return 1; }
+      range="refs/remotes/origin/main..${local_sha}"
+    else
+      range="${remote_sha}..${local_sha}"
+    fi
+    count="$(git rev-list --count "$range")" || return
+    [[ "$count" != 0 ]] || continue
+    merges="$(git rev-list --min-parents=3 "$range")" || return
+    if [[ -n "$merges" ]]; then
+      echo "✗ gitleaks cannot read a merge with three or more parents in $range" >&2
+      return 1
+    fi
+    echo "• gitleaks ($range)"
+    "$gl" git --no-banner --no-color --redact --verbose \
+      --log-opts="--text --diff-merges=remerge --no-color --no-textconv ${range}" || return
+  done
+  echo "✓ pre-push secrets scan passed"
+}

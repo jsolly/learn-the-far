@@ -29,23 +29,29 @@ jobs:
   # defers again until the drain re-kicks the new head. Deferred jobs use
   # name `ci-deferred` so a skipped required `ci` check cannot look green.
   ci:
+    needs: [security]
     name: >-
       ${{ (github.event_name != 'pull_request' ||
       (github.event.action != 'labeled' && github.event.pull_request.user.login != 'dependabot[bot]') ||
       (github.event.action == 'labeled' && github.event.label.name == 'ow-ci')) && 'ci' || 'ci-deferred' }}
     if: >-
-      github.event_name != 'pull_request' ||
+      always() && (github.event_name != 'pull_request' ||
       (github.event.action != 'labeled' && github.event.pull_request.user.login != 'dependabot[bot]') ||
-      (github.event.action == 'labeled' && github.event.label.name == 'ow-ci')
+      (github.event.action == 'labeled' && github.event.label.name == 'ow-ci'))
     runs-on: ubuntu-24.04-arm
     steps:
+      - name: Require pull request security scans
+        if: github.event_name == 'pull_request'
+        env:
+          SECURITY: ${{ needs.security.result }}
+        run: test "$SECURITY" = success
       # Keep full history: Secrets scan (range) below scans a commit range, not just the checked-out tree.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
-      # Nothing but the checkout runs before the scan: an earlier step could rewrite the git config,
-      # PATH, or environment the scan reads history with.
+      # Only the security result guard and checkout run before the scan. Keep dependency
+      # scripts after it: they could rewrite the git config, PATH or scan environment.
       - name: Secrets scan (range)
         shell: bash
         env:
@@ -166,3 +172,133 @@ jobs:
           path: ${{ runner.temp }}/ci-tree-${{ github.job }}.txt
           if-no-files-found: error
           retention-days: 7
+
+  # Dependabot events allocate no runners until an ow-ci label, matching CI.
+  gitleaks:
+    permissions:
+      contents: read
+    name: gitleaks
+    if: >-
+      github.event_name == 'pull_request' &&
+      ((github.event.action != 'labeled' && github.event.pull_request.user.login != 'dependabot[bot]') ||
+      (github.event.action == 'labeled' && github.event.label.name == 'ow-ci'))
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Scan the pull request range
+        env:
+          SCAN_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: bash scripts/gitleaks-pr-scan.sh
+
+  semgrep:
+    permissions:
+      contents: read
+    name: semgrep
+    if: >-
+      github.event_name == 'pull_request' &&
+      ((github.event.action != 'labeled' && github.event.pull_request.user.login != 'dependabot[bot]') ||
+      (github.event.action == 'labeled' && github.event.label.name == 'ow-ci'))
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+        with:
+          version: "0.12.22"
+          enable-cache: false
+      - name: Semgrep p/default
+        run: bash scripts/security-pre-push.sh semgrep
+
+  osv-scanner:
+    permissions:
+      contents: read
+    name: osv-scanner
+    if: >-
+      github.event_name == 'pull_request' &&
+      ((github.event.action != 'labeled' && github.event.pull_request.user.login != 'dependabot[bot]') ||
+      (github.event.action == 'labeled' && github.event.label.name == 'ow-ci'))
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: OSV-Scanner
+        run: bash scripts/security-pre-push.sh osv
+
+  zizmor:
+    permissions:
+      contents: read
+    name: zizmor
+    if: >-
+      github.event_name == 'pull_request' &&
+      ((github.event.action != 'labeled' && github.event.pull_request.user.login != 'dependabot[bot]') ||
+      (github.event.action == 'labeled' && github.event.label.name == 'ow-ci'))
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Offline zizmor
+        run: bash scripts/security-pre-commit.sh zizmor
+
+  cfn-lint:
+    permissions:
+      contents: read
+    name: cfn-lint
+    if: >-
+      github.event_name == 'pull_request' &&
+      ((github.event.action != 'labeled' && github.event.pull_request.user.login != 'dependabot[bot]') ||
+      (github.event.action == 'labeled' && github.event.label.name == 'ow-ci'))
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+        with:
+          version: "0.12.22"
+          enable-cache: false
+      - name: cfn-lint
+        run: bash scripts/security-pre-commit.sh cfn-lint
+
+  # Preserve the security check used by auto-merge. Required ci waits for this
+  # aggregate, which rejects failed, cancelled or skipped scanners.
+  security:
+    permissions:
+      contents: read
+    name: security
+    needs: [gitleaks, semgrep, osv-scanner, zizmor, cfn-lint]
+    if: >-
+      always() && github.event_name == 'pull_request' &&
+      ((github.event.action != 'labeled' && github.event.pull_request.user.login != 'dependabot[bot]') ||
+      (github.event.action == 'labeled' && github.event.label.name == 'ow-ci'))
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 5
+    steps:
+      - name: Require every scanner to succeed
+        env:
+          GITLEAKS: ${{ needs.gitleaks.result }}
+          SEMGREP: ${{ needs.semgrep.result }}
+          OSV_SCANNER: ${{ needs.osv-scanner.result }}
+          ZIZMOR: ${{ needs.zizmor.result }}
+          CFN_LINT: ${{ needs.cfn-lint.result }}
+        run: |
+          set -euo pipefail
+          printf '%s\n' \
+            "gitleaks=$GITLEAKS" \
+            "semgrep=$SEMGREP" \
+            "osv-scanner=$OSV_SCANNER" \
+            "zizmor=$ZIZMOR" \
+            "cfn-lint=$CFN_LINT"
+          for result in "$GITLEAKS" "$SEMGREP" "$OSV_SCANNER" "$ZIZMOR" "$CFN_LINT"; do
+            [[ "$result" == success ]]
+          done

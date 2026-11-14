@@ -8,13 +8,8 @@ _repo_owned_gate_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 source "$_repo_owned_gate_root/gate/gate-lib.sh"
 gate_enter_committing_tree "${BASH_SOURCE[0]}"
 if [[ "${GATE_HOOK:-}" == pre-push ]]; then
-	trap 'echo "✗ pre-push security scan failed — push aborted" >&2' ERR
-	echo "▶ pre-push security scan (learn-the-far)"
-	gate_require_node
-	# Not run_step: its silence on green would hide the warning for a scan skipped as unreachable.
-	echo "• semgrep and osv-scanner"
-	bash scripts/security-pre-push.sh --skip-unreachable
-	echo "✓ pre-push security scan passed"
+	trap 'echo "✗ pre-push secrets scan failed — push aborted" >&2' ERR
+	gate_pre_push_security "$@"
 	exit 0
 fi
 gate_begin_commit "learn-the-far"
