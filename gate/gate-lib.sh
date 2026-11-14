@@ -477,7 +477,7 @@ gate_pre_push_security() {
     fi
     echo "• gitleaks ($range)"
     "$gl" git --no-banner --no-color --redact --verbose \
-      --log-opts="--text --diff-merges=remerge --no-color --no-textconv ${range}" || return
+      --log-opts="--root --text --diff-merges=remerge --no-color --no-textconv ${range}" || return
   done
   echo "✓ pre-push secrets scan passed"
 }
