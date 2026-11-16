@@ -106,7 +106,7 @@ pushing. Create a same-repository PR; use a draft while approval/work remains.
 Non-draft pull requests from `solly-agent`, `jsolly`, or `cursor[bot]` arm GitHub squash
 auto-merge (`.github/workflows/auto-merge.yml`). Convert the pull request to a
 draft, or run `gh pr merge --disable-auto`, to hold it. Other authors are not
-auto-merged. Every 30 minutes, and on a manual run, the workflow re-arms
+auto-merged. At 09:00, 17:00 and 22:00 UTC daily, and on a manual run, the workflow re-arms
 auto-merge and squash-merges a head whose `ci` and `security` checks are
 already green. Those calls use the repository `AUTO_MERGE_TOKEN`, so `push`
 workflows run; the job fails if that secret is absent. Merge only when the
