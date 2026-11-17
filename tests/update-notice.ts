@@ -4,7 +4,7 @@ import { cp, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { createServer } from "node:http";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { type Browser, chromium, type Route } from "playwright";
+import { type Browser, chromium, type Request, type Route } from "playwright";
 
 interface BrowserReceipt {
 	success: true;
@@ -344,17 +344,31 @@ try {
 	root = a;
 	metadataRoot = b;
 	let navigations = 0;
+	let applicationChecks = 0;
+	let applicationChecksAtNavigation = 0;
+	const startupRequests = new Set<Request>();
+	const observeReleaseRequest = (request: Request) => {
+		if (request.url().endsWith("/release.json")) {
+			if (navigations === 0) {
+				applicationChecks++;
+			} else {
+				startupRequests.add(request);
+			}
+		}
+	};
+	other.on("request", observeReleaseRequest);
 	other.on("framenavigated", (frame) => {
 		if (frame === other.mainFrame()) {
+			if (navigations === 0) {
+				applicationChecksAtNavigation = applicationChecks;
+			}
 			navigations++;
 		}
 	});
-	let rechecks = 0;
 	const { promise: reached, resolve: ready } = deferred<Route>();
 	await other.route(
 		"**/release.json",
 		(route) => {
-			rechecks++;
 			ready(route);
 		},
 		{ times: 1 },
@@ -367,15 +381,19 @@ try {
 		el.click();
 	});
 	const held = await reached;
-	assert.equal(rechecks, 1, "duplicate clicks coalesce into one application check");
+	assert.equal(applicationChecks, 1, "duplicate clicks coalesce into one application check");
 	const loaded = other.waitForEvent("load");
-	const startupCheck = other.waitForResponse(
-		(response) => response.url().endsWith("/release.json") && response.request() !== held.request(),
-	);
+	const startupCheck = other.waitForResponse((response) => startupRequests.has(response.request()));
 	await held.fulfill({ contentType: "application/json", body: JSON.stringify({ id: second }) });
 	await loaded;
 	await (await startupCheck).finished();
-	assert.equal(rechecks, 1, "the reload's startup check must not be held by the click fixture");
+	assert.equal(
+		applicationChecksAtNavigation,
+		1,
+		"duplicate clicks make exactly one application check before the document reloads",
+	);
+	assert.equal(startupRequests.size, 1, "the reloaded document completes its own startup check");
+	other.off("request", observeReleaseRequest);
 	await other.locator("astro-island[ssr]").waitFor({ state: "detached" });
 	await other
 		.getByRole("complementary", { name: "Website update" })
