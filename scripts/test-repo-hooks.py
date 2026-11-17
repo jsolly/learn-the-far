@@ -471,11 +471,5 @@ class SecurityPins(unittest.TestCase):
         self.assertIn(archive, ci)
         self.assertIn(archive, tools)
 
-    def test_commit_gate_keeps_push_scanners_ahead_of_the_commit_preamble(self):
-        hook = (SOURCE / '.git-hooks/pre-commit').read_text()
-        self.assertLess(hook.index('scripts/security-pre-push.sh'), hook.index('gate_begin_commit'))
-        self.assertIn('scripts/security-pre-commit.sh', hook)
-
-
 if __name__ == '__main__':
     unittest.main()

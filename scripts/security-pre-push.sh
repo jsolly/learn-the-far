@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 ((BASH_VERSINFO[0] >= 5)) || { echo "✗ $0 requires Bash >= 5, not $BASH_VERSION. Fix: brew install bash; open a fresh shell and rerun repository setup." >&2; exit 1; }
-# Network scanners for pre-push and CI. Semgrep loads p/default from semgrep.dev.
-# OSV-Scanner queries api.osv.dev. Both fail closed when a finding or the network call fails.
+# Explicit manual and CI network scanners; Git pre-push uses ranged gitleaks.
 set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
@@ -13,6 +12,7 @@ case "$mode" in
 		echo "✗ usage: $0 [all|semgrep|osv]" >&2
 		exit 2 ;;
 esac
+(($# <= 1)) || { echo "✗ usage: $0 [all|semgrep|osv]" >&2; exit 2; }
 
 run_uvx() {
 	if command -v uvx >/dev/null 2>&1; then

@@ -7,7 +7,9 @@ required. Templates used during migration are examples, not an enforced upstream
 Prerequisites: Git, Bash >= 5 and Python >= 3.11. Install mise on non-Linux hosts;
 fresh Linux setup provisions a pinned, checksum-verified public mise binary in
 `/usr/local/bin`, using noninteractive sudo only when needed. The repository's `.mise.toml`
-and `.nvmrc` own its tool pins. On a reviewed fresh `origin/main` checkout run:
+and `.nvmrc` own its tool pins; `mise.lock` records each tool's download URL and checksum so
+installs need no GitHub API lookup. To bump a pin, edit `.mise.toml`, run `mise lock`, and
+commit both files; a major-only pin such as node moves only with `mise lock --bump`. On a reviewed fresh `origin/main` checkout run:
 
 ```bash
 bash scripts/setup-agent-environment.sh
@@ -69,12 +71,18 @@ Older checkouts must merge the reviewed migration before rerunning setup.
 ## Security scanning
 
 The commit gate runs staged gitleaks, then offline zizmor and cfn-lint.
-Pre-push runs Semgrep with `p/default --error` and OSV-Scanner on
-`package-lock.json`. Those two call semgrep.dev and api.osv.dev and fail
-closed when the request or a finding fails. `.github/workflows/security.yml`
-runs the same scanners on a pull request, plus the pinned gitleaks range
+Pre-push runs pinned gitleaks on Git's outgoing ref ranges. It rejects malformed
+commit IDs, unavailable history, findings, scanner errors and three-parent merges.
+New branches require a fetched `origin/main`; deletions and empty ranges need no
+history scan. Semgrep and OSV run explicitly through `npm run check:pre-push`
+for manual checks and CI, without reachability probes or skipped scans:
+`.github/workflows/ci.yml` runs the same scanners on eligible pull request
+events and fails closed when a request fails, plus the pinned gitleaks range
 scan. Its `security` job waits for those scanner jobs and succeeds only when
-every one succeeded. `.cursor/hooks.json` runs gitleaks before an agent
+every one succeeded. Required `ci` waits for `security` and rejects any other
+result before checkout or dependency installation. Dependabot's `ow-ci` policy
+is unchanged. Main pushes and manual CI runs keep their existing gate without
+repeating the PR scans. `.cursor/hooks.json` runs gitleaks before an agent
 `git commit` or `git push`.
 
 OSV-Scanner loads [`osv-scanner.toml`](../osv-scanner.toml) from the lockfile
@@ -95,7 +103,14 @@ Work from fresh main on an isolated branch. Review the actual final diff for bug
 secrets, security, tests and repository guidelines; use an independent reviewer
 for substantial or sensitive changes. Run the required complete local gate before
 pushing. Create a same-repository PR; use a draft while approval/work remains.
-Merge only when the required CI validates the exact current head. Never push to
+Non-draft pull requests from `solly-agent`, `jsolly`, or `cursor[bot]` arm GitHub squash
+auto-merge (`.github/workflows/auto-merge.yml`). Convert the pull request to a
+draft, or run `gh pr merge --disable-auto`, to hold it. Other authors are not
+auto-merged. At 09:00, 17:00 and 22:00 UTC daily, and on a manual run, the workflow re-arms
+auto-merge and squash-merges a head whose `ci` and `security` checks are
+already green. Those calls use the repository `AUTO_MERGE_TOKEN`, so `push`
+workflows run; the job fails if that secret is absent. Merge only when the
+required CI validates the exact current head. Never push to
 the default branch, weaken rulesets, bypass checks or use an admin merge. Optional
 personal review skills may help, but they are not prerequisites for this flow.
 

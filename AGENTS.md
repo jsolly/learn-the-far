@@ -2,13 +2,17 @@
 
 Ship profile: `vercel-static`
 
-**Integration: branch → reviewed PR → merge on green `CI / ci`.** Follow [local release instructions](docs/development.md). Agents never push to `main`, change rulesets, or admin-merge.
+**Integration: branch → reviewed PR → merge on green `CI / ci`.** Non-draft pull requests from `solly-agent`, `jsolly`, or `cursor[bot]` arm GitHub squash auto-merge and merge when the required checks are green. Convert the pull request to a draft, or run `gh pr merge --disable-auto`, to hold it. Other authors are not auto-merged. Follow [local release instructions](docs/development.md). Agents never push to `main`, change rulesets, or admin-merge.
 
 Production URL: <https://learnthefar.com>
 
 Production verification follows Vercel READY and the public chapter and quiz behavior smoke.
 
 Local gate before push: `npm run gate`.
+
+The required `ci` job waits for all pull request security scanners. Failed,
+cancelled or skipped scans fail `ci` before checkout or dependency installation.
+The existing Dependabot `ow-ci` deferral remains in effect.
 
 ## Development
 
@@ -63,7 +67,9 @@ Bash floor check, staged secrets scan, actionlint, Biome, knip, markdownlint,
 yamllint, offline zizmor, cfn-lint, pie-progress, the negative quiz smoke contract, the TypeScript config
 consumers, the Vitest unit suite (`npm run test:unit`), `astro check`,
 `astro build`, the website update browser contract and isolated hook/bootstrap
-fixtures. Pre-push runs Semgrep and OSV-Scanner. Never weaken or skip the gate.
+fixtures. Pre-push runs pinned gitleaks over outgoing commits only. Semgrep and
+OSV-Scanner remain required in CI and available through `npm run check:pre-push`.
+Never weaken or skip the gate.
 
 ## Deploy / fork
 

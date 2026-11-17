@@ -9,11 +9,13 @@
 		"../../tests/config/tsconfig-consumer.test.mts",
 		"../../scripts/check-generated-test-fixtures.ts",
 		"../../tests/update-notice.ts",
+		"../../tests/workflows/auto-merge.test.ts",
 		"../../vercel.ts",
 		"../../scripts/production-smoke.mts",
 		"../../scripts/production-smoke-scenario.mts",
 		"../../scripts/production-smoke-scenario.test.ts",
-		"../../scripts/production-smoke.test.ts"
+		"../../scripts/production-smoke.test.ts",
+		"../../tests/hooks/pre-push.test.ts"
 	],
 	"compilerOptions": {
 		"noEmit": true,

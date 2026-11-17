@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ((BASH_VERSINFO[0] >= 5)) || { echo "✗ $0 requires Bash >= 5, not $BASH_VERSION. Fix: brew install bash; open a fresh shell and rerun repository setup." >&2; exit 1; }
-# Range scan for the Security workflow. Same gitleaks release and log options as CI.
+# Range scan for CI security jobs. Same gitleaks release and log options as CI.
 # CI keeps its own main-branch anchor; this script does not replace that step.
 set -euo pipefail
 

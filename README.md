@@ -72,10 +72,11 @@ Production for this repo stays Git-connected: pushes to `main` deploy automatica
 
 ## CI and commits
 
-GitHub Actions (`.github/workflows/ci.yml`) runs on every PR and on `main`: actionlint, Biome, knip, markdownlint, yamllint, pie-progress, the negative quiz smoke contract, the Vitest unit suite, typecheck, and build. `.github/workflows/security.yml` adds gitleaks, Semgrep, OSV-Scanner, zizmor, and cfn-lint on pull requests. Its `security` job succeeds only when every scanner succeeded.
+GitHub Actions (`.github/workflows/ci.yml`) runs on PRs and on `main`: actionlint, Biome, knip, markdownlint, yamllint, pie-progress, the negative quiz smoke contract, the Vitest unit suite, typecheck, and build. Eligible PR events also run gitleaks, Semgrep, OSV-Scanner, zizmor and cfn-lint. The required `ci` job waits for their `security` aggregate and fails unless every scanner succeeded. Dependabot PRs retain their `ow-ci` deferral.
 
 Local pre-commit (`.git-hooks/pre-commit`) runs the same quality checks plus offline zizmor, cfn-lint, and isolated
-hook/bootstrap fixtures. Pre-push runs Semgrep and OSV-Scanner. This repo owns its gate library and trusted dispatcher;
+hook/bootstrap fixtures. Git pre-push runs ranged gitleaks only. Semgrep and OSV-Scanner
+remain required in CI and available with `npm run check:pre-push`. This repo owns its gate library and trusted dispatcher;
 no private configuration repository or personal skill is required. Install Git,
 Bash >= 5 and Python >= 3.11, then follow [repository setup](docs/development.md).
 Setup provisions pinned public tools, including uv for YAML lint, and lockfile
@@ -87,6 +88,8 @@ dependencies. Package scripts never point `core.hooksPath` at `.git-hooks`.
 2. Make changes; keep the app static and local-first (no new secrets or server APIs without discussion).
 3. Run `npm run check` (Biome + types) and `npm run build` before opening a PR. Use `npm run gate` for the full pre-commit suite.
 4. Open a pull request against `main`.
+
+Non-draft pull requests from `solly-agent`, `jsolly`, or `cursor[bot]` arm squash auto-merge and land when the required checks are green. Convert the pull request to a draft, or run `gh pr merge --disable-auto`, to hold it. Other authors are not auto-merged.
 
 UI is public-only (no login). Prefer small, focused PRs.
 

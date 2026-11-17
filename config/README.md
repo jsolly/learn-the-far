@@ -23,8 +23,8 @@ under `tests/`. Each setting has one repository-owned home:
   names the actual owners, preserving analysis plugins and entry discovery.
 - `quality/yamllint.yaml` and `quality/.markdownlint-cli2.jsonc` are selected
   explicitly by the YAML command and root-anchored Markdown helper.
-- `testing/vitest.unit.ts` selects the `src/**/*.test.ts` unit suite from the
-  repository root. `test:unit` selects it explicitly and the gate runs it. It
+- `testing/vitest.unit.ts` selects the `src/**/*.test.ts` unit suite and the
+  `tests/**/*.test.ts` workflow tests from the repository root. `test:unit` selects it explicitly and the gate runs it. It
   mirrors the root `tsconfig.json` `$lib/*` path, which Vitest does not read;
   the root file stays that alias's owner.
 - `agents/repository.json` owns hook identity and its fixed trusted-bundle roster.
@@ -62,7 +62,7 @@ module URL with its native cache. Compare resolved TypeScript options and inputs
 then run the configured Astro typecheck, complete build and pinned shadcn-svelte
 component generator. Successful initial startup alone does not prove reload.
 
-Package manifests/lockfiles, `.npmrc`, `.nvmrc`, `.mise.toml`, Git files, `.github/`,
+Package manifests/lockfiles, `.npmrc`, `.nvmrc`, `.mise.toml`, `mise.lock`, Git files, `.github/`,
 native agent registrations, `vercel.ts` and `components.json` keep their required
 locations. `vercel.ts` is handwritten strict TypeScript, typed by `@vercel/config` and
 checked by the root `tsconfig.json`, `config/typescript/tooling.json`, Biome and knip. `components.json` owns shadcn-svelte's generation manifest, alias names
