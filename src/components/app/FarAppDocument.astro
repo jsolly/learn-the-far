@@ -41,3 +41,18 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 		<FarQuizApp client:load {initialUnit} {initialChapter} />
 	</body>
 </html>
+
+<script>
+	import { injectSpeedInsights } from "@vercel/speed-insights";
+
+	if (import.meta.env.PROD && window.location.hostname === "learnthefar.com" && navigator.onLine) {
+		injectSpeedInsights({
+			beforeSend(event) {
+				const url = new URL(event.url);
+				url.search = "";
+				url.hash = "";
+				return { ...event, url: url.href };
+			},
+		});
+	}
+</script>

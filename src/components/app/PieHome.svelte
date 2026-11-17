@@ -279,7 +279,10 @@ const GITHUB_REPO_URL = "https://github.com/jsolly/learn-the-far";
 		{/if}
 	</div>
 
-	<footer class="mt-6 flex justify-center sm:mt-8">
+	<footer class="mt-6 flex flex-col items-center gap-3 text-center sm:mt-8">
+		<p class="max-w-md text-xs text-muted-foreground">
+			Vercel Speed Insights measures page performance. Your quiz progress stays on this device.
+		</p>
 		<a
 			href={GITHUB_REPO_URL}
 			target="_blank"
