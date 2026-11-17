@@ -49,7 +49,7 @@
 		"@astrojs/check": "^0.9.9",
 		"@biomejs/biome": "^2.5.14",
 		"@fontsource-variable/inter": "^5.3.0",
-		"@internationalized/date": "^3.12.2",
+		"@internationalized/date": "^3.12.4",
 		"@lucide/svelte": "^1.70.0",
 		"@types/canvas-confetti": "^1.9.0",
 		"@types/node": "26.6.6",
