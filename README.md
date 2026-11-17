@@ -2,7 +2,7 @@
 
 A local-first flashcard app for studying the Federal Acquisition Regulation (FAR). Built as a pure static site with Astro, Svelte 5, shadcn-svelte, Tailwind CSS, and TypeScript.
 
-Progress lives only in the browser (`localStorage`). There is no database, authentication, API, or backend infrastructure.
+Progress lives only in the browser (`localStorage`). There is no account or application backend.
 
 Live site: <https://learnthefar.com>
 
@@ -45,6 +45,15 @@ Optional (Cursor only): `npm run mcp:echarts` starts a project-local Apache ECha
 - **State** — quiz progress and reading state in `localStorage` only (`src/lib/local-storage.ts`, `src/lib/reading-storage.ts`).
 
 No env vars are required for the production app. Site URL for the sitemap is set in `config/app/astro.ts` (`site`).
+
+### Performance measurements
+
+The production site uses Vercel Speed Insights to collect page performance
+measurements. Query strings and fragments are removed from page URLs before
+collection. Quiz answers, progress and reading state stay in browser storage and
+are not sent by this integration. Collection starts only on the canonical
+`learnthefar.com` host while the browser is online. Local development and preview
+hosts do not initialize it.
 
 ## Deploy your own copy (Vercel)
 
