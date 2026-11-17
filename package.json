@@ -42,7 +42,7 @@
 		"canvas-confetti": "^1.9.4",
 		"echarts": "^6.1.0",
 		"svelte": "^5.56.4",
-		"tailwindcss": "^4.3.1",
+		"tailwindcss": "^4.3.5",
 		"typescript": "^6.0.3"
 	},
 	"devDependencies": {
