@@ -1,8 +1,15 @@
-
 # mise.lock pins each tool's download URL and checksum per platform, so installs need no GitHub API
 # release lookup (proxied cloud sessions refuse that API). To bump a pin, edit it here, run
 # `mise lock`, and commit both files.
 # A major-only pin such as node stays at its locked patch until `mise lock --bump`.
+# `locked` makes a pin missing from mise.lock fail the install with "is not in the lockfile"
+# instead of falling back to the GitHub API release lookup. `lockfile_platforms` lists the platforms
+# mise.lock records, so `mise lock` writes exactly those and a locked install works only on them.
+[settings]
+lockfile = true
+locked = true
+lockfile_platforms = ["linux-x64", "linux-arm64", "macos-arm64"]
+
 [tools]
 node = "26"
 gitleaks = "8.24.2"

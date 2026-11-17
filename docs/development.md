@@ -8,7 +8,7 @@ Prerequisites: Git, Bash >= 5 and Python >= 3.11. Install mise on non-Linux host
 fresh Linux setup provisions a pinned, checksum-verified public mise binary in
 `/usr/local/bin`, using noninteractive sudo only when needed. The repository's `.mise.toml`
 and `.nvmrc` own its tool pins; `mise.lock` records each tool's download URL and checksum so
-installs need no GitHub API lookup. To bump a pin, edit `.mise.toml`, run `mise lock`, and
+installs need no GitHub API lookup. `.mise.toml` sets `locked = true`, so a tool missing from `mise.lock` fails `mise install` with "is not in the lockfile" instead of falling back to that lookup, which proxied cloud sessions refuse. Locked installs work only on the platforms in `lockfile_platforms` in `.mise.toml`; to add a host platform, add it there and rerun `mise lock`. mise also applies `locked` to your global tools when `mise install` runs here, so any global tool not recorded in your own `~/.config/mise/mise.lock` fails it, installed or not; add `locked_scopes = ["project"]` under `[settings]` in your own `~/.config/mise/config.toml` to keep it to project tools. To bump a pin, edit `.mise.toml`, run `mise lock`, and
 commit both files; a major-only pin such as node moves only with `mise lock --bump`. On a reviewed fresh `origin/main` checkout run:
 
 ```bash
@@ -17,7 +17,9 @@ bash scripts/setup-agent-environment.sh
 
 Setup installs repo-owned hooks outside the working tree, provisions the pinned
 tools and lockfile dependencies, and installs pinned Chromium when this repo uses
-Playwright. Run the repo's documented quality gate with its pinned tools:
+Playwright. Where `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD` is set, as in Claude's cloud
+sessions, setup skips Chromium; the gate steps that launch it then fail locally
+and run in CI. Run the repo's documented quality gate with its pinned tools:
 
 ```bash
 mise exec -- npm run gate
