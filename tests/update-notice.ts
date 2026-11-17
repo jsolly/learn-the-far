@@ -126,6 +126,7 @@ const errors: string[] = [];
 try {
 	browser = await chromium.launch({ headless: true });
 	const context = await browser.newContext();
+	await context.clock.install();
 	context.on("page", (target) => {
 		target.on("pageerror", (error) => errors.push(String(error)));
 		target.on("console", (message) => {
@@ -135,12 +136,11 @@ try {
 		});
 	});
 	const page = await context.newPage();
-	await page.clock.install();
 	const initialCheck = page.waitForResponse("**/release.json");
 	await page.goto(url);
 	await page.locator("astro-island[ssr]").waitFor({ state: "detached" });
 	await (await initialCheck).finished();
-	await page.clock.runFor(100);
+	await context.clock.runFor(100);
 	await page.waitForFunction(() => document.querySelector("h1"));
 	assert.equal(await page.locator('meta[name="app-release"]').getAttribute("content"), first);
 	assert.equal(
@@ -194,7 +194,7 @@ try {
 		return typeof module.default;
 	});
 	assert.equal(retained, "function", "old lazy asset remains importable after B publication");
-	await page.clock.fastForward(60_001);
+	await context.clock.fastForward(60_001);
 	await page.evaluate(() => window.dispatchEvent(new Event("focus")));
 	await page.getByRole("complementary", { name: "Website update" }).waitFor();
 	assert.equal(
@@ -216,15 +216,14 @@ try {
 			otherChecks++;
 		}
 	});
-	await other.clock.install();
 	const initialOtherCheck = other.waitForResponse("**/release.json");
 	await other.goto(url);
 	await other.locator("astro-island[ssr]").waitFor({ state: "detached" });
 	await (await initialOtherCheck).finished();
-	await other.clock.runFor(100);
+	await context.clock.runFor(100);
 	root = b;
 	// A continuously focused tab detects B via its timer without focus events.
-	await other.clock.fastForward(330_001);
+	await context.clock.fastForward(330_001);
 	await other.getByRole("button", { name: "Update and reload" }).waitFor();
 	const screenshotCases: readonly ScreenshotCase[] = [
 		["desktop-light", { width: 1280, height: 900 }, "light"],
@@ -253,9 +252,9 @@ try {
 		0,
 		"shell navigation retains dismissal",
 	);
-	await other.clock.setSystemTime((await other.evaluate(() => Date.now())) + 60_001);
+	await context.clock.setSystemTime((await other.evaluate(() => Date.now())) + 60_001);
 	await other.evaluate(() => window.dispatchEvent(new Event("focus")));
-	await other.clock.runFor(100);
+	await context.clock.runFor(100);
 	assert.equal(
 		await other.getByRole("button", { name: "Update and reload" }).count(),
 		0,
@@ -288,7 +287,7 @@ try {
 	await other.getByRole("button", { name: "Later", exact: true }).click();
 	await other.waitForFunction(() => document.querySelector("main h1") === document.activeElement);
 	root = b;
-	await other.clock.setSystemTime((await other.evaluate(() => Date.now())) + 60_001);
+	await context.clock.setSystemTime((await other.evaluate(() => Date.now())) + 60_001);
 	await other.evaluate(() => window.dispatchEvent(new Event("focus")));
 	await other.getByRole("button", { name: "Update and reload" }).waitFor();
 	// A failed explicit application must retain B and all user work, without navigation.
@@ -335,7 +334,7 @@ try {
 	root = b;
 	await other.getByRole("button", { name: "Update and reload" }).click();
 	await other.getByRole("button", { name: "Update and reload" }).waitFor();
-	await other.clock.runFor(100);
+	await context.clock.runFor(100);
 	assert.equal(
 		await other.locator('meta[name="app-release"]').getAttribute("content"),
 		first,
@@ -352,10 +351,14 @@ try {
 	});
 	let rechecks = 0;
 	const { promise: reached, resolve: ready } = deferred<Route>();
-	await other.route("**/release.json", (route) => {
-		rechecks++;
-		ready(route);
-	});
+	await other.route(
+		"**/release.json",
+		(route) => {
+			rechecks++;
+			ready(route);
+		},
+		{ times: 1 },
+	);
 	await other.getByRole("button", { name: "Update and reload" }).evaluate((el) => {
 		if (!(el instanceof HTMLButtonElement)) {
 			throw new Error("Update control must be a button");
@@ -366,9 +369,13 @@ try {
 	const held = await reached;
 	assert.equal(rechecks, 1, "duplicate clicks coalesce into one application check");
 	const loaded = other.waitForEvent("load");
+	const startupCheck = other.waitForResponse(
+		(response) => response.url().endsWith("/release.json") && response.request() !== held.request(),
+	);
 	await held.fulfill({ contentType: "application/json", body: JSON.stringify({ id: second }) });
 	await loaded;
-	await other.unroute("**/release.json");
+	await (await startupCheck).finished();
+	assert.equal(rechecks, 1, "the reload's startup check must not be held by the click fixture");
 	await other.locator("astro-island[ssr]").waitFor({ state: "detached" });
 	await other
 		.getByRole("complementary", { name: "Website update" })
@@ -377,7 +384,7 @@ try {
 		})
 		.waitFor();
 	assert.equal(navigations, 1, "stale reload happens once");
-	await other.clock.fastForward(330_001);
+	await context.clock.fastForward(330_001);
 	assert.equal(navigations, 1, "polling cannot start a reload loop");
 	root = b;
 	metadataRoot = null;
@@ -419,14 +426,14 @@ try {
 	await other.bringToFront();
 	const cooldownChecks = otherChecks;
 	await other.evaluate(() => window.dispatchEvent(new Event("focus")));
-	await other.clock.runFor(100);
+	await context.clock.runFor(100);
 	assert.equal(otherChecks, cooldownChecks, "focus during cooldown makes no request");
 	async function checkOther(): Promise<void> {
 		const response = other.waitForResponse("**/release.json");
-		await other.clock.setSystemTime((await other.evaluate(() => Date.now())) + 1_800_001);
+		await context.clock.setSystemTime((await other.evaluate(() => Date.now())) + 1_800_001);
 		await other.evaluate(() => window.dispatchEvent(new Event("focus")));
 		await (await response).finished();
-		await other.clock.runFor(100);
+		await context.clock.runFor(100);
 	}
 	// Malformed and failed checks never invent updates. Offline checks make no requests.
 	for (const body of ["{}", '{"id":"garbage"}', "null", "not json"]) {
@@ -464,7 +471,7 @@ try {
 		predicate: (req) => req.url().endsWith("/release.json"),
 		timeout: 15_000,
 	});
-	await other.clock.setSystemTime((await other.evaluate(() => Date.now())) + 1_800_001);
+	await context.clock.setSystemTime((await other.evaluate(() => Date.now())) + 1_800_001);
 	await other.evaluate(() => window.dispatchEvent(new Event("focus")));
 	await heldTimeout;
 	await timedOut;
@@ -487,20 +494,20 @@ try {
 		document.dispatchEvent(new Event("visibilitychange"));
 	});
 	const hiddenChecks = otherChecks;
-	await other.clock.fastForward(1_800_001);
+	await context.clock.fastForward(1_800_001);
 	assert.equal(otherChecks, hiddenChecks, "hidden handler stops the timer");
 	await other.evaluate(() => {
 		Reflect.deleteProperty(document, "hidden");
 		document.dispatchEvent(new Event("visibilitychange"));
 	});
-	await other.clock.runFor(100);
+	await context.clock.runFor(100);
 	const before = otherChecks;
 	await context.setOffline(true);
-	await other.clock.fastForward(300_001);
+	await context.clock.fastForward(300_001);
 	assert.equal(otherChecks, before, "offline tabs do not poll");
 	await context.setOffline(false);
 	await other.bringToFront();
-	await other.clock.fastForward(60_001);
+	await context.clock.fastForward(60_001);
 	await other.evaluate(() => window.dispatchEvent(new Event("focus")));
 	assert.equal(await other.getByRole("complementary", { name: "Website update" }).count(), 0);
 	root = a;
@@ -534,7 +541,7 @@ try {
 	);
 	await other.goto("about:blank");
 	const afterUnmount = otherChecks;
-	await other.clock.fastForward(1_800_001);
+	await context.clock.fastForward(1_800_001);
 	assert.equal(otherChecks, afterUnmount, "document navigation stops the old controller");
 	await writeFile(
 		"/tmp/far-alignment-browser-receipt.json",
@@ -555,6 +562,9 @@ try {
 		),
 	);
 	process.stdout.write("PASS A/B/C update browser contract; expected HTTP 503 diagnostics only\n");
+} catch (error) {
+	console.error("Browser diagnostics:", JSON.stringify(errors));
+	throw error;
 } finally {
 	await browser?.close();
 	server.closeAllConnections();
