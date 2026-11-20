@@ -69,7 +69,10 @@ consumers, the Vitest unit suite (`npm run test:unit`), `astro check`,
 `astro build`, the website update browser contract and isolated hook/bootstrap
 fixtures. Pre-push runs pinned gitleaks over outgoing commits only. Semgrep and
 OSV-Scanner remain required in CI and available through `npm run check:pre-push`.
-Never weaken or skip the gate.
+Never weaken or skip the gate. The one exception: where
+`PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD` is set outside CI and Chromium cannot launch, as
+in Claude Duet cloud sessions, the gate skips the two browser contracts with a
+warning; CI never skips them.
 
 ## Deploy / fork
 

@@ -18,8 +18,9 @@ bash scripts/setup-agent-environment.sh
 Setup installs repo-owned hooks outside the working tree, provisions the pinned
 tools and lockfile dependencies, and installs pinned Chromium when this repo uses
 Playwright. Where `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD` is set, as in Claude's cloud
-sessions, setup skips Chromium; the gate steps that launch it then fail locally
-and run in CI. Run the repo's documented quality gate with its pinned tools:
+sessions, setup skips Chromium; the gate then skips the steps that launch it,
+with a warning, and CI runs them. Anywhere else, CI included, a Chromium that
+cannot launch fails the gate. Run the repo's documented quality gate with its pinned tools:
 
 ```bash
 mise exec -- npm run gate
@@ -198,7 +199,9 @@ URLs and system-font fallbacks. Do not remove retained assets while supported
 open clients may need them, or splice new mutable data into an old client.
 
 The full gate runs `npm run check:updates` using three real builds at one local
-origin. It covers saved progress, independent tabs, active quiz safety, timer
+origin. Where `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD` is set outside CI and Chromium
+cannot launch, as in Claude Duet cloud sessions, the gate skips it and the negative
+quiz smoke contract with a warning; CI never skips them. It covers saved progress, independent tabs, active quiz safety, timer
 polling, invalid/offline/HTTP failure checks, Later/reopen, dismissal across view
 navigation, changed targets, stale reload/manual recovery and the retained lazy
 asset. Desktop/mobile light/dark screenshots are written under `/tmp`. The
