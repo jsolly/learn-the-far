@@ -43,7 +43,7 @@
 		"echarts": "^6.1.0",
 		"svelte": "^5.56.4",
 		"tailwindcss": "^4.3.5",
-		"typescript": "^6.0.3"
+		"typescript": "^7.0.2"
 	},
 	"devDependencies": {
 		"@astrojs/check": "^0.9.9",
