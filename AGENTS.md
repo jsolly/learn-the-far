@@ -2,7 +2,7 @@
 
 Ship profile: `vercel-static`
 
-**Integration: branch → reviewed PR → merge on green `CI / ci`.** Non-draft pull requests from `solly-agent`, `jsolly`, or `cursor[bot]` arm GitHub squash auto-merge and merge when the required checks are green. Convert the pull request to a draft, or run `gh pr merge --disable-auto`, to hold it. Other authors are not auto-merged. Follow [local release instructions](docs/development.md). Agents never push to `main`, change rulesets, or admin-merge.
+**Integration: branch → reviewed PR → merge on green `CI / ci`.** The agent that opens a pull request owns it: it opens ready work as non-draft and arms native squash auto-merge on the reviewed head with its own session (`gh pr merge <n> --auto --squash --match-head-commit <sha>`, per dotagents `rules/pr-auto-merge.md`), and GitHub merges it once the required checks pass. The merge is attributed to the agent's account, so push workflows start normally. Hold one by converting it to a draft or running `gh pr merge --disable-auto`. Dependabot pull requests are never armed unless John asks. Follow [local release instructions](docs/development.md). Agents never push to `main`, change rulesets, or admin-merge.
 
 Production URL: <https://learnthefar.com>
 

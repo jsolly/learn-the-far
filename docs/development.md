@@ -106,13 +106,7 @@ Work from fresh main on an isolated branch. Review the actual final diff for bug
 secrets, security, tests and repository guidelines; use an independent reviewer
 for substantial or sensitive changes. Run the required complete local gate before
 pushing. Create a same-repository PR; use a draft while approval/work remains.
-Non-draft pull requests from `solly-agent`, `jsolly`, or `cursor[bot]` arm GitHub squash
-auto-merge (`.github/workflows/auto-merge.yml`). Convert the pull request to a
-draft, or run `gh pr merge --disable-auto`, to hold it. Other authors are not
-auto-merged. At 09:00, 17:00 and 22:00 UTC daily, and on a manual run, the workflow re-arms
-auto-merge and squash-merges a head whose `ci` and `security` checks are
-already green. Those calls use the repository `AUTO_MERGE_TOKEN`, so `push`
-workflows run; the job fails if that secret is absent. Merge only when the
+The agent that opens a pull request owns it. It opens ready work as non-draft and, right after the last of opening it, marking it ready, or pushing the final reviewed head, arms native squash auto-merge on the reviewed head with its own session: `gh pr merge <n> --auto --squash --match-head-commit <sha>` (dotagents `rules/pr-auto-merge.md`). GitHub merges once the required checks pass on that head. The merge is attributed to the agent's account, so `push` workflows start normally. Hold a pull request by converting it to a draft or running `gh pr merge --disable-auto`. Dependabot pull requests are never armed unless John asks. Merge only when the
 required CI validates the exact current head. Never push to
 the default branch, weaken rulesets, bypass checks or use an admin merge. Optional
 personal review skills may help, but they are not prerequisites for this flow.

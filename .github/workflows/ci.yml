@@ -270,7 +270,7 @@ jobs:
       - name: cfn-lint
         run: bash scripts/security-pre-commit.sh cfn-lint
 
-  # Preserve the security check used by auto-merge. Required ci waits for this
+  # Preserve the security check. Required ci waits for this
   # aggregate, which rejects failed, cancelled or skipped scanners.
   security:
     permissions:
