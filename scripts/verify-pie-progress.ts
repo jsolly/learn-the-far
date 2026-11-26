@@ -6,7 +6,7 @@ import {
 	capturedFillRatio,
 	hubCapturedPercent,
 	type ProgressSlice,
-	weightedCapturedRatio,
+	sliceAngleValue,
 } from "../src/lib/pie-progress.ts";
 
 /** Real deck sizes (Basics is larger than the other lifecycle slices). */
@@ -36,7 +36,11 @@ function slice(
 	};
 }
 
-function scenario(name: string, clearedById: Readonly<Record<string, number>>): boolean {
+function scenario(
+	name: string,
+	clearedById: Readonly<Record<string, number>>,
+	expectedPercent: number,
+) {
 	const slices = DECK.map(({ id, total }) => {
 		const cleared = clearedById[id] ?? 0;
 		// Split: first clear = learning, second+ = mastered (approx for fill layers).
@@ -46,11 +50,17 @@ function scenario(name: string, clearedById: Readonly<Record<string, number>>): 
 	});
 
 	const hub = hubCapturedPercent(slices);
-	const weighted = weightedCapturedRatio(slices);
-	const weightedPct = Math.round(weighted * 100);
+	const angles = slices.map((s) => sliceAngleValue(s.total));
+	const filled = slices.reduce(
+		(area, entry) => area + sliceAngleValue(entry.total) * capturedFillRatio(entry),
+		0,
+	);
+	const weightedPct = Math.round(
+		(filled / angles.reduce((total, angle) => total + angle, 0)) * 100,
+	);
 	const fillMatchesRatio = slices.every((s) => Math.abs(capturedFillRatio(s) - s.ratio) < 1e-9);
 
-	const ok = hub === weightedPct && fillMatchesRatio;
+	const ok = hub === expectedPercent && weightedPct === expectedPercent && fillMatchesRatio;
 	const detail = DECK.map(({ id, total }) => {
 		const c = clearedById[id] ?? 0;
 		const pct = total ? Math.round((c / total) * 100) : 0;
@@ -59,33 +69,46 @@ function scenario(name: string, clearedById: Readonly<Record<string, number>>): 
 	}).join("; ");
 
 	console.log(`${ok ? "PASS" : "FAIL"} ${name}`);
-	console.log(`  hub=${hub}%  weightedArea=${weightedPct}%  fill≡ratio=${fillMatchesRatio}`);
+	console.log(
+		`  expected=${expectedPercent}%  hub=${hub}%  weightedArea=${weightedPct}%  fill≡ratio=${fillMatchesRatio}`,
+	);
 	console.log(`  ${detail}`);
 	if (!ok) {
 		process.exitCode = 1;
 	}
-	return ok;
 }
 
-scenario("empty", {});
-scenario("user-like ~20% (Basics heavy)", { basics: 32, vehicle: 8 });
-scenario("Basics 80% only", { basics: 40 });
-scenario("Vehicle 100% only", { vehicle: 22 });
-scenario("every slice 50%", Object.fromEntries(DECK.map((d) => [d.id, Math.floor(d.total / 2)])));
-scenario("full capture", Object.fromEntries(DECK.map((d) => [d.id, d.total])));
-scenario("thin progress across many slices", {
-	basics: 5,
-	find: 5,
-	shape: 5,
-	bid: 5,
-	vehicle: 5,
-	team: 5,
-	propose: 5,
-	win: 5,
-});
-scenario("one slice fully mastered look (learning+mastered layers)", {
-	basics: 50, // all cleared — fill uses mastered+learning ratios in UI
-});
+scenario("empty", {}, 0);
+scenario("user-like ~20% (Basics heavy)", { basics: 32, vehicle: 8 }, 20);
+scenario("Basics 80% only", { basics: 40 }, 20);
+scenario("Vehicle 100% only", { vehicle: 22 }, 11);
+scenario(
+	"every slice 50%",
+	Object.fromEntries(DECK.map((d) => [d.id, Math.floor(d.total / 2)])),
+	50,
+);
+scenario("full capture", Object.fromEntries(DECK.map((d) => [d.id, d.total])), 100);
+scenario(
+	"thin progress across many slices",
+	{
+		basics: 5,
+		find: 5,
+		shape: 5,
+		bid: 5,
+		vehicle: 5,
+		team: 5,
+		propose: 5,
+		win: 5,
+	},
+	20,
+);
+scenario(
+	"one slice fully mastered look (learning+mastered layers)",
+	{
+		basics: 50, // all cleared — fill uses mastered+learning ratios in UI
+	},
+	25,
+);
 
 if (!process.exitCode) {
 	console.log("\nAll pie-progress scenarios passed.");
