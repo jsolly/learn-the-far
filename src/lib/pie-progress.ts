@@ -36,24 +36,6 @@ export function sliceAngleValue(total: number): number {
 }
 
 /**
- * Exact (unrounded) fraction of the wheel's area that should appear filled
- * when each slice's radial fill height is `ratio` and angles are weighted
- * by `total`. Equals cleared/total when ratio === cleared/total per slice.
- */
-export function weightedCapturedRatio(slices: readonly ProgressSlice[]): number {
-	let cleared = 0;
-	let total = 0;
-	for (const slice of slices) {
-		cleared += slice.total * clamp01(slice.ratio);
-		total += slice.total;
-	}
-	if (total === 0) {
-		return 0;
-	}
-	return cleared / total;
-}
-
-/**
  * Captured ratio from mastered + learning layers (radial fill).
  * Should match `ratio` (cleared/total) for normal progress records.
  */
